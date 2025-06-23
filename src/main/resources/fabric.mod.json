@@ -3,34 +3,34 @@
   "id": "${id}",
   "version": "${version}",
   "name": "${name}",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "Make named armor stands looks like players!",
   "authors": [
-    "Me!"
+    "Danrus110_"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
   "license": "CC0-1.0",
-  "icon": "assets/template/icon.png",
-  "environment": "*",
+  "icon": "assets/pas/icon.png",
+  "environment": "client",
+  "accessWidener": "aws/${minecraft_version}.accesswidener",
   "entrypoints": {
-    "main": [
-      "com.example.TemplateMod"
-    ],
     "client": [
-      "com.example.TemplateModClient"
+      "com.danrus.PlayerArmorStands"
+    ],
+    "modmenu": [
+      "com.danrus.config.ModMenuIntegration"
     ]
   },
   "mixins": [
-    "template.mixins.json",
     {
-      "config": "template.client.mixins.json",
+      "config": "pas.mixins.json",
       "environment": "client"
     }
   ],
   "depends": {
-    "fabricloader": ">=0.15",
+    "fabricloader": ">=0.16",
     "minecraft": "${mcdep}",
     "fabric-api": "*"
   }
