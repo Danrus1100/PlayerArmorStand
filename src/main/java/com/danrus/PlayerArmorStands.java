@@ -4,7 +4,6 @@ import com.danrus.config.ModConfig;
 import com.danrus.utils.ASModelData;
 import com.google.gson.Gson;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 import java.util.HashMap;
 
@@ -17,6 +16,7 @@ public class PlayerArmorStands implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        PASCommandManager.register();
         ModConfig.initialize();
     }
 }

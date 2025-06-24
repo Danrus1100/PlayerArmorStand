@@ -21,6 +21,7 @@ public class StringUtils {
 
     public static String encodeToSha256(String source) {
         try {
+            source = source.toLowerCase();
             java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(source.getBytes("UTF-8"));
             StringBuilder hexString = new StringBuilder();

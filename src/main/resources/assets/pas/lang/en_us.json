@@ -1,3 +1,8 @@
 {
+  "commands.pas.default_feedback": "Arguments requires",
 
+  "pas.downloading": "Downloading Skin for %s...",
+  "pas.invalid_username": "Invalid username: %s",
+  "pas.download_success": "Skin downloaded for %s",
+  "pas.download_failed": "Failed to download skin for %s"
 }

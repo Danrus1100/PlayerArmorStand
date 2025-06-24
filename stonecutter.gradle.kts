@@ -17,6 +17,14 @@ stonecutter registerChiseled tasks.register("chiseledBuildAndCollect", stonecutt
     ofTask("buildAndCollect")
 }
 
+for (meta in stonecutter.versions) {
+    stonecutter registerChiseled tasks.register("build-${meta.project}", stonecutter.chiseled) {
+        versions { _, it -> it == meta }
+        group = "project"
+        ofTask("build")
+    }
+}
+
 /*
 // Publishes every version
 stonecutter registerChiseled tasks.register("chiseledPublishMods", stonecutter.chiseled) {

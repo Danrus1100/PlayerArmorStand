@@ -12,6 +12,8 @@ public class ASModelData {
     public boolean slim;
     public DownloadStatus status = DownloadStatus.NOT_STARTED;
 
+    public static Identifier DEFAULT_TEXTURE = Identifier.ofVanilla("textures/entity/player/wide/steve.png");
+
     public enum DownloadStatus {
         NOT_STARTED,
         IN_PROGRESS,
@@ -23,6 +25,13 @@ public class ASModelData {
         this.name = name;
         this.texture = texture;
         this.slim = slim;
+    }
+
+    public ASModelData(String name, boolean slim, DownloadStatus status){
+        this.name = name;
+        this.texture = DEFAULT_TEXTURE;
+        this.slim = slim;
+        this.status = status;
     }
 
     public ASModelData(String name, Identifier texture, boolean slim, DownloadStatus status) {
@@ -40,12 +49,15 @@ public class ASModelData {
                 return PlayerArmorStands.modelDataCache.get(name);
             }
         }
-        ASModelData asModelData = new ASModelData(
-                name,
-                SkinsUtils.getSkinTexture(name),
-                false,
-                DownloadStatus.NOT_STARTED
-        );
-        return asModelData;
+
+        // Возвращаем базовую текстуру и асинхронно загружаем нужную
+        Identifier defaultTexture = Identifier.ofVanilla("textures/entity/player/wide/steve.png");
+        ASModelData defaultData = new ASModelData(name, defaultTexture, true, DownloadStatus.IN_PROGRESS);
+        PlayerArmorStands.modelDataCache.put(name, defaultData);
+
+        // Асинхронно загружаем настоящий скин
+        SkinsUtils.getSkinTexture(name);
+
+        return defaultData;
     }
 }

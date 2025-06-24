@@ -18,10 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ArmorStandEntityModel.class)
 public class ArmorStandEntityModelMixin {
 
-//    @Unique
-//    private LivingEntityRenderState armorStandEntityRenderState;
-
-
     @Inject(
             method = "getTexturedModelData",
             at = @At("RETURN"),
@@ -33,9 +29,6 @@ public class ArmorStandEntityModelMixin {
         modelPartData.addChild("left_body_stick", ModelPartBuilder.create().uv(0, 0).cuboid(0F, 0F, 0F, 0F, 0F, 0F), ModelTransform.NONE);
         modelPartData.addChild("shoulder_stick", ModelPartBuilder.create().uv(0, 48).cuboid(0F, 0F, 0F, 0F, 0F, 0F), ModelTransform.NONE);
         modelPartData.addChild("base_plate", ModelPartBuilder.create().uv(0, 0).cuboid(0F, 0F, 0F, 0F, 0F, 0F), ModelTransform.pivot(0.0F, 12.0F, 0.0F));
-//        ModelPartData modelPartData2 = modelPartData.addChild("head", ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
-//        modelPartData2.addChild("hat", ModelPartBuilder.create().uv(32, 0).cuboid(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F), ModelTransform.NONE);
-
         cir.setReturnValue(TexturedModelData.of(modelData, 64, 64));
     }
 
@@ -45,5 +38,7 @@ public class ArmorStandEntityModelMixin {
     )
     private void setAngles(ArmorStandEntityRenderState armorStandEntityRenderState, CallbackInfo ci){
         ((ArmorStandEntityModel) (Object) this).hat.visible = true;
+        ((ArmorStandEntityModel) (Object) this).leftArm.visible = true;
+        ((ArmorStandEntityModel) (Object) this).rightArm.visible = true;
     }
 }

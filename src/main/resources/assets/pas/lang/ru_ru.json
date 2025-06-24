@@ -1,0 +1,8 @@
+{
+  "commands.pas.default_feedback": "Необходимы аргументы",
+
+  "pas.downloading": "Загрузка скина для %s...",
+  "pas.invalid_username": "Неверное имя: %s",
+  "pas.download_success": "Скин загружен: %s",
+  "pas.download_failed": "Ошибка при загрузке скина: %s"
+}

@@ -8,8 +8,8 @@
     "Danrus110_"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/Danrus1100/PlayerArmorStand",
+    "issues": "https://discord.com/invite/sBpHZUBebQ"
   },
   "license": "CC0-1.0",
   "icon": "assets/pas/icon.png",
@@ -18,9 +18,6 @@
   "entrypoints": {
     "client": [
       "com.danrus.PlayerArmorStands"
-    ],
-    "modmenu": [
-      "com.danrus.config.ModMenuIntegration"
     ]
   },
   "mixins": [
