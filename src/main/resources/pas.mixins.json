@@ -5,8 +5,8 @@
   "client": [
     "ArmorStandEntityModelMixin",
     "ArmorStandEntityRendererMixin",
-    "EntityRenderMixin",
-    "LivingEntityRendererMixin"
+    "LivingEntityRendererMixin",
+    "ArmorStandEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
