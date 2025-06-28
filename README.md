@@ -18,7 +18,9 @@
 ![pas_demo_1](assets/pas_demo_1.gif)
 2. Auto download from Mojang servers
 ![pas_demo_2](assets/pas_demo_2.gif)
-3. To display slim arms, you need to set "baby" model to Armor Stand
+3. To display slim arms, you need to set name like "Player|S"
+4. To display a cape, you need to set name like "Player|C"
+5. You can combine these two features, for example, "Player|SC" will display a player with a cape and slim arms
 
 ## Try it with [Armor Poser](https://modrinth.com/mod/armor-poser):
 ![poses](assets/poses.png)

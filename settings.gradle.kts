@@ -8,7 +8,7 @@ pluginManagement {
 
 plugins {
     id("dev.kikugie.stonecutter") version "0.6"
-    id("me.modmuss50.mod-publish-plugin") version "0.7.+" apply false
+    id("me.modmuss50.mod-publish-plugin") version "0.8.4" apply false
 }
 
 stonecutter {

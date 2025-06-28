@@ -1,5 +1,12 @@
 package com.danrus.utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class StringUtils {
     public static String encodeToBase64(String source) {
         try {
@@ -34,6 +41,21 @@ public class StringUtils {
         } catch (java.io.UnsupportedEncodingException | java.security.NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static @NotNull List<String> matchASName(String input){
+        String regex = "^([^|]+)(?:\\|([NSC]{1,3})(?:(?<=C):([^|]+))?)?$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.matches()) {
+            String name = matcher.group(1).trim();
+            String params = matcher.group(2) != null ? matcher.group(2).trim() : "";
+            String id = matcher.group(3) != null ? matcher.group(3).trim() : "";
+
+            return List.of(name, params, id);
+        } else {
+            return List.of(input.trim(), "", "");
         }
     }
 }

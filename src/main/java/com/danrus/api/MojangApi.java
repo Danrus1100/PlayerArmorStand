@@ -15,6 +15,7 @@ public class MojangApi extends AbstractServerApi{
 
         public static class Textures {
             public Skin SKIN;
+            public Cape CAPE;
 
             public static class Skin {
                 public String url;
@@ -23,6 +24,10 @@ public class MojangApi extends AbstractServerApi{
                 public static class Metadata {
                     public String model;
                 }
+            }
+
+            public static class Cape {
+                public String url;
             }
         }
     }

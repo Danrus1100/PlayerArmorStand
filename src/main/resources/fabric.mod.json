@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "${id}",
-  "version": "${version}",
+  "version": "${version}-MC-${minecraft_version}",
   "name": "${name}",
   "description": "Make named armor stands looks like players!",
   "authors": [

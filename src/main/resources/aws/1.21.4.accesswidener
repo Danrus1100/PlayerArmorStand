@@ -1,5 +1,5 @@
 accessWidener v2 named
 
 accessible field net/minecraft/client/render/entity/LivingEntityRenderer model Lnet/minecraft/client/render/entity/model/EntityModel;
+accessible method net/minecraft/client/render/entity/LivingEntityRenderer addFeature (Lnet/minecraft/client/render/entity/feature/FeatureRenderer;)Z
 accessible method net/minecraft/client/render/entity/LivingEntityRenderer getRenderLayer (Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;ZZZ)Lnet/minecraft/client/render/RenderLayer;
-accessible field net/minecraft/client/render/entity/ArmorStandEntityRenderer smallModel Lnet/minecraft/client/render/entity/model/ArmorStandArmorEntityModel;

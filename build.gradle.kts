@@ -39,6 +39,11 @@ repositories {
         name = "Xander Maven"
     }
     maven("https://maven.nucleoid.xyz/") { name = "Nucleoid" }
+    maven {
+        name = "figuramc"
+        url = uri("https://maven.figuramc.org/releases")
+    }
+
     mavenCentral()
 }
 
@@ -47,6 +52,7 @@ dependencies {
     mappings("net.fabricmc:yarn:$mcVersion+build.${deps["yarn_build"]}:v2")
     modImplementation("net.fabricmc:fabric-loader:${deps["fabric_loader"]}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${deps["fabric_api"]}")
+
 
     modApi ("com.terraformersmc:modmenu:${deps["mod_menu"]}")
     modImplementation("dev.isxander:yet-another-config-lib:${deps["yacl"]}")
@@ -61,6 +67,10 @@ dependencies {
     }
     else if (stonecutter.eval(mcVersion, "1.21.6")) {
         modImplementation("eu.pb4:placeholder-api:2.7.0+1.21.6")
+    }
+
+    if (stonecutter.eval(mcVersion, "1.21.4")) {
+        modImplementation("org.figuramc:figura-common-intermediary:0.1.5+1.21.4") //TODO stonecutter versioning
     }
 }
 
@@ -121,25 +131,61 @@ publishMods {
     type = STABLE
     modLoaders.add("fabric")
 
-    dryRun = providers.environmentVariable("MODRINTH_TOKEN")
-        .getOrNull() == null || providers.environmentVariable("CURSEFORGE_TOKEN").getOrNull() == null
+    val modrinthToken = providers.gradleProperty("MODRINTH_API_TOKEN").orNull
+    val curseforgeToken = providers.gradleProperty("CURSEFORGE_API_TOKEN").orNull
 
-    //TODO: Rewrite deps and versions
+    val discordWebHook = providers.gradleProperty("DISCORD_WEBHOOK").orNull
+    val dryDiscordWebHook = providers.gradleProperty("DISCORD_WEBHOOK_DRY").orNull
+
+    dryRun = false
+
     modrinth {
         projectId = property("publish.modrinth").toString()
-        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
-        minecraftVersions.add(mcVersion)
+        accessToken = modrinthToken
+
+        type = BETA
+        modLoaders.add("fabric")
+//        minecraftVersions.add(mcVersion)
+        minecraftVersionRange {
+            start = property("mod.mc_start").toString()
+            end = property("mod.mc_end").toString()
+        }
         requires {
             slug = "fabric-api"
+        }
+        requires{
+            slug = "yacl"
+        }
+        optional{
+            slug = "armor-poser"
         }
     }
 
     curseforge {
         projectId = property("publish.curseforge").toString()
-        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
-        minecraftVersions.add(mcVersion)
-        requires {
-            slug = "fabric-api"
+        accessToken = curseforgeToken
+
+        projectSlug = "player-armor-stands-${mod.version}-MC-$mcVersion"
+        type = BETA
+        modLoaders.add("fabric")
+//        minecraftVersions.add(mcVersion)
+        minecraftVersionRange {
+            start = property("mod.mc_start").toString()
+            end = property("mod.mc_end").toString()
+        }
+        clientRequired = true
+        serverRequired = false
+    }
+
+    if (stonecutter.current.version == "1.20.4") {
+        discord {
+            webhookUrl = discordWebHook
+            dryRunWebhookUrl = dryDiscordWebHook
+
+            username  = "Player Armor Stands"
+            avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
+
+            content = changelog.map{ "# " + mod.version + " version here! \n\n" + rootProject.file("CHANGELOG.md").readText() +"\n\n<@&1384479288543281192>"}
         }
     }
 }

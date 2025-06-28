@@ -1,7 +1,7 @@
 package com.danrus;
 
-import com.danrus.utils.ASModelData;
-import com.danrus.utils.SkinsUtils;
+import com.danrus.utils.PASModelData;
+import com.danrus.utils.skin.SkinsUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -27,16 +27,16 @@ public class PASCommandManager {
     public static int reloadSingeCommand(CommandContext<FabricClientCommandSource> context) {
         String name = StringArgumentType.getString(context, "name/skin");
         PlayerArmorStands.modelDataCache.remove(name);
-        PlayerArmorStands.modelDataCache.put(name, new ASModelData(name, false, ASModelData.DownloadStatus.IN_PROGRESS));
+        PlayerArmorStands.modelDataCache.put(name, new PASModelData(name));
         SkinsUtils.reloadSkinTexure(name);
         return 1;
     }
 
     public static int reloadFailedCommand(CommandContext<FabricClientCommandSource> context) {
         PlayerArmorStands.modelDataCache.forEach((name, asModelData) -> {
-            if (asModelData.status == ASModelData.DownloadStatus.FAILED) {
+            if (asModelData.status.isFailed()) {
                 PlayerArmorStands.modelDataCache.remove(name);
-                PlayerArmorStands.modelDataCache.put(name, new ASModelData(name, false, ASModelData.DownloadStatus.IN_PROGRESS));
+                PlayerArmorStands.modelDataCache.put(name, new PASModelData(name));
                 SkinsUtils.getSkinTexture(name);
             }
         });

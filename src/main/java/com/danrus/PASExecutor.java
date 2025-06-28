@@ -7,6 +7,7 @@ import java.util.concurrent.*;
 public class PASExecutor {
 
     public static ExecutorService MAIN_EXECUTOR = Executors.newFixedThreadPool(3);
+    public static ExecutorService DOWNLOAD_EXECUTOR = Executors.newFixedThreadPool(3);
 
     public static void reload() {
         int threadsCount = 3;
