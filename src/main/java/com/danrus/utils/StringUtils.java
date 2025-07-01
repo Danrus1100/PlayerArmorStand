@@ -45,7 +45,7 @@ public class StringUtils {
     }
 
     public static @NotNull List<String> matchASName(String input){
-        String regex = "^([^|]+)(?:\\|([NSC]{1,3})(?:(?<=C):([^|]+))?)?$";
+        String regex = "^([^|]+)(?:\\|([NFSC]{1,3})(?:(?<=C):([^|]+))?)?$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
         if (matcher.matches()) {

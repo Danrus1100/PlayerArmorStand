@@ -13,9 +13,14 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
 
+//TODO: figura mod support
+//TODO: приклеить ноги к туловищу
+//TODO: Возможность выбора модели по умолчанию (Игрок или Оригинал)
+//TODO: Сделать отдельный FeatureRenderer для basePlate
+
 //? if >=1.21.2 {
-import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
-//?}
+/*import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
+*///?}
 
 public class PlayerArmorStandModel extends ArmorStandArmorEntityModel implements ModelWithCape {
 //    private final List<ModelPart> parts;
@@ -45,6 +50,10 @@ public class PlayerArmorStandModel extends ArmorStandArmorEntityModel implements
 
     public final ModelPart jacket;
     private final ModelPart cloak;
+
+    private String name;
+    private boolean isSlim = false;
+    private boolean isOriginal = false;
 
     public PlayerArmorStandModel(ModelPart root) {
         super(root);
@@ -135,45 +144,45 @@ public class PlayerArmorStandModel extends ArmorStandArmorEntityModel implements
 
     private static ModelTransform pivot(float x, float y, float z) {
         //? <=1.21.4 {
-        /*return ModelTransform.pivot(x, y, z);
-         *///?} else {
-        return ModelTransform.origin(x, y, z);
-        //?}
+        return ModelTransform.pivot(x, y, z);
+         //?} else {
+        /*return ModelTransform.origin(x, y, z);
+        *///?}
 
     }
 
     private static float getPitch(EulerAngle angle){
         //? <=1.21.4 {
-        /*return angle.getPitch();
-         *///?} else {
-        return angle.pitch();
-        //?}
+        return angle.getPitch();
+         //?} else {
+        /*return angle.pitch();
+        *///?}
     }
 
     private static float getYaw(EulerAngle angle){
         //? <=1.21.4 {
-        /*return angle.getYaw();
-         *///?} else {
-        return angle.yaw();
-        //?}
+        return angle.getYaw();
+         //?} else {
+        /*return angle.yaw();
+        *///?}
     }
 
     private static float getRoll(EulerAngle angle){
         //? <=1.21.4 {
-        /*return angle.getRoll();
-         *///?} else {
-        return angle.roll();
-        //?}
+        return angle.getRoll();
+         //?} else {
+        /*return angle.roll();
+        *///?}
     }
 
     //? if <1.21.2
-    /*@Override*/
+    @Override
     public Iterable<ModelPart> getHeadParts() {
         return ImmutableList.of(this.head, this.hat, this.originalHead);
     }
 
     //? if <1.21.2
-    /*@Override*/
+    @Override
     public Iterable<ModelPart> getBodyParts() {
         return ImmutableList.of(
                 this.body,
@@ -203,22 +212,23 @@ public class PlayerArmorStandModel extends ArmorStandArmorEntityModel implements
     }
 
     //? if <1.21.2 {
-    /*public void setAngles(ArmorStandEntity armorStand, float f, float g, float h, float i, float j){
+    public void setAngles(ArmorStandEntity armorStand, float f, float g, float h, float i, float j){
         super.setAngles(armorStand, f, g, h, i, j);
-        boolean showBase = armorStand.shouldHideBasePlate();
+        boolean showBase = !armorStand.shouldHideBasePlate();
         boolean showArms = armorStand.shouldShowArms();
         Text customName = armorStand.getCustomName();
         EulerAngle bodyRotation = armorStand.getBodyRotation();
 
-    *///?} else {
-    @Override
+    //?} else {
+    /*@Override
     public void setAngles(ArmorStandEntityRenderState armorStand) {
         super.setAngles(armorStand);
         boolean showBase = armorStand.showBasePlate;
         boolean showArms = armorStand.showArms;
         Text customName = armorStand.customName;
         EulerAngle bodyRotation = armorStand.bodyRotation;
-    //?}
+    *///?}
+
         this.leftPants.copyTransform(leftLeg);
         this.rightPants.copyTransform(rightLeg);
 
@@ -240,18 +250,17 @@ public class PlayerArmorStandModel extends ArmorStandArmorEntityModel implements
         this.jacket.copyTransform(body);
 
         //? <=1.21.1 {
-        /*this.basePlate.yaw = ((float)Math.PI / 180F) * -armorStand.getYaw();
-         *///?} else {
-        this.basePlate.yaw = ((float)Math.PI / 180F) * -armorStand.yaw;
-        //?}
+        this.basePlate.yaw = ((float)Math.PI / 180F) * -armorStand.getYaw();
+         //?} else {
+        /*this.basePlate.yaw = ((float)Math.PI / 180F) * -armorStand.yaw;
+        *///?}
 
 
 
         if (customName == null) {
-            this.setModelVisibility(false, false);
+            this.setModelVisibility(false, false, showBase);
             this.originalLeftArm.visible = showArms;
             this.originalRightArm.visible = showArms;
-            this.basePlate.visible = showBase;
             this.rightBodyStick.pitch = ((float)Math.PI / 180F) * getPitch(bodyRotation);
             this.rightBodyStick.yaw = ((float)Math.PI / 180F) * getYaw(bodyRotation);
             this.rightBodyStick.roll = ((float)Math.PI / 180F) * getRoll(bodyRotation);
@@ -265,16 +274,16 @@ public class PlayerArmorStandModel extends ArmorStandArmorEntityModel implements
         }
         if (customName != null){
             if (StringUtils.matchASName(customName.getString()).get(1).contains("S")){
-                this.setModelVisibility(true, true);
+                this.setModelVisibility(true, true, showBase);
             } else {
-                this.setModelVisibility(true, false);
+                this.setModelVisibility(true, false, showBase);
             }
         }
 
 
     }
     
-    private void setModelVisibility(boolean player, boolean slim) {
+    private void setModelVisibility(boolean player, boolean slim, boolean showBase) {
         this.hat.visible = player;
         this.head.visible = player;
         this.body.visible = player;
@@ -303,9 +312,20 @@ public class PlayerArmorStandModel extends ArmorStandArmorEntityModel implements
         this.rightBodyStick.visible = !player;
         this.leftBodyStick.visible = !player;
         this.shoulderStick.visible = !player;
-        this.basePlate.visible = !player;
+        this.basePlate.visible = showBase && !player;
 
         this.cloak.visible = false;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public boolean isSlim() {
+        return isSlim;
+    }
+
+    public boolean isOriginal() {
+        return isOriginal;
+    }
 }

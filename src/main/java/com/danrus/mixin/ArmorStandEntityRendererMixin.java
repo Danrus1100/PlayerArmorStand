@@ -18,23 +18,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 //? if >=1.21.2 {
-import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
-//?}
+/*import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
+*///?}
 
 @Mixin(ArmorStandEntityRenderer.class)
 public class ArmorStandEntityRendererMixin {
 
-    //TODO на 1.21.2+ не работает babyModel
-
     //? if >=1.21.2 {
 
-    @Inject(
+    /*@Inject(
             method = "<init>",
             at = @At("RETURN")
     )
     private void init(EntityRendererFactory.Context context, CallbackInfo ci){
         PlayerArmorStandModel model = new PlayerArmorStandModel(context.getPart(EntityModelLayers.ARMOR_STAND));
+        PlayerArmorStandModel smalModel = new PlayerArmorStandModel(context.getPart(EntityModelLayers.ARMOR_STAND_SMALL));
         PlayerArmorStands.model = model;
+        PlayerArmorStands.smallModel = smalModel;
         ArmorStandEntityRenderer renderer = (ArmorStandEntityRenderer) (Object) this;
         renderer.addFeature(new ASCapeFeatureRenderer(renderer));
         ((LivingEntityRenderer)renderer).model = model;
@@ -51,8 +51,8 @@ public class ArmorStandEntityRendererMixin {
         }
         cir.setReturnValue(PASModelData.getByName(armorStandEntityRenderState.customName.getString()).texture);
     }
-    //?} else {
-    /*@Inject(
+    *///?} else {
+    @Inject(
             method = "<init>",
             at = @At("RETURN")
     )
@@ -74,5 +74,5 @@ public class ArmorStandEntityRendererMixin {
         }
         cir.setReturnValue(PASModelData.getByName(armorStandEntity.getCustomName().getString()).texture);
     }
-    *///?}
+    //?}
 }

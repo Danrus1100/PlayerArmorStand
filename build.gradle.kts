@@ -53,6 +53,10 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${deps["fabric_loader"]}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${deps["fabric_api"]}")
 
+    if (stonecutter.eval(mcVersion, "1.21.4")) {
+        modImplementation(files("../../build/possessive-1.0.3_1.21.4.jar"))
+    }
+
 
     modApi ("com.terraformersmc:modmenu:${deps["mod_menu"]}")
     modImplementation("dev.isxander:yet-another-config-lib:${deps["yacl"]}")
@@ -165,7 +169,7 @@ publishMods {
         projectId = property("publish.curseforge").toString()
         accessToken = curseforgeToken
 
-        projectSlug = "player-armor-stands-${mod.version}-MC-$mcVersion"
+        projectSlug = "player-armor-stands"
         type = BETA
         modLoaders.add("fabric")
 //        minecraftVersions.add(mcVersion)
@@ -185,7 +189,7 @@ publishMods {
             username  = "Player Armor Stands"
             avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
 
-            content = changelog.map{ "# " + mod.version + " version here! \n\n" + rootProject.file("CHANGELOG.md").readText() +"\n\n<@&1384479288543281192>"}
+            content = changelog.map{ "# " + mod.version + " version here! \n\n" + rootProject.file("CHANGELOG.md").readText() +"\n\n<@&1388295587866083338>"}
         }
     }
 }

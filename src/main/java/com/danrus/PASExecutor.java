@@ -6,6 +6,7 @@ import java.util.concurrent.*;
 
 public class PASExecutor {
 
+    //TODO сделать настройку количества потоков
     public static ExecutorService MAIN_EXECUTOR = Executors.newFixedThreadPool(3);
     public static ExecutorService DOWNLOAD_EXECUTOR = Executors.newFixedThreadPool(3);
 

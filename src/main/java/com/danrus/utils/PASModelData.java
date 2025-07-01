@@ -6,7 +6,7 @@ import net.minecraft.util.Identifier;
 
 public class PASModelData {
     public static Identifier DEFAULT_TEXTURE = Identifier.of("minecraft", "textures/entity/player/wide/steve.png");
-    public static Identifier DEFAULT_CAPE = Identifier.of("minecraft","textures/entity/cape.png");
+    public static Identifier DEFAULT_CAPE = Identifier.of("pas","capes/cape.png");
 
     public String name;
     public Identifier texture;
@@ -79,7 +79,7 @@ public class PASModelData {
 
     public static PASModelData getByName(String string) {
 
-        String name = StringUtils.matchASName(string).getFirst();
+        String name = StringUtils.matchASName(string).get(0);
         boolean hasCape = StringUtils.matchASName(string).get(1).contains("C");
 
         if (hasCape) {
@@ -96,7 +96,7 @@ public class PASModelData {
         PASModelData defaultData = new PASModelData(name, DEFAULT_TEXTURE, DownloadStatus.IN_PROGRESS);
         register(defaultData);
 
-        SkinsUtils.getSkinTexture(name);
+        SkinsUtils.getSkinTexture(string);
 
         return defaultData;
     }

@@ -10,14 +10,16 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
 
 public class PASCommandManager {
-    public static void register() {
-        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> {
-            dispatcher.register(ClientCommandManager.literal("pas").executes(PASCommandManager::defaultCommand)
-                    .then(ClientCommandManager.literal("reload")
-                            .then(ClientCommandManager.argument("name/skin", StringArgumentType.word()).executes(PASCommandManager::reloadSingeCommand)))
-                    .then(ClientCommandManager.literal("reload_failed").executes(PASCommandManager::reloadFailedCommand)));
-        }));
-    }
+     public static void register() {
+         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> {
+             dispatcher.register(ClientCommandManager.literal("pas").executes(PASCommandManager::defaultCommand)
+                     .then(ClientCommandManager.literal("reload_failed").executes(PASCommandManager::reloadFailedCommand))
+                     .then(ClientCommandManager.literal("reload")
+                             .then(ClientCommandManager.argument("name/skin", StringArgumentType.word()).executes(PASCommandManager::reloadSingeCommand)))
+                     .then(ClientCommandManager.literal("reset")
+                             .then(ClientCommandManager.argument("name/skin", StringArgumentType.word()).executes(PASCommandManager::resetCommand))));
+         }));
+     }
 
     public static int defaultCommand(CommandContext<FabricClientCommandSource> context) {
         context.getSource().sendFeedback(Text.translatable("commands.pas.default_feedback"));
@@ -40,6 +42,12 @@ public class PASCommandManager {
                 SkinsUtils.getSkinTexture(name);
             }
         });
+        return 1;
+    }
+
+    public static int resetCommand(CommandContext<FabricClientCommandSource> context) {
+        String name = StringArgumentType.getString(context, "name/skin");
+        PlayerArmorStands.modelDataCache.remove(name);
         return 1;
     }
 }

@@ -2,10 +2,39 @@ package com.danrus.api;
 
 import com.danrus.PlayerArmorStands;
 import com.danrus.utils.RestHelper;
+import com.danrus.utils.StringUtils;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class MojangApi extends AbstractServerApi{
+public class MojangApi{
+    public class SimpleProfile {
+        public String id;
+        public String name;
+    }
+
+    public class Profile {
+        public String id;
+        public String name;
+        public List<Property> properties;
+
+        public String getSkinUrl() {
+            if (this.properties.isEmpty()) {
+                return null;
+            }
+
+            String encodedData = this.properties.get(0).value;
+            String decodedData = StringUtils.decodeBase64(encodedData);
+            SkinData skinData = PlayerArmorStands.GSON.fromJson(decodedData, MojangApi.SkinData.class);
+            return skinData.textures.SKIN.url;
+        }
+
+        public static class Property {
+            public String name;
+            public String value;
+        }
+    }
+
     public class SkinData {
         public long timestamp;
         public String profileId;

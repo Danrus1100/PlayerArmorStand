@@ -1,8 +1,10 @@
 package com.danrus.utils.skin;
 
+import com.danrus.OverlayMessagesManager;
 import com.danrus.PASExecutor;
 import com.danrus.PlayerArmorStands;
 import com.danrus.api.MojangApi;
+import com.danrus.api.TextureHandler;
 import com.danrus.utils.PASModelData;
 import com.danrus.utils.StringUtils;
 import net.minecraft.client.MinecraftClient;
@@ -26,58 +28,41 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public class PASSkinDownloader {
-    public static void downloadSkin(String username) {
+    public static void downloadSkin(String username, String source) {
         PASExecutor.execute(() -> {
 
-            if (!MojangApi.isValidUsername(username)) {
-                MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.translatable("pas.invalid_username", username).formatted(Formatting.RED), false);
-                PASModelData.registerFailed(username);
-                return;
-            }
+                TextureHandler.getTextureURLS(username, source).thenApply(urls -> {
 
-            MojangApi.getProfileDataByNameAsync(username).thenAccept(profile -> {
-                if (profile == null) {
-                    doFailure(username, new Exception("Profile not found for: " + username));
+                if (urls == null || urls.isEmpty()) {
+                    OverlayMessagesManager.doFailure(username, new Exception("No skin URLs found for: " + username));
+                    return null;
                 }
 
-                MojangApi.getTexturedDataByUUIDAsync(profile.id).thenAccept(texturedProfile -> {
-                    try {
-                        if (texturedProfile == null || texturedProfile.properties == null || texturedProfile.properties.isEmpty()) {
-                            doFailure(username, new Exception("No textures found for: " + username));
-                        }
+//                String filename = StringUtils.encodeToSha256(username);
+                String filename = source == "namemc" ? username + "_namemc" : StringUtils.encodeToSha256(username);
+                Identifier id = Identifier.of("pas", "skins/" + filename);
 
-                        String encodedData = texturedProfile.properties.getFirst().value;
-                        String decodedData = StringUtils.decodeBase64(encodedData);
-                        MojangApi.SkinData skinData = PlayerArmorStands.GSON.fromJson(decodedData, MojangApi.SkinData.class);
-                        String url = skinData.textures.SKIN.url;
+                downloadAndRegisterSkin(
+                        id,
+                        SkinsUtils.CACHE_DIR.resolve(filename + ".png"),
+                        urls.get(0), true
+                );
 
-                        String encodedName = StringUtils.encodeToSha256(username);
-                        Identifier id = Identifier.of("pas", "skins/" + encodedName);
+                String capeUrl = urls.size() > 1 ? urls.get(1) : null;
+                if (capeUrl != null && !capeUrl.isEmpty()) {
+                    Identifier capeId = Identifier.of("pas", "capes/" + filename);
+                    downloadAndRegisterSkin(
+                            capeId,
+                            SkinsUtils.CACHE_DIR.resolve(filename + "_cape.png"),
+                            capeUrl, false
+                    ).thenAccept(
+                            capeTextureId -> PASModelData.registerCape(username, capeTextureId)
+                    );
+                }
 
-                        downloadAndRegisterSkin(
-                                id,
-                                SkinsUtils.CACHE_DIR.resolve(encodedName + ".png"),
-                                url, true
-                        );
-
-                        String capeUrl = skinData.textures.CAPE != null ? skinData.textures.CAPE.url : null;
-                        if (capeUrl != null && !capeUrl.isEmpty()) {
-                            Identifier capeId = Identifier.of("pas", "capes/" + encodedName);
-                            downloadAndRegisterSkin(
-                                    capeId,
-                                    SkinsUtils.CACHE_DIR.resolve(encodedName + "_cape.png"),
-                                    capeUrl, false
-                            ).thenAccept(
-                                    capeTextureId -> PASModelData.registerCape(username, capeTextureId)
-                            );
-                        }
-
-                        MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.translatable("pas.download_success", username).formatted(Formatting.GREEN), false);
-                        PASModelData.registerCompleted(username, id);
-                    } catch (Exception e) {
-                        doFailure(username, e);
-                    }
-                });
+                MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.translatable("pas.download_success", username).formatted(Formatting.GREEN), false);
+                PASModelData.registerCompleted(username, id);
+                return null;
             });
         });
     }
@@ -145,19 +130,13 @@ public class PASSkinDownloader {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         return CompletableFuture.supplyAsync(() -> {
             //? <=1.21.4 {
-            /*NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
-            *///?} else {
-            NativeImageBackedTexture texture = new NativeImageBackedTexture(textureId::toString, image);
-            //?}
+            NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
+            //?} else {
+            /*NativeImageBackedTexture texture = new NativeImageBackedTexture(textureId::toString, image);
+            *///?}
             minecraftClient.getTextureManager().registerTexture(textureId, texture);
             return textureId;
         }, minecraftClient);
-    }
-
-    private static void doFailure(String name, Exception e) {
-        e.printStackTrace();
-        MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.translatable("pas.download_failed", name), false);
-        PASModelData.registerFailed(name);
     }
 
     public static void registerSkin(Path skinPath, String name, Identifier id) {
@@ -165,10 +144,10 @@ public class PASSkinDownloader {
             NativeImage image = remapTexture(NativeImage.read(inputStream));
 //            NativeImage image = NativeImage.read(inputStream);
             //? <=1.21.4 {
-            /*NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
-             *///?} else {
-            NativeImageBackedTexture texture = new NativeImageBackedTexture(id::toString, image);
-            //?}
+            NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
+             //?} else {
+            /*NativeImageBackedTexture texture = new NativeImageBackedTexture(id::toString, image);
+            *///?}
             MinecraftClient.getInstance().getTextureManager().registerTexture(id, texture);
             PASModelData.registerCompleted(name, id);
         } catch (Exception e) {
@@ -180,10 +159,10 @@ public class PASSkinDownloader {
         try (InputStream inputStream = Files.newInputStream(capePath)) {
             NativeImage image = NativeImage.read(inputStream);
             //? <=1.21.4 {
-            /*NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
-             *///?} else {
-            NativeImageBackedTexture texture = new NativeImageBackedTexture(id::toString, image);
-            //?}
+            NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
+             //?} else {
+            /*NativeImageBackedTexture texture = new NativeImageBackedTexture(id::toString, image);
+            *///?}
             MinecraftClient.getInstance().getTextureManager().registerTexture(id, texture);
             PASModelData.registerCape(name, id);
         } catch (Exception e) {
@@ -192,7 +171,7 @@ public class PASSkinDownloader {
     }
 
     //? if >=1.21.2 {
-    private static NativeImage remapTexture(NativeImage image) {
+    /*private static NativeImage remapTexture(NativeImage image) {
         int i = image.getHeight();
         int j = image.getWidth();
         if (j == 64 && (i == 32 || i == 64)) {
@@ -255,8 +234,8 @@ public class PASSkinDownloader {
         }
 
     }
-    //?} else {
-    /*private static NativeImage remapTexture(NativeImage image) {
+    *///?} else {
+    private static NativeImage remapTexture(NativeImage image) {
         int i = image.getHeight();
         int j = image.getWidth();
         if (j == 64 && (i == 32 || i == 64)) {
@@ -321,5 +300,5 @@ public class PASSkinDownloader {
         }
 
     }
-    *///?}
+    //?}
 }

@@ -15,6 +15,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: implement
 public class ModConfig {
     public static final ConfigClassHandler<ModConfig> HANDLER = ConfigClassHandler.createBuilder(ModConfig.class)
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
