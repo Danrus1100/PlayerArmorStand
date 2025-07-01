@@ -1,4 +1,4 @@
-package com.danrus.render;
+package com.danrus.render.features;
 
 import com.danrus.utils.PASModelData;
 import com.danrus.utils.StringUtils;
@@ -12,9 +12,7 @@ import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
 
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 

@@ -1,6 +1,6 @@
 package com.danrus.mixin;
 
-import com.danrus.render.PlayerArmorStandModel;
+import com.danrus.render.models.PlayerArmorStandModel;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.EntityModels;

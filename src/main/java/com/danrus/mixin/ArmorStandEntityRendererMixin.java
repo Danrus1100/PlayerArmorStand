@@ -1,19 +1,16 @@
 package com.danrus.mixin;
 
-import com.danrus.PlayerArmorStands;
-import com.danrus.render.ASCapeFeatureRenderer;
-import com.danrus.render.PlayerArmorStandModel;
+import com.danrus.render.features.ASCapeFeatureRenderer;
+import com.danrus.render.models.PlayerArmorStandModel;
 import com.danrus.utils.PASModelData;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -41,7 +38,7 @@ public class ArmorStandEntityRendererMixin {
     }
 
     @Inject(
-        method = "getTexture(Lnet/minecraft/client/render/entity/state/ArmorStandEntityRenderState;)Lnet/minecraft/util/Identifier;",
+        method = "getSkinTexture(Lnet/minecraft/client/render/entity/state/ArmorStandEntityRenderState;)Lnet/minecraft/util/Identifier;",
         at = @At("RETURN"),
         cancellable = true
     )

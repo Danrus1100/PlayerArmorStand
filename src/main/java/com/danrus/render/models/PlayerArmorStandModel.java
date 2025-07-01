@@ -1,4 +1,4 @@
-package com.danrus.render;
+package com.danrus.render.models;
 
 import com.danrus.utils.StringUtils;
 import com.danrus.utils.interfaces.ModelWithCape;
@@ -9,9 +9,6 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.MathHelper;
-
-import java.util.List;
 
 //TODO: figura mod support
 //TODO: приклеить ноги к туловищу
@@ -22,7 +19,7 @@ import java.util.List;
 /*import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
 *///?}
 
-public class PlayerArmorStandModel extends ArmorStandArmorEntityModel implements ModelWithCape {
+public class PlayerArmorStandModel extends ArmorStandArmorEntityModel {
 //    private final List<ModelPart> parts;
     public final ModelPart leftSleeve;
     public final ModelPart rightSleeve;
