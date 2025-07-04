@@ -53,9 +53,9 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${deps["fabric_loader"]}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${deps["fabric_api"]}")
 
-    if (stonecutter.eval(mcVersion, "1.21.4")) {
-        modImplementation(files("../../build/possessive-1.0.3_1.21.4.jar"))
-    }
+//    if (stonecutter.eval(mcVersion, "1.21.4")) {
+//        modImplementation(files("../../build/possessive-1.0.3_1.21.4.jar"))
+//    }
 
 
     modApi ("com.terraformersmc:modmenu:${deps["mod_menu"]}")
@@ -141,7 +141,7 @@ publishMods {
     val discordWebHook = providers.gradleProperty("DISCORD_WEBHOOK").orNull
     val dryDiscordWebHook = providers.gradleProperty("DISCORD_WEBHOOK_DRY").orNull
 
-    dryRun = false
+    dryRun = true
 
     modrinth {
         projectId = property("publish.modrinth").toString()

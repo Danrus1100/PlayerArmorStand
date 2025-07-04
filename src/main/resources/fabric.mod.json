@@ -17,7 +17,7 @@
   "accessWidener": "aws/${minecraft_version}.accesswidener",
   "entrypoints": {
     "client": [
-      "com.danrus.PlayerArmorStands"
+      "com.danrus.PASClient"
     ]
   },
   "mixins": [

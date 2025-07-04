@@ -1,6 +1,6 @@
 package com.danrus.config;
 
-import com.danrus.PlayerArmorStands;
+import com.danrus.PASClient;
 import com.danrus.config.categories.SimpleCategory;
 import com.google.gson.GsonBuilder;
 import dev.isxander.yacl3.api.ConfigCategory;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ModConfig {
     public static final ConfigClassHandler<ModConfig> HANDLER = ConfigClassHandler.createBuilder(ModConfig.class)
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
-                    .setPath(YACLPlatform.getConfigDir().resolve(PlayerArmorStands.MOD_ID+".json5"))
+                    .setPath(YACLPlatform.getConfigDir().resolve(PASClient.MOD_ID+".json5"))
                     .appendGsonBuilder(GsonBuilder::setPrettyPrinting)
                     .setJson5(true)
                     .build())

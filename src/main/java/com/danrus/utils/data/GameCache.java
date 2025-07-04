@@ -1,18 +1,26 @@
-package com.danrus.utils.cache;
+package com.danrus.utils.data;
 
 import com.danrus.PASModelData;
+import com.danrus.enums.DownloadStatus;
 import com.danrus.interfaces.DataCache;
-import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 
-public class GameCache implements DataCache<PASModelData> {
+public class GameCache implements DataCache<PASModelData>{
 
     private HashMap<String, PASModelData> cache = new HashMap<>();
 
     @Override
     public PASModelData get(String name) {
+        if (!cache.containsKey(name)) {
+            return null;
+        }
         return cache.get(name);
+    }
+
+    @Override
+    public HashMap<String, PASModelData> getAll() {
+        return cache;
     }
 
     @Override
@@ -23,18 +31,12 @@ public class GameCache implements DataCache<PASModelData> {
     @Override
     public void invalidateData(String name) {
         if (cache.containsKey(name)) {
-            cache.remove(name);
+            cache.get(name).setStatus(DownloadStatus.FAILED);
+        } else {
+            PASModelData data = new PASModelData(name);
+            data.setStatus(DownloadStatus.FAILED);
+            cache.put(name, data);
         }
-    }
-
-    @Override
-    public Identifier getSkinTexture(String name) {
-        return get(name).getSkinTexture();
-    }
-
-    @Override
-    public Identifier getCapeTexture(String name) {
-        return get(name).getCapeTexture();
     }
 
     @Override

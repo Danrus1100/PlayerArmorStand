@@ -1,6 +1,8 @@
 package com.danrus;
 
 
+import net.minecraft.client.MinecraftClient;
+
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -26,4 +28,5 @@ public class PASExecutor {
     public static CompletableFuture<Void> execute(Runnable runnable) {
         return CompletableFuture.runAsync(runnable, MAIN_EXECUTOR);
     }
+
 }

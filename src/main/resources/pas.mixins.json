@@ -3,10 +3,8 @@
   "package": "com.danrus.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ArmorStandEntityRendererMixin",
     "EntityModelsMixin",
-    "EntityRenderersMixin",
-    "LivingEntityRendererMixin"
+    "EntityRenderersMixin"
   ],
   "injectors": {
     "defaultRequire": 1

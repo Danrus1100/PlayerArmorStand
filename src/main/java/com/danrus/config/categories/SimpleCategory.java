@@ -17,7 +17,7 @@ public class SimpleCategory {
                                 .name(Text.literal("Boolean Option"))
                                 .binding(
                                         true,
-                                        () -> ModConfig.get().myCoolBoolean, // a getter to get the current value from
+                                        () -> ModConfig.get().myCoolBoolean, // a getter to getData the current value from
                                         newVal -> ModConfig.get().myCoolBoolean = newVal
                                 )
                                 .controller(TickBoxControllerBuilder::create)

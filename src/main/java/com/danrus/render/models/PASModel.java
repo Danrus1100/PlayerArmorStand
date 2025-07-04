@@ -1,7 +1,6 @@
 package com.danrus.render.models;
 
 import com.danrus.utils.StringUtils;
-import com.danrus.utils.interfaces.ModelWithCape;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
@@ -16,10 +15,10 @@ import net.minecraft.util.math.EulerAngle;
 //TODO: Сделать отдельный FeatureRenderer для basePlate
 
 //? if >=1.21.2 {
-/*import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
-*///?}
+import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
+//?}
 
-public class PlayerArmorStandModel extends ArmorStandArmorEntityModel {
+public class PASModel extends ArmorStandArmorEntityModel {
 //    private final List<ModelPart> parts;
     public final ModelPart leftSleeve;
     public final ModelPart rightSleeve;
@@ -52,7 +51,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorEntityModel {
     private boolean isSlim = false;
     private boolean isOriginal = false;
 
-    public PlayerArmorStandModel(ModelPart root) {
+    public PASModel(ModelPart root) {
         super(root);
         this.cloak = root.getChild("cloak");
         this.leftSleeve = root.getChild("left_sleeve");
@@ -141,45 +140,45 @@ public class PlayerArmorStandModel extends ArmorStandArmorEntityModel {
 
     private static ModelTransform pivot(float x, float y, float z) {
         //? <=1.21.4 {
-        return ModelTransform.pivot(x, y, z);
-         //?} else {
-        /*return ModelTransform.origin(x, y, z);
-        *///?}
+        /*return ModelTransform.pivot(x, y, z);
+         *///?} else {
+        return ModelTransform.origin(x, y, z);
+        //?}
 
     }
 
     private static float getPitch(EulerAngle angle){
         //? <=1.21.4 {
-        return angle.getPitch();
-         //?} else {
-        /*return angle.pitch();
-        *///?}
+        /*return angle.getPitch();
+         *///?} else {
+        return angle.pitch();
+        //?}
     }
 
     private static float getYaw(EulerAngle angle){
         //? <=1.21.4 {
-        return angle.getYaw();
-         //?} else {
-        /*return angle.yaw();
-        *///?}
+        /*return angle.getYaw();
+         *///?} else {
+        return angle.yaw();
+        //?}
     }
 
     private static float getRoll(EulerAngle angle){
         //? <=1.21.4 {
-        return angle.getRoll();
-         //?} else {
-        /*return angle.roll();
-        *///?}
+        /*return angle.getRoll();
+         *///?} else {
+        return angle.roll();
+        //?}
     }
 
     //? if <1.21.2
-    @Override
+    /*@Override*/
     public Iterable<ModelPart> getHeadParts() {
         return ImmutableList.of(this.head, this.hat, this.originalHead);
     }
 
     //? if <1.21.2
-    @Override
+    /*@Override*/
     public Iterable<ModelPart> getBodyParts() {
         return ImmutableList.of(
                 this.body,
@@ -209,23 +208,63 @@ public class PlayerArmorStandModel extends ArmorStandArmorEntityModel {
     }
 
     //? if <1.21.2 {
-    public void setAngles(ArmorStandEntity armorStand, float f, float g, float h, float i, float j){
-        super.setAngles(armorStand, f, g, h, i, j);
+    /*public void setAngles(ArmorStandEntity armorStand){
         boolean showBase = !armorStand.shouldHideBasePlate();
         boolean showArms = armorStand.shouldShowArms();
         Text customName = armorStand.getCustomName();
         EulerAngle bodyRotation = armorStand.getBodyRotation();
-
-    //?} else {
-    /*@Override
+        
+        this.head.pitch = ((float)Math.PI / 180F) * armorStand.getHeadRotation().getPitch();
+        this.head.yaw = ((float)Math.PI / 180F) * armorStand.getHeadRotation().getYaw();
+        this.head.roll = ((float)Math.PI / 180F) * armorStand.getHeadRotation().getRoll();
+        this.body.pitch = ((float)Math.PI / 180F) * armorStand.getBodyRotation().getPitch();
+        this.body.yaw = ((float)Math.PI / 180F) * armorStand.getBodyRotation().getYaw();
+        this.body.roll = ((float)Math.PI / 180F) * armorStand.getBodyRotation().getRoll();
+        this.leftArm.pitch = ((float)Math.PI / 180F) * armorStand.getLeftArmRotation().getPitch();
+        this.leftArm.yaw = ((float)Math.PI / 180F) * armorStand.getLeftArmRotation().getYaw();
+        this.leftArm.roll = ((float)Math.PI / 180F) * armorStand.getLeftArmRotation().getRoll();
+        this.rightArm.pitch = ((float)Math.PI / 180F) * armorStand.getRightArmRotation().getPitch();
+        this.rightArm.yaw = ((float)Math.PI / 180F) * armorStand.getRightArmRotation().getYaw();
+        this.rightArm.roll = ((float)Math.PI / 180F) * armorStand.getRightArmRotation().getRoll();
+        this.leftLeg.pitch = ((float)Math.PI / 180F) * armorStand.getLeftLegRotation().getPitch();
+        this.leftLeg.yaw = ((float)Math.PI / 180F) * armorStand.getLeftLegRotation().getYaw();
+        this.leftLeg.roll = ((float)Math.PI / 180F) * armorStand.getLeftLegRotation().getRoll();
+        this.rightLeg.pitch = ((float)Math.PI / 180F) * armorStand.getRightLegRotation().getPitch();
+        this.rightLeg.yaw = ((float)Math.PI / 180F) * armorStand.getRightLegRotation().getYaw();
+        this.rightLeg.roll = ((float)Math.PI / 180F) * armorStand.getRightLegRotation().getRoll();
+        
+    *///?} else {
+    @Override
     public void setAngles(ArmorStandEntityRenderState armorStand) {
-        super.setAngles(armorStand);
+//        super.setAngles(armorStand);
         boolean showBase = armorStand.showBasePlate;
         boolean showArms = armorStand.showArms;
         Text customName = armorStand.customName;
         EulerAngle bodyRotation = armorStand.bodyRotation;
-    *///?}
 
+        this.head.pitch = ((float)Math.PI / 180F) * getPitch(armorStand.headRotation);
+        this.head.yaw = ((float)Math.PI / 180F) * getYaw(armorStand.headRotation);
+        this.head.roll = ((float)Math.PI / 180F) * getRoll(armorStand.headRotation);
+        this.body.pitch = ((float)Math.PI / 180F) * getPitch(armorStand.bodyRotation);
+        this.body.yaw = ((float)Math.PI / 180F) * getYaw(armorStand.bodyRotation);
+        this.body.roll = ((float)Math.PI / 180F) * getRoll(armorStand.bodyRotation);
+        this.leftArm.pitch = ((float)Math.PI / 180F) * getPitch(armorStand.leftArmRotation);
+        this.leftArm.yaw = ((float)Math.PI / 180F) * getYaw(armorStand.leftArmRotation);
+        this.leftArm.roll = ((float)Math.PI / 180F) * getRoll(armorStand.leftArmRotation);
+        this.rightArm.pitch = ((float)Math.PI / 180F) * getPitch(armorStand.rightArmRotation);
+        this.rightArm.yaw = ((float)Math.PI / 180F) * getYaw(armorStand.rightArmRotation);
+        this.rightArm.roll = ((float)Math.PI / 180F) * getRoll(armorStand.rightArmRotation);
+        this.leftLeg.pitch = ((float)Math.PI / 180F) * getPitch(armorStand.leftLegRotation);
+        this.leftLeg.yaw = ((float)Math.PI / 180F) * getYaw(armorStand.leftLegRotation);
+        this.leftLeg.roll = ((float)Math.PI / 180F) * getRoll(armorStand.leftLegRotation);
+        this.rightLeg.pitch = ((float)Math.PI / 180F) * getPitch(armorStand.rightLegRotation);
+        this.rightLeg.yaw = ((float)Math.PI / 180F) * getYaw(armorStand.rightLegRotation);
+        this.rightLeg.roll = ((float)Math.PI / 180F) * getRoll(armorStand.rightLegRotation);
+        
+    //?}
+
+        this.hat.copyTransform(this.head);
+        
         this.leftPants.copyTransform(leftLeg);
         this.rightPants.copyTransform(rightLeg);
 
@@ -247,10 +286,10 @@ public class PlayerArmorStandModel extends ArmorStandArmorEntityModel {
         this.jacket.copyTransform(body);
 
         //? <=1.21.1 {
-        this.basePlate.yaw = ((float)Math.PI / 180F) * -armorStand.getYaw();
-         //?} else {
-        /*this.basePlate.yaw = ((float)Math.PI / 180F) * -armorStand.yaw;
-        *///?}
+        /*this.basePlate.yaw = ((float)Math.PI / 180F) * -armorStand.getYaw();
+         *///?} else {
+        this.basePlate.yaw = ((float)Math.PI / 180F) * -armorStand.yaw;
+        //?}
 
 
 
