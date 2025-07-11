@@ -2,18 +2,20 @@ package com.danrus.utils.providers;
 
 import com.danrus.*;
 import com.danrus.enums.DownloadStatus;
-import com.danrus.interfaces.SkinProvider;
+import com.danrus.interfaces.AbstractSkinProvider;
 import com.danrus.utils.PASSkinDownloader;
 import com.danrus.utils.RestHelper;
 import com.danrus.utils.StringUtils;
 import com.danrus.utils.data.MojangDiskCache;
+import com.danrus.managers.OverlayMessageManger;
+import com.danrus.managers.SkinManger;
 import com.google.gson.Gson;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MojangSkinProvider implements SkinProvider {
+public class MojangSkinProvider extends AbstractSkinProvider {
 
     private static final String MOJANG_API_URL = "https://api.mojang.com/users/profiles/minecraft/";
     private static final String SESSION_SERVER_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
@@ -21,17 +23,6 @@ public class MojangSkinProvider implements SkinProvider {
     private static final String USERNAME_PATTERN = "[a-zA-Z0-9_]+";
 
     private final Gson gson = new Gson();
-    private String literal = "M";
-
-    @Override
-    public String getLiteral() {
-        return literal;
-    }
-
-    @Override
-    public void setLiteral(String literal) {
-        this.literal = literal;
-    }
 
     @Override
     public void load(String name) {
@@ -56,7 +47,7 @@ public class MojangSkinProvider implements SkinProvider {
         RestHelper.get(MOJANG_API_URL + name)
                 .thenApply(response -> processSimpleProfile(response, name))
                 .exceptionally(throwable -> {
-                    doFail(name);
+                    this.doFail(name);
                     PASClient.LOGGER.error("MojangSkinProvider: Failed to download skin for " + name, throwable);
                     return null;
                 });
@@ -65,7 +56,7 @@ public class MojangSkinProvider implements SkinProvider {
     private CompletableFuture<?> processSimpleProfile(String response, String name) {
         SimpleProfile simpleProfile = gson.fromJson(response, SimpleProfile.class);
         if (simpleProfile == null || simpleProfile.id == null) {
-            doFail(name);
+            this.doFail(name);
             return null;
         }
         return downloadTexturedProfile(simpleProfile.id, name);
@@ -75,7 +66,7 @@ public class MojangSkinProvider implements SkinProvider {
         return RestHelper.get(SESSION_SERVER_URL + uuid)
                 .thenApply(response -> processTexturedProfile(response, name))
                 .exceptionally(throwable -> {
-                    doFail(name);
+                    this.doFail(name);
                     return null;
                 });
     }
@@ -83,7 +74,7 @@ public class MojangSkinProvider implements SkinProvider {
     private Void processTexturedProfile(String response, String name) {
         Profile profile = gson.fromJson(response, Profile.class);
         if (!isValidProfile(profile)) {
-            doFail(name);
+            this.doFail(name);
             return null;
         }
 
@@ -92,7 +83,7 @@ public class MojangSkinProvider implements SkinProvider {
         TexturedProfile texturedProfile = gson.fromJson(encodedSkin, TexturedProfile.class);
 
         if (!isValidTexturedProfile(texturedProfile)) {
-            doFail(name);
+            this.doFail(name);
             return null;
         }
 
@@ -122,30 +113,9 @@ public class MojangSkinProvider implements SkinProvider {
                     if (updateStatus) {
                         OverlayMessageManger.getInstance().showSuccessMessage(name);
                         PASClient.LOGGER.info("MojangSkinProvider: Successfully downloaded skin for " + name);
-                        updateStatus(name, DownloadStatus.COMPLETED);
+                        this.updateStatus(name, DownloadStatus.COMPLETED);
                     }
                 });
-    }
-
-    private void updateModelData(String name, Identifier textureId, boolean isSkin) {
-        PASModelData data = getOrCreateModelData(name);
-        if (isSkin) {
-            data.setSkinTexture(textureId);
-        } else {
-            data.setCapeTexture(textureId);
-        }
-        SkinManger.getInstance().getDataManager().store(name, data);
-    }
-
-    private void updateStatus(String name, DownloadStatus status) {
-        PASModelData data = getOrCreateModelData(name);
-        data.setStatus(status);
-        SkinManger.getInstance().getDataManager().store(name, data);
-    }
-
-    private PASModelData getOrCreateModelData(String name) {
-        PASModelData data = SkinManger.getInstance().getData(Text.of(name));
-        return data != null ? data : new PASModelData(name);
     }
 
     private boolean isValidProfile(Profile profile) {
@@ -159,16 +129,6 @@ public class MojangSkinProvider implements SkinProvider {
 
     private boolean isValidName(String name) {
         return name != null && !name.isEmpty() && name.length() <= MAX_USERNAME_LENGTH && name.matches(USERNAME_PATTERN);
-    }
-
-    private void doFail(String name) {
-        PASModelData data = SkinManger.getInstance().getData(Text.of(name));
-        if (data == null) {
-            data = new PASModelData(name);
-        }
-        OverlayMessageManger.getInstance().showFailMessage(name);
-        data.setStatus(DownloadStatus.FAILED);
-        SkinManger.getInstance().getDataManager().store(name, data);
     }
 
     class SimpleProfile {

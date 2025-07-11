@@ -1,6 +1,6 @@
 package com.danrus.render;
 
-import com.danrus.SkinManger;
+import com.danrus.managers.SkinManger;
 import com.danrus.render.features.PASCapeFeatureRenderer;
 import com.danrus.render.models.PASModel;
 import com.google.common.collect.Lists;
@@ -12,34 +12,27 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.*;
 import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
-import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 
 
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 //? if >= 1.21.2 {
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
-import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
@@ -49,8 +42,7 @@ import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.client.item.ItemModelManager;
 
 //? if >1.21.1 && <1.21.5 {
-/*import net.minecraft.item.ModelTransformationMode;
-*///?}
+//?}
 
 import java.util.List;
 //? if <= 1.21.1 {
@@ -117,7 +109,7 @@ import java.util.List;
         ^///?}
         boolean isInvisibleToPlayer =  armorStand.isInvisibleTo(MinecraftClient.getInstance().player);
 *///?} else {
-public class PASRenderer extends EntityRenderer<ArmorStandEntity, ArmorStandEntityRenderState> implements FeatureRendererContext<ArmorStandEntityRenderState, PASModel> {
+public class PASRenderer extends LivingEntityRenderer<ArmorStandEntity, ArmorStandEntityRenderState, PASModel> implements FeatureRendererContext<ArmorStandEntityRenderState, PASModel> {
 
     //? if >= 1.21.4 {
     protected final ItemModelManager itemModelResolver;
@@ -130,7 +122,7 @@ public class PASRenderer extends EntityRenderer<ArmorStandEntity, ArmorStandEnti
     protected final List<FeatureRenderer<ArmorStandEntityRenderState, PASModel>> features = Lists.newArrayList();
 
     public PASRenderer(EntityRendererFactory.Context ctx) {
-        super(ctx);
+        super(ctx, new PASModel(ctx.getPart(EntityModelLayers.ARMOR_STAND)), 0.0F);
         this.normalModel = new PASModel(ctx.getPart(EntityModelLayers.ARMOR_STAND));
         this.smallModel = new PASModel(ctx.getPart(EntityModelLayers.ARMOR_STAND_SMALL));
         this.model = normalModel;
@@ -150,9 +142,6 @@ public class PASRenderer extends EntityRenderer<ArmorStandEntity, ArmorStandEnti
         this.addFeature(new PASCapeFeatureRenderer(this));
     }
 
-    public final boolean addFeature(FeatureRenderer<ArmorStandEntityRenderState, PASModel> feature) {
-        return this.features.add(feature);
-    }
 
     @Override
     public ArmorStandEntityRenderState createRenderState() {
@@ -181,7 +170,7 @@ public class PASRenderer extends EntityRenderer<ArmorStandEntity, ArmorStandEnti
     public void updateRenderState(ArmorStandEntity livingEntity, ArmorStandEntityRenderState livingEntityRenderState, float f) {
         super.updateRenderState(livingEntity, livingEntityRenderState, f);
         //? if >= 1.21.5 {
-        float g = MathHelper.lerpAngleDegrees(f, livingEntity.lastHeadYaw, livingEntity.headYaw);
+        /*float g = MathHelper.lerpAngleDegrees(f, livingEntity.lastHeadYaw, livingEntity.headYaw);
         livingEntityRenderState.bodyYaw = MathHelper.lerpAngleDegrees(f, livingEntity.lastBodyYaw, livingEntity.bodyYaw);
         livingEntityRenderState.yaw = MathHelper.wrapDegrees(g - livingEntityRenderState.bodyYaw);
         livingEntityRenderState.pitch = livingEntity.getLerpedPitch(f);
@@ -191,8 +180,8 @@ public class PASRenderer extends EntityRenderer<ArmorStandEntity, ArmorStandEnti
             livingEntityRenderState.yaw *= -1.0F;
         }
 
-        //?} else {
-        /*float g = MathHelper.lerpAngleDegrees(f, livingEntity.prevHeadYaw, livingEntity.headYaw);
+        *///?} else {
+        float g = MathHelper.lerpAngleDegrees(f, livingEntity.prevHeadYaw, livingEntity.headYaw);
         livingEntityRenderState.bodyYaw = MathHelper.lerpAngleDegrees(f, livingEntity.prevBodyYaw, livingEntity.bodyYaw);
         livingEntityRenderState.yawDegrees = MathHelper.wrapDegrees(g - livingEntityRenderState.bodyYaw);
         livingEntityRenderState.pitch = livingEntity.getLerpedPitch(f);
@@ -201,7 +190,7 @@ public class PASRenderer extends EntityRenderer<ArmorStandEntity, ArmorStandEnti
             livingEntityRenderState.pitch *= -1.0F;
             livingEntityRenderState.yawDegrees *= -1.0F;
         }
-        *///?}
+        //?}
 
         livingEntityRenderState.baseScale = livingEntity.getScale();
         livingEntityRenderState.ageScale = livingEntity.getScaleFactor();
@@ -277,7 +266,6 @@ public class PASRenderer extends EntityRenderer<ArmorStandEntity, ArmorStandEnti
         matrixStack.translate(0.0F, -1.501F, 0.0F);
 
         this.model.setAngles(armorStand);
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
         boolean visible = this.isVisible(armorStand);
         boolean bl2 = !visible && !isInvisibleToPlayer;
         RenderLayer renderLayer = RenderLayer.getItemEntityTranslucentCull(getTexture(armorStand));
@@ -294,22 +282,31 @@ public class PASRenderer extends EntityRenderer<ArmorStandEntity, ArmorStandEnti
         //? if >= 1.21.2 {
         for(FeatureRenderer<ArmorStandEntityRenderState, PASModel> featureRenderer : this.features) {
             //? if >= 1.21.5 {
-            float yaw = armorStand.yaw;
-            //?} else {
-            /*float yaw = armorStand.yawDegrees;
-            *///?}
+            /*float yaw = armorStand.yaw;
+            *///?} else {
+            float yaw = armorStand.yawDegrees;
+            //?}
             featureRenderer.render(matrixStack, vertexConsumerProvider, light, armorStand, yaw, armorStand.pitch);
         }
         matrixStack.pop();
-        super.render(armorStand, matrixStack, vertexConsumerProvider, light);
+        entityRender(armorStand, matrixStack, vertexConsumerProvider, light);
         //?} else {
 
         /*for (FeatureRenderer<ArmorStandEntity, PASModel> featureRenderer : this.features) {
             featureRenderer.render(matrixStack, vertexConsumerProvider, light, armorStand, 0.0F, 0.0F, tickDelta, 0.0F, 0.0F, 0.0F);
         }
         matrixStack.pop();
-        super.render(armorStand, yaw, tickDelta, matrixStack, vertexConsumerProvider, light);
+        super.render(armorStand, yaw, tickDelta, matrixStack, vertexConsumerProvider, light); //FIXME: do that in entityRender method
         *///?}
+    }
+
+
+    // "render" method from EntityRenderer
+    public void entityRender(ArmorStandEntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+        if (state.displayName != null) {
+            this.renderLabelIfPresent(state, state.displayName, matrices, vertexConsumers, light);
+        }
+
     }
 
     @Override

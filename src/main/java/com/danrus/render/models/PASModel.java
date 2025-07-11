@@ -140,35 +140,35 @@ public class PASModel extends ArmorStandArmorEntityModel {
 
     private static ModelTransform pivot(float x, float y, float z) {
         //? <=1.21.4 {
-        /*return ModelTransform.pivot(x, y, z);
-         *///?} else {
-        return ModelTransform.origin(x, y, z);
-        //?}
+        return ModelTransform.pivot(x, y, z);
+         //?} else {
+        /*return ModelTransform.origin(x, y, z);
+        *///?}
 
     }
 
     private static float getPitch(EulerAngle angle){
         //? <=1.21.4 {
-        /*return angle.getPitch();
-         *///?} else {
-        return angle.pitch();
-        //?}
+        return angle.getPitch();
+         //?} else {
+        /*return angle.pitch();
+        *///?}
     }
 
     private static float getYaw(EulerAngle angle){
         //? <=1.21.4 {
-        /*return angle.getYaw();
-         *///?} else {
-        return angle.yaw();
-        //?}
+        return angle.getYaw();
+         //?} else {
+        /*return angle.yaw();
+        *///?}
     }
 
     private static float getRoll(EulerAngle angle){
         //? <=1.21.4 {
-        /*return angle.getRoll();
-         *///?} else {
-        return angle.roll();
-        //?}
+        return angle.getRoll();
+         //?} else {
+        /*return angle.roll();
+        *///?}
     }
 
     //? if <1.21.2
@@ -232,7 +232,9 @@ public class PASModel extends ArmorStandArmorEntityModel {
         this.rightLeg.pitch = ((float)Math.PI / 180F) * armorStand.getRightLegRotation().getPitch();
         this.rightLeg.yaw = ((float)Math.PI / 180F) * armorStand.getRightLegRotation().getYaw();
         this.rightLeg.roll = ((float)Math.PI / 180F) * armorStand.getRightLegRotation().getRoll();
-        
+
+        this.hat.copyTransform(this.head);
+
     *///?} else {
     @Override
     public void setAngles(ArmorStandEntityRenderState armorStand) {
@@ -262,8 +264,6 @@ public class PASModel extends ArmorStandArmorEntityModel {
         this.rightLeg.roll = ((float)Math.PI / 180F) * getRoll(armorStand.rightLegRotation);
         
     //?}
-
-        this.hat.copyTransform(this.head);
         
         this.leftPants.copyTransform(leftLeg);
         this.rightPants.copyTransform(rightLeg);

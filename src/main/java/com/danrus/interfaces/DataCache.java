@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 public interface DataCache<T> {
     PASModelData get(String string);
+    void drop(String name);
     default HashMap<String, PASModelData> getAll() {
         return new HashMap<String, PASModelData>();
     }

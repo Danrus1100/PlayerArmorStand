@@ -1,11 +1,12 @@
 package com.danrus.utils.data;
 
 import com.danrus.PASModelData;
-import com.danrus.SkinManger;
+import com.danrus.managers.SkinManger;
 import com.danrus.interfaces.DataCache;
 import com.danrus.utils.StringUtils;
 import com.danrus.utils.TextureUtils;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
 import java.nio.file.Path;
@@ -50,6 +51,13 @@ public class MojangDiskCache implements DataCache<Path> {
             return data;
         }
         return null;
+    }
+
+    @Override
+    public void drop(String name) {
+        MinecraftClient.getInstance().getTextureManager().destroyTexture(identifiers.get(name));
+        cachePath.resolve(StringUtils.encodeToSha256(name)).toFile().delete();
+        identifiers.remove(name);
     }
 
     @Override

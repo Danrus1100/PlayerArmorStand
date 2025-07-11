@@ -1,13 +1,13 @@
-package com.danrus;
+package com.danrus.managers;
 
 //import com.danrus.utils.PASModelData;
 //import com.danrus.utils.skin.SkinsUtils;
-import com.danrus.utils.data.DataManager;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class PASCommandManager {
@@ -16,9 +16,9 @@ public class PASCommandManager {
              dispatcher.register(ClientCommandManager.literal("player-armor-stands").executes(PASCommandManager::defaultCommand)
                      .then(ClientCommandManager.literal("reload_failed").executes(PASCommandManager::reloadFailedCommand))
                      .then(ClientCommandManager.literal("reload")
-                             .then(ClientCommandManager.argument("name/skin", StringArgumentType.word()).executes(PASCommandManager::reloadSingeCommand))));
-//                     .then(ClientCommandManager.literal("reset")
-//                             .then(ClientCommandManager.argument("name/skin", StringArgumentType.word()).executes(PASCommandManager::resetCommand))));
+                             .then(ClientCommandManager.argument("name/skin", StringArgumentType.word()).executes(PASCommandManager::reloadSingeCommand)))
+                     .then(ClientCommandManager.literal("reset")
+                             .then(ClientCommandManager.argument("name/skin", StringArgumentType.word()).executes(PASCommandManager::resetCommand))));
          }));
      }
 
@@ -51,9 +51,9 @@ public class PASCommandManager {
         return 1;
     }
 
-//    public static int resetCommand(CommandContext<FabricClientCommandSource> context) {
-//        String name = StringArgumentType.getString(context, "name/skin");
-//        PASClient.modelDataCache.remove(name);
-//        return 1;
-//    }
+    public static int resetCommand(CommandContext<FabricClientCommandSource> context) {
+        String name = StringArgumentType.getString(context, "name/skin");
+        SkinManger.getInstance().getDataManager().drop(name);
+        return 1;
+    }
 }

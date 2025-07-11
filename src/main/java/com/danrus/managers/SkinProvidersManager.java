@@ -1,20 +1,21 @@
-package com.danrus.utils.providers;
+package com.danrus.managers;
 
 import com.danrus.PASClient;
-import com.danrus.SkinManger;
-import com.danrus.enums.DownloadStatus;
-import com.danrus.interfaces.SkinProvider;
+import com.danrus.interfaces.AbstractSkinProvider;
 import com.danrus.utils.StringUtils;
+import com.danrus.utils.providers.FiguraSkinProvider;
+import com.danrus.utils.providers.MojangSkinProvider;
+import com.danrus.utils.providers.NamemcSkinProvider;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SkinProvidersManager {
 
-    private HashMap<String, SkinProvider> providers = new HashMap<>();
+    private HashMap<String, AbstractSkinProvider> providers = new HashMap<>();
     private String exludeLiterals = "NF";
 
-    private void addProvider(SkinProvider provider, String literal) {
+    private void addProvider(AbstractSkinProvider provider, String literal) {
         provider.setLiteral(literal);
         providers.put(literal, provider);
     }
@@ -22,6 +23,7 @@ public class SkinProvidersManager {
     public SkinProvidersManager() {
         addProvider(new MojangSkinProvider(), "M");
         addProvider(new NamemcSkinProvider(), "N");
+        addProvider(new FiguraSkinProvider(), "F");
     }
 
     public void download(String string) {

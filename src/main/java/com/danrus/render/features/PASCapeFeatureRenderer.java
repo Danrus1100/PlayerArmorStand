@@ -1,9 +1,8 @@
 package com.danrus.render.features;
 
 import com.danrus.PASModelData;
-import com.danrus.SkinManger;
+import com.danrus.managers.SkinManger;
 import com.danrus.render.models.PASModel;
-import com.danrus.PASModelData;
 import com.danrus.utils.StringUtils;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -11,10 +10,8 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
 
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 

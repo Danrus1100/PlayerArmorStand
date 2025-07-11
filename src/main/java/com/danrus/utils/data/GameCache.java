@@ -3,6 +3,7 @@ package com.danrus.utils.data;
 import com.danrus.PASModelData;
 import com.danrus.enums.DownloadStatus;
 import com.danrus.interfaces.DataCache;
+import net.minecraft.client.MinecraftClient;
 
 import java.util.HashMap;
 
@@ -16,6 +17,11 @@ public class GameCache implements DataCache<PASModelData>{
             return null;
         }
         return cache.get(name);
+    }
+
+    @Override
+    public void drop(String name) {
+        cache.remove(name);
     }
 
     @Override

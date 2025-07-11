@@ -2,26 +2,15 @@ package com.danrus.utils.providers;
 
 import com.danrus.*;
 import com.danrus.enums.DownloadStatus;
-import com.danrus.interfaces.SkinProvider;
+import com.danrus.interfaces.AbstractSkinProvider;
 import com.danrus.utils.PASSkinDownloader;
 import com.danrus.utils.data.NamemcDiskCache;
+import com.danrus.managers.OverlayMessageManger;
+import com.danrus.managers.SkinManger;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public class NamemcSkinProvider implements SkinProvider {
-
-    private String literal = "N";
-
-    @Override
-    public String getLiteral() {
-        return literal;
-    }
-
-    @Override
-    public void setLiteral(String literal) {
-        this.literal = literal;
-    }
-
+public class NamemcSkinProvider extends AbstractSkinProvider {
     @Override
     public void load(String name) {
         initializeDownload(name);
@@ -50,36 +39,5 @@ public class NamemcSkinProvider implements SkinProvider {
         OverlayMessageManger.getInstance().showDownloadMessage(name);
         data.setStatus(DownloadStatus.IN_PROGRESS);
         SkinManger.getInstance().getDataManager().store(name, data);
-    }
-
-    private void updateStatus(String name, DownloadStatus status) {
-        PASModelData data = getOrCreateModelData(name);
-        data.setStatus(status);
-        SkinManger.getInstance().getDataManager().store(name, data);
-    }
-
-    private void doFail(String name) {
-        PASModelData data = SkinManger.getInstance().getData(Text.of(name));
-        if (data == null) {
-            data = new PASModelData(name);
-        }
-        OverlayMessageManger.getInstance().showFailMessage(name);
-        data.setStatus(DownloadStatus.FAILED);
-        SkinManger.getInstance().getDataManager().store(name, data);
-    }
-
-    private void updateModelData(String name, Identifier textureId, boolean isSkin) {
-        PASModelData data = getOrCreateModelData(name);
-        if (isSkin) {
-            data.setSkinTexture(textureId);
-        } else {
-            data.setCapeTexture(textureId);
-        }
-        SkinManger.getInstance().getDataManager().store(name, data);
-    }
-
-    private PASModelData getOrCreateModelData(String name) {
-        PASModelData data = SkinManger.getInstance().getData(Text.of(name));
-        return data != null ? data : new PASModelData(name);
     }
 }

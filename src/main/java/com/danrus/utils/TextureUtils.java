@@ -35,10 +35,10 @@ public class TextureUtils {
             MinecraftClient.getInstance().execute(() -> {
                 try {
                     //? <=1.21.4 {
-                    /*NativeImageBackedTexture texture = new NativeImageBackedTexture(finalImage);
-                    *///?} else {
-                    NativeImageBackedTexture texture = new NativeImageBackedTexture(identifier::toString, finalImage);
-                     //?}
+                    NativeImageBackedTexture texture = new NativeImageBackedTexture(finalImage);
+                    //?} else {
+                    /*NativeImageBackedTexture texture = new NativeImageBackedTexture(identifier::toString, finalImage);
+                     *///?}
                     MinecraftClient.getInstance().getTextureManager().registerTexture(identifier, texture);
                     future.complete(identifier);
                 } catch (Exception e) {

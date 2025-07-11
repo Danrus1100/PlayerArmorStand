@@ -1,8 +1,8 @@
-package com.danrus;
+package com.danrus.managers;
 
+import com.danrus.PASClient;
+import com.danrus.PASModelData;
 import com.danrus.enums.DownloadStatus;
-import com.danrus.utils.data.DataManager;
-import com.danrus.utils.providers.SkinProvidersManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 

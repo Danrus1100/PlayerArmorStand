@@ -1,11 +1,12 @@
-package com.danrus.utils.data;
+package com.danrus.managers;
 
-import com.danrus.PASClient;
 import com.danrus.PASModelData;
-import com.danrus.SkinManger;
 import com.danrus.enums.DownloadStatus;
 import com.danrus.interfaces.DataCache;
 import com.danrus.utils.StringUtils;
+import com.danrus.utils.data.GameCache;
+import com.danrus.utils.data.MojangDiskCache;
+import com.danrus.utils.data.NamemcDiskCache;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -61,6 +62,14 @@ public class DataManager {
     public void invalidateData(String name) {
         sources.forEach((key, source) -> {
             source.invalidateData(name);
+        });
+    }
+
+    public void drop(String name) {
+        sources.forEach((key, source) -> {
+            if (source.get(name) != null) {
+                source.drop(name);
+            }
         });
     }
 }

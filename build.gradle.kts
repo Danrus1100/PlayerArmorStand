@@ -52,6 +52,16 @@ dependencies {
     mappings("net.fabricmc:yarn:$mcVersion+build.${deps["yarn_build"]}:v2")
     modImplementation("net.fabricmc:fabric-loader:${deps["fabric_loader"]}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${deps["fabric_api"]}")
+    try {
+        if (stonecutter.eval(mcVersion, "<=1.21.4") && mcVersion != "1.21.2") {
+            implementation("org.luaj:luaj-jse:3.0.1")
+            modImplementation("com.neovisionaries:nv-websocket-client:2.14")
+            modImplementation("org.figuramc:figura-fabric:0.1.5+$mcVersion")
+        }
+    } catch (E: Exception) {
+        // Fallback for older versions of Figura
+        println("Figura not found for $mcVersion")
+    }
 
 //    if (stonecutter.eval(mcVersion, "1.21.4")) {
 //        modImplementation(files("../../build/possessive-1.0.3_1.21.4.jar"))
@@ -72,10 +82,10 @@ dependencies {
     else if (stonecutter.eval(mcVersion, "1.21.6")) {
         modImplementation("eu.pb4:placeholder-api:2.7.0+1.21.6")
     }
-
-    if (stonecutter.eval(mcVersion, "1.21.4")) {
-        modImplementation("org.figuramc:figura-common-intermediary:0.1.5+1.21.4") //TODO stonecutter versioning
-    }
+//    if (stonecutter.eval(mcVersion, "<=1.21.4 && !=1.21.2")) {
+//        println("figura: $mcVersion")
+//
+//    }
 }
 
 loom {
