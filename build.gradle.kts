@@ -133,7 +133,7 @@ publishMods {
     val discordWebhook = findProperty("discord-webhook")
     val discordWebhookDry = findProperty("discord-webhook-dry")
 
-    dryRun = true
+    dryRun = false
 
     modstitch.onEnable {
         file = modstitch.finalJarTask.flatMap { it.archiveFile }
@@ -144,8 +144,8 @@ publishMods {
 
     val loaders = property("pub.target.platforms").toString().split(' ')
     loaders.forEach(modLoaders::add)
-    displayName = "${modstitch.metadata.modName} ${modstitch.metadata.modVersion}"
-    version = modstitch.metadata.modVersion
+    displayName = "Player Armor Stands ${property("mod.version")} for ${loader} ${minecraft}"
+    version = "${property("mod.version")}-${loaderInitials}-${minecraft}"
 
     val targets = property("pub.target.versions").toString().split(' ')
     val requiresLibs = property("pub.libs.required").toString().split(' ')
