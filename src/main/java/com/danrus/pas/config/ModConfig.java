@@ -35,10 +35,19 @@ public class ModConfig {
     public int downloadThreads = 3;
 
     @SerialEntry
+    public DOWNLOAD_STATUS_DISPLAY downloadStatusDisplay = DOWNLOAD_STATUS_DISPLAY.ABOVE_HOTBAR;
+
+    @SerialEntry
     public boolean hideParamsOnLabel = true;
 
     @SerialEntry
     public String defaultSkin = "";
+
+    public enum DOWNLOAD_STATUS_DISPLAY {
+        NONE,
+        ABOVE_HOTBAR,
+        CHAT
+    }
 
     public static Screen getConfigScreen(Screen parent) {
         return YetAnotherConfigLib.createBuilder()

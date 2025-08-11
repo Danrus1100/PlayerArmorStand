@@ -14,5 +14,10 @@
   "pas.config.download_threads": "Потоки загрузки",
   "pas.config.hide_params_on_label": "Скрыть параметры на имени",
   "pas.config.default_skin": "Стандартный скин",
-  "pas.config.enable_mod": "Включить мод"
+  "pas.config.enable_mod": "Включить мод",
+
+  "pas.config.download_status_display": "Показать статус загрузки",
+  "pas.config.download_status_display.none": "Не показывать",
+  "pas.config.download_status_display.above_hotbar": "Над хотбаром",
+  "pas.config.download_status_display.chat": "В чате"
 }

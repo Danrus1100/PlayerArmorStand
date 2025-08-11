@@ -124,7 +124,7 @@ dependencies {
     // Anything else in the dependencies block will be used for all platforms.
     modstitchModApi("dev.architectury:architectury-${property("deps.arch")}")
     modstitchModImplementation("dev.isxander:yet-another-config-lib:${property("deps.yacl")}")
-    modstitchModImplementation("com.mrbysco.armorposer:ArmorPoser-${loader}-${minecraft}:${property("deps.armorposer")}") //TODO:Зависит от Cloth Config
+    modstitchModImplementation("com.mrbysco.armorposer:ArmorPoser-${loader}-${property("deps.armorposer")}") //TODO:Зависит от Cloth Config
 }
 
 publishMods {

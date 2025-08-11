@@ -24,12 +24,12 @@ public class ArmorStandRendererMixin implements VersioningUtils.VersionlessArmor
     private PlayerArmorStandModel model;
 
     //? if >= 1.21.4 {
-    /*@Shadow @Mutable @Final
+    @Shadow @Mutable @Final
     private ArmorStandArmorModel smallModel;
 
     @Shadow @Mutable @Final
     private ArmorStandArmorModel bigModel;
-    *///?}
+    //?}
 
     @Inject(
             method = "<init>",
@@ -40,26 +40,26 @@ public class ArmorStandRendererMixin implements VersioningUtils.VersionlessArmor
         ((LivingEntityRendererAccessor) this).invokeAddLayer(new ArmorStandCapeLayer(this));
         ((LivingEntityRendererAccessor) this).setModel(model);
         //? if >= 1.21.4 {
-        /*this.bigModel = model;
+        this.bigModel = model;
         this.smallModel = new PlayerArmorStandModel(context.bakeLayer(ModelLayers.ARMOR_STAND_SMALL));
-        *///?}
+        //?}
     }
 
     @Inject(
             //? if <= 1.21.1 {
-            method = "getTextureLocation(Lnet/minecraft/world/entity/decoration/ArmorStand;)Lnet/minecraft/resources/ResourceLocation;",
-            //?} else {
-            /*method = "getTextureLocation(Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;)Lnet/minecraft/resources/ResourceLocation;",
-            *///?}
+            /*method = "getTextureLocation(Lnet/minecraft/world/entity/decoration/ArmorStand;)Lnet/minecraft/resources/ResourceLocation;",
+            *///?} else {
+            method = "getTextureLocation(Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;)Lnet/minecraft/resources/ResourceLocation;",
+            //?}
             at = @At("RETURN"),
             cancellable = true
     )
     private void textureLocation(
             //? if <= 1.21.1 {
-            net.minecraft.world.entity.decoration.ArmorStand
-            //?} else {
-            /*net.minecraft.client.renderer.entity.state.ArmorStandRenderState
-            *///?}
+            /*net.minecraft.world.entity.decoration.ArmorStand
+            *///?} else {
+            net.minecraft.client.renderer.entity.state.ArmorStandRenderState
+            //?}
                     armorStand, CallbackInfoReturnable<ResourceLocation> cir){
         if (VersioningUtils.getCustomName(armorStand) == null || !ModConfig.get().enableMod) {
             return;
@@ -73,7 +73,7 @@ public class ArmorStandRendererMixin implements VersioningUtils.VersionlessArmor
     }
 
     //? if <= 1.21.1 {
-    @Override
+    /*@Override
     public ResourceLocation getTextureLocation(net.minecraft.world.entity.decoration.ArmorStand armorStand)
     {
         if (VersioningUtils.getCustomName(armorStand) == null || !ModConfig.get().enableMod) {
@@ -81,5 +81,5 @@ public class ArmorStandRendererMixin implements VersioningUtils.VersionlessArmor
         }
         return SkinManger.getInstance().getSkinTexture(VersioningUtils.getCustomName(armorStand));
     }
-    //?}
+    *///?}
 }

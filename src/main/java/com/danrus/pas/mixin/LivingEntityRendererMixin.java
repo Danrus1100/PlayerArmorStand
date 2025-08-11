@@ -21,10 +21,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntityRenderer.class)
 public class LivingEntityRendererMixin<T extends
         //? if <= 1.21.1 {
-        LivingEntity
-        //?} else {
-        /*net.minecraft.client.renderer.entity.state.LivingEntityRenderState
-        *///?}
+        /*LivingEntity
+        *///?} else {
+        net.minecraft.client.renderer.entity.state.LivingEntityRenderState
+        //?}
         , M extends EntityModel<T>> {
 
     @Inject(
@@ -34,18 +34,18 @@ public class LivingEntityRendererMixin<T extends
     )
     private void pas$renderType(
             //? if <= 1.21.1 {
-            LivingEntity
-            //?} else {
-            /*net.minecraft.client.renderer.entity.state.LivingEntityRenderState
-            *///?}
+            /*LivingEntity
+            *///?} else {
+            net.minecraft.client.renderer.entity.state.LivingEntityRenderState
+            //?}
                     entity, boolean b1, boolean b2, boolean b3, CallbackInfoReturnable<RenderType> cir
     ){
         if (!(entity instanceof
                 //? if <= 1.21.1 {
-                ArmorStand
-                //?} else {
-                /*net.minecraft.client.renderer.entity.state.ArmorStandRenderState
-                *///?}
+                /*ArmorStand
+                *///?} else {
+                net.minecraft.client.renderer.entity.state.ArmorStandRenderState
+                //?}
         && ModConfig.get().enableMod) || VersioningUtils.isInvisible(entity)) {
             return;
         }

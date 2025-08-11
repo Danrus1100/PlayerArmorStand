@@ -14,5 +14,10 @@
   "pas.config.download_threads": "Download Threads",
   "pas.config.hide_params_on_label": "Hide Parameters on Nameplate",
   "pas.config.default_skin": "Default Skin",
-  "pas.config.enable_mod": "Enable Mod"
+  "pas.config.enable_mod": "Enable Mod",
+
+  "pas.config.download_status_display": "Show Download Status",
+  "pas.config.download_status_display.none": "Don't Show",
+  "pas.config.download_status_display.above_hotbar": "Above the Hotbar",
+  "pas.config.download_status_display.chat": "In Chat"
 }

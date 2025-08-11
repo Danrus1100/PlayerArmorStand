@@ -131,17 +131,17 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
     @Override
     public void setupAnim(
             //? if <= 1.21.1 {
-            ArmorStand
-            //?} else {
-            /*net.minecraft.client.renderer.entity.state.ArmorStandRenderState
-            *///?}
+            /*ArmorStand
+            *///?} else {
+            net.minecraft.client.renderer.entity.state.ArmorStandRenderState
+            //?}
                     armorStand
             //? if <= 1.21.1
-            , float f, float g, float h, float i, float j
+            /*, float f, float g, float h, float i, float j*/
     ){
         super.setupAnim(armorStand
                 //? if <= 1.21.1
-                , f, g, h, i, j
+                /*, f, g, h, i, j*/
         );
         boolean showBase = !VersioningUtils.getNoBasePlate(armorStand);
         boolean showArms = VersioningUtils.getIsShowArms(armorStand);
@@ -149,7 +149,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         Rotations bodyPose = VersioningUtils.getBodyPose(armorStand);
 
         //? if <= 1.21.1
-        this.hat.copyFrom(this.head);
+        /*this.hat.copyFrom(this.head);*/
 
         this.leftPants.copyFrom(leftLeg);
         this.leftPants.copyFrom(leftLeg);

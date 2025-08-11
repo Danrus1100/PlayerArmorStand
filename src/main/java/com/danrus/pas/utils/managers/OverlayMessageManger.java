@@ -1,5 +1,6 @@
 package com.danrus.pas.utils.managers;
 
+import com.danrus.pas.config.ModConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 
@@ -33,7 +34,14 @@ public class OverlayMessageManger {
         if (name.isEmpty()) {
             return;
         }
-        Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(key, name).withStyle(color), false);
+        switch (ModConfig.get().downloadStatusDisplay) {
+            case NONE:
+                return;
+            case ABOVE_HOTBAR:
+                Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(key, name).withStyle(color), false);
+            case CHAT:
+                Minecraft.getInstance().gui.getChat().addMessage(Component.translatable(key, name).withStyle(color));
+        }
     }
 
     public static OverlayMessageManger getInstance() {

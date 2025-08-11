@@ -3,6 +3,7 @@ package com.danrus.pas.config.categories;
 import com.danrus.pas.ModExecutor;
 import com.danrus.pas.config.ModConfig;
 import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
@@ -36,6 +37,20 @@ public class MainCategory {
                                 .addListener(((option, event) -> ModExecutor.reload()))
                                 .build())
 
+                        .option(Option.<ModConfig.DOWNLOAD_STATUS_DISPLAY>createBuilder()
+                                .name(Component.translatable("pas.config.download_status_display"))
+                                .binding(
+                                        ModConfig.DOWNLOAD_STATUS_DISPLAY.ABOVE_HOTBAR,
+                                        () -> ModConfig.get().downloadStatusDisplay, // a getter to getData the current value from
+                                        newVal -> ModConfig.get().downloadStatusDisplay = newVal
+                                )
+                                .controller(opt -> EnumControllerBuilder.create(opt).enumClass(ModConfig.DOWNLOAD_STATUS_DISPLAY.class).formatValue((v) -> Component.translatable("pas.config.download_status_display." + v.name().toLowerCase())))                                .build())
+
+                        .build())
+
+                .group(OptionGroup.createBuilder()
+                        .name(Component.translatable("pas.config.group.armorstands"))
+
                         .option(Option.<Boolean>createBuilder()
                                 .name(Component.translatable("pas.config.hide_params_on_label"))
                                 .binding(
@@ -45,11 +60,6 @@ public class MainCategory {
                                 )
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
-
-                        .build())
-
-                .group(OptionGroup.createBuilder()
-                        .name(Component.translatable("pas.config.group.armorstands"))
 
                         .option(Option.<String>createBuilder()
                                 .name(Component.translatable("pas.config.default_skin"))

@@ -24,14 +24,14 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
     @Override
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i,
                         //? if <= 1.21.1 {
-                        ArmorStand
-                        //?} else {
-                        /*net.minecraft.client.renderer.entity.state.ArmorStandRenderState
-                        *///?}
+                        /*ArmorStand
+                        *///?} else {
+                        net.minecraft.client.renderer.entity.state.ArmorStandRenderState
+                        //?}
                         armorStand,
                         float f1, float f2
                         //? if <= 1.21.1
-                        , float f3, float f4, float f5, float f6
+                        /*, float f3, float f4, float f5, float f6*/
     ) {
         if (!ModConfig.get().enableMod || VersioningUtils.isInvisible(armorStand)) {
             return;
