@@ -1,216 +1,181 @@
 plugins {
-    `maven-publish`
-    id("fabric-loom")
-    //id("dev.kikugie.j52j")
-    id("me.modmuss50.mod-publish-plugin")
+    id("dev.isxander.modstitch.base") version "0.7.0-unstable"
+    id("me.modmuss50.mod-publish-plugin") version "0.8.4"
 }
 
-class ModData {
-    val id = property("mod.id").toString()
-    val name = property("mod.name").toString()
-    val version = property("mod.version").toString()
-    val group = property("mod.group").toString()
+fun prop(name: String, consumer: (prop: String) -> Unit) {
+    (findProperty(name) as? String?)
+        ?.let(consumer)
 }
 
-class ModDependencies {
-    operator fun get(name: String) = property("deps.$name").toString()
+val minecraft = property("deps.minecraft") as String
+val loader: String = name.split("-")[1]
+val loaderInitials: String = when (loader) {
+    "fabric" -> "FBR"
+    "neoforge" -> "NFG"
+    "forge" -> "FG"
+    "vanilla" -> "VNL"
+    else -> throw IllegalArgumentException("Unknown loader: $loader")
 }
 
-val mod = ModData()
-val deps = ModDependencies()
-val mcVersion = stonecutter.current.version
-val mcDep = property("mod.mc_dep").toString()
+modstitch {
+    minecraftVersion = minecraft
 
-version = "${mod.version}+$mcVersion"
-group = mod.group
-base { archivesName.set(mod.id) }
+    // Alternatively use stonecutter.eval if you have a lot of versions to target.
+    // https://stonecutter.kikugie.dev/stonecutter/guide/setup#checking-versions
+    val j21: Boolean = stonecutter.eval(minecraft, ">=1.20.6")
+    javaVersion = if (j21) 21 else 17
 
-repositories {
-    fun strictMaven(url: String, alias: String, vararg groups: String) = exclusiveContent {
-        forRepository { maven(url) { name = alias } }
-        filter { groups.forEach(::includeGroup) }
-    }
-    strictMaven("https://www.cursemaven.com", "CurseForge", "curse.maven")
-    strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
-    maven("https://maven.terraformersmc.com/") {
-        name = "Terraformers"
-    }
-    maven("https://maven.isxander.dev/releases") {
-        name = "Xander Maven"
-    }
-    maven("https://maven.nucleoid.xyz/") { name = "Nucleoid" }
-    maven {
-        name = "figuramc"
-        url = uri("https://maven.figuramc.org/releases")
+    // If parchment doesn't exist for a version, yet you can safely
+    // omit the "deps.parchment" property from your versioned gradle.properties
+    parchment {
+        prop("deps.parchment") { mappingsVersion = it }
     }
 
-    mavenCentral()
-}
+    // This metadata is used to fill out the information inside
+    // the metadata files found in the templates folder.
+    metadata {
+        modId = "pas"
+        modName = "Player Armor Stands"
+        modVersion = "${property("mod.version")}-${loaderInitials}-${minecraft}"
+        modGroup = "com.danrus.pas"
+        modAuthor = "Danrus110_"
+        modDescription = "Make named armor stands looks like players!"
+        modLicense = "CC0-1.0"
 
-dependencies {
-    minecraft("com.mojang:minecraft:$mcVersion")
-    mappings("net.fabricmc:yarn:$mcVersion+build.${deps["yarn_build"]}:v2")
-    modImplementation("net.fabricmc:fabric-loader:${deps["fabric_loader"]}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${deps["fabric_api"]}")
+        fun MapProperty<String, String>.populate(block: MapProperty<String, String>.() -> Unit) {
+            block()
+        }
 
-    if (stonecutter.eval(mcVersion, "1.21.4")) {
-        modImplementation(files("../../build/possessive-1.0.3_1.21.4.jar"))
-    }
-
-
-    modApi ("com.terraformersmc:modmenu:${deps["mod_menu"]}")
-    modImplementation("dev.isxander:yet-another-config-lib:${deps["yacl"]}")
-
-    implementation("org.quiltmc.parsers:gson:0.2.1")
-
-    if (stonecutter.eval(mcVersion, "1.20.4" )) {
-        modImplementation("eu.pb4:placeholder-api:2.4.0-pre.1+1.20.4")
-    }
-    else if (stonecutter.eval(mcVersion, "1.21.5" )) {
-        modImplementation("eu.pb4:placeholder-api:2.6.1+1.21.5")
-    }
-    else if (stonecutter.eval(mcVersion, "1.21.6")) {
-        modImplementation("eu.pb4:placeholder-api:2.7.0+1.21.6")
-    }
-
-    if (stonecutter.eval(mcVersion, "1.21.4")) {
-        modImplementation("org.figuramc:figura-common-intermediary:0.1.5+1.21.4") //TODO stonecutter versioning
-    }
-}
-
-loom {
-    decompilers {
-        get("vineflower").apply { // Adds names to lambdas - useful for mixins
-            options.put("mark-corresponding-synthetics", "1")
+        replacementProperties.populate {
+            // You can put any other replacement properties/metadata here that
+            // modstitch doesn't initially support. Some examples below.
+            put("mod_issue_tracker", "https://discord.com/invite/sBpHZUBebQ")
+            put("minecraft_versions", property("version.minecraft") as String)
         }
     }
 
-    runConfigs.all {
-        ideConfigGenerated(true)
-        vmArgs("-Dmixin.debug.export=true")
-        runDir = "../../run"
-    }
+    // Fabric Loom (Fabric)
+    loom {
+        fabricLoaderVersion = "0.16.10"
 
-    accessWidenerPath = project.rootProject.file("src/main/resources/aws/${stonecutter.current.project}.accesswidener")
-}
-
-java {
-    withSourcesJar()
-    val java = if (stonecutter.eval(mcVersion, ">=1.20.6")) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
-    targetCompatibility = java
-    sourceCompatibility = java
-}
-
-tasks.processResources {
-    inputs.property("id", mod.id)
-    inputs.property("name", mod.name)
-    inputs.property("version", mod.version)
-    inputs.property("mcdep", mcDep)
-    inputs.property("minecraft_version", stonecutter.current.version.toString())
-
-    val map = mapOf(
-        "id" to mod.id,
-        "name" to mod.name,
-        "version" to mod.version,
-        "mcdep" to mcDep,
-        "minecraft_version" to stonecutter.current.version.toString()
-    )
-
-    filesMatching("fabric.mod.json") { expand(map) }
-}
-
-tasks.register<Copy>("buildAndCollect") {
-    group = "build"
-    from(tasks.remapJar.get().archiveFile)
-    into(rootProject.layout.buildDirectory.file("libs/${mod.version}"))
-    dependsOn("build")
-}
-
-publishMods {
-    file = tasks.remapJar.get().archiveFile
-    additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
-    displayName = "${mod.name} ${mod.version}-MC-$mcVersion"
-    version = mod.version
-    changelog = rootProject.file("CHANGELOG.md").readText()
-    type = STABLE
-    modLoaders.add("fabric")
-
-    val modrinthToken = providers.gradleProperty("MODRINTH_API_TOKEN").orNull
-    val curseforgeToken = providers.gradleProperty("CURSEFORGE_API_TOKEN").orNull
-
-    val discordWebHook = providers.gradleProperty("DISCORD_WEBHOOK").orNull
-    val dryDiscordWebHook = providers.gradleProperty("DISCORD_WEBHOOK_DRY").orNull
-
-    dryRun = false
-
-    modrinth {
-        projectId = property("publish.modrinth").toString()
-        accessToken = modrinthToken
-
-        type = BETA
-        modLoaders.add("fabric")
-//        minecraftVersions.add(mcVersion)
-        minecraftVersionRange {
-            start = property("mod.mc_start").toString()
-            end = property("mod.mc_end").toString()
-        }
-        requires {
-            slug = "fabric-api"
-        }
-        requires{
-            slug = "yacl"
-        }
-        optional{
-            slug = "armor-poser"
-        }
-    }
-
-    curseforge {
-        projectId = property("publish.curseforge").toString()
-        accessToken = curseforgeToken
-
-        projectSlug = "player-armor-stands"
-        type = BETA
-        modLoaders.add("fabric")
-//        minecraftVersions.add(mcVersion)
-        minecraftVersionRange {
-            start = property("mod.mc_start").toString()
-            end = property("mod.mc_end").toString()
-        }
-        clientRequired = true
-        serverRequired = false
-    }
-
-    if (stonecutter.current.version == "1.20.4") {
-        discord {
-            webhookUrl = discordWebHook
-            dryRunWebhookUrl = dryDiscordWebHook
-
-            username  = "Player Armor Stands"
-            avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
-
-            content = changelog.map{ "# " + mod.version + " version here! \n\n" + rootProject.file("CHANGELOG.md").readText() +"\n\n<@&1388295587866083338>"}
-        }
-    }
-}
-publishing {
-    repositories {
-        maven("...") {
-            name = "..."
-            credentials(PasswordCredentials::class.java)
-            authentication {
-                create<BasicAuthentication>("basic")
+        // Configure loom like normal in this block.
+        configureLoom {
+            runConfigs.all {
+                ideConfigGenerated(environment == "client")
+                runDir("../../run")
             }
         }
     }
 
-    publications {
-        create<MavenPublication>("mavenJava") {
-            groupId = "${property("mod.group")}.${mod.id}"
-            artifactId = mod.version
-            version = mcVersion
+    // ModDevGradle (NeoForge, Forge, Forgelike)
+    moddevgradle {
+        prop("deps.forge") { forgeVersion = it }
+        prop("deps.neoforge") { neoForgeVersion = it }
 
-            from(components["java"])
+        // Configures client and server runs for MDG, it is not done by default
+        defaultRuns(server = false)
+
+        // If you want to use the legacy MDG, you can use the following line:
+
+        // This block configures the `neoforge` extension that MDG exposes by default,
+        // you can configure MDG like normal from here
+        configureNeoForge {
+            runs.all {
+                gameDirectory = layout.projectDirectory.dir("../../run")
+            }
+        }
+    }
+
+    mixin {
+        // You do not need to specify mixins in any mods.json/toml file if this is set to
+        // true, it will automatically be generated.
+        addMixinsToModManifest = true
+
+        configs.register("pas") {side = CLIENT}
+        // Most of the time you won't ever need loader specific mixins.
+        // If you do, simply make the mixin file and add it like so for the respective loader:
+        // if (isLoom) configs.register("examplemod-fabric")
+        // if (isModDevGradleRegular) configs.register("examplemod-neoforge")
+        // if (isModDevGradleLegacy) configs.register("examplemod-forge")
+    }
+}
+
+// Stonecutter constants for mod loaders.
+// See https://stonecutter.kikugie.dev/stonecutter/guide/comments#condition-constants
+var constraint: String = name.split("-")[1]
+stonecutter {
+    consts(
+        "fabric" to constraint.equals("fabric"),
+        "neoforge" to constraint.equals("neoforge"),
+        "forge" to constraint.equals("forge"),
+        "vanilla" to constraint.equals("vanilla")
+    )
+}
+
+// All dependencies should be specified through modstitch's proxy configuration.
+// Wondering where the "repositories" block is? Go to "stonecutter.gradle.kts"
+// If you want to create proxy configurations for more source sets, such as client source sets,
+// use the modstitch.createProxyConfigurations(sourceSets["client"]) function.
+dependencies {
+    modstitch.loom {
+        modstitchModApi("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+    }
+    // Anything else in the dependencies block will be used for all platforms.
+    modstitchModApi("dev.architectury:architectury-${property("deps.arch")}")
+    modstitchModImplementation("dev.isxander:yet-another-config-lib:${property("deps.yacl")}")
+    modstitchModImplementation("com.mrbysco.armorposer:ArmorPoser-${loader}-${minecraft}:${property("deps.armorposer")}") //TODO:Зависит от Cloth Config
+}
+
+publishMods {
+    val modrinthToken = findProperty("modrinth-token")
+    val curseforgeToken = findProperty("curseforge-token")
+    val discordWebhook = findProperty("discord-webhook")
+    val discordWebhookDry = findProperty("discord-webhook-dry")
+
+    dryRun = true
+
+    modstitch.onEnable {
+        file = modstitch.finalJarTask.flatMap { it.archiveFile }
+    }
+
+    changelog = rootProject.file("CHANGELOG.md").readText()
+    type = BETA
+
+    val loaders = property("pub.target.platforms").toString().split(' ')
+    loaders.forEach(modLoaders::add)
+    displayName = "${modstitch.metadata.modName} ${modstitch.metadata.modVersion}"
+    version = modstitch.metadata.modVersion
+
+    val targets = property("pub.target.versions").toString().split(' ')
+    val requiresLibs = property("pub.libs.required").toString().split(' ')
+    val optionalLibs = property("pub.libs.optional").toString().split(' ')
+    modrinth {
+        projectId = property("publish.modrinth").toString()
+        accessToken = modrinthToken.toString()
+        targets.forEach(minecraftVersions::add)
+        requiresLibs.forEach{requires(it)}
+        optionalLibs.forEach{optional(it)}
+    }
+
+    curseforge {
+        projectId = property("publish.curseforge").toString()
+        accessToken = curseforgeToken.toString()
+        projectSlug = "player-armor-stands"
+        targets.forEach(minecraftVersions::add)
+        requiresLibs.forEach{requires(it)}
+        optionalLibs.forEach{optional(it)}
+    }
+
+    if (targets.contains("1.21.4") && loaders.contains("fabric")) {
+        discord {
+            webhookUrl = discordWebhook.toString()
+            dryRunWebhookUrl = discordWebhookDry.toString()
+
+            username  = "Player Armor Stands"
+            avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
+
+            content = changelog.map{ "# " + findProperty("mod.version") + " version here! \n\n" + rootProject.file("CHANGELOG.md").readText() +"\n\n<@&1388295587866083338>"}
         }
     }
 }

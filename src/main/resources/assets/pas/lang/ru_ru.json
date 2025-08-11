@@ -1,8 +1,18 @@
 {
   "commands.pas.default_feedback": "Необходимы аргументы",
+  "commands.pas.reload_failed_error": "Чтобы перезагрузить скин, необходимо указать имя игрока",
 
   "pas.downloading": "Загрузка скина для %s...",
   "pas.invalid_username": "Неверное имя: %s",
   "pas.download_success": "Скин загружен: %s",
-  "pas.download_failed": "Ошибка при загрузке скина: %s"
+  "pas.download_failed": "Ошибка при загрузке скина: %s",
+  "pas.overlay_not_found": "Наложение не найдено в Minecraft: %s",
+
+  "pas.config.group.general": "Основные",
+  "pas.config.group.armorstands": "Стойка",
+
+  "pas.config.download_threads": "Потоки загрузки",
+  "pas.config.hide_params_on_label": "Скрыть параметры на имени",
+  "pas.config.default_skin": "Стандартный скин",
+  "pas.config.enable_mod": "Включить мод"
 }

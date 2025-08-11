@@ -1,7 +1,0 @@
-accessWidener v2 named
-
-accessible field net/minecraft/client/render/entity/LivingEntityRenderer model Lnet/minecraft/client/render/entity/model/EntityModel;
-accessible method net/minecraft/client/render/entity/LivingEntityRenderer addFeature (Lnet/minecraft/client/render/entity/feature/FeatureRenderer;)Z
-accessible method net/minecraft/client/render/entity/LivingEntityRenderer getRenderLayer (Lnet/minecraft/entity/LivingEntity;ZZZ)Lnet/minecraft/client/render/RenderLayer;
-accessible method net/minecraft/client/render/entity/model/BipedEntityModel getHeadParts ()Ljava/lang/Iterable;
-accessible method net/minecraft/client/render/entity/model/BipedEntityModel getBodyParts ()Ljava/lang/Iterable;

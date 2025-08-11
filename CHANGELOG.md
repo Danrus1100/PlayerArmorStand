@@ -1,2 +1,3 @@
-- /pas fixes
-- downloads fixes
+ - NeoForge support (1.12.1, 1.21.4, 1.21.6-1.21.8)
+ - `Illegal char` fix ([issue #2](https://github.com/Danrus1100/PlayerArmorStand/issues/2))
+ - Next versions are discontinued: 1.20.2-1.20.6, 1.21.2-1.21.3, 1.21.5

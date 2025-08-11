@@ -1,8 +1,18 @@
 {
   "commands.pas.default_feedback": "Arguments requires",
+  "commands.pas.reload_failed_error": "To reload the skin, you must specify a player name",
 
   "pas.downloading": "Downloading Skin for %s...",
   "pas.invalid_username": "Invalid username: %s",
   "pas.download_success": "Skin downloaded for %s",
-  "pas.download_failed": "Failed to download skin for %s"
+  "pas.download_failed": "Failed to download skin for %s",
+  "pas.overlay_not_found": "Overlay not found in Minecraft: %s",
+
+  "pas.config.group.general": "General",
+  "pas.config.group.armorstands": "Armor Stands",
+
+  "pas.config.download_threads": "Download Threads",
+  "pas.config.hide_params_on_label": "Hide Parameters on Nameplate",
+  "pas.config.default_skin": "Default Skin",
+  "pas.config.enable_mod": "Enable Mod"
 }

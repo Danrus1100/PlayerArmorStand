@@ -1,0 +1,42 @@
+package com.danrus.pas.api;
+
+/**
+ * DataManager interface for managing data sources and retrieving SkinData.
+ * This interface allows adding data sources, retrieving data by player name,
+ * and invalidating data when necessary.
+ */
+
+public interface DataManager {
+
+    /**
+     * Adds a source of data to the manager.
+     * The source must implement DataCache interface.
+     *
+     * @param source the data source to add
+     */
+    void addSource(DataCache<?> source);
+
+    /**
+     * Retrieves data associated with the given string.
+     *
+     * @param string the name of the player
+     * @return SkinData associated with the identifier, or null if not found
+     */
+    SkinData getData(String string);
+
+    /**
+     * Retrieves all data available in the manager.
+     *
+     * @param name the name of the player
+     * @param data Object data to be stored
+     */
+    void store(String name, Object data);
+
+    /**
+     * Invalidates the data associated with the given name.
+     * This method should be called when the data is no longer valid or needs to be refreshed.
+     *
+     * @param name the identifier for the data to invalidate
+     */
+    void invalidateData(String name);
+}
