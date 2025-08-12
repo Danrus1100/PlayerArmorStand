@@ -8,7 +8,7 @@
 <img alt="architectury-api" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/requires/architectury-api_vector.svg">
 <br>
 <img alt = "download from modrinth" src="https://img.shields.io/badge/modrinth-download-green?logo=modrinth">
-<img alt = "download from modrinth" src="https://img.shields.io/badge/curseforge-download-orange?logo=curseforge"
+<img alt = "download from modrinth" src="https://img.shields.io/badge/curseforge-download-orange?logo=curseforge">
 
 <div align="center"><h1>Rename Armor Stand to add the desired player's skin to it:</h1></div>
 
