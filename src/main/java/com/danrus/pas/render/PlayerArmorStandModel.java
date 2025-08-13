@@ -1,8 +1,10 @@
 package com.danrus.pas.render;
 
+import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
+import com.danrus.pas.utils.managers.SkinManger;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -191,8 +193,11 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         }
 
         List<String> matches =  StringUtils.matchASName(customNameString);
+        boolean isDownlading = SkinManger.getInstance().getData(Component.literal(matches.get(0))).getStatus() == DownloadStatus.IN_PROGRESS ||
+                SkinManger.getInstance().getData(Component.literal(matches.get(0))).getStatus() == DownloadStatus.FAILED;
+        boolean showArmorStandWhileDownload = ModConfig.get().showArmorStandWhileDownloading && isDownlading;
 
-        this.setModelVisibility(true, matches.get(1).contains("S"), showBase);
+        this.setModelVisibility(!showArmorStandWhileDownload, matches.get(1).contains("S"), showBase);
 
         if (customName == null && ModConfig.get().defaultSkin.isEmpty()) {
             setOriginalAngles(showBase, showArms, bodyPose);

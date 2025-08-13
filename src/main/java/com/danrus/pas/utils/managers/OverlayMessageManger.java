@@ -39,8 +39,12 @@ public class OverlayMessageManger {
                 return;
             case ABOVE_HOTBAR:
                 Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(key, name).withStyle(color), false);
+                return;
             case CHAT:
                 Minecraft.getInstance().gui.getChat().addMessage(Component.translatable(key, name).withStyle(color));
+                return;
+            default:
+                throw new IllegalStateException("Unexpected value: " + ModConfig.get().downloadStatusDisplay);
         }
     }
 

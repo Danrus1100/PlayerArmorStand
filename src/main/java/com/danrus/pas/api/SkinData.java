@@ -1,5 +1,6 @@
 package com.danrus.pas.api;
 
+import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.TextureUtils;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -8,7 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 public class SkinData {
-    public static ResourceLocation DEFAULT_TEXTURE = VersioningUtils.getResourceLocation("minecraft", "textures/entity/player/wide/steve.png");
+    public static ResourceLocation DEFAULT_TEXTURE = ModConfig.get().showArmorStandWhileDownloading
+            ? VersioningUtils.getResourceLocation("minecraft", "textures/entity/armorstand/wood.png")
+            : VersioningUtils.getResourceLocation("minecraft", "textures/entity/player/wide/steve.png");
     public static ResourceLocation DEFAULT_CAPE = VersioningUtils.getResourceLocation("pas","capes/cape.png");
 
     private String name;

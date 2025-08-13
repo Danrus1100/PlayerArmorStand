@@ -29,5 +29,6 @@ allprojects {
         maven ("https://thedarkcolour.github.io/KotlinForForge/")
         maven ("https://maven.architectury.dev/")
         maven ("https://maven.saps.dev/releases")
+        maven ("https://api.modrinth.com/maven")
     }
 }

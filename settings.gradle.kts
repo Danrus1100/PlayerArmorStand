@@ -31,6 +31,9 @@ pluginManagement {
         // Armor Poser
         maven ("https://maven.saps.dev/releases")
 
+        // Modrinth (SkinShuffle)
+        maven ("https://api.modrinth.com/maven")
+
     }
 }
 

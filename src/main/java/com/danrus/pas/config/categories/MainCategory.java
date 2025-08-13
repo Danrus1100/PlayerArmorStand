@@ -1,7 +1,9 @@
 package com.danrus.pas.config.categories;
 
 import com.danrus.pas.ModExecutor;
+import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.utils.VersioningUtils;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
@@ -69,6 +71,16 @@ public class MainCategory {
                                         newVal -> ModConfig.get().defaultSkin = newVal
                                 )
                                 .controller(StringControllerBuilder::create)
+                                .build())
+
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Component.translatable("pas.config.show_armor_stand_while_downloading"))
+                                .binding(
+                                        true,
+                                        () -> ModConfig.get().showArmorStandWhileDownloading,
+                                        newVal -> ModConfig.get().showArmorStandWhileDownloading = newVal
+                                )
+                                .controller(TickBoxControllerBuilder::create)
                                 .build())
 
                         .build())

@@ -1,5 +1,6 @@
 package com.danrus.pas.render;
 
+import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.StringUtils;
@@ -11,6 +12,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
@@ -44,9 +46,13 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
             return;
         }
 
-        List<String> nameData = StringUtils.matchASName(customName.getString());
+        List<String> matches = StringUtils.matchASName(customName.getString());
 
-        if (nameData.get(1).contains("C") && this.getParentModel() instanceof ModelWithCape model) {
+        boolean isDownlading = SkinManger.getInstance().getData(Component.literal(matches.get(0))).getStatus() == DownloadStatus.IN_PROGRESS ||
+                SkinManger.getInstance().getData(Component.literal(matches.get(0))).getStatus() == DownloadStatus.FAILED;
+        boolean showArmorStandWhileDownload = ModConfig.get().showArmorStandWhileDownloading && isDownlading;
+
+        if (matches.get(1).contains("C") && this.getParentModel() instanceof ModelWithCape model && !showArmorStandWhileDownload) {
             SkinData skinData = SkinManger.getInstance().getData(customName);
             ResourceLocation capeTexture = skinData.getCapeTexture();
 

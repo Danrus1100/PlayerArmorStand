@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ArmorStandRenderer.class)
-public class ArmorStandRendererMixin implements VersioningUtils.VersionlessArmorStandCape {
+public abstract class ArmorStandRendererMixin implements VersioningUtils.VersionlessArmorStandCape {
 
     @Unique
     private PlayerArmorStandModel model;
@@ -67,19 +67,4 @@ public class ArmorStandRendererMixin implements VersioningUtils.VersionlessArmor
         cir.setReturnValue(SkinManger.getInstance().getSkinTexture(VersioningUtils.getCustomName(armorStand)));
     }
 
-    @Override
-    public ArmorStandArmorModel getModel() {
-        return this.model;
-    }
-
-    //? if <= 1.21.1 {
-    /*@Override
-    public ResourceLocation getTextureLocation(net.minecraft.world.entity.decoration.ArmorStand armorStand)
-    {
-        if (VersioningUtils.getCustomName(armorStand) == null || !ModConfig.get().enableMod) {
-            return ArmorStandRenderer.DEFAULT_SKIN_LOCATION;
-        }
-        return SkinManger.getInstance().getSkinTexture(VersioningUtils.getCustomName(armorStand));
-    }
-    *///?}
 }

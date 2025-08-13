@@ -15,6 +15,7 @@
   "pas.config.hide_params_on_label": "Скрыть параметры на имени",
   "pas.config.default_skin": "Стандартный скин",
   "pas.config.enable_mod": "Включить мод",
+  "pas.config.show_armor_stand_while_downloading": "Показать стойку во время загрузки",
 
   "pas.config.download_status_display": "Показать статус загрузки",
   "pas.config.download_status_display.none": "Не показывать",

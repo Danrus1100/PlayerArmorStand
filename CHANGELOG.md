@@ -1,3 +1,3 @@
- - NeoForge support (1.12.1, 1.21.4, 1.21.6-1.21.8)
- - `Illegal char` fix ([issue #2](https://github.com/Danrus1100/PlayerArmorStand/issues/2))
- - Next versions are discontinued: 1.20.2-1.20.6, 1.21.2-1.21.3, 1.21.5
+ - 1.20.1 - 1.21.1 crushes fix
+ - Download pipeline improvements
+ - Now, during downloading, the armored stand model is displayed instead of the default player model. This behavior can be changed in the settings.
