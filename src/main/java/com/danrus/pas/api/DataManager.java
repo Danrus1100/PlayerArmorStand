@@ -39,4 +39,13 @@ public interface DataManager {
      * @param name the identifier for the data to invalidate
      */
     void invalidateData(String name);
+
+    /**
+     * Retrieves a specific data source by its key.
+     *
+     * @param key the key of the data source
+     * @return the DataCache associated with the key, or null if not found
+     */
+
+    DataCache<?> getSource(String key);
 }

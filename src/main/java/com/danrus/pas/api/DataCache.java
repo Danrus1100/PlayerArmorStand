@@ -7,7 +7,7 @@ public interface DataCache<T> {
     default HashMap<String, SkinData> getAll() {
         return new HashMap<String, SkinData>();
     }
-    default void store(String name, T data){}
+    default void store(String name, Object data){}
     default void invalidateData(String name){}
     boolean isCompatibleWith(Object data);
     String getName();

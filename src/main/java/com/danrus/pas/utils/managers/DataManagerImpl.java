@@ -9,41 +9,43 @@ import com.danrus.pas.utils.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DataManagerImpl implements DataManager {
-    private HashMap<String, DataCache> sources = new HashMap<>();
+    private HashMap<String, DataCache<?>> sources = new HashMap<>();
 
     @Override
-    public void addSource(DataCache source) {
+    public void addSource(DataCache<?> source) {
         sources.put(source.getName(), source);
     }
 
-    public DataCache getSource(String key) {
+    public DataCache<?> getSource(String key) {
         return sources.get(key);
     }
 
-    public HashMap<String, DataCache> getSources(){
+    public HashMap<String, DataCache<?>> getSources(){
         return sources;
     }
 
     public SkinData getData(String string) {
         List<String> matches = StringUtils.matchASName(string);
         String name = matches.get(0);
-        SkinData data = new SkinData(name);
+        AtomicReference<SkinData> data = new AtomicReference<>(new SkinData(name));
         AtomicBoolean needDownload = new AtomicBoolean(true);
         sources.forEach((key, source) -> {
             SkinData dataFromSource = needDownload.get() ? source.get(name) : null;
             if (dataFromSource != null) {
                 needDownload.set(false);
-                data.setSkinTexture(dataFromSource.getSkinTexture(matches.get(2), matches.get(3)));
-                data.setCapeTexture(dataFromSource.getCapeTexture(matches.get(2), matches.get(3)));
-                data.setStatus(dataFromSource.getStatus());
+//                data.setSkinTexture(dataFromSource.getSkinTexture(matches.get(2), matches.get(3)));
+//                data.setCapeTexture(dataFromSource.getCapeTexture(matches.get(2), matches.get(3)));
+//                data.setStatus(dataFromSource.getStatus());
+                data.set(dataFromSource);
             }
         });
-        if (needDownload.get() && data.getStatus() == DownloadStatus.NOT_STARTED) {
+        if (needDownload.get() && data.get().getStatus() == DownloadStatus.NOT_STARTED) {
             SkinManger.getInstance().getSkinProviderManager().download(string);
         }
-        return data;
+        return data.get();
     }
 
     public void store(String name, Object data) {

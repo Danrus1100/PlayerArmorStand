@@ -44,6 +44,23 @@ public class StringUtils {
         }
     }
 
+    public static List<String> matchTexture(String input){
+        String textureRegex = "T:([A-Z0-9_]+)(?:%(\\d+))?";
+        Pattern pattern = Pattern.compile(textureRegex);
+        Matcher matcher = pattern.matcher(input.toUpperCase());
+
+        if (matcher.find()) {
+            String textureName = matcher.group(1).toLowerCase();
+            String blendFactor = matcher.group(2) != null ? matcher.group(2) : "100";
+
+            String params = input.replaceFirst(textureRegex, "").trim().toUpperCase();
+
+            return List.of(textureName, blendFactor, params);
+        }
+
+        return List.of("", "", "");
+    }
+
     public static @NotNull List<String> matchASName(String input){
         String[] divided = input.split("\\|");
         String name = divided[0].trim();
@@ -55,18 +72,14 @@ public class StringUtils {
         }
         String rawParams = divided[1].toUpperCase();
 
-        String textureRegex = "T:([A-Z0-9_]+)(?:%(\\d+))?";
-        Pattern pattern = Pattern.compile(textureRegex);
-        Matcher matcher = pattern.matcher(input.toUpperCase());
-
-        if (matcher.find()) {
-            String textureName = matcher.group(1).toLowerCase();
-            String blendFactor = matcher.group(2) != null ? matcher.group(2) : "100";
-
-            String params = rawParams.replaceFirst(textureRegex, "").trim().toUpperCase();
-
-            return List.of(name, params, textureName, blendFactor);
+        List<String> textureMatch = matchTexture(rawParams);
+        if (!textureMatch.get(0).isEmpty()) {
+            String textureName = textureMatch.get(0);
+            String blendFactor = textureMatch.get(1);
+            rawParams = textureMatch.get(2).trim().toUpperCase();
+            return List.of(name, rawParams, textureName, blendFactor);
         }
+
         return List.of(name, rawParams.trim(), "", "100");
     }
 }

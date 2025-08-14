@@ -24,8 +24,8 @@ public class GameCache implements DataCache<SkinData> {
     }
 
     @Override
-    public void store(String name, SkinData data) {
-        cache.put(name, data);
+    public void store(String name, Object data) {
+        cache.put(name, (SkinData) data);
     }
 
     @Override
