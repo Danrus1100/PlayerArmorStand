@@ -193,8 +193,8 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         }
 
         List<String> matches =  StringUtils.matchASName(customNameString);
-        boolean isDownlading = SkinManger.getInstance().getData(Component.literal(matches.get(0))).getStatus() == DownloadStatus.IN_PROGRESS ||
-                SkinManger.getInstance().getData(Component.literal(matches.get(0))).getStatus() == DownloadStatus.FAILED;
+        boolean isDownlading = SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.IN_PROGRESS ||
+                SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.FAILED;
         boolean showArmorStandWhileDownload = ModConfig.get().showArmorStandWhileDownloading && isDownlading;
 
         this.setModelVisibility(!showArmorStandWhileDownload, matches.get(1).contains("S"), showBase);
