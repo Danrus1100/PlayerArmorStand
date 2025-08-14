@@ -48,8 +48,8 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
 
         List<String> matches = StringUtils.matchASName(customName.getString());
 
-        boolean isDownlading = SkinManger.getInstance().getData(Component.literal(matches.get(0))).getStatus() == DownloadStatus.IN_PROGRESS ||
-                SkinManger.getInstance().getData(Component.literal(matches.get(0))).getStatus() == DownloadStatus.FAILED;
+        boolean isDownlading = SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.IN_PROGRESS ||
+                SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.FAILED;
         boolean showArmorStandWhileDownload = ModConfig.get().showArmorStandWhileDownloading && isDownlading;
 
         if (matches.get(1).contains("C") && this.getParentModel() instanceof ModelWithCape model && !showArmorStandWhileDownload) {
