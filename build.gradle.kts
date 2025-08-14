@@ -18,6 +18,7 @@ val loaderInitials: String = when (loader) {
     else -> throw IllegalArgumentException("Unknown loader: $loader")
 }
 
+
 modstitch {
     minecraftVersion = minecraft
 
@@ -32,12 +33,18 @@ modstitch {
         prop("deps.parchment") { mappingsVersion = it }
     }
 
+    var versionName = "${property("mod.version")}-${loaderInitials}-${minecraft}"
+    val gitBranchName = "git rev-parse --abbrev-ref HEAD"
+        .run { Runtime.getRuntime().exec(this).inputStream.bufferedReader().readText().trim() }
+    if (!gitBranchName.equals("main")) {
+        versionName += "-$gitBranchName"
+    }
     // This metadata is used to fill out the information inside
     // the metadata files found in the templates folder.
     metadata {
         modId = "pas"
         modName = "Player Armor Stands"
-        modVersion = "${property("mod.version")}-${loaderInitials}-${minecraft}"
+        modVersion = versionName
         modGroup = "com.danrus.pas"
         modAuthor = "Danrus110_"
         modDescription = "Make named armor stands looks like players!"
