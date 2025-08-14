@@ -10,7 +10,7 @@ import java.util.*;
 public class SkinProvidersManagerImpl implements SkinProvidersManager {
 
     private final Map<String, List<PrioritizedProvider>> providers = new HashMap<>();
-    private final String excludeLiterals = "NF"; // Exclude literals. for NOT default providers
+    public static final String excludeLiterals = "NF"; // Exclude literals. for NOT default providers
 
     public void addProvider(SkinProvider provider) {
         addProvider(provider, 0);
@@ -38,7 +38,7 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
                 // Try each provider for this literal in order (sorted by priority)
                 for (PrioritizedProvider prioritizedProvider : literalProviders) {
                     try {
-                        prioritizedProvider.provider().load(name);
+                        prioritizedProvider.provider().load(string);
                         loaded = true;
                         break; // Break from provider loop if successful
                     } catch (Exception e) {
@@ -58,7 +58,7 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
             if (defaultProviders != null) {
                 for (PrioritizedProvider prioritizedProvider : defaultProviders) {
                     try {
-                        prioritizedProvider.provider().load(name);
+                        prioritizedProvider.provider().load(string);
                         loaded = true;
                         break;
                     } catch (Exception e) {

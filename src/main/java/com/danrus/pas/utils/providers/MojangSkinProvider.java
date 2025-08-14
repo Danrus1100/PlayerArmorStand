@@ -10,12 +10,15 @@ import com.danrus.pas.utils.SkinDownloader;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.data.MojangDiskCache;
+import com.danrus.pas.utils.managers.DataManagerImpl;
 import com.danrus.pas.utils.managers.OverlayMessageManger;
 import com.danrus.pas.utils.managers.SkinManger;
+import com.danrus.pas.utils.managers.SkinProvidersManagerImpl;
 import com.google.gson.Gson;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class MojangSkinProvider implements SkinProvider {
@@ -35,7 +38,11 @@ public class MojangSkinProvider implements SkinProvider {
     
 
     @Override
-    public void load(String name) {
+    public void load(String string) {
+        List<String> matches = StringUtils.matchASName(string);
+        String name = matches.get(0);
+        String params = matches.get(1).toUpperCase();
+
         if (!isValidName(name)) {
             OverlayMessageManger.getInstance().showInvalidNameMessage(name);
             ModExecutor.execute(() -> SkinManger.getInstance().getDataManager().invalidateData(name));

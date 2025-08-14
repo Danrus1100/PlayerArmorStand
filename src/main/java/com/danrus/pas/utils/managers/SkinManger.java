@@ -52,8 +52,9 @@ public class SkinManger {
             PlayerArmorStandsClient.LOGGER.warn("SkinManger: No data found for " + name + ", reloading from providers");
             return;
         }
-        dataManager.getData(name).setStatus(DownloadStatus.NOT_STARTED);
-        skinProviderManager.download(name);
+        SkinData data = dataManager.getData(name);
+        data.setStatus(DownloadStatus.NOT_STARTED);
+        skinProviderManager.download(!data.getParams().isEmpty() ? data.getName() + "|" + data.getParams() : data.getName());
     }
 
     public void reloadFailed() {

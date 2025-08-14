@@ -26,6 +26,7 @@ public class NamemcDiskCache implements DataCache<Path> {
             TextureUtils.registerTexture(SkinFilePath, skinIdentifier, true);
             identifiers.put(name, skinIdentifier);
             data.setSkinTexture(skinIdentifier);
+            data.appendParams("N");
             SkinManger.getInstance().getDataManager().store(name, data);
             return data;
         }

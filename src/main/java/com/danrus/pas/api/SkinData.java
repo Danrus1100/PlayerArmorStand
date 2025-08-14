@@ -1,6 +1,7 @@
 package com.danrus.pas.api;
 
 import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.TextureUtils;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -94,6 +95,10 @@ public class SkinData {
         return status;
     }
 
+    public String getParams() {
+        return params;
+    }
+
     public void setStatus(DownloadStatus status) {
         if (status != DownloadStatus.IMPOSSIBLE_TO_DOWNLOAD){
             this.status = status;
@@ -115,6 +120,33 @@ public class SkinData {
                 textureData.texture = capeTexture;
                 return;
             }
+        }
+    }
+
+    public void setParams(String params) {
+        this.params = params.toUpperCase();
+    }
+
+    public void appendParams(String params) {
+        if (params.contains("T") && this.params.contains("T")) {
+            return;
+        }
+
+        if (params.contains("T")) {
+            List<String> texureParams = StringUtils.matchTexture(params);
+            if (texureParams.get(0).isEmpty()) {
+                this.params += texureParams.get(2);
+                return;
+            } else {
+                this.params += "T:" + texureParams.get(0) + texureParams.get(1) + texureParams.get(2);
+                return;
+            }
+        }
+
+        if (this.params.isEmpty()) {
+            this.params = params.toUpperCase();
+        } else if (this.params.contains("T")){
+            this.params = params + this.params;
         }
     }
 }
