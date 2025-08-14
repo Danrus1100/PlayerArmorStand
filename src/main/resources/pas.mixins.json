@@ -7,10 +7,12 @@
   },
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "AnvilScreenMixin",
     "ArmorStandRendererMixin",
     "EntityRendererMixin",
     "LayerDefinitionsMixin",
     "LivingEntityRendererMixin",
-    "accessors.LivingEntityRendererAccessor"
+    "accessors.LivingEntityRendererAccessor",
+    "accessors.ScreenAccessor"
   ]
 }

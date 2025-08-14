@@ -2,6 +2,9 @@
   "commands.pas.default_feedback": "Необходимы аргументы",
   "commands.pas.reload_failed_error": "Чтобы перезагрузить скин, необходимо указать имя игрока",
 
+  "pas.buttons.configurator": "Конфигратор Player Armor Stand",
+  "pas.buttons.configurator.tooltip": "Открыть конфигуратор Player Armor Stand для управления скином и его параметрами",
+
   "pas.downloading": "Загрузка скина для %s...",
   "pas.invalid_username": "Неверное имя: %s",
   "pas.download_success": "Скин загружен: %s",
