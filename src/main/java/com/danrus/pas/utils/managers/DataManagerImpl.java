@@ -8,8 +8,10 @@ import com.danrus.pas.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class DataManagerImpl implements DataManager {
     private HashMap<String, DataCache<?>> sources = new HashMap<>();
@@ -22,6 +24,33 @@ public class DataManagerImpl implements DataManager {
     public DataCache<?> getSource(String key) {
         return sources.get(key);
     }
+
+    @Override
+    public HashMap<String, SkinData> getGameData() {
+        return sources.values().stream()
+                .map(source -> (DataCache<SkinData>) source) // FIXME: unsafe
+                .map(DataCache::getAll)
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> b,
+                        HashMap::new
+                ));
+    }
+
+    @Override
+    public SkinData findData(String name) {
+        DataCache<SkinData> gameCache = (DataCache<SkinData>) sources.get("game");
+        if (gameCache != null) {
+            SkinData data = gameCache.get(name);
+            if (data != null) {
+                return data;
+            }
+        }
+        return null;
+    }
+
 
     public HashMap<String, DataCache<?>> getSources(){
         return sources;
@@ -36,9 +65,6 @@ public class DataManagerImpl implements DataManager {
             SkinData dataFromSource = needDownload.get() ? source.get(name) : null;
             if (dataFromSource != null) {
                 needDownload.set(false);
-//                data.setSkinTexture(dataFromSource.getSkinTexture(matches.get(2), matches.get(3)));
-//                data.setCapeTexture(dataFromSource.getCapeTexture(matches.get(2), matches.get(3)));
-//                data.setStatus(dataFromSource.getStatus());
                 data.set(dataFromSource);
             }
         });
