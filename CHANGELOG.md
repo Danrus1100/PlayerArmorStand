@@ -1,3 +1,2 @@
- - 1.20.1 - 1.21.1 crushes fix
- - Download pipeline improvements
- - Now, during downloading, the armored stand model is displayed instead of the default player model. This behavior can be changed in the settings.
+ - NameMC skins and `/player-armor-stand reload` fixes
+ - Cape on baby armor stands fix (1.21.4+)
