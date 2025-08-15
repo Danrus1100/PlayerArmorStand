@@ -4,6 +4,7 @@
   "name": "${mod_name}",
   "version": "${mod_version}",
   "description": "${mod_description}",
+  "authors": ["${mod_author}"],
   "license": "${mod_license}",
   "icon": "assets/pas/icon.png",
   "environment": "client",
