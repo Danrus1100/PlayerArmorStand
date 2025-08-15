@@ -6,10 +6,13 @@ import com.danrus.pas.render.ArmorStandCapeLayer;
 import com.danrus.pas.render.PlayerArmorStandModel;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.managers.SkinManger;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -67,4 +70,15 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
         cir.setReturnValue(SkinManger.getInstance().getSkinTexture(VersioningUtils.getCustomName(armorStand)));
     }
 
+    @Inject(
+            method = "setupRotations(Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;FF)V",
+            at = @At("HEAD")
+    )
+    private void pas$setupRotations(ArmorStandRenderState renderState, PoseStack poseStack, float f, float scale, CallbackInfo ci) {
+        if (renderState.isUpsideDown) {
+            poseStack.translate(0.0F, (renderState.boundingBoxHeight + 0.1F) / scale, 0.0F);
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+        }
+    }
 }
