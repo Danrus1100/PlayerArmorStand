@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -26,6 +27,12 @@ public class ConfiguratorScreen extends Screen {
     private boolean isAnimating = false;
     private static final float ANIMATION_SPEED = 0.15f;
 
+    public static final ResourceLocation ROTATE_BUTTON_TEXTURE =
+            VersioningUtils.getResourceLocation("pas", "rotate_button");
+    public static final ResourceLocation ROTATE_BUTTON_DISABLED_TEXTURE =
+            VersioningUtils.getResourceLocation("pas", "rotate_button_disabled");
+    public static final ResourceLocation ROTATE_BUTTON_HIGHLIGHTED_TEXTURE =
+            VersioningUtils.getResourceLocation("pas", "rotate_button_highlighted");
 
     private final ImageButton rotateButton;
     private final Screen parent;
@@ -35,9 +42,9 @@ public class ConfiguratorScreen extends Screen {
         this.parent = parent;
         this.rotateButton = new ImageButton(5, 5, 20, 20,
                 new WidgetSprites(
-                        VersioningUtils.getResourceLocation("pas", "textures/gui/rotate_button.png"),
-                        VersioningUtils.getResourceLocation("pas", "textures/gui/rotate_button_disabled.png"),
-                        VersioningUtils.getResourceLocation("pas", "textures/gui/rotate_button_highlighted.png")
+                        ROTATE_BUTTON_TEXTURE,
+                        ROTATE_BUTTON_DISABLED_TEXTURE,
+                        ROTATE_BUTTON_HIGHLIGHTED_TEXTURE
                 ),
                 button -> startAnimation()
         );
@@ -45,13 +52,12 @@ public class ConfiguratorScreen extends Screen {
 
     @Override
     protected void init() {
-//        this.rotateButton.setPosition(Math.round(this.width / 4f + 10) , Math.round(this.height / 2f + 95));
         this.addRenderableWidget(rotateButton);
         subInit(this.width, this.height);
     }
 
     private void subInit(int width, int height) {
-        this.rotateButton.setPosition(Math.round(width / 4f + 10), Math.round(height / 2f + 95));
+        this.rotateButton.setPosition(Math.round(width / 2f - 75 - 10), Math.round(height / 2f + 95));
     }
 
     @Override
@@ -84,11 +90,11 @@ public class ConfiguratorScreen extends Screen {
         entity.setHeadPose(new Rotations(currentHeadX, currentHeadY, currentHeadZ));
 
         Quaternionf rotation = new Quaternionf().rotateX((float) Math.PI*1.1F)
-                .rotateY((float) Math.toRadians(currentRotation));
+                .rotateY((float) Math.toRadians(currentRotation+30F));
 
 
         InventoryScreen.renderEntityInInventory(
-                g, this.width / 4f, this.height / 2f + 85, 85,
+                g, this.width / 2f - 75, this.height / 2f + 85, 85,
                 new Vector3f(0, 0, 0),
                 rotation,
                 null,
