@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +35,8 @@ public class ConfiguratorScreen extends Screen {
             VersioningUtils.getResourceLocation("pas", "rotate_button_disabled");
     public static final ResourceLocation ROTATE_BUTTON_HIGHLIGHTED_TEXTURE =
             VersioningUtils.getResourceLocation("pas", "rotate_button_highlighted");
+    public static final ResourceLocation BACKGROUND_TEXTURE =
+            VersioningUtils.getResourceLocation("pas", "pas_gui");
 
     private final ImageButton rotateButton;
     private final EditBox nameInput;
@@ -55,6 +58,7 @@ public class ConfiguratorScreen extends Screen {
 
         this.nameInput = new EditBox(Minecraft.getInstance().font, 5, 5 , 100, 20, Component.literal("Name"));
         this.entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
+        this.entity.setNoBasePlate(true);
     }
 
     @Override
@@ -66,7 +70,7 @@ public class ConfiguratorScreen extends Screen {
     }
 
     private void subInit(int width, int height) {
-        this.rotateButton.setPosition(Math.round(width / 2f - 75 - 10), Math.round(height / 2f + 105));
+        this.rotateButton.setPosition(Math.round(width / 2f - 38), Math.round(height / 2f + 79));
         this.nameInput.setPosition(Math.round(this.width / 2f + 50), Math.round(this.height / 2f - 75));
     }
 
@@ -77,7 +81,20 @@ public class ConfiguratorScreen extends Screen {
     }
 
     @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+
+
+    @Override
+    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(g, mouseX, mouseY, partialTick);
+        g.blitSprite(RenderType::guiTextured, BACKGROUND_TEXTURE, this.width/2-128, this.height/2-128+18, 256, 256);
+    }
+
+    @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+
         super.render(g, mouseX, mouseY, partialTick);
 
         if (isAnimating) {
@@ -103,7 +120,7 @@ public class ConfiguratorScreen extends Screen {
 
 
         InventoryScreen.renderEntityInInventory(
-                g, this.width / 2f - 75, this.height / 2f + 85, 85,
+                g, this.width / 2f - 68, this.height / 2f + 80, 70,
                 new Vector3f(0, 0, 0),
                 rotation,
                 null,
