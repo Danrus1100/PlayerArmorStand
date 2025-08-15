@@ -1,4 +1,6 @@
 {
+  "modmenu.descriptionTranslation.pas": "Теперь стойки для брони выглядят как игроки... но не забудьте переименовать их для этого",
+
   "commands.pas.default_feedback": "Необходимы аргументы",
   "commands.pas.reload_failed_error": "Чтобы перезагрузить скин, необходимо указать имя игрока",
   "commands.pas.skin_not_found": "Не удалось найти данные для указанного скина",

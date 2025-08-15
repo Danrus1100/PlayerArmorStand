@@ -47,7 +47,7 @@ modstitch {
         modVersion = versionName
         modGroup = "com.danrus.pas"
         modAuthor = "Danrus110_"
-        modDescription = "Make named armor stands looks like players!"
+        modDescription = "Now the armor stands look like players... but don't forget to rename them for that"
         modLicense = "CC0-1.0"
 
         fun MapProperty<String, String>.populate(block: MapProperty<String, String>.() -> Unit) {
