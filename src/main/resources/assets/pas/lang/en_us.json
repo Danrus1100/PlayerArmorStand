@@ -1,6 +1,9 @@
 {
+  "modmenu.descriptionTranslation.pas": "Now the armor stands look like players... but don't forget to rename them for that",
+
   "commands.pas.default_feedback": "Arguments requires",
   "commands.pas.reload_failed_error": "To reload the skin, you must specify a player name",
+  "commands.pas.skin_not_found": "Can't find data for specified skin",
 
   "pas.downloading": "Downloading Skin for %s...",
   "pas.invalid_username": "Invalid username: %s",
@@ -20,5 +23,5 @@
   "pas.config.download_status_display": "Show Download Status",
   "pas.config.download_status_display.none": "Don't Show",
   "pas.config.download_status_display.above_hotbar": "Above the Hotbar",
-  "pas.config.download_status_display.chat": "In Chat",
+  "pas.config.download_status_display.chat": "In Chat"
 }

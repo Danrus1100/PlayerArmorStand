@@ -1,5 +1,7 @@
 package com.danrus.pas.api;
 
+import java.util.HashMap;
+
 /**
  * DataManager interface for managing data sources and retrieving SkinData.
  * This interface allows adding data sources, retrieving data by player name,
@@ -48,4 +50,22 @@ public interface DataManager {
      */
 
     DataCache<?> getSource(String key);
+
+
+    /**
+     * Retrieves all data stored in {@link com.danrus.pas.utils.data.GameCache}
+     *
+     * @return a HashMap containing all game data, where the key is the player name and the value is SkinData
+     */
+
+    HashMap<String, SkinData> getGameData();
+
+    /**
+     * Finds SkinData by a given string without download.
+     *
+     * @param string the identifier for the skin data
+     * @return SkinData associated with the identifier, or null if not found
+     */
+
+    SkinData findData(String string);
 }
