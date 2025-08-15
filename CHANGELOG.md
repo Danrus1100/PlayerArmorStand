@@ -1,2 +1,1 @@
- - NameMC skins and `/player-armor-stand reload` fixes
- - Cape on baby armor stands fix (1.21.4+)
+ - `/player-armor-stand reload` suggestions
