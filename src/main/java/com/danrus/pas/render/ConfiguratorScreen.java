@@ -3,6 +3,7 @@ package com.danrus.pas.render;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
@@ -35,6 +36,9 @@ public class ConfiguratorScreen extends Screen {
             VersioningUtils.getResourceLocation("pas", "rotate_button_highlighted");
 
     private final ImageButton rotateButton;
+    private final EditBox nameInput;
+
+    private final ArmorStand entity;
     private final Screen parent;
 
     public ConfiguratorScreen(Screen parent) {
@@ -48,16 +52,22 @@ public class ConfiguratorScreen extends Screen {
                 ),
                 button -> startAnimation()
         );
+
+        this.nameInput = new EditBox(Minecraft.getInstance().font, 5, 5 , 100, 20, Component.literal("Name"));
+        this.entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
     }
 
     @Override
     protected void init() {
         this.addRenderableWidget(rotateButton);
+        this.addRenderableWidget(nameInput);
+        nameInput.setResponder(this::setEntityName);
         subInit(this.width, this.height);
     }
 
     private void subInit(int width, int height) {
-        this.rotateButton.setPosition(Math.round(width / 2f - 75 - 10), Math.round(height / 2f + 95));
+        this.rotateButton.setPosition(Math.round(width / 2f - 75 - 10), Math.round(height / 2f + 105));
+        this.nameInput.setPosition(Math.round(this.width / 2f + 50), Math.round(this.height / 2f - 75));
     }
 
     @Override
@@ -84,9 +94,8 @@ public class ConfiguratorScreen extends Screen {
             }
         }
 
-        ArmorStand entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
-        entity.setCustomName(Component.literal("Danrus110_|C"));
-        entity.setNoBasePlate(true);
+//        entity.setCustomName(Component.literal("Danrus110_|C"));
+//        entity.setNoBasePlate(true);
         entity.setHeadPose(new Rotations(currentHeadX, currentHeadY, currentHeadZ));
 
         Quaternionf rotation = new Quaternionf().rotateX((float) Math.PI*1.1F)
@@ -109,6 +118,14 @@ public class ConfiguratorScreen extends Screen {
     @Override
     public void onClose() {
         this.minecraft.setScreen(parent);
+    }
+
+    private void setEntityName(String name) {
+        if (name != null && !name.isEmpty()) {
+            entity.setCustomName(Component.literal(name));
+        } else {
+            entity.setCustomName(null);
+        }
     }
 
     private void startAnimation() {
