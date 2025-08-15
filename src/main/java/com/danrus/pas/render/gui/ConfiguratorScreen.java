@@ -1,4 +1,4 @@
-package com.danrus.pas.render;
+package com.danrus.pas.render.gui;
 
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.Minecraft;

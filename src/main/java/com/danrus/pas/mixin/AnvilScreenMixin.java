@@ -1,7 +1,7 @@
 package com.danrus.pas.mixin;
 
 import com.danrus.pas.mixin.accessors.ScreenAccessor;
-import com.danrus.pas.render.ConfiguratorScreen;
+import com.danrus.pas.render.gui.ConfiguratorScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -13,7 +13,6 @@ import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
