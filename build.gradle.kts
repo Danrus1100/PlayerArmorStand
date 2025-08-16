@@ -8,6 +8,8 @@ fun prop(name: String, consumer: (prop: String) -> Unit) {
         ?.let(consumer)
 }
 
+val gitBranchName = "git rev-parse --abbrev-ref HEAD"
+    .run { Runtime.getRuntime().exec(this).inputStream.bufferedReader().readText().trim() }
 val minecraft = property("deps.minecraft") as String
 val loader: String = name.split("-")[1]
 val loaderInitials: String = when (loader) {
@@ -34,8 +36,6 @@ modstitch {
     }
 
     var versionName = "${property("mod.version")}-${loaderInitials}-${minecraft}"
-    val gitBranchName = "git rev-parse --abbrev-ref HEAD"
-        .run { Runtime.getRuntime().exec(this).inputStream.bufferedReader().readText().trim() }
     if (!gitBranchName.equals("main")) {
         versionName += "-$gitBranchName"
     }
@@ -142,7 +142,7 @@ publishMods {
     val discordWebhookFrame = findProperty("discord-webhook-frame")
     val discordWebhookDry = findProperty("discord-webhook-dry")
 
-    dryRun = true
+    dryRun = gitBranchName != "main"
 
     modstitch.onEnable {
         file = modstitch.finalJarTask.flatMap { it.archiveFile }
