@@ -138,10 +138,11 @@ dependencies {
 publishMods {
     val modrinthToken = findProperty("modrinth-token")
     val curseforgeToken = findProperty("curseforge-token")
-    val discordWebhook = findProperty("discord-webhook")
+    val discordWebhookDR = findProperty("discord-webhook")
+    val discordWebhookFrame = findProperty("discord-webhook-frame")
     val discordWebhookDry = findProperty("discord-webhook-dry")
 
-    dryRun = false
+    dryRun = true
 
     modstitch.onEnable {
         file = modstitch.finalJarTask.flatMap { it.archiveFile }
@@ -176,14 +177,25 @@ publishMods {
     }
 
     if (targets.contains("1.21.4") && loaders.contains("fabric")) {
-        discord {
-            webhookUrl = discordWebhook.toString()
+        discord ("DR feeak mods anonuncement") {
+            webhookUrl = discordWebhookDR.toString()
             dryRunWebhookUrl = discordWebhookDry.toString()
 
             username  = "Player Armor Stands"
             avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
 
             content = changelog.map{ "# " + findProperty("mod.version") + " version here! \n\n" + rootProject.file("CHANGELOG.md").readText() +"\n\n<@&1388295587866083338>"}
+        }
+
+        discord ("Frame Server anonuncement") {
+//            webhookUrl = discordWebhookFrame.toString()
+            webhookUrl = discordWebhookDR.toString()
+            dryRunWebhookUrl = discordWebhookDry.toString()
+
+            username  = "Player Armor Stands"
+            avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
+
+            content = changelog.map{ "# Вышла версия " + findProperty("mod.version") + "! \n\n" + rootProject.file("CHANGELOG_RU.md").readText() + "\n\nДоступен на NeoForge и Fabric!"}
         }
     }
 }
