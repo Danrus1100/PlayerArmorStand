@@ -39,7 +39,7 @@ public class ConfiguratorScreen extends Screen {
             VersioningUtils.getResourceLocation("pas", "pas_gui");
 
     private final ImageButton rotateButton;
-    private final EditBox nameInput;
+    private final EditBox idInput;
 
     private final ArmorStand entity;
     private final Screen parent;
@@ -56,7 +56,7 @@ public class ConfiguratorScreen extends Screen {
                 button -> startAnimation()
         );
 
-        this.nameInput = new EditBox(Minecraft.getInstance().font, 5, 5 , 100, 20, Component.literal("Name"));
+        this.idInput = new EditBox(Minecraft.getInstance().font, 5, 5 , 100, 20, Component.literal("Name"));
         this.entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
         this.entity.setNoBasePlate(true);
     }
@@ -64,14 +64,14 @@ public class ConfiguratorScreen extends Screen {
     @Override
     protected void init() {
         this.addRenderableWidget(rotateButton);
-        this.addRenderableWidget(nameInput);
-        nameInput.setResponder(this::setEntityName);
+        this.addRenderableWidget(idInput);
+        idInput.setResponder(this::setEntityName);
         subInit(this.width, this.height);
     }
 
     private void subInit(int width, int height) {
         this.rotateButton.setPosition(Math.round(width / 2f - 38), Math.round(height / 2f + 79));
-        this.nameInput.setPosition(Math.round(this.width / 2f + 50), Math.round(this.height / 2f - 75));
+        this.idInput.setPosition(Math.round(this.width / 2f + 10), Math.round(this.height / 2f - 50));
     }
 
     @Override
@@ -111,6 +111,7 @@ public class ConfiguratorScreen extends Screen {
             }
         }
 
+        g.drawCenteredString(Minecraft.getInstance().font, "Настройка скина", 10, 10, 0xFFFFFF);
 //        entity.setCustomName(Component.literal("Danrus110_|C"));
 //        entity.setNoBasePlate(true);
         entity.setHeadPose(new Rotations(currentHeadX, currentHeadY, currentHeadZ));
