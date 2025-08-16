@@ -8,6 +8,8 @@ fun prop(name: String, consumer: (prop: String) -> Unit) {
         ?.let(consumer)
 }
 
+val gitBranchName = "git rev-parse --abbrev-ref HEAD"
+    .run { Runtime.getRuntime().exec(this).inputStream.bufferedReader().readText().trim() }
 val minecraft = property("deps.minecraft") as String
 val loader: String = name.split("-")[1]
 val loaderInitials: String = when (loader) {
@@ -34,8 +36,6 @@ modstitch {
     }
 
     var versionName = "${property("mod.version")}-${loaderInitials}-${minecraft}"
-    val gitBranchName = "git rev-parse --abbrev-ref HEAD"
-        .run { Runtime.getRuntime().exec(this).inputStream.bufferedReader().readText().trim() }
     if (!gitBranchName.equals("main")) {
         versionName += "-$gitBranchName"
     }
@@ -47,7 +47,7 @@ modstitch {
         modVersion = versionName
         modGroup = "com.danrus.pas"
         modAuthor = "Danrus110_"
-        modDescription = "Make named armor stands looks like players!"
+        modDescription = "Now the armor stands look like players... but don't forget to rename them for that"
         modLicense = "CC0-1.0"
 
         fun MapProperty<String, String>.populate(block: MapProperty<String, String>.() -> Unit) {
@@ -138,10 +138,11 @@ dependencies {
 publishMods {
     val modrinthToken = findProperty("modrinth-token")
     val curseforgeToken = findProperty("curseforge-token")
-    val discordWebhook = findProperty("discord-webhook")
+    val discordWebhookDR = findProperty("discord-webhook")
+    val discordWebhookFrame = findProperty("discord-webhook-frame")
     val discordWebhookDry = findProperty("discord-webhook-dry")
 
-    dryRun = false
+    dryRun = gitBranchName != "main"
 
     modstitch.onEnable {
         file = modstitch.finalJarTask.flatMap { it.archiveFile }
@@ -176,14 +177,25 @@ publishMods {
     }
 
     if (targets.contains("1.21.4") && loaders.contains("fabric")) {
-        discord {
-            webhookUrl = discordWebhook.toString()
+        discord ("DR feeak mods anonuncement") {
+            webhookUrl = discordWebhookDR.toString()
             dryRunWebhookUrl = discordWebhookDry.toString()
 
             username  = "Player Armor Stands"
             avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
 
             content = changelog.map{ "# " + findProperty("mod.version") + " version here! \n\n" + rootProject.file("CHANGELOG.md").readText() +"\n\n<@&1388295587866083338>"}
+        }
+
+        discord ("Frame Server anonuncement") {
+//            webhookUrl = discordWebhookFrame.toString()
+            webhookUrl = discordWebhookFrame.toString()
+            dryRunWebhookUrl = discordWebhookDry.toString()
+
+            username  = "Player Armor Stands"
+            avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
+
+            content = changelog.map{ "# Вышла версия " + findProperty("mod.version") + "! \n\n" + rootProject.file("CHANGELOG_RU.md").readText() + "\n\nДоступен на NeoForge и Fabric!"}
         }
     }
 }
