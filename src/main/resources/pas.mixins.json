@@ -12,6 +12,7 @@
     "EntityRendererMixin",
     "LayerDefinitionsMixin",
     "LivingEntityRendererMixin",
+    "accessors.AbstractWidgetAccessor",
     "accessors.LivingEntityRendererAccessor",
     "accessors.ScreenAccessor"
   ]

@@ -1,4 +1,4 @@
-package com.danrus.pas.render.gui;
+package com.danrus.pas.render.gui.tabs;
 
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.Minecraft;
@@ -10,8 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
-import java.util.List;
-
 public class TabButton extends Button {
 
     private static final WidgetSprites TAB_BUTTON_SPRITES = new WidgetSprites(
@@ -20,33 +18,23 @@ public class TabButton extends Button {
             VersioningUtils.getResourceLocation("pas", "tab_highlighted")
     );
 
-    private final List<TabButton> tabButtons;
+    public OnPress tabOnPress;
 
-    public TabButton(int x, int y, int width, int height, Component message, OnPress onPress) {
-        this(x, y, width, height, message, onPress, (TabButton[]) null);
-    }
-
-    public TabButton(int x, int y, int width, int height, Component message, OnPress onPress, TabButton... tabButtons) {
-        super(x, y, width, height, message, onPress, DEFAULT_NARRATION);
-        this.tabButtons = List.of(tabButtons);
-    }
-
-    public void addTabButton(TabButton tabButton) {
-        this.tabButtons.add(tabButton);
+    public TabButton(int x, int y, int width, int height, Component message) {
+        super(x, y, width, height, message, (button) -> {}, DEFAULT_NARRATION);
     }
 
     @Override
     public void onPress() {
-        tabButtons.forEach(button -> button.active = true);
-        this.active = false;
-        super.onPress();
+        if (this.tabOnPress != null) {
+            this.tabOnPress.onPress(this);
+        }
     }
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         guiGraphics.blitSprite(RenderType::guiTextured, TAB_BUTTON_SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight(), ARGB.white(this.alpha));
-        int i = this.active ? 16777215 : 10526880;
-        this.renderString(guiGraphics, minecraft.font, i | Mth.ceil(this.alpha * 255.0F) << 24);
+        this.renderString(guiGraphics, minecraft.font, 16777215 | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 }

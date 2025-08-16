@@ -1,9 +1,15 @@
 package com.danrus.pas.render.gui;
 
+import com.danrus.pas.render.gui.tabs.Tab;
+import com.danrus.pas.render.gui.tabs.TabButton;
+import com.danrus.pas.render.gui.tabs.TabManager;
 import com.danrus.pas.utils.VersioningUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderType;
@@ -11,11 +17,9 @@ import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
+
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConfiguratorScreen extends Screen {
 
@@ -35,69 +39,104 @@ public class ConfiguratorScreen extends Screen {
     private float targetHeadZ = 0f;
     private boolean isAnimating = false;
 
-    private final ImageButton rotateButton;
-    private final EditBox idInput;
-
-    private final ArmorStand entity;
-    private final Screen parent;
+    private AnimationState currentAnimationState = AnimationState.IDLE;
 
     private final TabButton skinTabButton;
     private final TabButton capeTabButton;
     private final TabButton overlayTabButton;
 
-    private final Tab skinTab;
-    private final Tab capeTab;
-    private final Tab overlayTab;
+    private final ImageButton rotateButton;
+    private final ArmorStand entity;
+    private final Screen parent;
 
-    private Tab activeTab;
+    private final TabManager tabManager;
 
     public ConfiguratorScreen(Screen parent) {
         super(Component.literal("Player Armor Stand Configurator"));
         this.parent = parent;
-        this.rotateButton = new ImageButton(5, 5, 20, 20,
+        this.entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
+//        this.entity.setNoBasePlate(true);
+
+        this.rotateButton = new ImageButton(0, 0, 20, 20,
                 new WidgetSprites(
                         ROTATE_BUTTON_TEXTURE,
                         ROTATE_BUTTON_DISABLED_TEXTURE,
                         ROTATE_BUTTON_HIGHLIGHTED_TEXTURE
                 ),
-                button -> animateRotation()
+                button -> currentAnimationState = currentAnimationState == AnimationState.IDLE ? AnimationState.CAPE : AnimationState.IDLE
         );
 
-        this.idInput = new EditBox(Minecraft.getInstance().font, 5, 5 , 100, 20, Component.literal("Name"));
-        this.entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
+        skinTabButton = new TabButton(5, 5, 80, 15, Component.translatable("pas.menu.tab.skin"));
+        capeTabButton = new TabButton(105, 5, 80, 15, Component.literal("pas.menu.tab.cape"));
+        overlayTabButton = new TabButton(205, 5, 80, 15, Component.literal("pas.menu.tab.overlay"));
 
-        this.skinTab = new Tab().addWidget(Component.literal("test"), idInput);
-        this.capeTab = new Tab();
-        this.overlayTab = new Tab();
+        this.tabManager = new TabManager(this);
+        setupTabs();
+    }
 
-        this.skinTabButton = new TabButton(5, 5, 100, 20, Component.literal("Skin"), button -> activeTab = skinTab);
-        this.capeTabButton = new TabButton(105, 5, 100, 20, Component.literal("Cape"), button -> activeTab = capeTab, skinTabButton);
-        this.overlayTabButton = new TabButton(205, 5, 100, 20, Component.literal("Overlay"), button -> activeTab = overlayTab, skinTabButton, capeTabButton);
-        this.capeTabButton.addTabButton(overlayTabButton);
-        this.skinTabButton.addTabButton(overlayTabButton);
-        this.skinTabButton.addTabButton(capeTabButton);
-        this.activeTab = skinTab;
+    private void setupTabs() {
+        // --- Skin Tab ---
+        EditBox nameBox = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Name"));
+        TextWidget nameLabel = new TextWidget(0, 0, 100, 20, Component.literal("test"));
+        ImageButton acceptNameButton = new ImageButton(0, 0, 20, 20,
+                new WidgetSprites(
+                        VersioningUtils.getResourceLocation("pas", "accept"),
+                        VersioningUtils.getResourceLocation("pas", "accept_disabled"),
+                        VersioningUtils.getResourceLocation("pas", "accept_highlighted")
+                ),
+                button -> setEntityName(nameBox.getValue())
+        );
 
-        this.entity.setNoBasePlate(true);
+        Tab skinTab = new Tab("skin", (width, height) -> {
+            nameLabel.setPosition(Math.round(width / 2f ), Math.round(height / 2f - 87));
+            nameBox.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 70));
+            acceptNameButton.setPosition(Math.round(width / 2f + 92), Math.round(height / 2f - 70));
+        });
+        skinTab.addWidget(nameBox);
+        skinTab.addWidget(nameLabel);
+        skinTab.addWidget(acceptNameButton);
+
+        // -- Cape Tab ---
+
+
+        Tab capeTab = new Tab("cape", (width, height) -> { /* Layout for cape tab */ });
+
+
+        // --- Overlay Tab ---
+
+
+        Tab overlayTab = new Tab("overlay", (width, height) -> { /* Layout for overlay tab */ });
+
+
+        tabManager.addTab(skinTabButton, skinTab);
+        tabManager.addTab(capeTabButton, capeTab);
+        tabManager.addTab(overlayTabButton, overlayTab);
     }
 
     @Override
     protected void init() {
-        this.addRenderableWidget(rotateButton);
-//        this.addRenderableWidget(idInput);
-        idInput.setResponder(this::setEntityName);
-        subInit(this.width, this.height);
+//        this.addRenderableWidget(rotateButton); // Removed =(
+        tabManager.init();
+        repositionElements(this.width, this.height);
     }
 
-    private void subInit(int width, int height) {
+    private void repositionElements(int width, int height) {
+        this.addRenderableWidget(skinTabButton);
+        this.addRenderableWidget(capeTabButton);
+        this.addRenderableWidget(overlayTabButton);
+
         this.rotateButton.setPosition(Math.round(width / 2f - 38), Math.round(height / 2f + 79));
-        this.idInput.setPosition(Math.round(this.width / 2f + 10), Math.round(this.height / 2f - 50));
+        this.skinTabButton.setPosition(width/2 - 124, height/2 - 109);
+        this.capeTabButton.setPosition(width/2 - 43, height/2 - 109);
+        this.overlayTabButton.setPosition(width/2 + 38, height/2 - 109);
+        tabManager.reposition(width, height);
     }
 
     @Override
     public void resize(Minecraft minecraft, int width, int height) {
         super.resize(minecraft, width, height);
-        subInit(width, height);
+
+        repositionElements(width, height);
     }
 
     @Override
@@ -105,40 +144,46 @@ public class ConfiguratorScreen extends Screen {
         return false;
     }
 
-
     @Override
     public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(g, mouseX, mouseY, partialTick);
-        g.blitSprite(RenderType::guiTextured, BACKGROUND_TEXTURE, this.width/2-128, this.height/2-128+18, 256, 256);
+        g.blitSprite(RenderType::guiTextured, BACKGROUND_TEXTURE, this.width / 2 - 128, this.height / 2 - 128 + 18, 256, 256);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (tabManager.getActiveTab().getName().equals("cape")) {
+            this.rotateButton.active = false;
+            this.currentAnimationState = AnimationState.CAPE;
+        } else {
+            this.rotateButton.active = true;
+            this.currentAnimationState = AnimationState.IDLE;
+        }
+
+        animateRotation(currentAnimationState);
     }
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-
         super.render(g, mouseX, mouseY, partialTick);
 
-        activeTab.render(g, mouseX, mouseY, partialTick);
-
         if (isAnimating) {
-            // Update rotation
             currentRotation = lerp(currentRotation, targetRotation, ANIMATION_SPEED);
-            // Update head rotation
             currentHeadX = lerp(currentHeadX, targetHeadX, ANIMATION_SPEED);
             currentHeadY = lerp(currentHeadY, targetHeadY, ANIMATION_SPEED);
             currentHeadZ = lerp(currentHeadZ, targetHeadZ, ANIMATION_SPEED);
 
-            // Check if animation is complete
             if (Math.abs(currentRotation - targetRotation) < 0.01f) {
                 isAnimating = false;
             }
         }
 
-        g.drawCenteredString(Minecraft.getInstance().font, "Настройка скина", 10, 10, 0xFFFFFF);
+        g.drawCenteredString(Minecraft.getInstance().font, "Настройка скина", this.width / 2, 15, 0xFFFFFF);
         entity.setHeadPose(new Rotations(currentHeadX, currentHeadY, currentHeadZ));
 
-        Quaternionf rotation = new Quaternionf().rotateX((float) Math.PI*1.1F)
-                .rotateY((float) Math.toRadians(currentRotation+30F));
-
+        Quaternionf rotation = new Quaternionf().rotateX((float) Math.PI * 1.1F)
+                .rotateY((float) Math.toRadians(currentRotation + 30F));
 
         InventoryScreen.renderEntityInInventory(
                 g, this.width / 2f - 68, this.height / 2f + 80, 70,
@@ -166,43 +211,26 @@ public class ConfiguratorScreen extends Screen {
         }
     }
 
-    private void animateRotation() {
+    private void animateRotation(AnimationState state) {
         isAnimating = true;
-        if (targetRotation == 180f) {
-            targetRotation = 0f;
-        } else {
-            targetRotation = 180f;
-        }
-
-        if (targetHeadX == 0f) {
-            targetHeadX = 10f;
-        } else {
-            targetHeadX = 0f;
-        }
-
-        if (targetHeadY == 0f) {
-            targetHeadY = -120f;
-        } else {
-            targetHeadY = 0f;
+        switch (state) {
+            case IDLE -> {
+                targetRotation = 0f;
+                targetHeadX = 0f;
+                targetHeadY = 0f;
+                targetHeadZ = 0f;
+            }
+            case CAPE -> {
+                targetRotation = 180f;
+                targetHeadX = 10f;
+                targetHeadY = -120f;
+                targetHeadZ = 0f;
+            }
         }
     }
 
-    public class Tab {
-        private final HashMap<Component, AbstractWidget> widgets = new HashMap<>();
-
-        public Tab addWidget(Component name, AbstractWidget widget) {
-            this.widgets.put(name, widget);
-            return this;
-        }
-
-        public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-            AtomicInteger i = new AtomicInteger(0);
-            widgets.forEach((name, widget) -> {
-                g.drawCenteredString(Minecraft.getInstance().font, name, 10, 10 + i.get() * 20, 0xFFFFFF);
-                widget.setPosition(10, 30 + i.get() * 20);
-                widget.render(g, mouseX, mouseY, partialTick);
-                i.addAndGet(1);
-            });
-        }
+    private enum AnimationState {
+        IDLE,
+        CAPE,
     }
 }
