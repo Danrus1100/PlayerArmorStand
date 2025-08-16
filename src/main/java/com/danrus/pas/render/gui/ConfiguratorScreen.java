@@ -3,9 +3,7 @@ package com.danrus.pas.render.gui;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderType;
@@ -16,7 +14,16 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class ConfiguratorScreen extends Screen {
+
+    public static final ResourceLocation ROTATE_BUTTON_TEXTURE = VersioningUtils.getResourceLocation("pas", "rotate_button");
+    public static final ResourceLocation ROTATE_BUTTON_DISABLED_TEXTURE = VersioningUtils.getResourceLocation("pas", "rotate_button_disabled");
+    public static final ResourceLocation ROTATE_BUTTON_HIGHLIGHTED_TEXTURE = VersioningUtils.getResourceLocation("pas", "rotate_button_highlighted");
+    public static final ResourceLocation BACKGROUND_TEXTURE = VersioningUtils.getResourceLocation("pas", "pas_gui");
+    private static final float ANIMATION_SPEED = 0.15f;
 
     private float currentRotation = 0f;
     private float targetRotation = 0f;
@@ -27,22 +34,22 @@ public class ConfiguratorScreen extends Screen {
     private float targetHeadY = 0f;
     private float targetHeadZ = 0f;
     private boolean isAnimating = false;
-    private static final float ANIMATION_SPEED = 0.15f;
-
-    public static final ResourceLocation ROTATE_BUTTON_TEXTURE =
-            VersioningUtils.getResourceLocation("pas", "rotate_button");
-    public static final ResourceLocation ROTATE_BUTTON_DISABLED_TEXTURE =
-            VersioningUtils.getResourceLocation("pas", "rotate_button_disabled");
-    public static final ResourceLocation ROTATE_BUTTON_HIGHLIGHTED_TEXTURE =
-            VersioningUtils.getResourceLocation("pas", "rotate_button_highlighted");
-    public static final ResourceLocation BACKGROUND_TEXTURE =
-            VersioningUtils.getResourceLocation("pas", "pas_gui");
 
     private final ImageButton rotateButton;
     private final EditBox idInput;
 
     private final ArmorStand entity;
     private final Screen parent;
+
+    private final TabButton skinTabButton;
+    private final TabButton capeTabButton;
+    private final TabButton overlayTabButton;
+
+    private final Tab skinTab;
+    private final Tab capeTab;
+    private final Tab overlayTab;
+
+    private Tab activeTab;
 
     public ConfiguratorScreen(Screen parent) {
         super(Component.literal("Player Armor Stand Configurator"));
@@ -53,18 +60,31 @@ public class ConfiguratorScreen extends Screen {
                         ROTATE_BUTTON_DISABLED_TEXTURE,
                         ROTATE_BUTTON_HIGHLIGHTED_TEXTURE
                 ),
-                button -> startAnimation()
+                button -> animateRotation()
         );
 
         this.idInput = new EditBox(Minecraft.getInstance().font, 5, 5 , 100, 20, Component.literal("Name"));
         this.entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
+
+        this.skinTab = new Tab().addWidget(Component.literal("test"), idInput);
+        this.capeTab = new Tab();
+        this.overlayTab = new Tab();
+
+        this.skinTabButton = new TabButton(5, 5, 100, 20, Component.literal("Skin"), button -> activeTab = skinTab);
+        this.capeTabButton = new TabButton(105, 5, 100, 20, Component.literal("Cape"), button -> activeTab = capeTab, skinTabButton);
+        this.overlayTabButton = new TabButton(205, 5, 100, 20, Component.literal("Overlay"), button -> activeTab = overlayTab, skinTabButton, capeTabButton);
+        this.capeTabButton.addTabButton(overlayTabButton);
+        this.skinTabButton.addTabButton(overlayTabButton);
+        this.skinTabButton.addTabButton(capeTabButton);
+        this.activeTab = skinTab;
+
         this.entity.setNoBasePlate(true);
     }
 
     @Override
     protected void init() {
         this.addRenderableWidget(rotateButton);
-        this.addRenderableWidget(idInput);
+//        this.addRenderableWidget(idInput);
         idInput.setResponder(this::setEntityName);
         subInit(this.width, this.height);
     }
@@ -97,6 +117,8 @@ public class ConfiguratorScreen extends Screen {
 
         super.render(g, mouseX, mouseY, partialTick);
 
+        activeTab.render(g, mouseX, mouseY, partialTick);
+
         if (isAnimating) {
             // Update rotation
             currentRotation = lerp(currentRotation, targetRotation, ANIMATION_SPEED);
@@ -112,8 +134,6 @@ public class ConfiguratorScreen extends Screen {
         }
 
         g.drawCenteredString(Minecraft.getInstance().font, "Настройка скина", 10, 10, 0xFFFFFF);
-//        entity.setCustomName(Component.literal("Danrus110_|C"));
-//        entity.setNoBasePlate(true);
         entity.setHeadPose(new Rotations(currentHeadX, currentHeadY, currentHeadZ));
 
         Quaternionf rotation = new Quaternionf().rotateX((float) Math.PI*1.1F)
@@ -146,7 +166,7 @@ public class ConfiguratorScreen extends Screen {
         }
     }
 
-    private void startAnimation() {
+    private void animateRotation() {
         isAnimating = true;
         if (targetRotation == 180f) {
             targetRotation = 0f;
@@ -164,6 +184,25 @@ public class ConfiguratorScreen extends Screen {
             targetHeadY = -120f;
         } else {
             targetHeadY = 0f;
+        }
+    }
+
+    public class Tab {
+        private final HashMap<Component, AbstractWidget> widgets = new HashMap<>();
+
+        public Tab addWidget(Component name, AbstractWidget widget) {
+            this.widgets.put(name, widget);
+            return this;
+        }
+
+        public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+            AtomicInteger i = new AtomicInteger(0);
+            widgets.forEach((name, widget) -> {
+                g.drawCenteredString(Minecraft.getInstance().font, name, 10, 10 + i.get() * 20, 0xFFFFFF);
+                widget.setPosition(10, 30 + i.get() * 20);
+                widget.render(g, mouseX, mouseY, partialTick);
+                i.addAndGet(1);
+            });
         }
     }
 }
