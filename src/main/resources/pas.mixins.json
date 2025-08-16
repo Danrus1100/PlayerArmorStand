@@ -15,5 +15,8 @@
     "accessors.AbstractWidgetAccessor",
     "accessors.LivingEntityRendererAccessor",
     "accessors.ScreenAccessor"
+  ],
+  "mixins": [
+    "accessors.AnvilScreenAccessor"
   ]
 }

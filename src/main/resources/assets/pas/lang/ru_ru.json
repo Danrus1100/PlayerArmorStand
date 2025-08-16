@@ -26,5 +26,23 @@
   "pas.config.download_status_display": "Показать статус загрузки",
   "pas.config.download_status_display.none": "Не показывать",
   "pas.config.download_status_display.above_hotbar": "Над хотбаром",
-  "pas.config.download_status_display.chat": "В чате"
+  "pas.config.download_status_display.chat": "В чате",
+
+
+  "pas.menu.accept": "Применить",
+  "pas.menu.name": "Конфигратор Стойки для Брони",
+
+  "pas.menu.tab.skin": "Скин",
+  "pas.menu.tab.cape": "Плащ",
+  "pas.menu.tab.overlay": "Наложение",
+
+  "pas.menu.tab.skin.provider": "Источник скина",
+  "pas.menu.tab.skin.provider.n": "NameMC",
+  "pas.menu.tab.skin.provider.m": "Mojang",
+
+  "pas.menu.tab.skin.arm_type": "Тип рук",
+  "pas.menu.tab.skin.arm_type.slim": "Тонкие",
+  "pas.menu.tab.skin.arm_type.wide": "Широкие",
+
+  "pas.menu.tab.skin.name": "Имя / ID"
 }

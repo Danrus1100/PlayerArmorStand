@@ -26,5 +26,24 @@
   "pas.config.download_status_display": "Show Download Status",
   "pas.config.download_status_display.none": "Don't Show",
   "pas.config.download_status_display.above_hotbar": "Above the Hotbar",
-  "pas.config.download_status_display.chat": "In Chat"
+  "pas.config.download_status_display.chat": "In Chat",
+
+
+  "pas.menu.accept": "Accept",
+  "pas.menu.name": "Armor Stand Configurator",
+
+  "pas.menu.tab.skin": "Skin",
+  "pas.menu.tab.cape": "Cape",
+  "pas.menu.tab.overlay": "Overlay",
+
+  "pas.menu.tab.skin.provider": "Skin Source",
+  "pas.menu.tab.skin.provider.n": "NameMC",
+  "pas.menu.tab.skin.provider.m": "Mojang",
+
+  "pas.menu.tab.skin.arm_type": "Arm Type",
+  "pas.menu.tab.skin.arm_type.slim": "Slim",
+  "pas.menu.tab.skin.arm_type.wide": "Wide",
+
+  "pas.menu.tab.skin.name": "Name / ID"
+
 }
