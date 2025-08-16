@@ -189,7 +189,7 @@ publishMods {
 
         discord ("Frame Server anonuncement") {
 //            webhookUrl = discordWebhookFrame.toString()
-            webhookUrl = discordWebhookDR.toString()
+            webhookUrl = discordWebhookFrame.toString()
             dryRunWebhookUrl = discordWebhookDry.toString()
 
             username  = "Player Armor Stands"
