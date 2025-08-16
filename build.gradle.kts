@@ -177,7 +177,7 @@ publishMods {
     }
 
     if (targets.contains("1.21.4") && loaders.contains("fabric")) {
-        discord ("DR feeak mods anonuncement") {
+        discord ("DR freak mods anonuncement") {
             webhookUrl = discordWebhookDR.toString()
             dryRunWebhookUrl = discordWebhookDry.toString()
 
