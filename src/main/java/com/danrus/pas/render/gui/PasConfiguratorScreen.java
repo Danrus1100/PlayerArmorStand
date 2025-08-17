@@ -177,8 +177,9 @@ public class PasConfiguratorScreen extends Screen {
                         VersioningUtils.getResourceLocation("pas", "accept_highlighted")
                 ),
                 //?} else {
-                /*0, 0,
-                VersioningUtils.getResourceLocation("pas", "textures/gui/sprites/accept"),
+                /*0, 0, 0,
+                VersioningUtils.getGuiLocation("pas", "accept"),
+                20, 20,
                 *///?}
                 button -> {
                     entityName = nameBox.getValue();
@@ -239,8 +240,9 @@ public class PasConfiguratorScreen extends Screen {
                         VersioningUtils.getResourceLocation("pas", "accept_highlighted")
                 ),
                 //?} else {
-                /*0, 0,
-                VersioningUtils.getResourceLocation("pas", "textures/gui/sprites/accept"),
+                /*0, 0, 0,
+                VersioningUtils.getGuiLocation("pas", "accept"),
+                20, 20,
                 *///?}
                 button -> {
                     overlayName = blockTextureNameBox.getValue();
@@ -318,7 +320,7 @@ public class PasConfiguratorScreen extends Screen {
     //?} else {
     /*@Override
     public void renderBackground(GuiGraphics g) {
-        super.renderDirtBackground(g);
+        super.renderBackground(g);
         g.blit(BACKGROUND_TEXTURE, this.width / 2 - 128, this.height / 2 - 128 + 18, 0, 0, 256, 256);
     }
     *///?}
@@ -337,6 +339,10 @@ public class PasConfiguratorScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+
+        //? if <= 1.20.1
+        /*this.renderBackground(g);*/
+
         super.render(g, mouseX, mouseY, partialTick);
 
         if (isAnimating) {

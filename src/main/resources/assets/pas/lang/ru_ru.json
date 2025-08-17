@@ -50,6 +50,6 @@
   "pas.menu.tab.cape.yes": "Да",
   "pas.menu.tab.cape.no": "Нет",
 
-  "pas.menu.tab.overlay.name": "Имя текстуры наложения",
+  "pas.menu.tab.overlay.name": "Текстура наложения",
   "pas.menu.tab.overlay.blend": "Смешивание"
 }

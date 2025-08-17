@@ -203,9 +203,9 @@ public class VersioningUtils {
         getGuiRender() {
             //? if >= 1.21.6 {
             /*return net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
-            *///?} else if <= 1.21.1 {
-            /*return RenderType::guiTextured;
-            *///?}
+            *///?} else {
+            return RenderType::guiTextured;
+            //?}
             }
     //?}
 

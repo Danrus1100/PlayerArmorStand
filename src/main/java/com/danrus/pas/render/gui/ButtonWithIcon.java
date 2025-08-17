@@ -13,7 +13,7 @@ import net.minecraft.util.Mth;
 public class ButtonWithIcon extends Button {
 
     //? >= 1.21.1 {
-    private static final net.minecraft.client.gui.components.WidgetSprites SPRITES = new WidgetSprites(
+    private static final net.minecraft.client.gui.components.WidgetSprites SPRITES = new net.minecraft.client.gui.components.WidgetSprites(
             ResourceLocation.withDefaultNamespace("widget/button"),
             ResourceLocation.withDefaultNamespace("widget/button_disabled"),
             ResourceLocation.withDefaultNamespace("widget/button_highlighted")

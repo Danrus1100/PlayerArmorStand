@@ -13,7 +13,7 @@ import net.minecraft.util.Mth;
 public class TabButton extends Button {
 
     //? >= 1.21.1 {
-    private static final net.minecraft.client.gui.components.WidgetSprites TAB_BUTTON_SPRITES = new WidgetSprites(
+    private static final net.minecraft.client.gui.components.WidgetSprites TAB_BUTTON_SPRITES = new net.minecraft.client.gui.components.WidgetSprites(
             VersioningUtils.getResourceLocation("pas", "tab"),
             VersioningUtils.getResourceLocation("pas", "tab_selected"),
             VersioningUtils.getResourceLocation("pas", "tab_highlighted")
@@ -41,12 +41,9 @@ public class TabButton extends Button {
         //? >= 1.21.1 {
         guiGraphics.blitSprite(/*? >= 1.21.4 {*/VersioningUtils.getGuiRender(),/*?}*/ TAB_BUTTON_SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight() /*? >= 1.21.4 {*/, VersioningUtils.getARGBwhite(this.alpha)/*?}*/);
         //?} else {
-        /*guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-        RenderSystem.enableBlend();
-        RenderSystem.enableDepthTest();
-        guiGraphics.blitNineSliced(TAB_LOCATION, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.height);
+        /*guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.blit(TAB_LOCATION, this.getX(), this.getY(), 0, 0, 80, 15, 80, 15);
         *///?}
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.renderString(guiGraphics, minecraft.font, 16777215 | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 }

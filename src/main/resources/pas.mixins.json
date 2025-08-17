@@ -13,10 +13,8 @@
     "LayerDefinitionsMixin",
     "LivingEntityRendererMixin",
     "accessors.AbstractWidgetAccessor",
+    "accessors.AnvilScreenAccessor",
     "accessors.LivingEntityRendererAccessor",
     "accessors.ScreenAccessor"
-  ],
-  "mixins": [
-    "accessors.AnvilScreenAccessor"
   ]
 }
