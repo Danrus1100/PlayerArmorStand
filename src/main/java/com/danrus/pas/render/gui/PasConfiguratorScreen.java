@@ -27,7 +27,7 @@ import org.joml.Vector3f;
 
 import java.util.List;
 
-public class ConfiguratorScreen extends Screen {
+public class PasConfiguratorScreen extends Screen {
 
     public static final ResourceLocation ROTATE_BUTTON_TEXTURE = VersioningUtils.getResourceLocation("pas", "rotate_button");
     public static final ResourceLocation ROTATE_BUTTON_DISABLED_TEXTURE = VersioningUtils.getResourceLocation("pas", "rotate_button_disabled");
@@ -39,6 +39,9 @@ public class ConfiguratorScreen extends Screen {
 
     public static final ResourceLocation WIDE_ARM_LOGO = VersioningUtils.getResourceLocation("pas", "wide");
     public static final ResourceLocation SLIM_ARM_LOGO = VersioningUtils.getResourceLocation("pas", "slim");
+
+    public static final ResourceLocation YES_LOGO = VersioningUtils.getResourceLocation("pas", "yes");
+    public static final ResourceLocation NO_LOGO = VersioningUtils.getResourceLocation("pas", "no");
 
     private static final float ANIMATION_SPEED = 0.15f;
 
@@ -66,6 +69,8 @@ public class ConfiguratorScreen extends Screen {
     private final ButtonWithIcon skinProviderButton;
     private final ButtonWithIcon armTypeButton;
 
+    private final ButtonWithIcon capeAciveButton;
+
     private String entityName = "";
     private boolean isSlim = false;
     private String skinProvider = "M";
@@ -80,7 +85,7 @@ public class ConfiguratorScreen extends Screen {
 
     private final TabManager tabManager;
 
-    public ConfiguratorScreen(AnvilScreen parent) {
+    public PasConfiguratorScreen(AnvilScreen parent) {
         super(Component.literal("Player Armor Stand Configurator"));
         this.parent = parent;
         this.entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
@@ -121,8 +126,16 @@ public class ConfiguratorScreen extends Screen {
                     ((ButtonWithIcon) button).icon = isSlim ? SLIM_ARM_LOGO : WIDE_ARM_LOGO;
                     button.setMessage(Component.translatable("pas.menu.tab.skin.arm_type." + (isSlim ? "slim" : "wide")));
                     setEntityName(entityName);
-                }
-                );
+                });
+
+        capeAciveButton = new ButtonWithIcon(0, 0, 120, 20,
+                hasCape ? YES_LOGO : NO_LOGO, Component.translatable("pas.menu.tab.cape.yes"),
+                button -> {
+                    hasCape = !hasCape;
+                    ((ButtonWithIcon) button).icon = hasCape ? YES_LOGO : NO_LOGO;
+                    button.setMessage(Component.translatable("pas.menu.tab.cape." + (hasCape ? "yes" : "no")));
+                    setEntityName(entityName);
+                });
 
         this.tabManager = new TabManager(this);
 
@@ -161,7 +174,10 @@ public class ConfiguratorScreen extends Screen {
 
     private void setupTabs() {
         // --- Skin Tab ---
-        EditBox nameBox = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Name"));
+        EnterEditBox nameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Name"), editBox -> {
+            entityName = editBox.getValue();
+            setEntityName(entityName);
+        });
         nameBox.setValue(entityName);
         TextWidget nameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.name"));
         ImageButton acceptNameButton = new ImageButton(0, 0, 20, 20,
@@ -200,9 +216,16 @@ public class ConfiguratorScreen extends Screen {
 
         // -- Cape Tab ---
 
+        TextWidget capeActiveLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.cape.label"));
 
-        Tab capeTab = new Tab("cape", (width, height) -> { /* Layout for cape tab */ });
 
+        Tab capeTab = new Tab("cape", (width, height) -> {
+            capeActiveLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 87));
+            capeAciveButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 70));
+        });
+
+        capeTab.addWidget(capeActiveLabel);
+        capeTab.addWidget(capeAciveButton);
 
         // --- Overlay Tab ---
 
@@ -246,6 +269,12 @@ public class ConfiguratorScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        System.out.println(keyCode + " " + scanCode + " " + modifiers);
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -340,7 +369,9 @@ public class ConfiguratorScreen extends Screen {
     }
 
     private String generateEntityName() {
-        return entityName + "|" +
+        String idOrName = StringUtils.matchASName(entityName).get(0);
+
+        return idOrName + "|" +
                 (isSlim ? "S" : "") +
                 (hasCape ? "C" : "") +
                 (skinProvider.equals("N") ? "N" : "") +

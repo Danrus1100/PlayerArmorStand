@@ -44,6 +44,10 @@
   "pas.menu.tab.skin.arm_type.slim": "Slim",
   "pas.menu.tab.skin.arm_type.wide": "Wide",
 
-  "pas.menu.tab.skin.name": "Name / ID"
+  "pas.menu.tab.skin.name": "Name / ID",
+
+  "pas.menu.tab.cape.label": "Show Cape",
+  "pas.menu.tab.cape.yes": "Yes",
+  "pas.menu.tab.cape.no": "No"
 
 }

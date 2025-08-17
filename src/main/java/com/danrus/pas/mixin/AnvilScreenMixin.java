@@ -1,7 +1,7 @@
 package com.danrus.pas.mixin;
 
 import com.danrus.pas.mixin.accessors.ScreenAccessor;
-import com.danrus.pas.render.gui.ConfiguratorScreen;
+import com.danrus.pas.render.gui.PasConfiguratorScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -26,7 +26,7 @@ public class AnvilScreenMixin {
 
     @Unique
     private Button configuratorButton = Button.builder(Component.translatable("pas.buttons.configurator"),
-            button -> Minecraft.getInstance().setScreen(new ConfiguratorScreen((AnvilScreen) (Object) this)))
+            button -> Minecraft.getInstance().setScreen(new PasConfiguratorScreen((AnvilScreen) (Object) this)))
             .tooltip(Tooltip.create(Component.translatable("pas.buttons.configurator.tooltip")))
             .bounds(10, 10, buttonWidth, 20)
             .build();
