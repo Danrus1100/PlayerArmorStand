@@ -5,7 +5,7 @@
   "commands.pas.reload_failed_error": "Чтобы перезагрузить скин, необходимо указать имя игрока",
   "commands.pas.skin_not_found": "Не удалось найти данные для указанного скина",
 
-  "pas.buttons.configurator": "Конфигратор Player Armor Stand",
+  "pas.buttons.configurator": "Конфигратор Скина",
   "pas.buttons.configurator.tooltip": "Открыть конфигуратор Player Armor Stand для управления скином и его параметрами",
 
   "pas.downloading": "Загрузка скина для %s...",
@@ -48,5 +48,8 @@
 
   "pas.menu.tab.cape.label": "Показать плащ",
   "pas.menu.tab.cape.yes": "Да",
-  "pas.menu.tab.cape.no": "Нет"
+  "pas.menu.tab.cape.no": "Нет",
+
+  "pas.menu.tab.overlay.name": "Имя текстуры наложения",
+  "pas.menu.tab.overlay.blend": "Смешивание"
 }

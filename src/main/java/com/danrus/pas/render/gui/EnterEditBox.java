@@ -9,10 +9,12 @@ public class EnterEditBox extends EditBox {
 
     private final OnEnterPressed onEnterPressed;
 
+    //? if >= 1.21.1 {
     public EnterEditBox(Font font, int width, int height, Component message, OnEnterPressed onEnterPressed) {
         super(font, width, height, message);
         this.onEnterPressed = onEnterPressed;
     }
+    //?}
 
     public EnterEditBox(Font font, int x, int y, int width, int height, Component message, OnEnterPressed onEnterPressed) {
         super(font, x, y, width, height, message);

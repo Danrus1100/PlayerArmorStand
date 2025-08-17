@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.Rotations;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.nio.file.Path;
+import java.util.function.Function;
 
 public class VersioningUtils {
     public static Path getGameDir() {
@@ -30,6 +32,14 @@ public class VersioningUtils {
         /*return ResourceLocation.tryBuild(namespace, path);
         *///?} else {
         return ResourceLocation.fromNamespaceAndPath(namespace, path);
+        //?}
+    }
+
+    public static ResourceLocation getGuiLocation(String namespace, String path) {
+        //? if <= 1.20.1 {
+        /*return getResourceLocation(namespace, "textures/gui/sprites/" + path + ".png");
+        *///?} else {
+        return getResourceLocation(namespace, path);
         //?}
     }
 
@@ -180,6 +190,27 @@ public class VersioningUtils {
         //?} else {
         /*return rot.z();
         *///?}
+    }
+
+
+    //? if >= 1.21.4 {
+    public static
+        //? if >= 1.21.6 {
+        /*com.mojang.blaze3d.pipeline.RenderPipeline
+        *///?} else {
+        Function<ResourceLocation, RenderType>
+        //?}
+        getGuiRender() {
+            //? if >= 1.21.6 {
+            /*return net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
+            *///?} else if <= 1.21.1 {
+            /*return RenderType::guiTextured;
+            *///?}
+            }
+    //?}
+
+    public static int getARGBwhite(float alpha) {
+        return (int) Math.floor(alpha * 255.0F) << 24 | 16777215;
     }
 
     public abstract static class VersionlessArmorStandCapeLayer extends RenderLayer<

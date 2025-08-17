@@ -36,7 +36,13 @@ public class SkinManger {
         if (name == null || name.getString().isEmpty()) {
             return SkinData.DEFAULT_TEXTURE;
         }
-        return dataManager.getData(name.getString()).getSkinTexture();
+        List <String> matches = StringUtils.matchASName(name.getString());
+        String material = matches.get(2);
+        String blend = matches.get(3);
+        if (material == null || material.isEmpty()) {
+            return dataManager.getData(name.getString()).getSkinTexture();
+        }
+        return dataManager.getData(name.getString()).getSkinTexture(material, blend);
     }
 
     public SkinData getData(Component name) {
