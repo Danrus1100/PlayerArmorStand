@@ -63,6 +63,11 @@ public class StringUtils {
 
     public static @NotNull List<String> matchASName(String input){
         String[] divided = input.split("\\|");
+
+        if (divided.length == 0 || divided[0].isEmpty()) {
+            return List.of("", "", "", "100");
+        }
+
         String name = divided[0].trim();
         if (name.matches(".*[<>:\"/\\\\?*].*")) {
             return List.of("", "", "", "100");
