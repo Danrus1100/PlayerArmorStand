@@ -48,7 +48,7 @@ modstitch {
         modGroup = "com.danrus.pas"
         modAuthor = "Danrus110_"
         modDescription = "Make named armor stands looks like players!"
-        modLicense = "CC0-1.0"
+        modLicense = "MIT"
 
         fun MapProperty<String, String>.populate(block: MapProperty<String, String>.() -> Unit) {
             block()
