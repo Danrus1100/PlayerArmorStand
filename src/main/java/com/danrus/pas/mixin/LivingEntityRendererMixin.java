@@ -58,4 +58,25 @@ public class LivingEntityRendererMixin<T extends
             cir.cancel();
         }
     }
+
+    @Inject(
+            method = "isEntityUpsideDown",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private static void pas$isEntityUpsideDown(LivingEntity entity, CallbackInfoReturnable<Boolean> cir){
+        if (!ModConfig.get().enableMod
+                || !(entity instanceof ArmorStand)
+                || entity.getCustomName() == null
+        ) {
+            return;
+        }
+
+        if ((entity.getCustomName().getString().equals("Dinnerbone")
+                || entity.getCustomName().getString().equals("Grumm")
+        ) && entity instanceof ArmorStand) {
+            cir.setReturnValue(true);
+            cir.cancel();
+        }
+    }
 }
