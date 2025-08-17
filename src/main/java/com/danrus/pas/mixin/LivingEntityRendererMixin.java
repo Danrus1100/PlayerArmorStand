@@ -2,6 +2,7 @@ package com.danrus.pas.mixin;
 
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.mixin.accessors.LivingEntityRendererAccessor;
+import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.managers.SkinManger;
 import net.minecraft.client.model.EntityModel;
@@ -55,6 +56,27 @@ public class LivingEntityRendererMixin<T extends
             cir.cancel();
         } else if (VersioningUtils.getCustomName(entity) == null && !ModConfig.get().defaultSkin.isEmpty()) {
             cir.setReturnValue(RenderType.entityTranslucent(SkinManger.getInstance().getSkinTexture(Component.literal(ModConfig.get().defaultSkin))));
+            cir.cancel();
+        }
+    }
+
+    @Inject(
+            method = "isEntityUpsideDown",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private static void pas$isEntityUpsideDown(LivingEntity entity, CallbackInfoReturnable<Boolean> cir){
+        if (!ModConfig.get().enableMod
+                || !(entity instanceof ArmorStand)
+                || entity.getCustomName() == null
+        ) {
+            return;
+        }
+
+        if ((StringUtils.matchASName(entity.getCustomName().getString()).get(0).equals("Dinnerbone")
+                || StringUtils.matchASName(entity.getCustomName().getString()).get(0).equals("Grumm")
+        ) && entity instanceof ArmorStand) {
+            cir.setReturnValue(true);
             cir.cancel();
         }
     }

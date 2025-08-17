@@ -5,6 +5,7 @@ import com.danrus.pas.api.DataManager;
 import com.danrus.pas.api.SkinData;
 import com.danrus.pas.api.SkinProvidersManager;
 import com.danrus.pas.api.DownloadStatus;
+import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.data.GameCache;
 import com.danrus.pas.utils.data.MojangDiskCache;
 import com.danrus.pas.utils.data.NamemcDiskCache;
@@ -12,6 +13,8 @@ import com.danrus.pas.utils.providers.MojangSkinProvider;
 import com.danrus.pas.utils.providers.NamemcSkinProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.List;
 
 public class SkinManger {
 
@@ -33,7 +36,13 @@ public class SkinManger {
         if (name == null || name.getString().isEmpty()) {
             return SkinData.DEFAULT_TEXTURE;
         }
-        return dataManager.getData(name.getString()).getSkinTexture();
+        List <String> matches = StringUtils.matchASName(name.getString());
+        String material = matches.get(2);
+        String blend = matches.get(3);
+        if (material == null || material.isEmpty()) {
+            return dataManager.getData(name.getString()).getSkinTexture();
+        }
+        return dataManager.getData(name.getString()).getSkinTexture(material, blend);
     }
 
     public SkinData getData(Component name) {
@@ -43,7 +52,19 @@ public class SkinManger {
         return dataManager.getData(name.getString());
     }
 
-    public void reloadData(String name){
+    public SkinData findData(Component name) {
+        if (name == null || name.getString().isEmpty()) {
+            return null;
+        }
+        List<String> matches = StringUtils.matchASName(name.getString());
+        String playerName = matches.get(0);
+
+        return getDataManager().findData(playerName);
+    }
+
+    public void reloadData(String string){
+        List<String> matches = StringUtils.matchASName(string);
+        String name = matches.get(0);
         if (name == null || name.isEmpty()) {
             PlayerArmorStandsClient.LOGGER.warn("SkinManger: Cannot reload data for an empty name");
             return;
@@ -52,9 +73,7 @@ public class SkinManger {
             PlayerArmorStandsClient.LOGGER.warn("SkinManger: No data found for " + name + ", reloading from providers");
             return;
         }
-        SkinData data = dataManager.getData(name);
-        data.setStatus(DownloadStatus.NOT_STARTED);
-        skinProviderManager.download(!data.getParams().isEmpty() ? data.getName() + "|" + data.getParams() : data.getName());
+        skinProviderManager.download(string);
     }
 
     public void reloadFailed() {

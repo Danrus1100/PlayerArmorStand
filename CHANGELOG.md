@@ -1,2 +1,5 @@
- - NameMC skins and `/player-armor-stand reload` fixes
- - Cape on baby armor stands fix (1.21.4+)
+ - NEW: Configurator menu for anvil
+ - `/player-armor-stand reload` suggestions
+ - Added Russian pre-reform language support
+ - Added ModMenu translation
+ - Port easter eggs from Mojang

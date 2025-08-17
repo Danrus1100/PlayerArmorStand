@@ -3,9 +3,11 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+CHANGELOG_RU.md
 
 ### Minecraft ###
 run
+CHANGELOG_RU.md
 
 ### IntelliJ IDEA ###
 .idea

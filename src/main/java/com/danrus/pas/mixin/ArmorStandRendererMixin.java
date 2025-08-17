@@ -4,13 +4,17 @@ import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.mixin.accessors.LivingEntityRendererAccessor;
 import com.danrus.pas.render.ArmorStandCapeLayer;
 import com.danrus.pas.render.PlayerArmorStandModel;
+import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.managers.SkinManger;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -67,4 +71,35 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
         cir.setReturnValue(SkinManger.getInstance().getSkinTexture(VersioningUtils.getCustomName(armorStand)));
     }
 
+    //? if >= 1.21.4 {
+    @Inject(
+            method = "setupRotations(Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;FF)V",
+            at = @At("HEAD")
+    )
+    private void pas$setupRotations(net.minecraft.client.renderer.entity.state.ArmorStandRenderState renderState, PoseStack poseStack, float f, float scale, CallbackInfo ci) {
+        if (renderState.isUpsideDown) {
+            poseStack.translate(0.0F, (renderState.boundingBoxHeight + 0.1F) / scale, 0.0F);
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+        }
+    }
+    //?} else {
+    /*@Inject(
+            method = "setupRotations(Lnet/minecraft/world/entity/decoration/ArmorStand;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V",
+            at = @At("HEAD")
+    )
+    private void pas$setupRotations(ArmorStand entityLiving, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTicks, CallbackInfo ci){
+        if (!ModConfig.get().enableMod || VersioningUtils.getCustomName(entityLiving) == null) {
+            return;
+        }
+
+        if (StringUtils.matchASName(entityLiving.getCustomName().getString()).get(0).equals("Dinnerbone")
+        || StringUtils.matchASName(entityLiving.getCustomName().getString()).get(0).equals("Grumm")) {
+            poseStack.translate(0.0F, entityLiving.getBbHeight() - 0.1F, 0.0F);
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+        }
+    }
+
+    *///?}
 }

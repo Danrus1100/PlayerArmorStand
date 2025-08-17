@@ -27,7 +27,7 @@ public class OverlayMessageManger {
     }
 
     public void showOverlayNotFoundMessage(String name) {
-        showMessage("pas.overlay_not_found", name, ChatFormatting.RED);
+//        showMessage("pas.overlay_not_found", name, ChatFormatting.RED);
     }
 
     private void showMessage(String key, String name, ChatFormatting color) {
