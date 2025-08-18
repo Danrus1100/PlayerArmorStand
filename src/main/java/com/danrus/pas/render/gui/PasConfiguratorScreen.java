@@ -1,6 +1,6 @@
 package com.danrus.pas.render.gui;
 
-import com.danrus.pas.mixin.accessors.AnvilScreenAccessor;
+//import com.danrus.pas.mixin.accessors.AnvilScreenAccessor;
 import com.danrus.pas.render.gui.tabs.Tab;
 import com.danrus.pas.render.gui.tabs.TabButton;
 import com.danrus.pas.render.gui.tabs.TabManager;
@@ -133,10 +133,13 @@ public class PasConfiguratorScreen extends Screen {
 
     private void setupParams () {
 
-        String itemName = ((AnvilScreenAccessor) parent).pas$getNameInput().getValue();
+//        String itemName = ((AnvilScreenAccessor) parent).pas$getNameInput().getValue();
+
+        String itemName = "Armor Stand";
 
         if (!itemName.equals(Component.translatable("item.minecraft.armor_stand").getString())) {
-            List<String> matches = StringUtils.matchASName(((AnvilScreenAccessor) parent).pas$getNameInput().getValue());
+//            List<String> matches = StringUtils.matchASName(((AnvilScreenAccessor) parent).pas$getNameInput().getValue());
+            List<String> matches = List.of("Danrus110_", "", "", "100");
             entityName = matches.get(0);
 
             // FIXME: toooo much if-else statements next:
@@ -436,7 +439,8 @@ public class PasConfiguratorScreen extends Screen {
     }
 
     private String generateEntityName() {
-        String idOrName = StringUtils.matchASName(entityName).get(0);
+//        String idOrName = StringUtils.matchASName(entityName).get(0);
+        String idOrName = "Danrus110_";
 
         return idOrName + "|" +
                 (isSlim ? "S" : "") +
@@ -448,7 +452,7 @@ public class PasConfiguratorScreen extends Screen {
     private void acceptName() {
         Minecraft.getInstance().setScreen(parent);
         String toAnvil = generateEntityName();
-        ((AnvilScreenAccessor) parent).pas$getNameInput().setValue(toAnvil);
+//        ((AnvilScreenAccessor) parent).pas$getNameInput().setValue(toAnvil);
     }
 
     private enum AnimationState {

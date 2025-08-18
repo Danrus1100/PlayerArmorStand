@@ -1,4 +1,4 @@
-package com.danrus.pas.mixin.accessors;
+package com.danrus.pas.mixin.accessor;
 
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -10,14 +10,14 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(LivingEntityRenderer.class)
 public interface LivingEntityRendererAccessor {
     @Accessor("model")
-    void setModel(EntityModel<?> model);
+    <T extends EntityModel<?>> void pas$setModel(T model);
 
     @Invoker("addLayer")
-    <T extends
+    <S extends
             //? if <= 1.21.1 {
-            /*net.minecraft.world.entity.Entity
-            *///?} else {
-            net.minecraft.client.renderer.entity.state.EntityRenderState
+            /*LivingEntity
+             *///?} else {
+            net.minecraft.client.renderer.entity.state.LivingEntityRenderState
             //?}
-            , M extends EntityModel<T>> boolean invokeAddLayer(RenderLayer<T, M> layer);
+            , M extends EntityModel<? super S>> boolean pas$addLayer(RenderLayer<S, M> layer);
 }

@@ -1,9 +1,7 @@
 package com.danrus.pas.config.categories;
 
 import com.danrus.pas.ModExecutor;
-import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.ModConfig;
-import com.danrus.pas.utils.VersioningUtils;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;

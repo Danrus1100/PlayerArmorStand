@@ -1,6 +1,6 @@
 package com.danrus.pas.render.gui.tabs;
 
-import com.danrus.pas.mixin.accessors.ScreenAccessor;
+//import com.danrus.pas.mixin.accessors.ScreenAccessor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.TabButton;
 import net.minecraft.client.gui.screens.Screen;
@@ -36,7 +36,7 @@ public class Tab {
 
     public void init(Screen screen) {
         for (AbstractWidget widget : widgets) {
-            ((ScreenAccessor) screen).pas$addRenderableWidget(widget);
+//            ((ScreenAccessor) screen).pas$addRenderableWidget(widget);
         }
         reposition(screen.width, screen.height);
     }

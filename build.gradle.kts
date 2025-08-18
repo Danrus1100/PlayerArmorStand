@@ -36,6 +36,8 @@ modstitch {
     }
 
     var versionName = "${property("mod.version")}-${loaderInitials}-${minecraft}"
+    val gitBranchName = "git rev-parse --abbrev-ref HEAD"
+        .run { Runtime.getRuntime().exec(this).inputStream.bufferedReader().readText().trim() }
     if (!gitBranchName.equals("main")) {
         versionName += "-$gitBranchName"
     }
@@ -100,6 +102,7 @@ modstitch {
         addMixinsToModManifest = true
 
         configs.register("pas") {side = CLIENT}
+        configs.register("pas.renderstate") {side = CLIENT}
         // Most of the time you won't ever need loader specific mixins.
         // If you do, simply make the mixin file and add it like so for the respective loader:
         // if (isLoom) configs.register("examplemod-fabric")
@@ -169,6 +172,7 @@ publishMods {
 
     curseforge {
         projectId = property("publish.curseforge").toString()
+
         accessToken = curseforgeToken.toString()
         projectSlug = "player-armor-stands"
         targets.forEach(minecraftVersions::add)
@@ -194,7 +198,7 @@ publishMods {
             username  = "Player Armor Stands"
             avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
 
-            content = changelog.map{ "# Вышла версия " + findProperty("mod.version") + "! \n\n" + rootProject.file("CHANGELOG_RU.md").readText() + "\n\nДоступен на NeoForge и Fabric!"}
+            content = changelog.map{ "# Вышла версия " + findProperty("mod.version") + "! \n\n" + rootProject.file("CHANGELOG_RU.md").readText() + "\n\n<@&1406626250520400092>"}
         }
     }
 }

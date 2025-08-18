@@ -1,6 +1,5 @@
 package com.danrus.pas.config;
 
-import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.categories.MainCategory;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.gui.screens.Screen;
@@ -74,9 +73,9 @@ public class ModConfig {
 
     public static void save() {
         HANDLER.save();
-        SkinData.DEFAULT_TEXTURE = HANDLER.instance().showArmorStandWhileDownloading
-            ? VersioningUtils.getResourceLocation("minecraft", "textures/entity/armorstand/wood.png")
-            : VersioningUtils.getResourceLocation("minecraft", "textures/entity/player/wide/steve.png");
+//        SkinData.DEFAULT_TEXTURE = HANDLER.instance().showArmorStandWhileDownloading
+//            ? VersioningUtils.getResourceLocation("minecraft", "textures/entity/armorstand/wood.png")
+//            : VersioningUtils.getResourceLocation("minecraft", "textures/entity/player/wide/steve.png");
     }
 
     public static void load() {

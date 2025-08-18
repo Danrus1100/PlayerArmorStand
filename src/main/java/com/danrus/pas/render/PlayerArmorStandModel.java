@@ -1,10 +1,8 @@
 package com.danrus.pas.render;
 
-import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
-import com.danrus.pas.utils.managers.SkinManger;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -12,7 +10,6 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.util.List;
 
@@ -192,9 +189,11 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
 
         }
 
-        List<String> matches =  StringUtils.matchASName(customNameString);
-        boolean isDownlading = SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.IN_PROGRESS ||
-                SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.FAILED;
+//        List<String> matches =  StringUtils.matchASName(customNameString);
+//        boolean isDownlading = SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.IN_PROGRESS ||
+//                SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.FAILED;
+        boolean isDownlading = true;
+        List<String> matches = List.of("Danrus110_", "", "", "100");
         boolean showArmorStandWhileDownload = ModConfig.get().showArmorStandWhileDownloading && isDownlading;
 
         this.setModelVisibility(!showArmorStandWhileDownload, matches.get(1).contains("S"), showBase);

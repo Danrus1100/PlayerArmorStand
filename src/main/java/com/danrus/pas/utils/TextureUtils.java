@@ -2,9 +2,6 @@ package com.danrus.pas.utils;
 
 
 import com.danrus.pas.PlayerArmorStandsClient;
-import com.danrus.pas.api.SkinData;
-import com.danrus.pas.utils.managers.OverlayMessageManger;
-import com.danrus.pas.utils.managers.SkinManger;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -53,14 +50,14 @@ public class TextureUtils {
 
                     future.complete(identifier);
                 } catch (Exception e) {
-                    future.complete(SkinData.DEFAULT_TEXTURE);
+//                    future.complete(SkinData.DEFAULT_TEXTURE);
                     PlayerArmorStandsClient.LOGGER.warn("Failed to register texture: {}", identifier, e);
                 }
             });
 
         } catch (Exception e) {
             PlayerArmorStandsClient.LOGGER.warn("Failed to process texture: {}", identifier, e);
-            future.complete(SkinData.DEFAULT_TEXTURE);
+//            future.complete(SkinData.DEFAULT_TEXTURE);
         }
 
         return future;
@@ -132,11 +129,11 @@ public class TextureUtils {
         if (cachedTexture != null) {
             return cachedTexture;
         }
-        ResourceLocation skinId;
+        ResourceLocation skinId = ResourceLocation.fromNamespaceAndPath("pas", prefix + "/" + StringUtils.encodeToSha256(name) + "_" + overlay + "_" + blendStrength);
         if (prefix.equals("capes")) {
-            skinId = SkinManger.getInstance().getData(Component.literal(name)).getCapeTexture();
+//            skinId = SkinManger.getInstance().getData(Component.literal(name)).getCapeTexture();
         } else {
-            skinId = SkinManger.getInstance().getData(Component.literal(name)).getSkinTexture();
+//            skinId = SkinManger.getInstance().getData(Component.literal(name)).getSkinTexture();
         }
         AbstractTexture skinTexture = Minecraft.getInstance().getTextureManager().getTexture(skinId);
 
@@ -171,7 +168,7 @@ public class TextureUtils {
             }
         } catch (Exception e) {
             PlayerArmorStandsClient.LOGGER.warn("Failed to create overlay texture for: {} with overlay: {}", name, overlay, e);
-            OverlayMessageManger.getInstance().showOverlayNotFoundMessage(overlay);
+//            OverlayMessageManger.getInstance().showOverlayNotFoundMessage(overlay);
         }
 
         return skinId;
