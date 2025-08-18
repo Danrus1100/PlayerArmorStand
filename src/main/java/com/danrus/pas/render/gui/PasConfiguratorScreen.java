@@ -41,7 +41,7 @@ public class PasConfiguratorScreen extends Screen {
     public static final ResourceLocation YES_LOGO = VersioningUtils.getGuiLocation("pas", "yes");
     public static final ResourceLocation NO_LOGO = VersioningUtils.getGuiLocation("pas", "no");
 
-    private static final float ANIMATION_SPEED = 0.15f;
+    private static final float ANIMATION_SPEED = 0.5f;
 
     private float currentRotation = 0f;
     private float targetRotation = 0f;
@@ -346,10 +346,10 @@ public class PasConfiguratorScreen extends Screen {
         super.render(g, mouseX, mouseY, partialTick);
 
         if (isAnimating) {
-            currentRotation = lerp(currentRotation, targetRotation, ANIMATION_SPEED);
-            currentHeadX = lerp(currentHeadX, targetHeadX, ANIMATION_SPEED);
-            currentHeadY = lerp(currentHeadY, targetHeadY, ANIMATION_SPEED);
-            currentHeadZ = lerp(currentHeadZ, targetHeadZ, ANIMATION_SPEED);
+            currentRotation = lerp(currentRotation, targetRotation, ANIMATION_SPEED, partialTick);
+            currentHeadX = lerp(currentHeadX, targetHeadX, ANIMATION_SPEED, partialTick);
+            currentHeadY = lerp(currentHeadY, targetHeadY, ANIMATION_SPEED, partialTick);
+            currentHeadZ = lerp(currentHeadZ, targetHeadZ, ANIMATION_SPEED, partialTick);
 
             if (Math.abs(currentRotation - targetRotation) < 0.01f) {
                 isAnimating = false;
@@ -400,8 +400,8 @@ public class PasConfiguratorScreen extends Screen {
         *///?}
     }
 
-    private float lerp(float start, float end, float speed) {
-        return start + (end - start) * speed;
+    private float lerp(float start, float end, float speed, float partialTick) {
+        return start + (end - start) * speed * partialTick;
     }
 
     @Override
