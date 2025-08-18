@@ -5,6 +5,9 @@
   "commands.pas.reload_failed_error": "To reload the skin, you must specify a player name",
   "commands.pas.skin_not_found": "Can't find data for specified skin",
 
+  "pas.buttons.configurator": "Skin Configurator",
+  "pas.buttons.configurator.tooltip": "Open the Player Armor Stand Configurator to manage skin and its parameters",
+
   "pas.downloading": "Downloading Skin for %s...",
   "pas.invalid_username": "Invalid username: %s",
   "pas.download_success": "Skin downloaded for %s",
@@ -23,5 +26,30 @@
   "pas.config.download_status_display": "Show Download Status",
   "pas.config.download_status_display.none": "Don't Show",
   "pas.config.download_status_display.above_hotbar": "Above the Hotbar",
-  "pas.config.download_status_display.chat": "In Chat"
+  "pas.config.download_status_display.chat": "In Chat",
+
+
+  "pas.menu.accept": "Accept",
+  "pas.menu.name": "Armor Stand Configurator",
+
+  "pas.menu.tab.skin": "Skin",
+  "pas.menu.tab.cape": "Cape",
+  "pas.menu.tab.overlay": "Overlay",
+
+  "pas.menu.tab.skin.provider": "Skin Source",
+  "pas.menu.tab.skin.provider.n": "NameMC",
+  "pas.menu.tab.skin.provider.m": "Mojang",
+
+  "pas.menu.tab.skin.arm_type": "Arm Type",
+  "pas.menu.tab.skin.arm_type.slim": "Slim",
+  "pas.menu.tab.skin.arm_type.wide": "Wide",
+
+  "pas.menu.tab.skin.name": "Name / ID",
+
+  "pas.menu.tab.cape.label": "Show Cape",
+  "pas.menu.tab.cape.yes": "Yes",
+  "pas.menu.tab.cape.no": "No",
+
+  "pas.menu.tab.overlay.name": "Overlay texture",
+  "pas.menu.tab.overlay.blend": "Blend"
 }

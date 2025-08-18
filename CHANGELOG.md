@@ -1,3 +1,4 @@
+ - NEW: Configurator menu for anvil
  - `/player-armor-stand reload` suggestions
  - Added Russian pre-reform language support
  - added ModMenu trslations
