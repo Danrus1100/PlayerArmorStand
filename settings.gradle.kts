@@ -1,7 +1,11 @@
+import org.gradle.kotlin.dsl.stonecutter
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        mavenCentral()
+        maven("https://maven.fabricmc.net/")
+        maven("https://maven.minecraftforge.net/")
+        maven("https://repo.papermc.io/repository/maven-public/")
 
         // Modstitch, YACL
         maven("https://maven.isxander.dev/releases/")
@@ -33,19 +37,20 @@ pluginManagement {
 
         // Modrinth (SkinShuffle)
         maven ("https://api.modrinth.com/maven")
-
+        mavenCentral()
     }
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.6+"
+    id("dev.kikugie.stonecutter") version "0.6.+"
 }
 
-stonecutter {
-    kotlinController = true
-    centralScript = "build.gradle.kts"
+include("common")
+include("mod")
+//include("paper")
 
-    create(rootProject) {
+stonecutter {
+    create(project(":mod")) {
         /**
          * @param mcVersion The base minecraft version.
          * @param loaders A list of loaders to target, supports "fabric" (1.14+), "neoforge"(1.20.6+), "vanilla"(any) or "forge"(<=1.20.1)
@@ -58,13 +63,7 @@ stonecutter {
         mc("1.21.6", loaders = listOf("fabric"))
         mc("1.21.4", loaders = listOf("fabric", "neoforge"))
         mc("1.21.1", loaders = listOf("fabric", "neoforge"))
-        mc("1.20.1", loaders = listOf("fabric"))
-
-        // This is the default target.
-        // https://stonecutter.kikugie.dev/stonecutter/guide/setup#settings-settings-gradle-kts
-        vcsVersion = "1.21.4-fabric"
     }
 }
 
 rootProject.name = "Player Armor Stands"
-
