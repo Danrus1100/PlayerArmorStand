@@ -1,1 +1,3 @@
  - Fix: now the animation speed in the configurator does not depend on FPS
+ - Fix: after reloading the NameMC skin, the name copy is no longer displayed in the `/player-armor-stands reload` suggestions, but with a suffix.
+ - Chore: now you can set Easter eggs visibility in the settings

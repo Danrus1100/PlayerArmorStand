@@ -48,6 +48,9 @@ public class ModConfig {
     @SerialEntry
     public boolean showArmorStandWhileDownloading = true;
 
+    @SerialEntry
+    public boolean showEasterEggs = true;
+
     public enum DOWNLOAD_STATUS_DISPLAY {
         NONE,
         ABOVE_HOTBAR,

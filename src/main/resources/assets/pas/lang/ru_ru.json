@@ -16,6 +16,7 @@
 
   "pas.config.group.general": "Основные",
   "pas.config.group.armorstands": "Стойка",
+  "pas.config.group.secret_settings": "Секретные настройки",
 
   "pas.config.download_threads": "Потоки загрузки",
   "pas.config.hide_params_on_label": "Скрыть параметры на имени",
@@ -28,6 +29,7 @@
   "pas.config.download_status_display.above_hotbar": "Над хотбаром",
   "pas.config.download_status_display.chat": "В чате",
 
+  "pas.config.show_easter_eggs": "Показать пасхалки",
 
   "pas.menu.accept": "Применить",
   "pas.menu.name": "Конфигратор Стойки для Брони",

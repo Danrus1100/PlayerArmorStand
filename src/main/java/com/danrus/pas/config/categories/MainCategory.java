@@ -84,6 +84,23 @@ public class MainCategory {
                                 .build())
 
                         .build())
+
+                .group(OptionGroup.createBuilder()
+                        .name(Component.translatable("pas.config.group.secret_settings"))
+                        .collapsed(true)
+
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Component.translatable("pas.config.show_easter_eggs"))
+                                .binding(
+                                        true,
+                                        () -> ModConfig.get().showEasterEggs,
+                                        newVal -> ModConfig.get().showEasterEggs = newVal
+                                )
+                                .controller(TickBoxControllerBuilder::create)
+                                .build())
+
+                        .build())
+
                 .build();
     }
 }

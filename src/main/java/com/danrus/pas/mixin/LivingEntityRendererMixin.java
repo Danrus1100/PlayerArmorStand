@@ -66,7 +66,7 @@ public class LivingEntityRendererMixin<T extends
             cancellable = true
     )
     private static void pas$isEntityUpsideDown(LivingEntity entity, CallbackInfoReturnable<Boolean> cir){
-        if (!ModConfig.get().enableMod
+        if ((!ModConfig.get().enableMod && !ModConfig.get().showEasterEggs)
                 || !(entity instanceof ArmorStand)
                 || entity.getCustomName() == null
         ) {

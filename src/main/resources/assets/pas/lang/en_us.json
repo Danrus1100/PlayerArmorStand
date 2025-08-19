@@ -16,6 +16,7 @@
 
   "pas.config.group.general": "General",
   "pas.config.group.armorstands": "Armor Stands",
+  "pas.config.group.secret_settings": "Secret Settings",
 
   "pas.config.download_threads": "Download Threads",
   "pas.config.hide_params_on_label": "Hide Parameters on Nameplate",
@@ -28,6 +29,7 @@
   "pas.config.download_status_display.above_hotbar": "Above the Hotbar",
   "pas.config.download_status_display.chat": "In Chat",
 
+  "pas.config.show_easter_eggs": "Show Easter Eggs",
 
   "pas.menu.accept": "Accept",
   "pas.menu.name": "Armor Stand Configurator",

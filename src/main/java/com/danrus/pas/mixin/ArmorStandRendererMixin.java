@@ -77,7 +77,7 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
             at = @At("HEAD")
     )
     private void pas$setupRotations(net.minecraft.client.renderer.entity.state.ArmorStandRenderState renderState, PoseStack poseStack, float f, float scale, CallbackInfo ci) {
-        if (renderState.isUpsideDown) {
+        if (renderState.isUpsideDown && ModConfig.get().enableMod && ModConfig.get().showEasterEggs) {
             poseStack.translate(0.0F, (renderState.boundingBoxHeight + 0.1F) / scale, 0.0F);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));

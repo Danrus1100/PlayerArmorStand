@@ -36,7 +36,7 @@ public class SkinDataArgument implements ArgumentType<SkinData> {
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         HashMap<String, SkinData> allData = SkinManger.getInstance().getDataManager().getGameData();
         allData.forEach((name, skinData) -> {
-            if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
+            if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase()) && !name.contains("|")) {
                 builder.suggest(name);
             }
         });
