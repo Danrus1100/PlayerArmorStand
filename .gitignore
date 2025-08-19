@@ -45,3 +45,16 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/mod/versions/1.21.1-fabric/build/
+/mod/versions/1.21.1-fabric/.gradle/
+/mod/versions/1.21.1-neoforge/.gradle/
+/mod/versions/1.21.1-neoforge/build/
+/mod/versions/1.21.4-fabric/.gradle
+/mod/versions/1.21.4-fabric/build/
+/mod/versions/1.21.4-neoforge/.gradle
+/mod/versions/1.21.4-neoforge/build/
+/mod/versions/1.21.6-fabric/build
+/mod/versions/1.21.6-fabric/.gradle
+/mod/versions/1.21.8-neoforge/.gradle
+/mod/versions/1.21.8-neoforge/build
+
