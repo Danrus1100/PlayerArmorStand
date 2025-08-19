@@ -1,5 +1,1 @@
- - NEW: Configurator menu for anvil
- - `/player-armor-stand reload` suggestions
- - Added Russian pre-reform language support
- - Added ModMenu translation
- - Port easter eggs from Mojang
+ - Fix: now the animation speed in the configurator does not depend on FPS
