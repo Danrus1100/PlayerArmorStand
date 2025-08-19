@@ -1,0 +1,55 @@
+{
+  "modmenu.descriptionTranslation.pas": "Теперь стойки для брони выглядят как игроки... но не забудьте переименовать их для этого",
+
+  "commands.pas.default_feedback": "Необходимы аргументы",
+  "commands.pas.reload_failed_error": "Чтобы перезагрузить скин, необходимо указать имя игрока",
+  "commands.pas.skin_not_found": "Не удалось найти данные для указанного скина",
+
+  "pas.buttons.configurator": "Конфигратор Скина",
+  "pas.buttons.configurator.tooltip": "Открыть конфигуратор Player Armor Stand для управления скином и его параметрами",
+
+  "pas.downloading": "Загрузка скина для %s...",
+  "pas.invalid_username": "Неверное имя: %s",
+  "pas.download_success": "Скин загружен: %s",
+  "pas.download_failed": "Ошибка при загрузке скина: %s",
+  "pas.overlay_not_found": "Наложение не найдено в Minecraft: %s",
+
+  "pas.config.group.general": "Основные",
+  "pas.config.group.armorstands": "Стойка",
+
+  "pas.config.download_threads": "Потоки загрузки",
+  "pas.config.hide_params_on_label": "Скрыть параметры на имени",
+  "pas.config.default_skin": "Стандартный скин",
+  "pas.config.enable_mod": "Включить мод",
+  "pas.config.show_armor_stand_while_downloading": "Показать стойку во время загрузки",
+
+  "pas.config.download_status_display": "Показать статус загрузки",
+  "pas.config.download_status_display.none": "Не показывать",
+  "pas.config.download_status_display.above_hotbar": "Над хотбаром",
+  "pas.config.download_status_display.chat": "В чате",
+
+
+  "pas.menu.accept": "Применить",
+  "pas.menu.name": "Конфигратор Стойки для Брони",
+
+  "pas.menu.tab.skin": "Скин",
+  "pas.menu.tab.cape": "Плащ",
+  "pas.menu.tab.overlay": "Наложение",
+
+  "pas.menu.tab.skin.provider": "Источник скина",
+  "pas.menu.tab.skin.provider.n": "NameMC",
+  "pas.menu.tab.skin.provider.m": "Mojang",
+
+  "pas.menu.tab.skin.arm_type": "Тип рук",
+  "pas.menu.tab.skin.arm_type.slim": "Тонкие",
+  "pas.menu.tab.skin.arm_type.wide": "Широкие",
+
+  "pas.menu.tab.skin.name": "Имя / ID",
+
+  "pas.menu.tab.cape.label": "Показать плащ",
+  "pas.menu.tab.cape.yes": "Да",
+  "pas.menu.tab.cape.no": "Нет",
+
+  "pas.menu.tab.overlay.name": "Текстура наложения",
+  "pas.menu.tab.overlay.blend": "Смешивание"
+}

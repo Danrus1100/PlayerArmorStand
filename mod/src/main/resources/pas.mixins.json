@@ -1,0 +1,17 @@
+{
+  "package": "com.danrus.pas.mixin",
+  "required": true,
+  "minVersion": "0.8",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ArmorStandRendererMixin",
+    "LivingEntityRendererMixin",
+    "accessor.LivingEntityRendererAccessor"
+  ],
+  "mixins": [
+    "ArmorStandMixin"
+  ]
+}

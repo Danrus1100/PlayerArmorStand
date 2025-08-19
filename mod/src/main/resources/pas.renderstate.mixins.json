@@ -1,0 +1,13 @@
+{
+  "package": "com.danrus.pas.mixin.renderstate",
+  "required": true,
+  "minVersion": "0.8",
+  "plugin": "com.danrus.pas.core.renderstate.ArmorStandRenderStatePlugin",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ArmorStandRenderStateMixin"
+  ]
+}
