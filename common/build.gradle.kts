@@ -7,5 +7,5 @@ java {
 }
 
 dependencies {
-    // This is a common module, so no dependencies are needed here.
+    implementation("org.slf4j:slf4j-api:1.7.25")
 }

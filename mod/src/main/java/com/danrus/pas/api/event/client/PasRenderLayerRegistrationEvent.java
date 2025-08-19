@@ -1,4 +1,4 @@
-package com.danrus.pas.api.event;
+package com.danrus.pas.api.event.client;
 
 import com.danrus.pas.core.event.PasEvent;
 import net.minecraft.client.model.EntityModel;

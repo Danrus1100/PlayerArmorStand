@@ -3,22 +3,22 @@ import org.gradle.kotlin.dsl.stonecutter
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven("https://maven.fabricmc.net/")
-        maven("https://maven.minecraftforge.net/")
-        maven("https://repo.papermc.io/repository/maven-public/")
+        maven ("https://maven.fabricmc.net/")
+        maven ("https://maven.minecraftforge.net/")
+        maven ("https://repo.papermc.io/repository/maven-public/")
 
         // Modstitch, YACL
-        maven("https://maven.isxander.dev/releases/")
+        maven ("https://maven.isxander.dev/releases/")
 
         // Loom platform
-        maven("https://maven.fabricmc.net/")
+        maven ("https://maven.fabricmc.net/")
 
         // MDG platform
-        maven("https://maven.neoforged.net/releases/")
+        maven ("https://maven.neoforged.net/releases/")
 
         // Stonecutter
-        maven("https://maven.kikugie.dev/releases")
-        maven("https://maven.kikugie.dev/snapshots")
+        maven ("https://maven.kikugie.dev/releases")
+        maven ("https://maven.kikugie.dev/snapshots")
 
         // Modstitch
         maven("https://maven.isxander.dev/releases")
@@ -37,6 +37,13 @@ pluginManagement {
 
         // Modrinth (SkinShuffle)
         maven ("https://api.modrinth.com/maven")
+
+        // PaperMC
+        maven ("https://repo.papermc.io/repository/maven-public/")
+
+        // SLF4J
+        maven ("https://mvnrepository.com/artifact/org.slf4j/slf4j-api")
+
         mavenCentral()
     }
 }
@@ -47,7 +54,7 @@ plugins {
 
 include("common")
 include("mod")
-//include("paper")
+include("paper")
 
 stonecutter {
     create(project(":mod")) {
@@ -63,6 +70,19 @@ stonecutter {
         mc("1.21.6", loaders = listOf("fabric"))
         mc("1.21.4", loaders = listOf("fabric", "neoforge"))
         mc("1.21.1", loaders = listOf("fabric", "neoforge"))
+    }
+    create(project(":paper")) {
+
+        /**
+         * @param mcVersion The base minecraft version.
+         */
+
+        fun paper(mcVersion: String) =
+            vers("$mcVersion-paper", mcVersion)
+
+        paper("1.21.1")
+        paper("1.21.4")
+        paper("1.21.6")
     }
 }
 

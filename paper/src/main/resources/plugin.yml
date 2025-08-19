@@ -1,0 +1,7 @@
+name: PlayerArmorStands
+version: 1.0.0
+main: com.danrus.pas.PlayerArmorStandsPlugin
+description: Now the armor stands look like players... but don't forget to rename them for that
+author: Danrus110_
+website: https://github.com/Danrus1100/PlayerArmorStand
+api-version: ${api-version}

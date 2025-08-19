@@ -1,7 +1,7 @@
 package com.danrus.pas;
 
 import com.danrus.pas.api.PasApi;
-import com.danrus.pas.api.event.PasClientInitEvent;
+import com.danrus.pas.api.event.client.PasClientInitEvent;
 //import com.danrus.pas.utils.managers.CommandsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

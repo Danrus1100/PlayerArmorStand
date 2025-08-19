@@ -2,8 +2,8 @@ package com.danrus.pas.mixin;
 
 import com.danrus.pas.api.types.McSide;
 import com.danrus.pas.api.PasApi;
-import com.danrus.pas.api.event.PasTickEvent;
-import com.danrus.pas.core.renderstate.ArmorStandCapture;
+import com.danrus.pas.api.event.common.PasTickEvent;
+import com.danrus.pas.renderstate.ArmorStandCapture;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
