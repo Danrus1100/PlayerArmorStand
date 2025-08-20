@@ -1,5 +1,6 @@
 package com.danrus.pas.utils.managers;
 
+import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.DataManager;
 import com.danrus.pas.api.SkinData;
 import com.danrus.pas.api.DownloadStatus;
@@ -49,6 +50,15 @@ public class DataManagerImpl implements DataManager {
             }
         }
         return null;
+    }
+
+    @Override
+    public void delete(String string) {
+        sources.forEach((key, source) -> {
+            if (source.delete(string)) {
+                PlayerArmorStandsClient.LOGGER.info("Deleted data from source: " + key + " for string: " + string);
+            }
+        });
     }
 
 

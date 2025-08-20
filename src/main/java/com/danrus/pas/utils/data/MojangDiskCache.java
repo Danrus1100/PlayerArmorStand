@@ -53,6 +53,26 @@ public class MojangDiskCache implements DataCache<Path> {
     }
 
     @Override
+    public boolean delete(String string) {
+        String name = StringUtils.matchASName(string).get(0);
+        String encodedName = StringUtils.encodeToSha256(name);
+        Path skinFilePath = cachePath.resolve(encodedName + ".png");
+        Path capeFilePath = cachePath.resolve(encodedName + "_cape.png");
+        boolean deleted = false;
+        if (skinFilePath.toFile().exists()) {
+            deleted = skinFilePath.toFile().delete();
+        }
+        if (capeFilePath.toFile().exists()) {
+            deleted = capeFilePath.toFile().delete();
+        }
+        if (deleted) {
+            identifiers.remove(name);
+            identifiers.remove(name + "_cape");
+        }
+        return deleted;
+    }
+
+    @Override
     public boolean isCompatibleWith(Object data) {
         return data instanceof Path || data instanceof String;
     }

@@ -20,7 +20,6 @@ val loaderInitials: String = when (loader) {
     else -> throw IllegalArgumentException("Unknown loader: $loader")
 }
 
-
 modstitch {
     minecraftVersion = minecraft
 
@@ -129,6 +128,7 @@ dependencies {
         modstitchModApi("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 //        modstitchModImplementation("maven.modrinth:skinshuffle:${property("deps.shuffle")}")
     }
+
     // Anything else in the dependencies block will be used for all platforms.
     modstitchModApi("dev.architectury:architectury-${property("deps.arch")}")
     modstitchModImplementation("dev.isxander:yet-another-config-lib:${property("deps.yacl")}")

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 public interface DataCache<T> {
     SkinData get(String string);
+    boolean delete(String string);
     default HashMap<String, SkinData> getAll() {
         return new HashMap<String, SkinData>();
     }

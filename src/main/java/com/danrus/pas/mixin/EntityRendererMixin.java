@@ -2,9 +2,11 @@ package com.danrus.pas.mixin;
 
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.StringUtils;
+//? if !forge {
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+//?}
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -23,6 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
+
+    //? if !forge {
 
     //? if <1.21.6 {
     @WrapOperation(
@@ -76,4 +80,6 @@ public class EntityRendererMixin {
         }
     }
     *///?}
+
+    //?}
 }

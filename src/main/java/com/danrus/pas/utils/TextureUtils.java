@@ -66,6 +66,11 @@ public class TextureUtils {
         return future;
     }
 
+    public static void unregisterTexture(ResourceLocation identifier) {
+        Minecraft.getInstance().getTextureManager().release(identifier);
+        overlayTextureCache.remove(identifier.toString());
+    }
+
     public static NativeImage getNativeImage(ResourceLocation identifier) {
         AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(identifier);
         if (texture instanceof DynamicTexture nativeImageBackedTexture) {

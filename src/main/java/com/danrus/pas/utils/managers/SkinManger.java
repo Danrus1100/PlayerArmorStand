@@ -6,6 +6,7 @@ import com.danrus.pas.api.SkinData;
 import com.danrus.pas.api.SkinProvidersManager;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.utils.StringUtils;
+import com.danrus.pas.utils.TextureUtils;
 import com.danrus.pas.utils.data.GameCache;
 import com.danrus.pas.utils.data.MojangDiskCache;
 import com.danrus.pas.utils.data.NamemcDiskCache;
@@ -65,6 +66,7 @@ public class SkinManger {
     public void reloadData(String string){
         List<String> matches = StringUtils.matchASName(string);
         String name = matches.get(0);
+        getDataManager().delete(string);
         if (name == null || name.isEmpty()) {
             PlayerArmorStandsClient.LOGGER.warn("SkinManger: Cannot reload data for an empty name");
             return;

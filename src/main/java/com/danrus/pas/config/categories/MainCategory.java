@@ -53,6 +53,7 @@ public class MainCategory {
                 .group(OptionGroup.createBuilder()
                         .name(Component.translatable("pas.config.group.armorstands"))
 
+                        //? !forge {
                         .option(Option.<Boolean>createBuilder()
                                 .name(Component.translatable("pas.config.hide_params_on_label"))
                                 .binding(
@@ -62,6 +63,7 @@ public class MainCategory {
                                 )
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
+                        //?}
 
                         .option(Option.<String>createBuilder()
                                 .name(Component.translatable("pas.config.default_skin"))

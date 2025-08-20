@@ -68,4 +68,13 @@ public interface DataManager {
      */
 
     SkinData findData(String string);
+
+
+    /**
+     * Deletes the data associated with the given string.
+     *
+     * @param string the identifier for the data to delete
+     */
+
+    void delete(String string);
 }

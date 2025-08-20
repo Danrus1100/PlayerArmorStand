@@ -34,6 +34,17 @@ public class NamemcDiskCache implements DataCache<Path> {
     }
 
     @Override
+    public boolean delete(String string) {
+        String name = StringUtils.matchASName(string).get(0);
+        Path skinFilePath = cachePath.resolve(name + "_namemc.png");
+        if (skinFilePath.toFile().exists()) {
+            identifiers.remove(name);
+            return skinFilePath.toFile().delete();
+        }
+        return false;
+    }
+
+    @Override
     public boolean isCompatibleWith(Object data) {
         return data instanceof Path;
     }

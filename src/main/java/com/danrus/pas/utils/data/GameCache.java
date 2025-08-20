@@ -19,6 +19,15 @@ public class GameCache implements DataCache<SkinData> {
     }
 
     @Override
+    public boolean delete(String string) {
+        if (cache.containsKey(string)) {
+            cache.remove(string);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public HashMap<String, SkinData> getAll() {
         return cache;
     }
