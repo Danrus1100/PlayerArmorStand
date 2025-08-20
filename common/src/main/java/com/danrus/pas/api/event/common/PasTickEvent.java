@@ -4,23 +4,21 @@ import com.danrus.pas.api.adapter.ArmorStandAdapter;
 import com.danrus.pas.api.types.McSide;
 import com.danrus.pas.core.event.PasEvent;
 
+/**
+ * Calls only if armor stand has custom name.
+ */
 public class PasTickEvent extends PasEvent {
 
     private final ArmorStandAdapter armorStand;
-    private final String customName;
     private final McSide side;
 
-    public PasTickEvent(ArmorStandAdapter armorStand, String hasCustomName, McSide side){
+    public PasTickEvent(ArmorStandAdapter armorStand, McSide side){
         this.armorStand = armorStand;
-        this.customName = hasCustomName;
         this.side = side;
     }
 
     public ArmorStandAdapter armorStand() {
         return armorStand;
-    }
-    public String hasCustomName() {
-        return customName;
     }
 
     public McSide side() {

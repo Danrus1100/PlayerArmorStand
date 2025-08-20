@@ -5,7 +5,7 @@ import org.bukkit.World;
 
 public class LevelAdapterPaperImpl implements LevelAdapter {
 
-    World world;
+    private final World world;
 
     public LevelAdapterPaperImpl(World world) {
         this.world = world;

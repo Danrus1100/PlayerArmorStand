@@ -3,6 +3,7 @@ package com.danrus.pas.mixin;
 import com.danrus.pas.api.types.McSide;
 import com.danrus.pas.api.PasApi;
 import com.danrus.pas.api.event.common.PasTickEvent;
+import com.danrus.pas.impl.adapter.ArmorStandAdapterModImpl;
 import com.danrus.pas.renderstate.ArmorStandCapture;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,8 +20,17 @@ public abstract class ArmorStandMixin implements ArmorStandCapture {
     private void pas$tick(CallbackInfo ci){
         ArmorStand armorStand = (ArmorStand) (Object) this;
         String customName = armorStand.getCustomName() != null ? armorStand.getCustomName().getString() : "";
-        McSide side = armorStand.level().isClientSide() ? McSide.CLIENT : McSide.SERVER;
-        PasApi.postEvent(new PasTickEvent(armorStand, customName, side));
+        McSide side;
+        try {
+            side = armorStand.level().isClientSide() ? McSide.CLIENT : McSide.SERVER;
+        } catch (Exception e) {
+            // If the level is null, we assume it's a server-side tick
+            side = McSide.SERVER;
+        }
+        if (customName.isEmpty()) {
+            return;
+        }
+        PasApi.postEvent(new PasTickEvent(new ArmorStandAdapterModImpl(armorStand), side));
     }
 
     @Inject(

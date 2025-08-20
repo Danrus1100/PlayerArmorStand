@@ -2,7 +2,7 @@ package com.danrus.pas.mixin;
 
 import com.danrus.pas.api.PasApi;
 import com.danrus.pas.api.event.client.PasRenderLayerRegistrationEvent;
-import com.danrus.pas.core.renderstate.ArmorStandCapture;
+import com.danrus.pas.renderstate.ArmorStandCapture;
 import com.danrus.pas.mixin.accessor.LivingEntityRendererAccessor;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
