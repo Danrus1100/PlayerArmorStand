@@ -10,10 +10,13 @@
     "AnvilScreenMixin",
     "ArmorStandRendererMixin",
     "EntityRendererMixin",
+    "ItemModelResolverMixin",
     "LayerDefinitionsMixin",
     "LivingEntityRendererMixin",
     "accessors.AbstractWidgetAccessor",
     "accessors.AnvilScreenAccessor",
+    "accessors.ItemStackRenderStateAccessor",
+    "accessors.LayerRenderStateAccessor",
     "accessors.LivingEntityRendererAccessor",
     "accessors.ScreenAccessor"
   ]

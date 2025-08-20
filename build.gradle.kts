@@ -127,6 +127,7 @@ stonecutter {
 dependencies {
     modstitch.loom {
         modstitchModApi("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+        modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
 //        modstitchModImplementation("maven.modrinth:skinshuffle:${property("deps.shuffle")}")
     }
     // Anything else in the dependencies block will be used for all platforms.
