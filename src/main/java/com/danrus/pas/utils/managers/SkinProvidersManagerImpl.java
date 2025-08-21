@@ -1,16 +1,18 @@
 package com.danrus.pas.utils.managers;
 
 import com.danrus.pas.PlayerArmorStandsClient;
+import com.danrus.pas.api.SkinData;
 import com.danrus.pas.api.SkinProvider;
 import com.danrus.pas.api.SkinProvidersManager;
 import com.danrus.pas.utils.StringUtils;
+import net.minecraft.network.chat.Component;
 
 import java.util.*;
 
 public class SkinProvidersManagerImpl implements SkinProvidersManager {
 
     private final Map<String, List<PrioritizedProvider>> providers = new HashMap<>();
-    public static final String excludeLiterals = "NF"; // Exclude literals. for NOT default providers
+    public static final String excludeLiterals = "NB"; // Exclude literals. for NOT default providers
 
     public void addProvider(SkinProvider provider) {
         addProvider(provider, 0);
@@ -24,7 +26,7 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
         literalProviders.sort(Comparator.comparingInt(PrioritizedProvider::priority).reversed());
     }
 
-    public void download(String string) {
+    public SkinData download(String string) {
         String name = StringUtils.matchASName(string).get(0);
         String params = StringUtils.matchASName(string).get(1);
 
@@ -76,6 +78,8 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
                 ": No provider could load " + name + " with params: " + params);
             SkinManger.getInstance().getDataManager().invalidateData(name);
         }
+
+        return SkinManger.getInstance().findData(Component.literal(name));
     }
 
     // Helper class to store a provider with its priority

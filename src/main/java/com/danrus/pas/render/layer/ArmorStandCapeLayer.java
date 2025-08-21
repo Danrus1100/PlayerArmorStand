@@ -1,8 +1,9 @@
-package com.danrus.pas.render;
+package com.danrus.pas.render.layer;
 
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.render.ModelWithCape;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.managers.SkinManger;
@@ -12,14 +13,12 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.util.List;
 
-public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCapeLayer {
-    public ArmorStandCapeLayer(VersioningUtils.VersionlessArmorStandCape parent) {
+public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandRenderLayer {
+    public ArmorStandCapeLayer(VersioningUtils.VersionlessArmorStandRenderLayerParent parent) {
         super(parent);
     }
 

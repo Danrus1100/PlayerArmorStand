@@ -49,6 +49,10 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
     private boolean isSlim = false;
     private boolean isOriginal = false;
 
+    public PlayerArmorStandModel(){
+        this(PlayerArmorStandModel.createBodyLayer(CubeDeformation.NONE).bakeRoot());
+    }
+
     public PlayerArmorStandModel(ModelPart root) {
         super(root);
         this.cloak = root.getChild("cloak");
@@ -126,6 +130,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         partdefinition.addOrReplaceChild("left_body_stick", CubeListBuilder.create().texOffs(48, 16).addBox(1.0F, 3.0F, -1.0F, 2.0F, 7.0F, 2.0F), PartPose.ZERO);
         partdefinition.addOrReplaceChild("shoulder_stick", CubeListBuilder.create().texOffs(0, 48).addBox(-4.0F, 10.0F, -1.0F, 8.0F, 2.0F, 2.0F), PartPose.ZERO);
         partdefinition.addOrReplaceChild("base_plate", CubeListBuilder.create().texOffs(0, 32).addBox(-6.0F, 11.0F, -6.0F, 12.0F, 1.0F, 12.0F), PartPose.offset(0.0F, 12.0F, 0.0F));
+
 
         return LayerDefinition.create(meshdefinition, 64, 64);
     }

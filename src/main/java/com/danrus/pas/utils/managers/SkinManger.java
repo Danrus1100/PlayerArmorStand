@@ -7,9 +7,11 @@ import com.danrus.pas.api.SkinProvidersManager;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.TextureUtils;
+import com.danrus.pas.utils.data.BbDiskCache;
 import com.danrus.pas.utils.data.GameCache;
 import com.danrus.pas.utils.data.MojangDiskCache;
 import com.danrus.pas.utils.data.NamemcDiskCache;
+import com.danrus.pas.utils.providers.BbSkinProvider;
 import com.danrus.pas.utils.providers.MojangSkinProvider;
 import com.danrus.pas.utils.providers.NamemcSkinProvider;
 import net.minecraft.network.chat.Component;
@@ -21,16 +23,18 @@ public class SkinManger {
 
     private static final SkinManger INSTANCE = new SkinManger();
 
-    private DataManagerImpl dataManager = new DataManagerImpl();
-    private SkinProvidersManagerImpl skinProviderManager = new SkinProvidersManagerImpl();
+    private final DataManagerImpl dataManager = new DataManagerImpl();
+    private final SkinProvidersManagerImpl skinProviderManager = new SkinProvidersManagerImpl();
 
     private SkinManger() {
         getDataManager().addSource(new GameCache());
         getDataManager().addSource(new MojangDiskCache());
         getDataManager().addSource(new NamemcDiskCache());
+        getDataManager().addSource(new BbDiskCache());
 
         getSkinProviderManager().addProvider(new MojangSkinProvider());
         getSkinProviderManager().addProvider(new NamemcSkinProvider());
+        getSkinProviderManager().addProvider(new BbSkinProvider());
     }
 
     public ResourceLocation getSkinTexture(Component name) {
@@ -82,7 +86,7 @@ public class SkinManger {
         PlayerArmorStandsClient.LOGGER.info("SkinManger: Reloading failed skins");
         dataManager.getSources().forEach((key, source) -> {
             source.getAll().forEach((dataKey, obj) -> {
-                SkinData data = (SkinData) obj;
+                SkinData data = obj;
                 if (data.getStatus() == DownloadStatus.FAILED) {
                     PlayerArmorStandsClient.LOGGER.info("SkinManger: Reloading failed skin for " + dataKey);
                     data.setStatus(DownloadStatus.NOT_STARTED);

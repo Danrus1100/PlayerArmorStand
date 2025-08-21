@@ -1,9 +1,15 @@
 package com.danrus.pas.api;
 
 import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.render.PlayerArmorStandModel;
+import com.danrus.pas.render.bb.BbPasModel;
+import com.danrus.pas.render.bb.core.BbConverter;
+import com.danrus.pas.render.bb.core.BbModelContainer;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.TextureUtils;
 import com.danrus.pas.utils.VersioningUtils;
+import net.minecraft.client.model.ArmorStandArmorModel;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,6 +25,7 @@ public class SkinData {
     private List<TextureData> textures;
     private String params = "";
     private DownloadStatus status = DownloadStatus.NOT_STARTED;
+    private ArmorStandArmorModel model = new PlayerArmorStandModel(PlayerArmorStandModel.createBodyLayer(CubeDeformation.NONE).bakeRoot());
 
     class TextureData {
         String type;
@@ -28,6 +35,11 @@ public class SkinData {
             this.type = type;
             this.texture = texture;
         }
+    }
+
+    public SkinData(String name, ResourceLocation skinTexture, ResourceLocation capeTexture, String params, String bbModel) {
+        this(name, skinTexture, capeTexture, params);
+        this.model = new BbPasModel(BbModelContainer.parse(bbModel));
     }
 
     public SkinData(String name, ResourceLocation skinTexture, ResourceLocation capeTexture, String params) {
@@ -83,6 +95,10 @@ public class SkinData {
         return getTexture("cape");
     }
 
+    public ArmorStandArmorModel getModel() {
+        return model;
+    }
+
     public ResourceLocation getSkinTexture() {
         return getTexture("skin");
     }
@@ -125,6 +141,10 @@ public class SkinData {
 
     public void setParams(String params) {
         this.params = params.toUpperCase();
+    }
+
+    public void setModel(BbPasModel model) {
+        this.model = model;
     }
 
     public void appendParams(String params) {

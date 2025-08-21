@@ -1,17 +1,13 @@
 package com.danrus.pas.utils;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ArmorStandArmorModel;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.nio.file.Path;
 import java.util.function.Function;
@@ -213,7 +209,7 @@ public class VersioningUtils {
         return (int) Math.floor(alpha * 255.0F) << 24 | 16777215;
     }
 
-    public abstract static class VersionlessArmorStandCapeLayer extends RenderLayer<
+    public abstract static class VersionlessArmorStandRenderLayer extends RenderLayer<
             //? if <= 1.21.1 {
             /*ArmorStand,
             *///?} else {
@@ -221,7 +217,7 @@ public class VersioningUtils {
             //?}
             ArmorStandArmorModel>
     {
-        public VersionlessArmorStandCapeLayer(RenderLayerParent<
+        public VersionlessArmorStandRenderLayer(RenderLayerParent<
                 //? if <= 1.21.1 {
                 /*ArmorStand,
                 *///?} else {
@@ -232,7 +228,7 @@ public class VersioningUtils {
         }
     }
 
-    public interface VersionlessArmorStandCape extends RenderLayerParent <
+    public interface VersionlessArmorStandRenderLayerParent extends RenderLayerParent <
             //? if <= 1.21.1 {
             /*ArmorStand,
             *///?} else {

@@ -2,9 +2,9 @@ package com.danrus.pas.mixin;
 
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.mixin.accessors.LivingEntityRendererAccessor;
-import com.danrus.pas.render.ArmorStandCapeLayer;
+import com.danrus.pas.render.layer.ArmorStandCapeLayer;
 import com.danrus.pas.render.PlayerArmorStandModel;
-import com.danrus.pas.utils.StringUtils;
+import com.danrus.pas.render.layer.BbPasLayer;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.managers.SkinManger;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -14,7 +14,6 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ArmorStandRenderer.class)
-public abstract class ArmorStandRendererMixin implements VersioningUtils.VersionlessArmorStandCape {
+public abstract class ArmorStandRendererMixin implements VersioningUtils.VersionlessArmorStandRenderLayerParent {
 
     @Unique
     private PlayerArmorStandModel model;
@@ -42,6 +41,7 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
     private void init(EntityRendererProvider.Context context, CallbackInfo ci) {
         this.model = new PlayerArmorStandModel(context.bakeLayer(ModelLayers.ARMOR_STAND));
         ((LivingEntityRendererAccessor) this).invokeAddLayer(new ArmorStandCapeLayer(this));
+        ((LivingEntityRendererAccessor)this).invokeAddLayer(new BbPasLayer(this));
         ((LivingEntityRendererAccessor) this).setModel(model);
         //? if >= 1.21.4 {
         this.bigModel = model;
