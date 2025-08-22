@@ -1,3 +1,5 @@
+ - Changes: Now Configurator available form the Armor Poser UI (1.21.4+)
+ - Changes: Added tips for some Configurator fields
  - Fix: now the skin reload should work correctly
  - Fix: 1.21.1 crashing on startup
  - Chore: returned 1.21.5 support
