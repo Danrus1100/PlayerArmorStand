@@ -27,6 +27,16 @@ public class VersioningUtils {
         *///?}
     }
 
+    public static boolean isModLoaded(String modId) {
+        //? if fabric {
+        return net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded(modId);
+        //?} else if neoforge {
+        /*return net.neoforged.fml.loading.FMLLoader.getLoadingModList().getModFileById(modId) != null;
+        *///?} else if forge {
+        /*return net.minecraftforge.fml.ModList.get().isLoaded(modId);
+        *///?}
+    }
+
     public static ResourceLocation getResourceLocation(String namespace, String path) {
         //? if <= 1.20.1 {
         /*return ResourceLocation.tryBuild(namespace, path);

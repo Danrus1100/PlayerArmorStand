@@ -1,2 +1,3 @@
  - Fix: now the skin reload should work correctly
- - 
+ - Fix: 1.21.1 crashing on startup
+ - Chore: returned 1.21.5 support

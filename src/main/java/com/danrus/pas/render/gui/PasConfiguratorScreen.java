@@ -61,7 +61,7 @@ public class PasConfiguratorScreen extends Screen {
 
     private final Button acceptButton;
     private final ArmorStand entity;
-    private final AnvilScreen parent;
+    private final ArmorStandNamerAdapter parent;
 
     private final ButtonWithIcon skinProviderButton;
     private final ButtonWithIcon armTypeButton;
@@ -82,7 +82,7 @@ public class PasConfiguratorScreen extends Screen {
 
     private final TabManager tabManager;
 
-    public PasConfiguratorScreen(AnvilScreen parent) {
+    public PasConfiguratorScreen(ArmorStandNamerAdapter parent) {
         super(Component.literal("Player Armor Stand Configurator"));
         this.parent = parent;
         this.entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
@@ -133,10 +133,10 @@ public class PasConfiguratorScreen extends Screen {
 
     private void setupParams () {
 
-        String itemName = ((AnvilScreenAccessor) parent).pas$getNameInput().getValue();
+        String itemName = parent.getNameInputValue();
 
         if (!itemName.equals(Component.translatable("item.minecraft.armor_stand").getString())) {
-            List<String> matches = StringUtils.matchASName(((AnvilScreenAccessor) parent).pas$getNameInput().getValue());
+            List<String> matches = StringUtils.matchASName(parent.getNameInputValue());
             entityName = matches.get(0);
 
             // FIXME: toooo much if-else statements next:
@@ -368,7 +368,7 @@ public class PasConfiguratorScreen extends Screen {
         Quaternionf rotation = new Quaternionf().rotateX((float) Math.PI * 1.1F)
                 .rotateY((float) Math.toRadians(currentRotation + 30F));
 
-        //? if <= 1.21.4 {
+        //? if <= 1.21.5 {
         InventoryScreen.renderEntityInInventory(
                 g, (int) (this.width / 2f - 68), (int) (this.height / 2f + 80), 70,
                 //? >= 1.21.1
@@ -406,7 +406,7 @@ public class PasConfiguratorScreen extends Screen {
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(parent);
+        this.minecraft.setScreen(parent.getScreen());
     }
 
     private void setEntityName(String name) {
@@ -446,9 +446,9 @@ public class PasConfiguratorScreen extends Screen {
     }
 
     private void acceptName() {
-        Minecraft.getInstance().setScreen(parent);
+        Minecraft.getInstance().setScreen(parent.getScreen());
         String toAnvil = generateEntityName();
-        ((AnvilScreenAccessor) parent).pas$getNameInput().setValue(toAnvil);
+        parent.setNameInputValue(toAnvil);
     }
 
     private enum AnimationState {

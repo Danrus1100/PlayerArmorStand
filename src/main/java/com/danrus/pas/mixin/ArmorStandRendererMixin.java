@@ -84,11 +84,20 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
         }
     }
     //?} else {
-    /*@Inject(
+
+    /*//? if < 1.21.1 {
+    /^@Inject(
             method = "setupRotations(Lnet/minecraft/world/entity/decoration/ArmorStand;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V",
             at = @At("HEAD")
     )
     private void pas$setupRotations(ArmorStand entityLiving, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTicks, CallbackInfo ci){
+    ^///?} else {
+    @Inject(
+            method = "setupRotations(Lnet/minecraft/world/entity/decoration/ArmorStand;Lcom/mojang/blaze3d/vertex/PoseStack;FFFF)V",
+            at = @At("HEAD")
+    )
+    private void pas$setupRotations(ArmorStand entityLiving, PoseStack poseStack, float bob, float yBodyRot, float partialTick, float scale, CallbackInfo ci){
+    //?}
         if (!ModConfig.get().enableMod || VersioningUtils.getCustomName(entityLiving) == null) {
             return;
         }

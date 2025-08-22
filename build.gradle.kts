@@ -99,6 +99,7 @@ modstitch {
         addMixinsToModManifest = true
 
         configs.register("pas") {side = CLIENT}
+        configs.register("pas.armorposer") {side = CLIENT}
         // Most of the time you won't ever need loader specific mixins.
         // If you do, simply make the mixin file and add it like so for the respective loader:
         // if (isLoom) configs.register("examplemod-fabric")
@@ -194,7 +195,7 @@ publishMods {
             username  = "Player Armor Stands"
             avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
 
-            content = changelog.map{ "# Вышла версия " + findProperty("mod.version") + "! \n\n" + rootProject.file("CHANGELOG_RU.md").readText() + "\n\nДоступен на NeoForge и Fabric!"}
+            content = changelog.map{ "# Вышла версия " + findProperty("mod.version") + "! \n\n" + rootProject.file("CHANGELOG_RU.md").readText() + "\n\n<@&1406626250520400092>"}
         }
     }
 }
