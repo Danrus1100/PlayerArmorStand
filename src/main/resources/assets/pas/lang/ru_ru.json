@@ -47,11 +47,13 @@
   "pas.menu.tab.skin.arm_type.wide": "Широкие",
 
   "pas.menu.tab.skin.name": "Имя / ID",
+  "pas.menu.tab.skin.name.tooltip": "Для того чтобы загрузить скин с серверов Mojang, вам достаточно ввести имя этого игрока. Для NameMC нужно скопировать id скина из сайта (например, в \"https://namemc.com/skin/4da4ce379e8b0d00\" id скина будет \"4da4ce379e8b0d00\") и вставить в поле ниже. Только ПОСЛЕ ввода Источника скина и Имени / ID нужно нажать на Enter или кнопку правее от поля ввода",
 
   "pas.menu.tab.cape.label": "Показать плащ",
   "pas.menu.tab.cape.yes": "Да",
   "pas.menu.tab.cape.no": "Нет",
 
   "pas.menu.tab.overlay.name": "Текстура наложения",
+  "pas.menu.tab.overlay.name.tooltip": "В поле ниже нужно указать имя любой текстуры, которая находится в assets/minecraft/textures/blocks (например, stone)",
   "pas.menu.tab.overlay.blend": "Смешивание"
 }

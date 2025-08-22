@@ -1,5 +1,7 @@
 package com.danrus.pas.compat.armorposer.mixin;
 
+//? if >= 1.21.4 {
+
 import com.danrus.pas.mixin.accessors.ScreenAccessor;
 import com.danrus.pas.render.gui.PasConfiguratorScreen;
 import com.danrus.pas.render.gui.impl.AnvilArmorStandNamer;
@@ -37,3 +39,4 @@ public class ArmorStandScreenMixin {
         ((ScreenAccessor) this).pas$addRenderableWidget(configuratorButton);
     }
 }
+//?}

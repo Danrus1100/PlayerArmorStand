@@ -1,16 +1,23 @@
 package com.danrus.pas.compat.armorposer.mixin.accessor;
 
+//? if >= 1.21.4 {
+
 import com.mrbysco.armorposer.client.gui.ArmorStandScreen;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import org.spongepowered.asm.mixin.Mixin;
-import com.mrbysco.armorposer.client.gui.widgets.NameBox;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(ArmorStandScreen.class)
 public interface ArmorStandScreenAccessor {
     @Accessor("nameField")
-    NameBox pas$getNameInput();
+    //? if <=1.21.5 {
+    com.mrbysco.armorposer.client.gui.widgets.NameBox pas$getNameInput();
+    //?} else {
+    /*EditBox pas$getNameInput();
+    *///?}
 
     @Accessor("renameButton")
     Button pas$getRenameButton();
 }
+//?}

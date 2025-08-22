@@ -118,7 +118,8 @@ public class PasConfiguratorScreen extends Screen {
                 });
 
         capeAciveButton = new ButtonWithIcon(0, 0, 120, 20,
-                hasCape ? YES_LOGO : NO_LOGO, Component.translatable("pas.menu.tab.cape.yes"),
+                hasCape ? YES_LOGO : NO_LOGO,
+                hasCape ? Component.translatable("pas.menu.tab.cape.yes") : Component.translatable("pas.menu.tab.cape.no"),
                 button -> {
                     hasCape = !hasCape;
                     ((ButtonWithIcon) button).icon = hasCape ? YES_LOGO : NO_LOGO;
@@ -168,7 +169,7 @@ public class PasConfiguratorScreen extends Screen {
             setEntityName(entityName);
         });
         nameBox.setValue(entityName);
-        TextWidget nameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.name"));
+        TextWidget nameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.name")).setTooltip(Component.translatable("pas.menu.tab.skin.name.tooltip"));
         ImageButton acceptNameButton = new ImageButton(0, 0, 20, 20,
                 //? >= 1.21.1 {
                 new net.minecraft.client.gui.components.WidgetSprites(
@@ -224,7 +225,7 @@ public class PasConfiguratorScreen extends Screen {
 
         // --- Overlay Tab ---
 
-        TextWidget blockTextureNameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.overlay.name"));
+        TextWidget blockTextureNameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.overlay.name")).setTooltip(Component.translatable("pas.menu.tab.overlay.name.tooltip"));
         EnterEditBox blockTextureNameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Overlay Name"), editBox -> {
             overlayName = editBox.getValue();
             hasOverlay = !overlayName.isEmpty();

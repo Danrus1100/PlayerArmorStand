@@ -99,7 +99,9 @@ modstitch {
         addMixinsToModManifest = true
 
         configs.register("pas") {side = CLIENT}
-        configs.register("pas.armorposer") {side = CLIENT}
+        if (stonecutter.eval(minecraft, ">=1.21.4")) {
+            configs.register("pas.armorposer") {side = CLIENT}
+        }
         // Most of the time you won't ever need loader specific mixins.
         // If you do, simply make the mixin file and add it like so for the respective loader:
         // if (isLoom) configs.register("examplemod-fabric")

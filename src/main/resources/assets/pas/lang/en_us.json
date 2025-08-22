@@ -47,11 +47,13 @@
   "pas.menu.tab.skin.arm_type.wide": "Wide",
 
   "pas.menu.tab.skin.name": "Name / ID",
+  "pas.menu.tab.skin.name.tooltip": "To download a skin from Mojang's servers, simply enter the player's name. For NameMC, copy the skin ID from the website (for example, in \"https://namemc.com/skin/4da4ce379e8b0d00\" the skin ID will be \"4da4ce379e8b0d00\") and paste it into the field below. Only AFTER entering the skin source and Name / ID should you press Enter or the button to the right of the input field.",
 
   "pas.menu.tab.cape.label": "Show Cape",
   "pas.menu.tab.cape.yes": "Yes",
   "pas.menu.tab.cape.no": "No",
 
   "pas.menu.tab.overlay.name": "Overlay texture",
+  "pas.menu.tab.overlay.name.tooltip": "In the field below, specify any name of texture located in assets/minecraft/textures/blocks (e.g. stone)",
   "pas.menu.tab.overlay.blend": "Blend"
 }
