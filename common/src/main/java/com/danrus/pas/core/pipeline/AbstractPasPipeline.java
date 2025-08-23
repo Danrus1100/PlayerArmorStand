@@ -8,19 +8,23 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractPipeline<T> {
+public abstract class AbstractPasPipeline<T> {
     private static Logger LOGGER;
 
-    private final List<PipelineStage<?, ?>> stages = new ArrayList<>();
-    private PipelineContext context;
+    private final List<PasPipelineStage<?, ?>> stages = new ArrayList<>();
+    protected PasPipelineContext context;
 
-
-    public AbstractPipeline(PasRequest request) {
-        this.context = new PipelineContext(request);
+    public AbstractPasPipeline(PasRequest request) {
+        this.context = new PasPipelineContext(request);
         LOGGER = LoggerFactory.getLogger(this.getClass().getSimpleName());
     }
 
-    protected void addStage(PipelineStage<?, ?> stage) {
+    public AbstractPasPipeline(PasPipelineContext context) {
+        this.context = context;
+        LOGGER = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    }
+
+    protected void addStage(PasPipelineStage<?, ?> stage) {
         stages.add(stage);
     }
 
@@ -28,7 +32,7 @@ public abstract class AbstractPipeline<T> {
     public T execute() throws PipelineException {
         Object result = null;
 
-        for (PipelineStage stage : stages) {
+        for (PasPipelineStage stage : stages) {
             try {
                 result = stage.process(result != null ? result : context.getRequest(), context);
                 if (result != null) {

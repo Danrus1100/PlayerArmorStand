@@ -9,4 +9,8 @@ allprojects {
         maven("https://maven.minecraftforge.net/")
         maven("https://repo.papermc.io/repository/maven-public/")
     }
+
+//    dependencies  {
+//
+//    }
 }

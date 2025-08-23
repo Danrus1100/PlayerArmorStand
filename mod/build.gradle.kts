@@ -133,6 +133,7 @@ dependencies {
 
     modstitch.loom {
         modstitchModApi("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+        modstitchCompileOnly("org.jetbrains:annotations:26.0.2")
 //        modstitchModImplementation("maven.modrinth:skinshuffle:${property("deps.shuffle")}")
     }
     // Anything else in the dependencies block will be used for all platforms.

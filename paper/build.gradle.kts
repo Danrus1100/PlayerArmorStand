@@ -8,6 +8,7 @@ plugins {
 }
 
 dependencies {
+    compileOnly("org.jetbrains:annotations:26.0.2")
     implementation(project(":common"))
     compileOnly("io.papermc.paper:paper-api:${property("deps.paper")}")
 }

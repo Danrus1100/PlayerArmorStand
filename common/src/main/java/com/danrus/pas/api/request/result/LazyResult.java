@@ -1,6 +1,6 @@
 package com.danrus.pas.api.request.result;
 
-public interface Promise<T> {
+public interface LazyResult<T> {
 
     T get();
 
