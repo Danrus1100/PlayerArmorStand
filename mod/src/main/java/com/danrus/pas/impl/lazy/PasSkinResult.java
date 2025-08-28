@@ -1,6 +1,7 @@
-package com.danrus.pas.impl.promise;
+package com.danrus.pas.impl.lazy;
 
-import com.danrus.pas.api.data.PasSkin;
+import com.danrus.pas.api.PasApi;
+import com.danrus.pas.impl.data.PasSkin;
 import com.danrus.pas.api.request.PasRequest;
 import com.danrus.pas.api.request.result.LazyResult;
 
@@ -42,6 +43,8 @@ public class PasSkinResult implements LazyResult<PasSkin> {
 
     public static UUID register(PasRequest request, CompletableFuture<PasSkin> future) {
         UUID taskId = UUID.randomUUID();
+
+        PasApi.getLazyRegistry().register(taskId.toString(), new PasSkinResult());
 
         return taskId;
     }

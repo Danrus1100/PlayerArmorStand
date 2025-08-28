@@ -1,4 +1,5 @@
-package com.danrus.pas.api.data;
+package com.danrus.pas.impl.data;
+
 
 import com.danrus.pas.render.models.PasModel;
 import com.danrus.pas.utils.VersioningUtils;
@@ -23,7 +24,6 @@ public class PasSkin {
             VersioningUtils.getResourceLocation("minecraft", "textures/entity/player/slim/alex.png"),
             new PasModel(PasModel.createLayer(CubeDeformation.NONE, true).bakeRoot())
     );
-
 
     private final ResourceLocation skin;
     private final EntityModel<?> model;

@@ -1,11 +1,10 @@
-package com.danrus.pas.api;
+package com.danrus.pas.api.feature;
 
 import com.danrus.pas.core.pipeline.PasPipelineContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public interface PasFeature {
+public interface IPasFeature {
     String getLiteral();
 
     List<String> getMandatoryArguments();
@@ -13,5 +12,5 @@ public interface PasFeature {
     boolean isSourceHint();
 
     void apply(PasPipelineContext context);
-    void parse(String argument);
+    void parse(String baseName, String arguments);
 }
