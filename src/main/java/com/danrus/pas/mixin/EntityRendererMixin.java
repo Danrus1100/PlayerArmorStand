@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
@@ -41,6 +42,15 @@ public class EntityRendererMixin {
         }
         return original.call(instance, text, x, y, color, dropShadow, pose, bufferSource, displayMode, backgroundColor, packedLightCoords);
     }
+
+    @Redirect(
+            method = "renderNameTag",
+            at = @At(value = "INVOKE", target = "Ljava/lang/String;equals(Ljava/lang/Object;)Z")
+    )
+    private boolean pas$deadmau5Equals(String instance, Object object) {
+        instance = StringUtils.matchASName(instance).get(0);
+        return instance.equals(object);
+    }
     //?} else {
 
     /*@Shadow
@@ -57,7 +67,7 @@ public class EntityRendererMixin {
             Vec3 vec3 = renderState.nameTagAttachment;
             if (vec3 != null) {
                 boolean bl = !renderState.isDiscrete;
-                int i = "deadmau5".equals(displayName.getString()) ? -10 : 0;
+                int i = "deadmau5".equals(StringUtils.matchASName(displayName.getString()).get(0)) ? -10 : 0;
                 poseStack.pushPose();
                 poseStack.translate(vec3.x, vec3.y + (double) 0.5F, vec3.z);
                 poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
