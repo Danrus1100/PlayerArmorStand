@@ -207,7 +207,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
             customNameString = "";
         }
 
-        boolean isEarsVisible = "deadmau5".equals(StringUtils.matchASName(customNameString).get(0));
+        boolean isEarsVisible = "deadmau5".equals(StringUtils.matchASName(customNameString).get(0)) && ModConfig.get().showEasterEggs;
         this.leftEar.visible = isEarsVisible;
         this.rightEar.visible = isEarsVisible;
 

@@ -28,26 +28,6 @@ public class MainCategory {
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
 
-                        .option(Option.<Integer>createBuilder()
-                                .name(Component.translatable("pas.config.download_threads"))
-                                .binding(
-                                        3,
-                                        () -> ModConfig.get().downloadThreads, // a getter to getData the current value from
-                                        newVal -> ModConfig.get().downloadThreads = newVal
-                                )
-                                .controller(IntegerFieldControllerBuilder::create)
-                                .addListener(((option, event) -> ModExecutor.reload()))
-                                .build())
-
-                        .option(Option.<ModConfig.DOWNLOAD_STATUS_DISPLAY>createBuilder()
-                                .name(Component.translatable("pas.config.download_status_display"))
-                                .binding(
-                                        ModConfig.DOWNLOAD_STATUS_DISPLAY.ABOVE_HOTBAR,
-                                        () -> ModConfig.get().downloadStatusDisplay, // a getter to getData the current value from
-                                        newVal -> ModConfig.get().downloadStatusDisplay = newVal
-                                )
-                                .controller(opt -> EnumControllerBuilder.create(opt).enumClass(ModConfig.DOWNLOAD_STATUS_DISPLAY.class).formatValue((v) -> Component.translatable("pas.config.download_status_display." + v.name().toLowerCase())))                                .build())
-
                         .build())
 
                 .group(OptionGroup.createBuilder()
@@ -73,6 +53,42 @@ public class MainCategory {
                                         newVal -> ModConfig.get().defaultSkin = newVal
                                 )
                                 .controller(StringControllerBuilder::create)
+                                .build())
+
+                        .build())
+
+                .group(OptionGroup.createBuilder()
+                        .name(Component.translatable("pas.config.group.skin_loading"))
+
+                        .option(Option.<Integer>createBuilder()
+                                .name(Component.translatable("pas.config.download_threads"))
+                                .binding(
+                                        3,
+                                        () -> ModConfig.get().downloadThreads, // a getter to getData the current value from
+                                        newVal -> ModConfig.get().downloadThreads = newVal
+                                )
+                                .controller(IntegerFieldControllerBuilder::create)
+                                .addListener(((option, event) -> ModExecutor.reload()))
+                                .build())
+
+                        .option(Option.<ModConfig.DOWNLOAD_STATUS_DISPLAY>createBuilder()
+                                .name(Component.translatable("pas.config.download_status_display"))
+                                .binding(
+                                        ModConfig.DOWNLOAD_STATUS_DISPLAY.ABOVE_HOTBAR,
+                                        () -> ModConfig.get().downloadStatusDisplay, // a getter to getData the current value from
+                                        newVal -> ModConfig.get().downloadStatusDisplay = newVal
+                                )
+                                .controller(opt -> EnumControllerBuilder.create(opt).enumClass(ModConfig.DOWNLOAD_STATUS_DISPLAY.class).formatValue((v) -> Component.translatable("pas.config.download_status_display." + v.name().toLowerCase())))
+                                .build())
+
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Component.translatable("pas.config.try_apply_from_server_player"))
+                                .binding(
+                                        true,
+                                        () -> ModConfig.get().tryApplyFromServerPlayer,
+                                        newVal -> ModConfig.get().tryApplyFromServerPlayer = newVal
+                                )
+                                .controller(TickBoxControllerBuilder::create)
                                 .build())
 
                         .option(Option.<Boolean>createBuilder()

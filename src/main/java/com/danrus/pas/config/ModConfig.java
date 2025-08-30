@@ -51,6 +51,9 @@ public class ModConfig {
     @SerialEntry
     public boolean showEasterEggs = true;
 
+    @SerialEntry
+    public boolean tryApplyFromServerPlayer = true;
+
     public enum DOWNLOAD_STATUS_DISPLAY {
         NONE,
         ABOVE_HOTBAR,
