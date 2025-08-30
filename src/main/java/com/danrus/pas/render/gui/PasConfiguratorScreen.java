@@ -7,6 +7,8 @@ import com.danrus.pas.render.gui.tabs.TabManager;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
 
+import com.danrus.pas.utils.data.FileTextureCache;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -35,6 +37,7 @@ public class PasConfiguratorScreen extends Screen {
 
     public static final ResourceLocation MOJANG_LOGO = VersioningUtils.getGuiLocation("pas", "mojang");
     public static final ResourceLocation NAMEMC_LOGO = VersioningUtils.getGuiLocation("pas", "namemc");
+    public static final ResourceLocation FILE_LOGO = VersioningUtils.getGuiLocation("pas", "file");
     public static final ResourceLocation WIDE_ARM_LOGO = VersioningUtils.getGuiLocation("pas", "wide");
     public static final ResourceLocation SLIM_ARM_LOGO = VersioningUtils.getGuiLocation("pas", "slim");
 
@@ -65,6 +68,9 @@ public class PasConfiguratorScreen extends Screen {
 
     private final ButtonWithIcon skinProviderButton;
     private final ButtonWithIcon armTypeButton;
+
+    private final TextWidget openFolderLabel;
+    private final Button openFolderButton;
 
     private final ButtonWithIcon capeAciveButton;
 
@@ -97,15 +103,8 @@ public class PasConfiguratorScreen extends Screen {
 
         skinProviderButton = new ButtonWithIcon(0, 0, 120, 20,
                 MOJANG_LOGO, Component.translatable("pas.menu.tab.skin.provider." + skinProvider.toLowerCase()),
-                button -> {
-                    if (skinProvider.equals("M")) {
-                        skinProvider = "N";
-                        button.setMessage(Component.translatable("pas.menu.tab.skin.provider.n"));
-                    } else if (skinProvider.equals("N")) {
-                        skinProvider = "M";
-                        button.setMessage(Component.translatable("pas.menu.tab.skin.provider.m"));
-                    }
-                });
+                button -> changeSkinProvider(skinProvider, button)
+                );
 
         armTypeButton = new ButtonWithIcon(0, 0, 120, 20,
                 isSlim ? SLIM_ARM_LOGO : WIDE_ARM_LOGO,
@@ -126,6 +125,11 @@ public class PasConfiguratorScreen extends Screen {
                     button.setMessage(Component.translatable("pas.menu.tab.cape." + (hasCape ? "yes" : "no")));
                     setEntityName(entityName);
                 });
+
+        openFolderLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.open_folder"));
+        openFolderButton = Button.builder(Component.translatable("pas.menu.tab.skin.open_folder.button"), button -> {
+            Util.getPlatform().openPath(FileTextureCache.SKINS_PATH);
+        }).bounds(0, 0, 120, 20).build();
 
         this.tabManager = new TabManager(this);
 
@@ -155,6 +159,10 @@ public class PasConfiguratorScreen extends Screen {
             }
             if (matches.get(1).contains("N")) {
                 skinProvider = "N";
+            } else if (matches.get(1).contains("F")) {
+                skinProvider = "F";
+            } else {
+                skinProvider = "M";
             }
 
             setEntityName(itemName);
@@ -188,8 +196,6 @@ public class PasConfiguratorScreen extends Screen {
                 }
         );
         TextWidget skinProviderLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.provider"));
-        
-        
         TextWidget armTypeLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.arm_type"));
         
         Tab skinTab = new Tab("skin", (width, height) -> {
@@ -200,6 +206,8 @@ public class PasConfiguratorScreen extends Screen {
             skinProviderButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 30));
             armTypeLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 10));
             armTypeButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f + 10));
+            openFolderLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f + 30));
+            openFolderButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f + 50));
         });
 
         skinTab.addWidget(nameBox);
@@ -209,6 +217,8 @@ public class PasConfiguratorScreen extends Screen {
         skinTab.addWidget(skinProviderButton);
         skinTab.addWidget(armTypeLabel);
         skinTab.addWidget(armTypeButton);
+        skinTab.addWidget(openFolderLabel);
+        skinTab.addWidget(openFolderButton);
 
         // -- Cape Tab ---
 
@@ -335,6 +345,12 @@ public class PasConfiguratorScreen extends Screen {
             this.currentAnimationState = AnimationState.IDLE;
         }
 
+        boolean showOpenFolder = "F".equals(skinProvider) && tabManager.getActiveTab().getName().equals("skin");
+        openFolderButton.visible = showOpenFolder;
+        openFolderLabel.visible = showOpenFolder;
+        openFolderButton.active = showOpenFolder;
+        openFolderLabel.active = showOpenFolder;
+
         animateRotation(currentAnimationState);
     }
 
@@ -361,6 +377,8 @@ public class PasConfiguratorScreen extends Screen {
             skinProviderButton.icon = MOJANG_LOGO;
         } else if (skinProvider.equals("N")) {
             skinProviderButton.icon = NAMEMC_LOGO;
+        } else if (skinProvider.equals("F")) {
+            skinProviderButton.icon = FILE_LOGO;
         }
 
         g.drawCenteredString(Minecraft.getInstance().font, Component.translatable("pas.menu.name"), this.width / 2, 15, 0xFFFFFF);
@@ -443,6 +461,7 @@ public class PasConfiguratorScreen extends Screen {
                 (isSlim ? "S" : "") +
                 (hasCape ? "C" : "") +
                 (skinProvider.equals("N") ? "N" : "") +
+                (skinProvider.equals("F") ? "F" : "") +
                 (hasOverlay ? "T:" + overlayName + "%" + overlayBlend : "");
     }
 
@@ -450,6 +469,23 @@ public class PasConfiguratorScreen extends Screen {
         Minecraft.getInstance().setScreen(parent.getScreen());
         String toAnvil = generateEntityName();
         parent.setNameInputValue(toAnvil);
+    }
+
+    private void changeSkinProvider(String literal, Button button) {
+        switch (literal) {
+            case "M" -> {
+                skinProvider = "N";
+                button.setMessage(Component.translatable("pas.menu.tab.skin.provider.n"));
+            }
+            case "N" -> {
+                skinProvider = "F";
+                button.setMessage(Component.translatable("pas.menu.tab.skin.provider.f"));
+            }
+            case "F" -> {
+                skinProvider = "M";
+                button.setMessage(Component.translatable("pas.menu.tab.skin.provider.m"));
+            }
+        }
     }
 
     private enum AnimationState {

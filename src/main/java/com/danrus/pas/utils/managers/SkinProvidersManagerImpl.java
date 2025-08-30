@@ -7,77 +7,100 @@ import com.danrus.pas.utils.StringUtils;
 
 import java.util.*;
 
+/**
+ * Manages registration and selection of {@link SkinProvider}s by literal markers.
+ */
 public class SkinProvidersManagerImpl implements SkinProvidersManager {
 
-    private final Map<String, List<PrioritizedProvider>> providers = new HashMap<>();
-    public static final String excludeLiterals = "NF"; // Exclude literals. for NOT default providers
+    private static final String DEFAULT_LITERAL = "M";  // Default literal for providers
+    private static final String EXCLUDE_LITERALS = "NF"; // Prevents fallback to default providers
 
+    // Key: literal, Value: sorted list of providers
+    private final Map<String, List<PrioritizedProvider>> providers = new HashMap<>();
+
+    @Override
     public void addProvider(SkinProvider provider) {
         addProvider(provider, 0);
     }
 
+    @Override
     public void addProvider(SkinProvider provider, int priority) {
-        String literal = provider.getLiteral();
-        List<PrioritizedProvider> literalProviders = providers.computeIfAbsent(literal, k -> new ArrayList<>());
-        literalProviders.add(new PrioritizedProvider(provider, priority));
-        // Sort by priority (higher priority first)
-        literalProviders.sort(Comparator.comparingInt(PrioritizedProvider::priority).reversed());
+        providers
+                .computeIfAbsent(provider.getLiteral(), k -> new ArrayList<>())
+                .add(new PrioritizedProvider(provider, priority));
+
+        // Keep providers sorted at all times
+        providers.get(provider.getLiteral())
+                .sort(Comparator.comparingInt(PrioritizedProvider::priority).reversed());
     }
 
-    public void download(String string) {
-        String name = StringUtils.matchASName(string).get(0);
-        String params = StringUtils.matchASName(string).get(1);
+    @Override
+    public void download(String input) {
+        List<String> parts = StringUtils.matchASName(input);
+        String name = parts.get(0);
+        String params = parts.get(1);
+
+        if (name.isEmpty()) {
+            PlayerArmorStandsClient.LOGGER.warn(getClass().getSimpleName() +
+                    ": Invalid input " + input);
+            return;
+        }
 
         boolean loaded = false;
 
-        // Check for providers based on literals in params
-        for (var entry : providers.entrySet()) {
-            String literal = entry.getKey();
-            if (params.contains(literal)) {
-                List<PrioritizedProvider> literalProviders = entry.getValue();
-                // Try each provider for this literal in order (sorted by priority)
-                for (PrioritizedProvider prioritizedProvider : literalProviders) {
-                    try {
-                        prioritizedProvider.provider().load(string);
-                        loaded = true;
-                        break; // Break from provider loop if successful
-                    } catch (Exception e) {
-                        // Continue to next provider if this one fails
-                        PlayerArmorStandsClient.LOGGER.debug("Provider " +
-                            prioritizedProvider.provider().getClass().getSimpleName() +
-                            " failed to load " + name + ": " + e.getMessage());
-                    }
-                }
-                if (loaded) break; // Break from literal loop if loaded successfully
-            }
-        }
-
-        // If no specific provider loaded, try default "M" providers if allowed
-        if (!loaded && !params.matches(".*[" + excludeLiterals + "].*")) {
-            List<PrioritizedProvider> defaultProviders = providers.get("M");
-            if (defaultProviders != null) {
-                for (PrioritizedProvider prioritizedProvider : defaultProviders) {
-                    try {
-                        prioritizedProvider.provider().load(string);
-                        loaded = true;
-                        break;
-                    } catch (Exception e) {
-                        PlayerArmorStandsClient.LOGGER.debug("Default provider " +
-                            prioritizedProvider.provider().getClass().getSimpleName() +
-                            " failed to load " + name + ": " + e.getMessage());
-                    }
+        for (char c : EXCLUDE_LITERALS.toCharArray()) {
+            if (params.indexOf(c) >= 0) {
+                if (tryLoadFromProviders(String.valueOf(c), input, name)) {
+                    loaded = true;
+                    break;
                 }
             }
         }
 
-        // Log warning if no provider could load
         if (!loaded) {
-            PlayerArmorStandsClient.LOGGER.warn(this.getClass().getName() +
-                ": No provider could load " + name + " with params: " + params);
+            for (var entry : providers.entrySet()) {
+                String literal = entry.getKey();
+                if (EXCLUDE_LITERALS.contains(literal)) continue; // Пропускаем те, что уже проверили
+                if (params.contains(literal) && tryLoad(entry.getValue(), input, name)) {
+                    loaded = true;
+                    break;
+                }
+            }
+        }
+
+        if (!loaded) {
+            if (tryLoadFromProviders(DEFAULT_LITERAL, input, name)) {
+                loaded = true;
+            }
+        }
+
+        if (!loaded) {
+            PlayerArmorStandsClient.LOGGER.warn(getClass().getSimpleName() +
+                    ": No provider could load " + name + " with params: " + params);
             SkinManger.getInstance().getDataManager().invalidateData(name);
         }
     }
 
-    // Helper class to store a provider with its priority
+    private boolean tryLoadFromProviders(String literal, String input, String name) {
+        return tryLoad(providers.get(literal), input, name);
+    }
+
+    private boolean tryLoad(List<PrioritizedProvider> providerList, String input, String name) {
+        if (providerList == null || providerList.isEmpty()) return false;
+
+        for (PrioritizedProvider prioritized : providerList) {
+            try {
+                prioritized.provider().load(input);
+                return true;
+            } catch (Exception e) {
+                PlayerArmorStandsClient.LOGGER.debug(
+                        "Provider {} failed to load {}: {}",
+                        prioritized.provider().getClass().getSimpleName(), name, e.getMessage()
+                );
+            }
+        }
+        return false;
+    }
+
     private record PrioritizedProvider(SkinProvider provider, int priority) {}
 }

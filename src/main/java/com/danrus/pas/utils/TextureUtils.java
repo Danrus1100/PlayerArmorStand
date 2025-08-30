@@ -24,11 +24,10 @@ public class TextureUtils {
     private static final HashMap<String, ResourceLocation> overlayTextureCache = new HashMap<>();
 
     public static CompletableFuture<ResourceLocation> registerTexture(Path path, ResourceLocation identifier, boolean remap){
-        try (InputStream inputStream = Files.newInputStream(path)) {
-            NativeImage image = NativeImage.read(inputStream);
+        NativeImage image = parseImageFile(path);
+        if (image != null) {
             return registerTexture(image, identifier, remap);
-        } catch (Exception e) {
-            PlayerArmorStandsClient.LOGGER.warn("Failed to read texture from path: {}", path, e);
+        } else {
             return CompletableFuture.completedFuture(MissingTextureAtlasSprite.getLocation());
         }
     }
@@ -71,6 +70,15 @@ public class TextureUtils {
         overlayTextureCache.remove(identifier.toString());
     }
 
+    public static NativeImage parseImageFile(Path path) {
+        try (InputStream inputStream = Files.newInputStream(path)) {
+            return NativeImage.read(inputStream);
+        } catch (Exception e) {
+            PlayerArmorStandsClient.LOGGER.warn("Failed to read texture from path: {}", path.toFile().getName(), e);
+            return null;
+        }
+    }
+
     public static NativeImage getNativeImage(ResourceLocation identifier) {
         AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(identifier);
         if (texture instanceof DynamicTexture nativeImageBackedTexture) {
@@ -89,6 +97,32 @@ public class TextureUtils {
         }
         return null;
 
+    }
+
+    public static void SaveImage(ResourceLocation identifier, Path path) {
+        NativeImage image = getNativeImage(identifier);
+        if (image != null) {
+            SaveImage(image, path);
+        }
+    }
+
+    public static void SaveImage(NativeImage image, Path path) {
+        try {
+            image.writeToFile(path.toFile());
+        } catch (Exception e) {
+            PlayerArmorStandsClient.LOGGER.warn("Failed to save texture to path: {}", path.toFile().getName(), e);
+        }
+    }
+
+    private static NativeImage generateSkinProfile(NativeImage image) {
+        NativeImage newImage = new NativeImage(16, 16, true);
+        int i = image.getHeight();
+        int j = image.getWidth();
+        if (j == 64 && (i == 32 || i == 64)) {
+            newImage.copyRect(image, 8, 8, 4, 2, 8, 8, false, false);
+//            newImage.copyRect();
+        }
+        return newImage;
     }
 
     private static NativeImage remapTexture(NativeImage image) {

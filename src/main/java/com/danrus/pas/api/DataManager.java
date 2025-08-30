@@ -19,6 +19,14 @@ public interface DataManager {
     void addSource(DataCache<?> source);
 
     /**
+     * Add a source of data to the manager with priority.
+     *
+     * @param source the data source to add
+     * @param priority the priority of the source, higher values indicate higher priority
+     */
+    void addSource(DataCache<?> source, int priority);
+
+    /**
      * Retrieves data associated with the given string.
      *
      * @param string the name of the player

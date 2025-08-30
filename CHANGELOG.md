@@ -1,2 +1,5 @@
+ - New: Added local skin files support ("Skin Source" in Configurator)
+ - New: Now mod first attempt to find and apply the current player skin if they are on the same server as you. You can disable this behavior in the settings
  - Fix: Now then name is empty armor stand displays correctly
+ - Fix: Mojang skin may not load if you delete the skin from `cache/pas` but leave the cloak
  - Changes: Now DeadMau5 has a ears

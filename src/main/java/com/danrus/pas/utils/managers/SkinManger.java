@@ -6,10 +6,7 @@ import com.danrus.pas.api.SkinData;
 import com.danrus.pas.api.SkinProvidersManager;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.utils.StringUtils;
-import com.danrus.pas.utils.TextureUtils;
-import com.danrus.pas.utils.data.GameCache;
-import com.danrus.pas.utils.data.MojangDiskCache;
-import com.danrus.pas.utils.data.NamemcDiskCache;
+import com.danrus.pas.utils.data.*;
 import com.danrus.pas.utils.providers.MojangSkinProvider;
 import com.danrus.pas.utils.providers.NamemcSkinProvider;
 import net.minecraft.network.chat.Component;
@@ -25,9 +22,11 @@ public class SkinManger {
     private SkinProvidersManagerImpl skinProviderManager = new SkinProvidersManagerImpl();
 
     private SkinManger() {
-        getDataManager().addSource(new GameCache());
+        getDataManager().addSource(new ClientLevelCache(), 0);
+        getDataManager().addSource(new GameCache(), 2);
         getDataManager().addSource(new MojangDiskCache());
         getDataManager().addSource(new NamemcDiskCache());
+        getDataManager().addSource(new FileTextureCache(), 999);
 
         getSkinProviderManager().addProvider(new MojangSkinProvider());
         getSkinProviderManager().addProvider(new NamemcSkinProvider());
