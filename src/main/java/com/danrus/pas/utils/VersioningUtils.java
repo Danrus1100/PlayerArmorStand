@@ -2,6 +2,8 @@ package com.danrus.pas.utils;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -11,7 +13,11 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.nio.file.Path;
 import java.util.function.Function;
@@ -222,6 +228,45 @@ public class VersioningUtils {
     public static int getARGBwhite(float alpha) {
         return (int) Math.floor(alpha * 255.0F) << 24 | 16777215;
     }
+
+
+    public static void renderEntityInUi(GuiGraphics guiGraphics, LivingEntity entity, int x, int y, int width, int height, float scale,
+                                        Vector3f translation, Quaternionf rotation,
+                                        int leftOffset, int topOffset, int rightOffset, int bottomOffset) {
+        //? if <= 1.21.5 {
+        guiGraphics.enableScissor(x - leftOffset, y - topOffset, width - leftOffset - rightOffset, height - topOffset - bottomOffset);
+        InventoryScreen.renderEntityInInventory(
+                guiGraphics,
+                x,
+                y,
+                scale,
+                new Vector3f(0, 0, 0),
+                rotation,
+                null,
+                entity
+        );
+        guiGraphics.disableScissor();
+        //?} else {
+        /*int left = x - leftOffset;
+        int top = y - topOffset;
+        int right = x - rightOffset;
+        int bottom = y + bottomOffset;
+
+        InventoryScreen.renderEntityInInventory(
+                guiGraphics,
+                left,
+                top,
+                right,
+                bottom,
+                scale,
+                translation,
+                rotation,
+                null,
+                entity
+        );
+        *///?}
+    }
+
 
     public abstract static class VersionlessArmorStandCapeLayer extends RenderLayer<
             //? if <= 1.21.1 {
