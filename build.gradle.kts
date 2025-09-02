@@ -120,6 +120,12 @@ stonecutter {
         "forge" to constraint.equals("forge"),
         "vanilla" to constraint.equals("vanilla")
     )
+
+    swaps["client"] = when (loader) {
+        "fabric" -> "@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)"
+        "neoforge" -> "@net.neoforged.api.distmarker.OnlyIn(net.neoforged.api.distmarker.Dist.CLIENT)"
+        else -> ""
+    }
 }
 
 // All dependencies should be specified through modstitch's proxy configuration.

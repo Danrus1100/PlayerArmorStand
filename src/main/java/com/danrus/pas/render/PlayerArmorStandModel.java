@@ -16,6 +16,8 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.util.List;
 
+//$ client
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class PlayerArmorStandModel extends ArmorStandArmorModel implements ModelWithCape {
     // WIDE
     public final ModelPart leftSleeve;
