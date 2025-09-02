@@ -1,9 +1,11 @@
 package com.danrus.pas.utils;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -77,8 +79,8 @@ public class VersioningUtils {
         //? if <= 1.21.1 {
         /*if (object instanceof ArmorStand armorStand) {
             return armorStand.isNoBasePlate();
-         }
-         *///?} else {
+        }
+        *///?} else {
         if (object instanceof net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStandState) {
             return !armorStandState.showBasePlate;
         }
@@ -221,6 +223,22 @@ public class VersioningUtils {
 
     public static int getARGBwhite(float alpha) {
         return (int) Math.floor(alpha * 255.0F) << 24 | 16777215;
+    }
+
+    public static ResourceLocation getPlayerSkinTexture(AbstractClientPlayer player){
+        //? if <= 1.20.1 {
+        /*return player.getSkinTextureLocation();
+        *///?} else {
+        return player.getSkin().texture();
+        //?}
+    }
+
+    public static ResourceLocation getPlayerCapeTexture(AbstractClientPlayer player){
+        //? if <= 1.20.1 {
+        /*return player.getCloakTextureLocation();
+        *///?} else {
+        return player.getSkin().capeTexture();
+        //?}
     }
 
     public abstract static class VersionlessArmorStandCapeLayer extends RenderLayer<

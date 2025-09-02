@@ -128,7 +128,7 @@ public class PasConfiguratorScreen extends Screen {
 
         openFolderLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.open_folder"));
         openFolderButton = Button.builder(Component.translatable("pas.menu.tab.skin.open_folder.button"), button -> {
-            Util.getPlatform().openPath(FileTextureCache.SKINS_PATH);
+            Util.getPlatform().openFile(FileTextureCache.SKINS_PATH.toFile());
         }).bounds(0, 0, 120, 20).build();
 
         this.tabManager = new TabManager(this);

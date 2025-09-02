@@ -1,5 +1,6 @@
 package com.danrus.pas.compat.possessive.mixin;
 
+//? if possessive {
 import com.danrus.pas.compat.possessive.PossessiveRenderHand;
 import com.danrus.pas.render.PlayerArmorStandModel;
 import com.danrus.pas.utils.StringUtils;
@@ -12,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
@@ -75,7 +77,13 @@ public class ArmorStandCameraMixin {
      * @reason Rewrite hand rendering for {@link PlayerArmorStandModel}
      */
     @Overwrite
+    //? if =1.20.1 {
+    /*public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
+    *///?} else if =1.21.1 {
+    /*public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
+    *///?} else {
     public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, ResourceLocation resourceLocation, ModelPart modelPart, boolean bl){
+    //?}
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         ArmorStandRenderer entityRenderer = (ArmorStandRenderer)entityRenderDispatcher.getRenderer(this.possessedArmorStand);
         PlayerRenderer playerRenderer = (PlayerRenderer)entityRenderDispatcher.getRenderer(Minecraft.getInstance().player);
@@ -112,3 +120,4 @@ public class ArmorStandCameraMixin {
 
     }
 }
+//?}

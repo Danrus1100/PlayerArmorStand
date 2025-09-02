@@ -5,6 +5,7 @@ import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.StringUtils;
+import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.managers.SkinManger;
 import net.minecraft.client.Minecraft;
 
@@ -35,9 +36,9 @@ public class ClientLevelCache implements DataCache<SkinData> {
                     .ifPresent(
                             player -> {
                                 dataAtomicReference.get().setStatus(DownloadStatus.COMPLETED);
-                                dataAtomicReference.get().setSkinTexture(player.getSkin().texture());
-                                if (player.getSkin().capeTexture() != null) {
-                                    dataAtomicReference.get().setCapeTexture(player.getSkin().capeTexture());
+                                dataAtomicReference.get().setSkinTexture(VersioningUtils.getPlayerSkinTexture(player));
+                                if (VersioningUtils.getPlayerCapeTexture(player) != null) {
+                                    dataAtomicReference.get().setCapeTexture(VersioningUtils.getPlayerCapeTexture(player));
                                 }
                             }
                     );
@@ -65,9 +66,9 @@ public class ClientLevelCache implements DataCache<SkinData> {
                 .map(player -> {
                     SkinData data = new SkinData(player.getName().getString());
                     data.setStatus(DownloadStatus.COMPLETED);
-                    data.setSkinTexture(player.getSkin().texture());
-                    if (player.getSkin().capeTexture() != null) {
-                        data.setCapeTexture(player.getSkin().capeTexture());
+                    data.setSkinTexture(VersioningUtils.getPlayerSkinTexture(player));
+                    if (VersioningUtils.getPlayerCapeTexture(player) != null) {
+                        data.setCapeTexture(VersioningUtils.getPlayerCapeTexture(player));
                     }
                     return data;
                 })

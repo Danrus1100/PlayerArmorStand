@@ -55,7 +55,8 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public SkinData findData(String name) {
-        DataCache<SkinData> gameCache = getSource("game") instanceof DataCache<?> source ? (DataCache<SkinData>) source : null;
+        DataCache<?> source = getSource("game");
+        DataCache<SkinData> gameCache = source instanceof DataCache<?> ? (DataCache<SkinData>) source : null;
         if (gameCache != null) {
             return gameCache.get(name);
         }
