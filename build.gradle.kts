@@ -20,6 +20,8 @@ val loaderInitials: String = when (loader) {
     else -> throw IllegalArgumentException("Unknown loader: $loader")
 }
 
+var isPossessive: Boolean = loader == "fabric" && findProperty("deps.possessive") != null
+
 modstitch {
     minecraftVersion = minecraft
 
@@ -102,6 +104,9 @@ modstitch {
         if (stonecutter.eval(minecraft, ">=1.21.4")) {
             configs.register("pas.armorposer") {side = CLIENT}
         }
+        if (isPossessive) {
+            configs.register("pas.possessive") {side = CLIENT}
+        }
         // Most of the time you won't ever need loader specific mixins.
         // If you do, simply make the mixin file and add it like so for the respective loader:
         // if (isLoom) configs.register("examplemod-fabric")
@@ -118,7 +123,8 @@ stonecutter {
         "fabric" to constraint.equals("fabric"),
         "neoforge" to constraint.equals("neoforge"),
         "forge" to constraint.equals("forge"),
-        "vanilla" to constraint.equals("vanilla")
+        "vanilla" to constraint.equals("vanilla"),
+        "possessive" to isPossessive
     )
 }
 
@@ -130,6 +136,9 @@ dependencies {
     modstitch.loom {
         modstitchModApi("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 //        modstitchModImplementation("maven.modrinth:skinshuffle:${property("deps.shuffle")}")
+        prop("deps.possessive") {
+            modstitchModImplementation("maven.modrinth:possessive:${it}")
+        }
     }
 
     // Anything else in the dependencies block will be used for all platforms.
