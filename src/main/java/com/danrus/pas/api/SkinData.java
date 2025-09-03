@@ -30,6 +30,10 @@ public class SkinData {
         }
     }
 
+    public SkinData(String name, String params) {
+        this(name, DEFAULT_TEXTURE, DEFAULT_CAPE, params);
+    }
+
     public SkinData(String name, ResourceLocation skinTexture, ResourceLocation capeTexture, String params) {
         this.name = name;
         this.params = params.toUpperCase();

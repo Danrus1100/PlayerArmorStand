@@ -16,6 +16,7 @@
 
   "pas.config.group.general": "General",
   "pas.config.group.armorstands": "Armor Stands",
+  "pas.config.group.skin_loading": "Downloading",
   "pas.config.group.secret_settings": "Secret Settings",
 
   "pas.config.download_threads": "Download Threads",
@@ -23,6 +24,7 @@
   "pas.config.default_skin": "Default Skin",
   "pas.config.enable_mod": "Enable Mod",
   "pas.config.show_armor_stand_while_downloading": "Show Armor Stand While Downloading",
+  "pas.config.try_apply_from_server_player": "Try to Apply Skin from Server Player",
 
   "pas.config.download_status_display": "Show Download Status",
   "pas.config.download_status_display.none": "Don't Show",
@@ -41,10 +43,14 @@
   "pas.menu.tab.skin.provider": "Skin Source",
   "pas.menu.tab.skin.provider.n": "NameMC",
   "pas.menu.tab.skin.provider.m": "Mojang",
+  "pas.menu.tab.skin.provider.f": "Local File",
 
   "pas.menu.tab.skin.arm_type": "Arm Type",
   "pas.menu.tab.skin.arm_type.slim": "Slim",
   "pas.menu.tab.skin.arm_type.wide": "Wide",
+
+  "pas.menu.tab.skin.open_folder": "Custom Skins Folder",
+  "pas.menu.tab.skin.open_folder.button": "Open",
 
   "pas.menu.tab.skin.name": "Name / ID",
   "pas.menu.tab.skin.name.tooltip": "To download a skin from Mojang's servers, simply enter the player's name. For NameMC, copy the skin ID from the website (for example, in \"https://namemc.com/skin/4da4ce379e8b0d00\" the skin ID will be \"4da4ce379e8b0d00\") and paste it into the field below. Only AFTER entering the skin source and Name / ID should you press Enter or the button to the right of the input field.",

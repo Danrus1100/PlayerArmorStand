@@ -36,14 +36,13 @@ public class MojangDiskCache implements DataCache<Path> {
             identifiers.put(name, skin);
             data.setSkinTexture(skin);
             doStoreData = true;
-        }
-        Path CapeFilePath = cachePath.resolve(encodedName + "_cape.png");
-        if (CapeFilePath.toFile().exists()) {
-            ResourceLocation cape = VersioningUtils.getResourceLocation("pas", "capes/" + encodedName);
-            TextureUtils.registerTexture(CapeFilePath, cape, false);
-            identifiers.put(name + "_cape", cape);
-            data.setCapeTexture(cape);
-            doStoreData = true;
+            Path CapeFilePath = cachePath.resolve(encodedName + "_cape.png");
+            if (CapeFilePath.toFile().exists()) {
+                ResourceLocation cape = VersioningUtils.getResourceLocation("pas", "capes/" + encodedName);
+                TextureUtils.registerTexture(CapeFilePath, cape, false);
+                identifiers.put(name + "_cape", cape);
+                data.setCapeTexture(cape);
+            }
         }
         if (doStoreData) {
             SkinManger.getInstance().getDataManager().store(name, data);

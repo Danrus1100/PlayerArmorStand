@@ -44,6 +44,8 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
 
     public final ModelPart jacket;
     private final ModelPart cloak;
+    private final ModelPart leftEar;
+    private final ModelPart rightEar;
 
     private String name;
     private boolean isSlim = false;
@@ -52,6 +54,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
     public PlayerArmorStandModel(ModelPart root) {
         super(root);
         this.cloak = root.getChild("cloak");
+
         this.leftSleeve = root.getChild("left_sleeve");
         this.rightSleeve = root.getChild("right_sleeve");
         this.leftPants = root.getChild("left_pants");
@@ -77,7 +80,13 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         this.originalRightLeg = root.getChild("original_right_leg");
         this.originalLeftLeg = root.getChild("original_left_leg");
 
+        //DeadMou5
+        this.leftEar = this.head.getChild("left_ear");
+        this.rightEar = this.head.getChild("right_ear");
+
         this.hat.visible = true;
+        this.leftEar.visible = false;
+        this.rightEar.visible = false;
 
         this.leftSleeve.visible = true;
         this.rightSleeve.visible = true;
@@ -95,6 +104,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         MeshDefinition meshdefinition = HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F);
         PartDefinition partdefinition = meshdefinition.getRoot();
         partdefinition.addOrReplaceChild("cloak", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, 0.0F, -1.0F, 10.0F, 16.0F, 1.0F, deformation, 1.0F, 0.5F), PartPose.offset(0.0F, 0.0F, 0.0F));
+
 
         partdefinition.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(32, 48).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, deformation), PartPose.offset(5.0F, 2.0F, 0.0F));
         partdefinition.addOrReplaceChild("left_sleeve", CubeListBuilder.create().texOffs(48, 48).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, deformation.extend(0.25F)), PartPose.offset(5.0F, 2.0F, 0.0F));
@@ -126,6 +136,12 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         partdefinition.addOrReplaceChild("left_body_stick", CubeListBuilder.create().texOffs(48, 16).addBox(1.0F, 3.0F, -1.0F, 2.0F, 7.0F, 2.0F), PartPose.ZERO);
         partdefinition.addOrReplaceChild("shoulder_stick", CubeListBuilder.create().texOffs(0, 48).addBox(-4.0F, 10.0F, -1.0F, 8.0F, 2.0F, 2.0F), PartPose.ZERO);
         partdefinition.addOrReplaceChild("base_plate", CubeListBuilder.create().texOffs(0, 32).addBox(-6.0F, 11.0F, -6.0F, 12.0F, 1.0F, 12.0F), PartPose.offset(0.0F, 12.0F, 0.0F));
+
+        // DeadMou5
+        PartDefinition headDefinition = partdefinition.getChild("head");
+        CubeListBuilder earsCubeListBuilder = CubeListBuilder.create().texOffs(24, 0).addBox(-3.0F, -6.0F, -1.0F, 6.0F, 6.0F, 1.0F, new CubeDeformation(1.0F));
+        headDefinition.addOrReplaceChild("left_ear", earsCubeListBuilder, PartPose.offset(-6.0F, -6.0F, 0.0F));
+        headDefinition.addOrReplaceChild("right_ear", earsCubeListBuilder, PartPose.offset(6.0F, -6.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
@@ -189,8 +205,11 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
             customNameString = customName.getString();
         } else {
             customNameString = "";
-
         }
+
+        boolean isEarsVisible = "deadmau5".equals(StringUtils.matchASName(customNameString).get(0)) && ModConfig.get().showEasterEggs;
+        this.leftEar.visible = isEarsVisible;
+        this.rightEar.visible = isEarsVisible;
 
         List<String> matches =  StringUtils.matchASName(customNameString);
         boolean isDownlading = SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.IN_PROGRESS ||
@@ -199,7 +218,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
 
         this.setModelVisibility(!showArmorStandWhileDownload, matches.get(1).contains("S"), showBase);
 
-        if (customName == null && ModConfig.get().defaultSkin.isEmpty()) {
+        if (customNameString.isEmpty() && ModConfig.get().defaultSkin.isEmpty()) {
             setOriginalAngles(showBase, showArms, bodyPose);
         }
 
@@ -218,7 +237,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
     }
 
     public Iterable<ModelPart> headParts() {
-        return List.of(this.hat, this.head, this.originalHead);
+        return List.of(this.hat, this.head, this.originalHead, this.leftEar, this.rightEar);
     }
 
     private void  setModelVisibility(boolean player, boolean slim, boolean showBase) {

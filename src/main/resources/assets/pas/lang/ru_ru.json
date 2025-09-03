@@ -16,6 +16,7 @@
 
   "pas.config.group.general": "Основные",
   "pas.config.group.armorstands": "Стойка",
+  "pas.config.group.skin_loading": "Загрузка",
   "pas.config.group.secret_settings": "Секретные настройки",
 
   "pas.config.download_threads": "Потоки загрузки",
@@ -23,6 +24,7 @@
   "pas.config.default_skin": "Стандартный скин",
   "pas.config.enable_mod": "Включить мод",
   "pas.config.show_armor_stand_while_downloading": "Показать стойку во время загрузки",
+  "pas.config.try_apply_from_server_player": "Пытаться применить скин с игрока сервера",
 
   "pas.config.download_status_display": "Показать статус загрузки",
   "pas.config.download_status_display.none": "Не показывать",
@@ -41,10 +43,14 @@
   "pas.menu.tab.skin.provider": "Источник скина",
   "pas.menu.tab.skin.provider.n": "NameMC",
   "pas.menu.tab.skin.provider.m": "Mojang",
+  "pas.menu.tab.skin.provider.f": "Локальный файл",
 
   "pas.menu.tab.skin.arm_type": "Тип рук",
   "pas.menu.tab.skin.arm_type.slim": "Тонкие",
   "pas.menu.tab.skin.arm_type.wide": "Широкие",
+
+  "pas.menu.tab.skin.open_folder": "Папка со скинами",
+  "pas.menu.tab.skin.open_folder.button": "Открыть",
 
   "pas.menu.tab.skin.name": "Имя / ID",
   "pas.menu.tab.skin.name.tooltip": "Для того чтобы загрузить скин с серверов Mojang, вам достаточно ввести имя этого игрока. Для NameMC нужно скопировать id скина из сайта (например, в \"https://namemc.com/skin/4da4ce379e8b0d00\" id скина будет \"4da4ce379e8b0d00\") и вставить в поле ниже. Только ПОСЛЕ ввода Источника скина и Имени / ID нужно нажать на Enter или кнопку правее от поля ввода",
