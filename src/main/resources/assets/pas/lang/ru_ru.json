@@ -33,6 +33,8 @@
 
   "pas.config.show_easter_eggs": "Показать пасхалки",
 
+  "pas.config.possessive_show_default_hand": "Показывать только руку-палку",
+
   "pas.menu.accept": "Применить",
   "pas.menu.name": "Конфигратор Стойки для Брони",
 

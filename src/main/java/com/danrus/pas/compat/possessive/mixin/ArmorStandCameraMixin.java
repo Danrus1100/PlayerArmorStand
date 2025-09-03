@@ -1,7 +1,9 @@
 package com.danrus.pas.compat.possessive.mixin;
 
 //? if possessive {
+import com.danrus.pas.api.SkinData;
 import com.danrus.pas.compat.possessive.PossessiveRenderHand;
+import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.render.PlayerArmorStandModel;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
@@ -43,6 +45,10 @@ public class ArmorStandCameraMixin {
 //        }
 
         if (playerHand.equals(playerModel.rightArm)) {
+            if (ModConfig.get().possessiveShowDefaultHand) {
+                return PossessiveRenderHand.RIGHT_ORIGINAL;
+            }
+
             if (params.contains("S")) {
                 return PossessiveRenderHand.RIGHT_SLIM;
             } else if (!name.isEmpty()) {
@@ -51,6 +57,10 @@ public class ArmorStandCameraMixin {
                 return PossessiveRenderHand.RIGHT_ORIGINAL;
             }
         } else  {
+            if (ModConfig.get().possessiveShowDefaultHand) {
+                return PossessiveRenderHand.LEFT_ORIGINAL;
+            }
+
             if (params.contains("S")) {
                 return PossessiveRenderHand.LEFT_SLIM;
             } else if (!name.isEmpty()) {
@@ -109,12 +119,22 @@ public class ArmorStandCameraMixin {
         armorStandModel.leftSlimSleeve.zRot = leftZRot;
         armorStandModel.rightSlimSleeve.zRot = rightZRot;
 
+        ResourceLocation skinTexture;
+        if (!matches.get(0).isEmpty()) {
+            if (ModConfig.get().possessiveShowDefaultHand) {
+                skinTexture = VersioningUtils.getResourceLocation("minecraft", "textures/entity/armorstand/wood.png");
+            } else {
+                skinTexture = SkinManger.getInstance().getSkinTexture(Component.literal(matches.get(0)));
+            }
+        } else {
+            skinTexture = SkinData.DEFAULT_TEXTURE;
+        }
 
         getPartsForRender(resolvedHand, armorStandModel).forEach(armorStandArm ->{
             armorStandArm.resetPose();
             armorStandArm.visible = true;
 
-            armorStandArm.render(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(SkinManger.getInstance().getSkinTexture(Component.literal(matches.get(0))))), i, OverlayTexture.NO_OVERLAY);
+            armorStandArm.render(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(skinTexture)), i, OverlayTexture.NO_OVERLAY);
         });
 
 

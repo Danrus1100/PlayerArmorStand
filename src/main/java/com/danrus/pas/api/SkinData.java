@@ -61,11 +61,18 @@ public class SkinData {
     }
 
     public ResourceLocation getTexture(String type) {
+        if (type.isEmpty() || this.status != DownloadStatus.COMPLETED && this.status != DownloadStatus.NOT_STARTED) {
+            return getDefaultTexture(type);
+        }
         for (TextureData textureData : textures) {
             if (textureData.type.equals(type)) {
                 return textureData.texture;
             }
         }
+        return getDefaultTexture(type);
+    }
+
+    public ResourceLocation getDefaultTexture(String type) {
         return switch (type) {
             case "skin" -> DEFAULT_TEXTURE;
             case "cape" -> DEFAULT_CAPE;

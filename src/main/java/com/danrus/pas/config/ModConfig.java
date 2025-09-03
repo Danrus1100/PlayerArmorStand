@@ -2,6 +2,7 @@ package com.danrus.pas.config;
 
 import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.categories.MainCategory;
+import com.danrus.pas.config.categories.PossessiveCategory;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -54,6 +55,9 @@ public class ModConfig {
     @SerialEntry
     public boolean tryApplyFromServerPlayer = true;
 
+    @SerialEntry
+    public boolean possessiveShowDefaultHand = false;
+
     public enum DOWNLOAD_STATUS_DISPLAY {
         NONE,
         ABOVE_HOTBAR,
@@ -72,6 +76,9 @@ public class ModConfig {
     public static void initialize() {
         load();
         CATEGORIES.add(MainCategory.get());
+        if (VersioningUtils.isModLoaded("possessive")) {
+            CATEGORIES.add(PossessiveCategory.get());
+        }
     }
 
     public static ModConfig get() {
