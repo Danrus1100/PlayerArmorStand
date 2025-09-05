@@ -5,6 +5,7 @@ import com.danrus.pas.impl.data.PasSkin;
 import com.danrus.pas.api.request.PasRequest;
 import com.danrus.pas.api.request.result.LazyResult;
 
+import java.nio.file.Path;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -16,6 +17,10 @@ public class PasSkinResult implements LazyResult<PasSkin> {
 
     public PasSkinResult() {
         this.defaultSkin = PasSkin.ARMOR_STAND;
+    }
+
+    public PasSkinResult(Path path, String name, boolean slim) {
+        this.defaultSkin = new PasSkin(path, name, slim);
     }
 
     @Override

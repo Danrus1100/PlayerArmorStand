@@ -1,5 +1,6 @@
 package com.danrus.pas.core.pipeline;
 
+import com.danrus.pas.api.types.RequestStatus;
 import com.danrus.pas.core.pipeline.exception.PipelineException;
 import com.danrus.pas.api.request.PasRequest;
 import org.slf4j.Logger;
@@ -16,11 +17,13 @@ public abstract class AbstractPasPipeline<T> {
 
     public AbstractPasPipeline(PasRequest request) {
         this.context = new PasPipelineContext(request);
+        request.setStatus(RequestStatus.IN_PROGRESS);
         LOGGER = LoggerFactory.getLogger(this.getClass().getSimpleName());
     }
 
     public AbstractPasPipeline(PasPipelineContext context) {
         this.context = context;
+        this.context.getRequest().setStatus(RequestStatus.IN_PROGRESS);
         LOGGER = LoggerFactory.getLogger(this.getClass().getSimpleName());
     }
 

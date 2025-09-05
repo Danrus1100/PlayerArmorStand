@@ -5,17 +5,13 @@ import com.danrus.pas.core.pipeline.PasPipelineContext;
 
 import java.util.List;
 
-public class SlimFeature implements PasFeature {
+public class LocalSkinFeature implements PasFeature {
 
-    private boolean enabled = false;
-
-    public SlimFeature(String string) {
-        initFromString(string);
-    }
+    private String skinName = "";
 
     @Override
     public String getLiteral() {
-        return "S";
+        return "F";
     }
 
     @Override
@@ -30,16 +26,24 @@ public class SlimFeature implements PasFeature {
 
     @Override
     public boolean isSourceHint() {
-        return false;
+        return true;
     }
 
     @Override
     public void apply(PasPipelineContext context) {
-        context.setMetadata("slim", enabled);
+        if (skinName.isEmpty()) return;
+        context.setMetadata("local_skin", skinName);
     }
 
     @Override
     public void parse(String baseName, String arguments) {
-        enabled = arguments.contains("S");
+        if (arguments.contains("F")) {
+            this.skinName = baseName;
+        }
+    }
+
+    @Override
+    public String getLocation(String baseName, String arguments) {
+        return "pas:random/" + baseName;
     }
 }

@@ -1,6 +1,8 @@
 package com.danrus.pas.utils;
 
 import com.danrus.pas.PlayerArmorStandsClient;
+import com.danrus.pas.api.request.RequestData;
+import net.minecraft.resources.ResourceLocation;
 
 public class StringUtils {
     public static String encodeToBase64(String source) {
@@ -39,10 +41,17 @@ public class StringUtils {
         }
     }
 
-//    public static RequestData parseName (String name) {
-//        String[] divided = name.split("\\|");
-//
-//    }
+    public static String getBaseName(String string) {
+        String[] divided = string.split("\\|");
+        return divided[0].trim();
+    }
 
-
+    public static ResourceLocation getSkinCacheLocation(String string, String sourceHint) {
+//        String name = getBaseName(string);
+//        if ("".equals(sourceHint)) {
+//            return VersioningUtils.getResourceLocation("pas", "skins/" + encodeToSha256(name) + ".png");
+//        } else if ("N".equals(sourceHint)) {
+//            return VersioningUtils.getResourceLocation("pas", "skins/" + name + ".png");
+//        } else if ("L")
+    }
 }

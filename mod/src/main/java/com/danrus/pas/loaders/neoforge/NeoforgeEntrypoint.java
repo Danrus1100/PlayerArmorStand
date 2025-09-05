@@ -1,5 +1,5 @@
 //? if neoforge {
-/*package com.danrus.pas.loaders.neoforge;
+package com.danrus.pas.loaders.neoforge;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.config.ModConfig;
@@ -19,4 +19,4 @@ public class NeoforgeEntrypoint {
         );
     }
 }
-*///?}
+//?}

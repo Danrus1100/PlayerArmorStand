@@ -1,5 +1,5 @@
 //? if fabric {
-package com.danrus.pas.loaders.fabric;
+/*package com.danrus.pas.loaders.fabric;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.config.ModConfig;
@@ -13,4 +13,4 @@ public class FabricEntrypoint implements ModInitializer {
         PlayerArmorStandsClient.initialize();
     }
 }
-//?}
+*///?}

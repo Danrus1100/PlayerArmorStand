@@ -72,9 +72,7 @@ public class ModConfig {
 
     public static void save() {
         HANDLER.save();
-//        SkinData.DEFAULT_TEXTURE = HANDLER.instance().showArmorStandWhileDownloading
-//            ? VersioningUtils.getResourceLocation("minecraft", "textures/entity/armorstand/wood.png")
-//            : VersioningUtils.getResourceLocation("minecraft", "textures/entity/player/wide/steve.png");
+
     }
 
     public static void load() {

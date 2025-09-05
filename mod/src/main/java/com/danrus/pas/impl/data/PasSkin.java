@@ -2,11 +2,16 @@ package com.danrus.pas.impl.data;
 
 
 import com.danrus.pas.render.models.PasModel;
+import com.danrus.pas.utils.StringUtils;
+import com.danrus.pas.utils.TextureUtils;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.model.ArmorStandModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.resources.ResourceLocation;
+
+import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 
 public class PasSkin {
 
@@ -25,8 +30,16 @@ public class PasSkin {
             new PasModel(PasModel.createLayer(CubeDeformation.NONE, true).bakeRoot())
     );
 
-    private final ResourceLocation skin;
-    private final EntityModel<?> model;
+    private ResourceLocation skin;
+    private  EntityModel<?> model;
+
+    public PasSkin(Path skin, String name, boolean slim) {
+        this.model = new PasModel(PasModel.createLayer(CubeDeformation.NONE, slim).bakeRoot());
+        this.skin = VersioningUtils.getResourceLocation("minecraft", "textures/entity/player/wide/steve.png");
+        // Register texture asynchronously
+        CompletableFuture<ResourceLocation> future = TextureUtils.registerTexture(skin, VersioningUtils.getResourceLocation("pas", "skins/" + StringUtils.encodeToSha256(name)), true);
+        future.thenAccept(resourceLocation -> this.skin = resourceLocation);
+    }
 
     public PasSkin(ResourceLocation skin, EntityModel<?> model) {
         this.skin = skin;

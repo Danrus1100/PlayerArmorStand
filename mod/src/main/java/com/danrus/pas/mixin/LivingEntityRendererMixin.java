@@ -1,9 +1,9 @@
 package com.danrus.pas.mixin;
 
 import com.danrus.pas.api.PasApi;
-import com.danrus.pas.api.event.client.PasPostRenderEvent;
-import com.danrus.pas.api.event.client.PasPreRenderEvent;
-import com.danrus.pas.api.event.client.PasRenderTypePrepareEvent;
+import com.danrus.pas.api.client.event.PasPostRenderEvent;
+import com.danrus.pas.api.client.event.PasPreRenderEvent;
+import com.danrus.pas.api.client.event.PasRenderTypePrepareEvent;
 import com.danrus.pas.renderstate.ArmorStandCapture;
 import com.danrus.pas.mixin.accessor.LivingEntityRendererAccessor;
 import com.mojang.blaze3d.vertex.PoseStack;

@@ -22,7 +22,7 @@ public class ArmorStandRenderStatePlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         //? if >= 1.21.4 {
         return true;
-        //? } else {
+        //?} else {
         /*return false;
         *///?}
     }

@@ -1,13 +1,17 @@
 package com.danrus.pas.impl.feature;
 
-import com.danrus.pas.api.feature.IPasFeature;
+import com.danrus.pas.api.feature.PasFeature;
 import com.danrus.pas.core.pipeline.PasPipelineContext;
 
 import java.util.List;
 
-public class NamemcFeature implements IPasFeature {
+public class NamemcFeature implements PasFeature {
 
     private String skinId = "";
+
+    public NamemcFeature(String string) {
+        initFromString(string);
+    }
 
     @Override
     public String getLiteral() {
@@ -40,5 +44,10 @@ public class NamemcFeature implements IPasFeature {
         if (arguments.contains("N")) {
             this.skinId = baseName;
         }
+    }
+
+    @Override
+    public String getLocation(String baseName, String arguments) {
+        return "pas:skins/" + baseName;
     }
 }

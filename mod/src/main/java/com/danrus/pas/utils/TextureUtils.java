@@ -41,10 +41,10 @@ public class TextureUtils {
             Minecraft.getInstance().execute(() -> {
                 try {
                     //? if <=1.21.4 {
-                    DynamicTexture texture = new DynamicTexture(finalImage);
-                    //?} else {
-                    /*DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
-                    *///?}
+                    /*DynamicTexture texture = new DynamicTexture(finalImage);
+                    *///?} else {
+                    DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
+                    //?}
                     Minecraft.getInstance().getTextureManager().register(identifier, texture);
 
                     future.complete(identifier);

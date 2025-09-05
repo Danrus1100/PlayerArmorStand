@@ -1,4 +1,4 @@
-package com.danrus.pas.api.event.client;
+package com.danrus.pas.api.client.event;
 
 import com.danrus.pas.core.event.PasEvent;
 

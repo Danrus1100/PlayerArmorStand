@@ -1,16 +1,20 @@
 package com.danrus.pas.impl.feature;
 
-import com.danrus.pas.api.feature.IPasFeature;
+import com.danrus.pas.api.feature.PasFeature;
 import com.danrus.pas.core.pipeline.PasPipelineContext;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OverlayFeature implements IPasFeature {
+public class OverlayFeature implements PasFeature {
 
     private String overlayId = "";
     private String blend = "100";
+
+    public OverlayFeature(String string) {
+        initFromString(string);
+    }
 
     @Override
     public String getLiteral() {

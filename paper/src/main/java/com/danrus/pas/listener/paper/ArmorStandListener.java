@@ -1,4 +1,4 @@
-package com.danrus.pas.listener;
+package com.danrus.pas.listener.paper;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

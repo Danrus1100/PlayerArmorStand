@@ -1,6 +1,6 @@
 package com.danrus.pas;
 
-import com.danrus.pas.listener.ArmorStandListener;
+import com.danrus.pas.listener.paper.ArmorStandListener;
 import com.danrus.pas.runnable.ArmorStandTickRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
