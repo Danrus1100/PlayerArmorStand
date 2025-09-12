@@ -134,15 +134,17 @@ stonecutter {
 // use the modstitch.createProxyConfigurations(sourceSets["client"]) function.
 dependencies {
     modstitch.loom {
+        modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
         modstitchModApi("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 //        modstitchModImplementation("maven.modrinth:skinshuffle:${property("deps.shuffle")}")
         prop("deps.possessive") {
             modstitchModImplementation("maven.modrinth:possessive:${it}")
         }
+
     }
 
     // Anything else in the dependencies block will be used for all platforms.
-    modstitchModApi("dev.architectury:architectury-${property("deps.arch")}")
+//    modstitchModApi("dev.architectury:architectury-${property("deps.arch")}")
     modstitchModImplementation("dev.isxander:yet-another-config-lib:${property("deps.yacl")}")
     modstitchModImplementation("com.mrbysco.armorposer:ArmorPoser-${loader}-${property("deps.armorposer")}") //TODO:Зависит от Cloth Config
 }

@@ -9,7 +9,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import dev.architectury.event.events.client.ClientCommandRegistrationEvent;
 import net.minecraft.network.chat.Component;
 
 import java.util.Collection;
@@ -48,7 +47,7 @@ public class SkinDataArgument implements ArgumentType<SkinData> {
         return EXAMPLES;
     }
 
-    public static SkinData getData(CommandContext<ClientCommandRegistrationEvent.ClientCommandSourceStack> context, String name) {
-        return ((SkinData) context.getArgument(name, SkinData.class));
+    public static SkinData getData(PasCommandContext context, String name) {
+        return context.getArgument(name, SkinData.class);
     }
 }
