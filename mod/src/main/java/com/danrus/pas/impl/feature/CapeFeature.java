@@ -45,6 +45,7 @@ public class CapeFeature implements PasFeature {
     public void parse(String baseName, String arguments) {
         enabled = arguments.contains("C");
     }
+
     @Override
     public String getLocation(String baseName, String arguments) {
         return "pas:cape/" + StringUtils.encodeToSha256(baseName);

@@ -12,6 +12,6 @@
     "accessor.LivingEntityRendererAccessor"
   ],
   "mixins": [
-    "ArmorStandMixin"
+    "LivingEntityMixin"
   ]
 }

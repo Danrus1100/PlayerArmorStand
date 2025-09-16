@@ -15,10 +15,6 @@ public interface PasFeature {
     void apply(PasPipelineContext context);
     void parse(String baseName, String arguments);
 
-    default String getLocation(String baseName, String arguments) {
-        return "";
-    }
-
     default void initFromString(String string) {
         String[] parts = string.split("\\|", 2);
         parse(parts[0].trim(), parts.length > 1 ? parts[1].trim() : "");

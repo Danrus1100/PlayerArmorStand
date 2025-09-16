@@ -10,7 +10,7 @@ public class PasApi {
     public static final String API_VERSION = "1.0.0";
     private static final PasEventBus EVENT_BUS = new PasEventBus();
     private static final PasFeatureRegistry FEATURE_REGISTRY = new PasFeatureRegistry();
-    private static final LazyRegistry PROMISES_REGISTRY = new LazyRegistry<>();
+    private static final LazyRegistry PROMISES_REGISTRY = new LazyRegistry();
 
     /**
      * Returns the current API version.

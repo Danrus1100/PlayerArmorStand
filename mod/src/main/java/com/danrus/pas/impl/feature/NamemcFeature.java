@@ -46,8 +46,11 @@ public class NamemcFeature implements PasFeature {
         }
     }
 
-    @Override
-    public String getLocation(String baseName, String arguments) {
-        return "pas:skins/" + baseName;
+    public static String locationGetter(String string){
+        String[] split = string.split("\\|");
+        if (split[1].contains("N")) {
+            return "pas:skins/" + split[0] + "_namemc";
+        }
+        return null;
     }
 }

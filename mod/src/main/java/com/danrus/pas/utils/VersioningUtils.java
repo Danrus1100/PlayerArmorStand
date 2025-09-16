@@ -19,10 +19,10 @@ import java.util.function.Function;
 public class VersioningUtils {
     public static Path getGameDir() {
         //? if fabric {
-        /*return net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir();
-        *///?} else if neoforge {
-        return net.neoforged.fml.loading.FMLPaths.GAMEDIR.get();
-        //?} else if forge {
+        return net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir();
+        //?} else if neoforge {
+        /*return net.neoforged.fml.loading.FMLPaths.GAMEDIR.get();
+        *///?} else if forge {
         /*return net.minecraftforge.fml.loading.FMLPaths.GAMEDIR.get();
         *///?}
     }
@@ -172,40 +172,40 @@ public class VersioningUtils {
 
     public static float getXRot(Rotations rot) {
         //? if <= 1.21.4 {
-        /*return rot.getX();
-        *///?} else {
-        return rot.x();
-        //?}
+        return rot.getX();
+        //?} else {
+        /*return rot.x();
+        *///?}
     }
     public static float getYRot(Rotations rot) {
         //? if <= 1.21.4 {
-        /*return rot.getY();
-        *///?} else {
-        return rot.y();
-        //?}
+        return rot.getY();
+        //?} else {
+        /*return rot.y();
+        *///?}
     }
     public static float getZRot(Rotations rot) {
         //? if <= 1.21.4 {
-        /*return rot.getZ();
-        *///?} else {
-        return rot.z();
-        //?}
+        return rot.getZ();
+        //?} else {
+        /*return rot.z();
+        *///?}
     }
 
 
     //? if >= 1.21.4 {
     public static
         //? if >= 1.21.6 {
-        com.mojang.blaze3d.pipeline.RenderPipeline
-        //?} else {
-        /*Function<ResourceLocation, RenderType>
-        *///?}
+        /*com.mojang.blaze3d.pipeline.RenderPipeline
+        *///?} else {
+        Function<ResourceLocation, RenderType>
+        //?}
         getGuiRender() {
             //? if >= 1.21.6 {
-            return net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
-            //?} else {
-            /*return RenderType::guiTextured;
-            *///?}
+            /*return net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
+            *///?} else {
+            return RenderType::guiTextured;
+            //?}
             }
     //?}
 

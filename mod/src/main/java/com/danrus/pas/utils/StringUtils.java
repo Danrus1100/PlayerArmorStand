@@ -1,8 +1,16 @@
 package com.danrus.pas.utils;
 
 import com.danrus.pas.PlayerArmorStandsClient;
+import com.danrus.pas.api.PasApi;
+import com.danrus.pas.api.feature.PasFeature;
 import com.danrus.pas.api.request.RequestData;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public class StringUtils {
     public static String encodeToBase64(String source) {
@@ -46,12 +54,17 @@ public class StringUtils {
         return divided[0].trim();
     }
 
-    public static ResourceLocation getSkinCacheLocation(String string, String sourceHint) {
-//        String name = getBaseName(string);
-//        if ("".equals(sourceHint)) {
-//            return VersioningUtils.getResourceLocation("pas", "skins/" + encodeToSha256(name) + ".png");
-//        } else if ("N".equals(sourceHint)) {
-//            return VersioningUtils.getResourceLocation("pas", "skins/" + name + ".png");
-//        } else if ("L")
+    @NotNull
+    public static ResourceLocation getSkinCacheLocation(String string) {
+        Map<Class<? extends PasFeature>, Function<String, String>> getters = PasApi.getFeatureRegistry().getLocationsGetters();
+        String result;
+        for (Function<String, String> getter : getters.values()) {
+            result = getter.apply(string);
+            if (!result.isEmpty()) {
+                String[] split = result.split(":");
+                return VersioningUtils.getResourceLocation(split[0], split[1]);
+            }
+        }
+        return VersioningUtils.getResourceLocation("");
     }
 }

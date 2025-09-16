@@ -20,7 +20,7 @@ public class PlayerArmorStandsClient {
 
     public static void registerFeatures() {
         PasApi.getFeatureRegistry().registerFeature(CapeFeature.class, CapeFeature::new);
-        PasApi.getFeatureRegistry().registerFeature(NamemcFeature.class, NamemcFeature::new);
+        PasApi.getFeatureRegistry().registerFeature(NamemcFeature.class, NamemcFeature::new, NamemcFeature::locationGetter);
         PasApi.getFeatureRegistry().registerFeature(OverlayFeature.class, OverlayFeature::new);
         PasApi.getFeatureRegistry().registerFeature(SlimFeature.class, SlimFeature::new);
     }
