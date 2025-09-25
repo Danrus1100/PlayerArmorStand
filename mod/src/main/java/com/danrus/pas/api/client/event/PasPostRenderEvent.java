@@ -6,6 +6,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class PasPostRenderEvent extends PasEvent {
@@ -15,12 +16,14 @@ public class PasPostRenderEvent extends PasEvent {
     private final PoseStack poseStack;
     private final MultiBufferSource multiBufferSource;
     private final Supplier<EntityModel> modelGetter;
-    public PasPostRenderEvent(ArmorStand armorStand, String customName, PoseStack poseStack, MultiBufferSource multiBufferSource, Supplier<EntityModel> modelGetter) {
+    private final Consumer<EntityModel> modelSetter;
+    public PasPostRenderEvent(ArmorStand armorStand, String customName, PoseStack poseStack, MultiBufferSource multiBufferSource, Supplier<EntityModel> modelGetter, Consumer<EntityModel> modelSetter) {
         this.armorStand = armorStand;
         this.customName = customName;
         this.poseStack = poseStack;
         this.multiBufferSource = multiBufferSource;
         this.modelGetter = modelGetter;
+        this.modelSetter = modelSetter;
     }
 
     public ArmorStand armorStand() {

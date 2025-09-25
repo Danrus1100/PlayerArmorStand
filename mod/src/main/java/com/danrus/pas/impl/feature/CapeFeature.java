@@ -1,6 +1,5 @@
 package com.danrus.pas.impl.feature;
 
-import com.danrus.pas.api.client.ClientLocationGetter;
 import com.danrus.pas.api.feature.PasFeature;
 import com.danrus.pas.core.pipeline.PasPipelineContext;
 import com.danrus.pas.utils.StringUtils;
@@ -44,10 +43,5 @@ public class CapeFeature implements PasFeature {
     @Override
     public void parse(String baseName, String arguments) {
         enabled = arguments.contains("C");
-    }
-
-    @Override
-    public String getLocation(String baseName, String arguments) {
-        return "pas:cape/" + StringUtils.encodeToSha256(baseName);
     }
 }

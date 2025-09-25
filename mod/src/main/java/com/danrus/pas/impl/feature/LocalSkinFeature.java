@@ -41,9 +41,4 @@ public class LocalSkinFeature implements PasFeature {
             this.skinName = baseName;
         }
     }
-
-    @Override
-    public String getLocation(String baseName, String arguments) {
-        return "pas:random/" + baseName;
-    }
 }

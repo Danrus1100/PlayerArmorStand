@@ -31,29 +31,31 @@ public abstract class AbstractPasPipeline<T> {
         stages.add(stage);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public T execute() throws PipelineException {
         Object result = null;
 
         for (PasPipelineStage stage : stages) {
             try {
-                result = stage.process(result != null ? result : context.getRequest(), context);
-                if (result != null) {
-                    return (T) result;
+                PipelineResult<?> pipelineResult = stage.process(result != null ? result : context.getRequest(), context);
+
+                if (pipelineResult.end()) {
+                    return (T) pipelineResult.result();
                 }
+
+                result = pipelineResult.result();
             } catch (PipelineException e) {
                 LOGGER.error("Pipeline stage {} failed: {}", stage.getClass().getSimpleName(), e.getMessage(), e);
-                throw e; // Rethrow the exception to stop the pipeline execution
+                throw e;
             } catch (ClassCastException e) {
-                LOGGER.error("Faild to cast result class {} to {} return class: {}", result.getClass().getSimpleName(), this.getClass().getSimpleName(), e.getMessage(), e);
+                LOGGER.error("Failed to cast result class {} to {} return class: {}", result.getClass().getSimpleName(), this.getClass().getSimpleName(), e.getMessage(), e);
                 throw new PipelineException("Cast result error " + e.getMessage());
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 LOGGER.error("Unexpected error in pipeline stage {}: {}", stage.getClass().getSimpleName(), e.getMessage(), e);
                 throw new PipelineException("Unexpected error in pipeline stage " + stage.getClass().getSimpleName());
             }
         }
-        return null;
+        return (T) result;
     }
 
 
