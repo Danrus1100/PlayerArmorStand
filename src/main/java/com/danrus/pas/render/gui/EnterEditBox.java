@@ -27,12 +27,22 @@ public class EnterEditBox extends EditBox {
     }
 
     @Override
+    //? <1.21.9 {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    //?} else {
+    /*public boolean keyPressed(net.minecraft.client.input.KeyEvent keyEvent) {
+        int keyCode = keyEvent.key();
+    *///?}
+
         if (keyCode == 257 || keyCode == 335) { // Enter or Keypad Enter
             this.onEnterPressed.onEnterPressed(this);
             return true;
         }
+        //? <1.21.9 {
         return super.keyPressed(keyCode, scanCode, modifiers);
+        //?} else {
+        /*return super.keyPressed(keyEvent);
+        *///?}
     }
 
     public interface OnEnterPressed {

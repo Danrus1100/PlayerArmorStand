@@ -1,6 +1,6 @@
 package com.danrus.pas.config;
 
-//? if fabric {
+//? if modmenu {
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 

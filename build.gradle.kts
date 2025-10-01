@@ -21,6 +21,8 @@ val loaderInitials: String = when (loader) {
 }
 
 var isPossessive: Boolean = loader == "fabric" && findProperty("deps.possessive") != null
+var isArmorposer: Boolean = stonecutter.eval(minecraft, ">=1.21.4") && findProperty("deps.armorposer") != null
+var hasModMenu: Boolean = findProperty("deps.modmenu") != null
 
 modstitch {
     minecraftVersion = minecraft
@@ -101,11 +103,14 @@ modstitch {
         addMixinsToModManifest = true
 
         configs.register("pas") {side = CLIENT}
-        if (stonecutter.eval(minecraft, ">=1.21.4")) {
+        if (isArmorposer) {
             configs.register("pas.armorposer") {side = CLIENT}
         }
         if (isPossessive) {
             configs.register("pas.possessive") {side = CLIENT}
+        }
+        if (stonecutter.eval(minecraft, ">=1.21.9")) {
+            configs.register("pas.1219")
         }
         // Most of the time you won't ever need loader specific mixins.
         // If you do, simply make the mixin file and add it like so for the respective loader:
@@ -124,7 +129,9 @@ stonecutter {
         "neoforge" to constraint.equals("neoforge"),
         "forge" to constraint.equals("forge"),
         "vanilla" to constraint.equals("vanilla"),
-        "possessive" to isPossessive
+        "possessive" to isPossessive,
+        "armorposer" to isArmorposer,
+        "modmenu" to hasModMenu
     )
 }
 
@@ -134,17 +141,23 @@ stonecutter {
 // use the modstitch.createProxyConfigurations(sourceSets["client"]) function.
 dependencies {
     modstitch.loom {
-        modstitchModApi("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+        modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
+        prop("deps.modmenu") {
+            modstitchModApi("com.terraformersmc:modmenu:${it}")
+        }
 //        modstitchModImplementation("maven.modrinth:skinshuffle:${property("deps.shuffle")}")
         prop("deps.possessive") {
             modstitchModImplementation("maven.modrinth:possessive:${it}")
         }
+
     }
 
     // Anything else in the dependencies block will be used for all platforms.
-    modstitchModApi("dev.architectury:architectury-${property("deps.arch")}")
+//    modstitchModApi("dev.architectury:architectury-${property("deps.arch")}")
     modstitchModImplementation("dev.isxander:yet-another-config-lib:${property("deps.yacl")}")
-    modstitchModImplementation("com.mrbysco.armorposer:ArmorPoser-${loader}-${property("deps.armorposer")}") //TODO:Зависит от Cloth Config
+    prop("deps.armorposer") {
+        modstitchModImplementation("com.mrbysco.armorposer:ArmorPoser-${loader}-${property("deps.armorposer")}")
+    }
 }
 
 publishMods {

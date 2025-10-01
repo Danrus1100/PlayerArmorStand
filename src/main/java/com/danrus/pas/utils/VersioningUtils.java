@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ArmorStandArmorModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
@@ -64,7 +65,11 @@ public class VersioningUtils {
             }
             *///?} else {
             if (object instanceof net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStandState) {
+                //? <1.21.9 {
                 return armorStandState.customName;
+                //?} else {
+                /*return ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandState).pas$getCustomName();
+                *///?}
             }
             //?}
             else {
@@ -228,17 +233,37 @@ public class VersioningUtils {
     public static ResourceLocation getPlayerSkinTexture(AbstractClientPlayer player){
         //? if <= 1.20.1 {
         /*return player.getSkinTextureLocation();
-        *///?} else {
+        *///?} else if >1.20.1 && <1.21.9 {
         return player.getSkin().texture();
-        //?}
+        //?} else {
+        /*return player.getSkin().body().texturePath();
+        *///?}
     }
 
     public static ResourceLocation getPlayerCapeTexture(AbstractClientPlayer player){
         //? if <= 1.20.1 {
         /*return player.getCloakTextureLocation();
-        *///?} else {
+        *///?} else if >1.20.1 && <1.21.9 {
         return player.getSkin().capeTexture();
-        //?}
+        //?} else {
+        /*return player.getSkin().cape().texturePath();
+        *///?}
+    }
+
+    public static void copyPartPose(ModelPart from, ModelPart to){
+        //? <1.21.9 {
+        to.copyFrom(from);
+        //?} else {
+        /*to.x = from.x;
+        to.y = from.y;
+        to.z = from.z;
+        to.xRot = from.xRot;
+        to.yRot = from.yRot;
+        to.zRot = from.zRot;
+        to.xScale = from.xScale;
+        to.yScale = from.yScale;
+        to.zScale = from.zScale;
+        *///?}
     }
 
     public abstract static class VersionlessArmorStandCapeLayer extends RenderLayer<

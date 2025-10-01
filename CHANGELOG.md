@@ -1,3 +1,4 @@
- - New: Possessive compatibility options
- - Chore: Possessive compatibility for 1.21.6-1.21.8
- - Fix: Wrong texture display when ypu toggle the "Show Armor Stand While Downloading" in game
+ - New: 1.21.9 support (this mod version wont work with ModMenu in feature)
+ - Fix: Glitchy downloading
+ - Fix: Game FPS feels better then many Armor Stands are summoned
+ - Fix: When you tried to open local skins folder nothing happened

@@ -128,6 +128,7 @@ public class PasConfiguratorScreen extends Screen {
 
         openFolderLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.open_folder"));
         openFolderButton = Button.builder(Component.translatable("pas.menu.tab.skin.open_folder.button"), button -> {
+            FileTextureCache.SKINS_PATH.toFile().mkdirs();
             Util.getPlatform().openFile(FileTextureCache.SKINS_PATH.toFile());
         }).bounds(0, 0, 120, 20).build();
 
@@ -317,10 +318,19 @@ public class PasConfiguratorScreen extends Screen {
         return false;
     }
 
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
+//    //? <1.21.9 {
+//    @Override
+//    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+//        return super.keyPressed(keyCode, scanCode, modifiers);
+//    }
+//    //?} else {
+//
+//    @Override
+//    public boolean keyPressed(KeyEvent keyEvent) {
+//        return super.keyPressed(keyEvent);
+//    }
+//
+//    //?
 
     //? if >= 1.21.1 {
     @Override
@@ -426,6 +436,7 @@ public class PasConfiguratorScreen extends Screen {
     @Override
     public void onClose() {
         this.minecraft.setScreen(parent.getScreen());
+        acceptName();
     }
 
     private void setEntityName(String name) {

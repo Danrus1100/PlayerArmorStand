@@ -15,10 +15,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class NamemcSkinProvider implements SkinProvider {
 
     private String literal = "N";
+    private Consumer<String> onComplete;
+    private String output;
 
     @Override
     public String getLiteral() {
@@ -27,7 +30,9 @@ public class NamemcSkinProvider implements SkinProvider {
 
 
     @Override
-    public void load(String string) {
+    public void load(String string, Consumer<String> onComplete) {
+        this.onComplete = onComplete;
+        this.output = string;
         List<String> matches = StringUtils.matchASName(string);
         String name = matches.get(0);
         String params = matches.get(1).toUpperCase();
@@ -41,6 +46,7 @@ public class NamemcSkinProvider implements SkinProvider {
                 .thenApply(identifier -> {
                     updateStatus(string, DownloadStatus.COMPLETED);
                     updateSkinData(string, identifier, true);
+                    onComplete.accept(output);
                     OverlayMessageManger.getInstance().showSuccessMessage(name);
                     return null;
                 })

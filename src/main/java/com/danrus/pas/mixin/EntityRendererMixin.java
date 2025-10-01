@@ -51,7 +51,7 @@ public class EntityRendererMixin {
         instance = StringUtils.matchASName(instance).get(0);
         return instance.equals(object);
     }
-    //?} else {
+    //?} else if >=1.21.6 && <1.21.9 {
 
     /*@Shadow
     @Final
@@ -89,6 +89,21 @@ public class EntityRendererMixin {
             }
         }
     }
+    *///?} else {
+
+    /*@WrapOperation(
+            method = "submitNameTag",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitNameTag(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/phys/Vec3;ILnet/minecraft/network/chat/Component;ZIDLnet/minecraft/client/renderer/state/CameraRenderState;)V")
+    )
+    private void pas$submitNameTag(net.minecraft.client.renderer.SubmitNodeCollector instance, PoseStack poseStack, Vec3 vec3, int i1, Component displayName, boolean b, int i2, double v, net.minecraft.client.renderer.state.CameraRenderState cameraRenderState, Operation<Void> original) {
+        if (displayName.getString().contains("|") && ModConfig.get().hideParamsOnLabel && ModConfig.get().enableMod) {
+            Component newName = Component.literal(StringUtils.matchASName(displayName.getString()).get(0));
+            original.call(instance, poseStack, vec3, i1, newName, b, i2, v, cameraRenderState);
+        } else {
+            original.call(instance, poseStack, vec3, i1, displayName, b, i2, v, cameraRenderState);
+        }
+    }
+
     *///?}
 
     //?}

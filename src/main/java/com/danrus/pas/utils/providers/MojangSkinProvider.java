@@ -10,16 +10,15 @@ import com.danrus.pas.utils.SkinDownloader;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.data.MojangDiskCache;
-import com.danrus.pas.utils.managers.DataManagerImpl;
 import com.danrus.pas.utils.managers.OverlayMessageManger;
 import com.danrus.pas.utils.managers.SkinManger;
-import com.danrus.pas.utils.managers.SkinProvidersManagerImpl;
 import com.google.gson.Gson;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class MojangSkinProvider implements SkinProvider {
 
@@ -30,15 +29,19 @@ public class MojangSkinProvider implements SkinProvider {
 
     private final Gson gson = new Gson();
     private String literal = "M";
+    private Consumer<String> onComplete;
+    private String output;
 
     @Override
     public String getLiteral() {
         return literal;
     }
-    
+
 
     @Override
-    public void load(String string) {
+    public void load(String string, Consumer<String> onComplete) {
+        this.onComplete = onComplete;
+        this.output = string;
         List<String> matches = StringUtils.matchASName(string);
         String name = matches.get(0);
         String params = matches.get(1).toUpperCase();
@@ -130,6 +133,7 @@ public class MojangSkinProvider implements SkinProvider {
                     if (updateStatus) {
                         OverlayMessageManger.getInstance().showSuccessMessage(name);
                         PlayerArmorStandsClient.LOGGER.info("MojangSkinProvider: Successfully downloaded skin for " + name);
+                        onComplete.accept(this.output);
                         updateStatus(name, DownloadStatus.COMPLETED);
                     }
                 });

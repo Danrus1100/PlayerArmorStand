@@ -28,8 +28,12 @@ public class TabButton extends Button {
         super(x, y, width, height, message, (button) -> {}, DEFAULT_NARRATION);
     }
 
+
     @Override
+    //? <1.21.9
     public void onPress() {
+    //? >=1.21.9
+    /*public void onPress(net.minecraft.client.input.InputWithModifiers inputWithModifiers) {*/
         if (this.tabOnPress != null) {
             this.tabOnPress.onPress(this);
         }
