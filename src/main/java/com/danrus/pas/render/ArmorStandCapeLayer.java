@@ -19,10 +19,15 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import java.util.List;
 
 public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCapeLayer {
+
+    private final PasCapeModel capeModel;
+
     public ArmorStandCapeLayer(VersioningUtils.VersionlessArmorStandCape parent) {
         super(parent);
+        capeModel = new PasCapeModel();
     }
 
+    //? <1.21.9 {
     @Override
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i,
                         //? if <= 1.21.1 {
@@ -34,7 +39,12 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
                         float f1, float f2
                         //? if <= 1.21.1
                         /*, float f3, float f4, float f5, float f6*/
-    ) {
+    )
+    //?} else {
+    /*@Override
+    public void submit(PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, int i, net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStand, float f, float g)
+    *///?}
+    {
         if (!ModConfig.get().enableMod || VersioningUtils.isInvisible(armorStand)) {
             return;
         }
@@ -48,12 +58,11 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
 
         List<String> matches = StringUtils.matchASName(customName.getString());
 
-        boolean isDownlading = SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.IN_PROGRESS ||
-                SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.FAILED;
-        boolean showArmorStandWhileDownload = ModConfig.get().showArmorStandWhileDownloading && isDownlading;
-
-        if (matches.get(1).contains("C") && this.getParentModel() instanceof ModelWithCape model && !showArmorStandWhileDownload) {
-            SkinData skinData = SkinManger.getInstance().getData(customName);
+        if (matches.get(1).contains("C") && this.getParentModel() instanceof PlayerArmorStandModel model) {
+            SkinData skinData = model.getData();
+            if (PlayerArmorStandModel.showArmorStandWhileDownload(customName, skinData)) {
+                return;
+            }
             ResourceLocation capeTexture = skinData.getCapeTexture();
 
             poseStack.pushPose();
@@ -73,9 +82,13 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
             //?}
 
 
-            VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entitySolid(capeTexture));
             model.getCape().visible = true;
+            //? <1.21.9 {
+            VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entitySolid(capeTexture));
             model.getCape().render(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY);
+            //?} else {
+            /*collector.submitModel(capeModel, armorStand, poseStack, RenderType.entitySolid(capeTexture), i, OverlayTexture.NO_OVERLAY, armorStand.outlineColor, (net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay)null);
+            *///?}
 
             poseStack.popPose();
         }

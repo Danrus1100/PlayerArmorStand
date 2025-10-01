@@ -21,6 +21,9 @@ public class SkinManger {
     private DataManagerImpl dataManager = new DataManagerImpl();
     private SkinProvidersManagerImpl skinProviderManager = new SkinProvidersManagerImpl();
 
+    private String currentName;
+    private SkinData currentData;
+
     private SkinManger() {
         getDataManager().addSource(new ClientLevelCache(), 0);
         getDataManager().addSource(new GameCache(), 2);
@@ -49,7 +52,14 @@ public class SkinManger {
         if (name == null || name.getString().isEmpty()) {
             return new SkinData("default");
         }
-        return dataManager.getData(name.getString());
+
+        if(currentData != null && !currentName.isEmpty() && currentName.equals(name.getString()) ) {
+            return currentData;
+        } else {
+            currentName = name.getString();
+        }
+        currentData = dataManager.getData(name.getString());
+        return currentData;
     }
 
     public SkinData findData(Component name) {
@@ -74,7 +84,6 @@ public class SkinManger {
             PlayerArmorStandsClient.LOGGER.warn("SkinManger: No data found for " + name + ", reloading from providers");
             return;
         }
-        skinProviderManager.download(string);
     }
 
     public void reloadFailed() {

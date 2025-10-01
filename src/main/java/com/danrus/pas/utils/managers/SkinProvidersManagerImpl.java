@@ -4,6 +4,8 @@ import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.SkinProvider;
 import com.danrus.pas.api.SkinProvidersManager;
 import com.danrus.pas.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -14,9 +16,12 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
 
     private static final String DEFAULT_LITERAL = "M";  // Default literal for providers
     private static final String EXCLUDE_LITERALS = "NF"; // Prevents fallback to default providers
+    private static final Logger LOGGER = LoggerFactory.getLogger("SkinProvidersManagerImpl");
 
     // Key: literal, Value: sorted list of providers
     private final Map<String, List<PrioritizedProvider>> providers = new HashMap<>();
+
+    private final List<String> pendingList = new ArrayList<>();
 
     @Override
     public void addProvider(SkinProvider provider) {
@@ -36,12 +41,17 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
 
     @Override
     public void download(String input) {
+//        LOGGER.info("Download initialized: " + input);
         List<String> parts = StringUtils.matchASName(input);
         String name = parts.get(0);
         String params = parts.get(1);
 
+        if (pendingList.contains(input)) {
+            return;
+        }
+
         if (name.isEmpty()) {
-            PlayerArmorStandsClient.LOGGER.warn(getClass().getSimpleName() +
+            LOGGER.warn(getClass().getSimpleName() +
                     ": Invalid input " + input);
             return;
         }
@@ -75,7 +85,7 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
         }
 
         if (!loaded) {
-            PlayerArmorStandsClient.LOGGER.warn(getClass().getSimpleName() +
+            LOGGER.error(getClass().getSimpleName() +
                     ": No provider could load " + name + " with params: " + params);
             SkinManger.getInstance().getDataManager().invalidateData(name);
         }
@@ -88,12 +98,15 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
     private boolean tryLoad(List<PrioritizedProvider> providerList, String input, String name) {
         if (providerList == null || providerList.isEmpty()) return false;
 
+
         for (PrioritizedProvider prioritized : providerList) {
             try {
-                prioritized.provider().load(input);
+                LOGGER.info("Trying to download from {}", prioritized.provider.getClass().getSimpleName());
+                pendingList.add(input);
+                prioritized.provider().load(input, pendingList::remove);
                 return true;
             } catch (Exception e) {
-                PlayerArmorStandsClient.LOGGER.debug(
+                LOGGER.error(
                         "Provider {} failed to load {}: {}",
                         prioritized.provider().getClass().getSimpleName(), name, e.getMessage()
                 );

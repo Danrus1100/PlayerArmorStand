@@ -1,6 +1,7 @@
 package com.danrus.pas.render;
 
 import com.danrus.pas.api.DownloadStatus;
+import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
@@ -47,7 +48,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
     private final ModelPart leftEar;
     private final ModelPart rightEar;
 
-    private String name;
+    private SkinData data;
     private boolean isSlim = false;
     private boolean isOriginal = false;
 
@@ -165,30 +166,31 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         boolean showArms = VersioningUtils.getIsShowArms(armorStand);
         Component customName = VersioningUtils.getCustomName(armorStand);
         Rotations bodyPose = VersioningUtils.getBodyPose(armorStand);
+        this.data = SkinManger.getInstance().getData(customName);
 
         //? if <= 1.21.1
-        /*this.hat.copyFrom(this.head);*/
+        /*cpp(this.head, this.hat);*/
 
-        this.leftPants.copyFrom(leftLeg);
-        this.leftPants.copyFrom(leftLeg);
-        this.rightPants.copyFrom(rightLeg);
+        cpp(leftLeg, this.leftPants);
+        cpp(rightLeg, this.rightPants);
 
-        this.leftSleeve.copyFrom(leftArm);
-        this.rightSleeve.copyFrom(rightArm);
+        cpp(leftArm, this.leftSleeve);
+        cpp(rightArm, this.rightSleeve);
 
-        this.leftSlimArm.copyFrom(leftArm);
-        this.rightSlimArm.copyFrom(rightArm);
-        this.leftSlimSleeve.copyFrom(leftArm);
-        this.rightSlimSleeve.copyFrom(rightArm);
+        cpp(leftArm, this.leftSlimArm);
+        cpp(rightArm, this.rightSlimArm);
+        cpp(leftArm, this.leftSlimSleeve);
+        cpp(rightArm, this.rightSlimSleeve);
 
-        this.originalBody.copyFrom(body);
-        this.originalHead.copyFrom(head);
-        this.originalRightArm.copyFrom(rightArm);
-        this.originalLeftArm.copyFrom(leftArm);
-        this.originalRightLeg.copyFrom(rightLeg);
-        this.originalLeftLeg.copyFrom(leftLeg);
+        cpp(body, this.originalBody);
+        cpp(head, this.originalHead);
+        cpp(rightArm, this.originalRightArm);
+        cpp(leftArm, this.originalLeftArm);
+        cpp(rightLeg, this.originalRightLeg);
+        cpp(leftLeg, this.originalLeftLeg);
 
-        this.jacket.copyFrom(body);
+        cpp(body, this.jacket);
+
 
         this.basePlate.yRot = ((float)Math.PI / 180F) * -VersioningUtils.getYRot(armorStand);
 
@@ -212,11 +214,8 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         this.rightEar.visible = isEarsVisible;
 
         List<String> matches =  StringUtils.matchASName(customNameString);
-        boolean isDownlading = SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.IN_PROGRESS ||
-                SkinManger.getInstance().getData(customName).getStatus() == DownloadStatus.FAILED;
-        boolean showArmorStandWhileDownload = ModConfig.get().showArmorStandWhileDownloading && isDownlading;
 
-        this.setModelVisibility(!showArmorStandWhileDownload, matches.get(1).contains("S"), showBase);
+        this.setModelVisibility(!showArmorStandWhileDownload(customName, data), matches.get(1).contains("S"), showBase);
 
         if (customNameString.isEmpty() && ModConfig.get().defaultSkin.isEmpty()) {
             setOriginalAngles(showBase, showArms, bodyPose);
@@ -293,5 +292,20 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
     @Override
     public ModelPart getCape() {
         return this.cloak;
+    }
+
+    @Override
+    public SkinData getData() {
+        return data;
+    }
+
+    public static boolean showArmorStandWhileDownload(Component customName, SkinData data) {
+        boolean isDownlading = data.getStatus() == DownloadStatus.IN_PROGRESS ||
+                data.getStatus() == DownloadStatus.FAILED;
+        return ModConfig.get().showArmorStandWhileDownloading && isDownlading;
+    }
+
+    private static void cpp(ModelPart from, ModelPart to) {
+        VersioningUtils.copyPartPose(from, to);
     }
 }

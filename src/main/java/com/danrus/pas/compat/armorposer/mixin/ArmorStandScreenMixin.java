@@ -1,6 +1,6 @@
 package com.danrus.pas.compat.armorposer.mixin;
 
-//? if >= 1.21.4 {
+//? if armorposer {
 
 import com.danrus.pas.mixin.accessors.ScreenAccessor;
 import com.danrus.pas.render.gui.PasConfiguratorScreen;

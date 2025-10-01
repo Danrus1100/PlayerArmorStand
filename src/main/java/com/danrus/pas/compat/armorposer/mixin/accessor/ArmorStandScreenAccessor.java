@@ -1,6 +1,6 @@
 package com.danrus.pas.compat.armorposer.mixin.accessor;
 
-//? if >= 1.21.4 {
+//? if armorposer {
 
 import com.mrbysco.armorposer.client.gui.ArmorStandScreen;
 import net.minecraft.client.gui.components.Button;

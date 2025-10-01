@@ -21,7 +21,7 @@ public class ArmorPoserMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        //? if >=1.21.4 {
+        //? if armorposer {
         return VersioningUtils.isModLoaded("armorposer");
         //?} else {
         /*return false;

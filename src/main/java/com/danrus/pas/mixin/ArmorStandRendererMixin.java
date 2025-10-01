@@ -13,6 +13,7 @@ import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.*;
@@ -110,5 +111,15 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
         }
     }
 
+    *///?}
+
+    //? > 1.21.9 {
+    /*@Inject(
+            method = "extractRenderState(Lnet/minecraft/world/entity/decoration/ArmorStand;Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;F)V",
+            at = @At("RETURN")
+    )
+    private void setCustomName1219(ArmorStand armorStand, ArmorStandRenderState armorStandRenderState, float f, CallbackInfo ci) {
+        ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandRenderState).pas$setCustomName(armorStand.getCustomName());
+    }
     *///?}
 }

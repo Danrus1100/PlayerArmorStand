@@ -47,7 +47,7 @@ public class SkinDataArgument implements ArgumentType<SkinData> {
         return EXAMPLES;
     }
 
-    public static SkinData getData(PasCommandContext context, String name) {
+    public static SkinData getData(CommandContext<?> context, String name) {
         return context.getArgument(name, SkinData.class);
     }
 }

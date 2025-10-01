@@ -20,13 +20,6 @@ ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.${mod_id}]]
-modId = "architectury"
-mandatory = true
-versionRange = "[9,]"
-ordering = "NONE"
-side = "CLIENT"
-
-[[dependencies.${mod_id}]]
 modId = "minecraft"
 mandatory = true
 versionRange = "${minecraft_versions}"
