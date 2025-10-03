@@ -1,6 +1,8 @@
 package com.danrus.pas.render;
 
-import com.danrus.pas.PlayerArmorStandsClient;
+//? >=1.21.9 {
+
+/*import com.danrus.pas.PlayerArmorStandsClient;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -31,3 +33,4 @@ public class PasCapeModel extends ArmorStandArmorModel {
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 }
+*///?}

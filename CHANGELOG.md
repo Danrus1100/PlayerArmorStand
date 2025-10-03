@@ -1,4 +1,2 @@
- - New: 1.21.9 support (this mod version wont work with ModMenu in feature)
- - Fix: Glitchy downloading
- - Fix: Game FPS feels better then many Armor Stands are summoned
- - Fix: When you tried to open local skins folder nothing happened
+ - Fix: Missing 1.20.1 and 1.21.1 version
+ - Fix: Mod doesn't worked on 1.21.9

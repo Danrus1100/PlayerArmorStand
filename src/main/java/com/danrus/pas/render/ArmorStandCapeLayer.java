@@ -20,11 +20,13 @@ import java.util.List;
 
 public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCapeLayer {
 
-    private final PasCapeModel capeModel;
+    //? >= 1.21.9
+    /*private final PasCapeModel capeModel;*/
 
     public ArmorStandCapeLayer(VersioningUtils.VersionlessArmorStandCape parent) {
         super(parent);
-        capeModel = new PasCapeModel();
+        //? >= 1.21.9
+        /*capeModel = new PasCapeModel();*/
     }
 
     //? <1.21.9 {
