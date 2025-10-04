@@ -1,12 +1,12 @@
 package com.danrus.pas.mixin;
 
+import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.mixin.accessors.LivingEntityRendererAccessor;
-import com.danrus.pas.render.ArmorStandCapeLayer;
-import com.danrus.pas.render.PlayerArmorStandModel;
-import com.danrus.pas.utils.StringUtils;
+import com.danrus.pas.render.armorstand.ArmorStandCapeLayer;
+import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.utils.VersioningUtils;
-import com.danrus.pas.utils.managers.SkinManger;
+import com.danrus.pas.managers.SkinManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.model.ArmorStandArmorModel;
@@ -68,7 +68,7 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
         if (VersioningUtils.getCustomName(armorStand) == null || !ModConfig.get().enableMod) {
             return;
         }
-        cir.setReturnValue(SkinManger.getInstance().getSkinTexture(VersioningUtils.getCustomName(armorStand)));
+        cir.setReturnValue(SkinManager.getInstance().getSkinTexture(NameInfo.parse(VersioningUtils.getCustomName(armorStand))));
     }
 
     //? if >= 1.21.4 {
@@ -102,8 +102,10 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
             return;
         }
 
-        if (StringUtils.matchASName(entityLiving.getCustomName().getString()).get(0).equals("Dinnerbone")
-        || StringUtils.matchASName(entityLiving.getCustomName().getString()).get(0).equals("Grumm")) {
+        NameInfo info = NameInfo.parse(entityLiving.getCustomName().getString());
+
+        if (info.base().equals("Dinnerbone")
+        || info.base().equals("Grumm")) {
             poseStack.translate(0.0F, entityLiving.getBbHeight() - 0.1F, 0.0F);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
@@ -113,12 +115,12 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
     *///?}
 
     //? >=1.21.9 {
-    /*@Inject(
+    @Inject(
             method = "extractRenderState(Lnet/minecraft/world/entity/decoration/ArmorStand;Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;F)V",
             at = @At("RETURN")
     )
     private void setCustomName1219(ArmorStand armorStand, net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStandRenderState, float f, CallbackInfo ci) {
         ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandRenderState).pas$setCustomName(armorStand.getCustomName());
     }
-    *///?}
+    //?}
 }

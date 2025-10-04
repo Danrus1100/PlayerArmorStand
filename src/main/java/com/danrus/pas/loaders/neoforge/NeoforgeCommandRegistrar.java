@@ -2,8 +2,8 @@
 /*package com.danrus.pas.loaders.neoforge;
 
 import com.danrus.pas.api.SkinData;
-import com.danrus.pas.utils.commands.PasCommands;
-import com.danrus.pas.utils.commands.SkinDataArgument;
+import com.danrus.pas.commands.PasCommands;
+import com.danrus.pas.commands.SkinDataArgument;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;

@@ -2,7 +2,7 @@ package com.danrus.pas.mixin;
 
 import com.danrus.pas.mixin.accessors.ScreenAccessor;
 import com.danrus.pas.render.gui.PasConfiguratorScreen;
-import com.danrus.pas.render.gui.impl.AnvilArmorStandNamer;
+import com.danrus.pas.impl.namer.AnvilArmorStandNamer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;

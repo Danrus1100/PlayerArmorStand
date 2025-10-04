@@ -2,15 +2,13 @@ package com.danrus.pas.compat.armorposer.mixin;
 
 //? if armorposer {
 
-import com.danrus.pas.mixin.accessors.ScreenAccessor;
+/*import com.danrus.pas.mixin.accessors.ScreenAccessor;
 import com.danrus.pas.render.gui.PasConfiguratorScreen;
-import com.danrus.pas.render.gui.impl.AnvilArmorStandNamer;
-import com.danrus.pas.render.gui.impl.ArmorPoserNamer;
+import com.danrus.pas.impl.namer.ArmorPoserNamer;
 import com.mrbysco.armorposer.client.gui.ArmorStandScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -39,4 +37,4 @@ public class ArmorStandScreenMixin {
         ((ScreenAccessor) this).pas$addRenderableWidget(configuratorButton);
     }
 }
-//?}
+*///?}

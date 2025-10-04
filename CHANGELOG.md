@@ -1,2 +1,1 @@
- - Fix: Missing 1.20.1 and 1.21.1 version
- - Fix: Mod doesn't worked on 1.21.9
+ - Fix: now if you use Configurator from Armor Poser, changes apples automatically

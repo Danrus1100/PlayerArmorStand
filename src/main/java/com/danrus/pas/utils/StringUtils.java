@@ -60,31 +60,4 @@ public class StringUtils {
 
         return List.of("", "", "");
     }
-
-    public static @NotNull List<String> matchASName(String input){
-        String[] divided = input.split("\\|");
-
-        if (divided.length == 0 || divided[0].isEmpty()) {
-            return List.of("", "", "", "100");
-        }
-
-        String name = divided[0].trim();
-        if (name.matches(".*[<>:\"/\\\\?*].*")) {
-            return List.of("", "", "", "100");
-        }
-        if (divided.length < 2) {
-            return List.of(name, "", "", "100");
-        }
-        String rawParams = divided[1].toUpperCase();
-
-        List<String> textureMatch = matchTexture(rawParams);
-        if (!textureMatch.get(0).isEmpty()) {
-            String textureName = textureMatch.get(0);
-            String blendFactor = textureMatch.get(1);
-            rawParams = textureMatch.get(2).trim().toUpperCase();
-            return List.of(name, rawParams, textureName, blendFactor);
-        }
-
-        return List.of(name, rawParams.trim(), "", "100");
-    }
 }

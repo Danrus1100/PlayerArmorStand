@@ -1,6 +1,6 @@
 package com.danrus.pas.mixin;
 
-import com.danrus.pas.render.PlayerArmorStandModel;
+import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;

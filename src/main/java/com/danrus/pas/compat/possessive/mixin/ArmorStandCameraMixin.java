@@ -1,18 +1,18 @@
 package com.danrus.pas.compat.possessive.mixin;
 
 //? if possessive {
+/*import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.api.SkinData;
 import com.danrus.pas.compat.possessive.PossessiveRenderHand;
 import com.danrus.pas.config.ModConfig;
-import com.danrus.pas.render.PlayerArmorStandModel;
+import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
+import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
-import com.danrus.pas.utils.managers.SkinManger;
-import com.llamalad7.mixinextras.sugar.Local;
+import com.danrus.pas.managers.SkinManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.just_s.camera.ArmorStandCamera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -37,7 +37,7 @@ public class ArmorStandCameraMixin {
 
     // For Just_S: ты бы сэкономил бы мне кучу времени и нервов, если бы свой if-else где ты выбираешь модель руки арморстенда как здесь вынес бы в отдельный метод изначально
     @Unique
-    private static PossessiveRenderHand resolveHand(ModelPart playerHand, PlayerModel playerModel, PlayerArmorStandModel armorStandModel, String name, String params) {
+    private static PossessiveRenderHand resolveHand(ModelPart playerHand, PlayerModel playerModel, PlayerArmorStandModel armorStandModel, NameInfo info) {
 //        if (playerHand == playerModel.rightArm) {
 //            return armorStandModel.rightArm;
 //        } else {
@@ -49,9 +49,9 @@ public class ArmorStandCameraMixin {
                 return PossessiveRenderHand.RIGHT_ORIGINAL;
             }
 
-            if (params.contains("S")) {
+            if (info.wantBeSlim()) {
                 return PossessiveRenderHand.RIGHT_SLIM;
-            } else if (!name.isEmpty()) {
+            } else if (info.isEmpty()) {
                 return PossessiveRenderHand.RIGHT_WIDE;
             } else {
                 return PossessiveRenderHand.RIGHT_ORIGINAL;
@@ -61,9 +61,9 @@ public class ArmorStandCameraMixin {
                 return PossessiveRenderHand.LEFT_ORIGINAL;
             }
 
-            if (params.contains("S")) {
+            if (info.wantBeSlim()) {
                 return PossessiveRenderHand.LEFT_SLIM;
-            } else if (!name.isEmpty()) {
+            } else if (!info.isEmpty()) {
                 return PossessiveRenderHand.LEFT_WIDE;
             } else {
                 return PossessiveRenderHand.LEFT_ORIGINAL;
@@ -82,16 +82,16 @@ public class ArmorStandCameraMixin {
         };
     }
 
-    /**
+    /^*
      * @author Danrus110_
      * @reason Rewrite hand rendering for {@link PlayerArmorStandModel}
-     */
+     ^/
     @Overwrite
     //? if =1.20.1 {
-    /*public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
-    *///?} else if =1.21.1 {
-    /*public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
-    *///?} else {
+    /^public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
+    ^///?} else if =1.21.1 {
+    /^public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
+    ^///?} else {
     public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, ResourceLocation resourceLocation, ModelPart modelPart, boolean bl){
     //?}
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
@@ -99,11 +99,11 @@ public class ArmorStandCameraMixin {
         PlayerRenderer playerRenderer = (PlayerRenderer)entityRenderDispatcher.getRenderer(Minecraft.getInstance().player);
         PlayerModel playerModel = playerRenderer.getModel();
         PlayerArmorStandModel armorStandModel = (PlayerArmorStandModel) entityRenderer.getModel();
-        List<String> matches = possessedArmorStand.getCustomName() != null ?
-                StringUtils.matchASName(possessedArmorStand.getCustomName().getString())
-                : List.of("", "");
+        NameInfo info = possessedArmorStand.getCustomName() != null ?
+                NameInfo.parse(possessedArmorStand.getCustomName().getString())
+                : new NameInfo();
 
-        PossessiveRenderHand resolvedHand = resolveHand(modelPart, playerModel, armorStandModel, matches.get(0), matches.get(1));
+        PossessiveRenderHand resolvedHand = resolveHand(modelPart, playerModel, armorStandModel, info);
 
         float leftZRot = -0.1F;
         float rightZRot = 0.1F;
@@ -120,11 +120,11 @@ public class ArmorStandCameraMixin {
         armorStandModel.rightSlimSleeve.zRot = rightZRot;
 
         ResourceLocation skinTexture;
-        if (!matches.get(0).isEmpty()) {
+        if (!info.isEmpty()) {
             if (ModConfig.get().possessiveShowDefaultHand) {
-                skinTexture = VersioningUtils.getResourceLocation("minecraft", "textures/entity/armorstand/wood.png");
+                skinTexture = Rl.vanilla("textures/entity/armorstand/wood.png");
             } else {
-                skinTexture = SkinManger.getInstance().getSkinTexture(Component.literal(matches.get(0)));
+                skinTexture = SkinManager.getInstance().getSkinTexture(info);
             }
         } else {
             skinTexture = SkinData.DEFAULT_TEXTURE;
@@ -140,4 +140,4 @@ public class ArmorStandCameraMixin {
 
     }
 }
-//?}
+*///?}

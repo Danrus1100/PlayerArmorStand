@@ -1,6 +1,7 @@
 package com.danrus.pas.api;
 
 import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.TextureUtils;
 import com.danrus.pas.utils.VersioningUtils;
@@ -11,9 +12,9 @@ import java.util.List;
 
 public class SkinData {
     public static ResourceLocation DEFAULT_TEXTURE = ModConfig.get().showArmorStandWhileDownloading
-            ? VersioningUtils.getResourceLocation("minecraft", "textures/entity/armorstand/wood.png")
-            : VersioningUtils.getResourceLocation("minecraft", "textures/entity/player/wide/steve.png");
-    public static ResourceLocation DEFAULT_CAPE = VersioningUtils.getResourceLocation("pas","capes/cape.png");
+            ? Rl.vanilla("textures/entity/armorstand/wood.png")
+            : Rl.vanilla("textures/entity/player/wide/steve.png");
+    public static ResourceLocation DEFAULT_CAPE = Rl.pas("capes/cape.png");
 
     private String name;
     private List<TextureData> textures;
@@ -56,6 +57,18 @@ public class SkinData {
         this(playerName, DEFAULT_TEXTURE, DEFAULT_CAPE, "");
     }
 
+    public SkinData(NameInfo info) {
+        this(info.base(), DEFAULT_TEXTURE, DEFAULT_CAPE, info.params());
+    }
+
+    public SkinData(NameInfo info, ResourceLocation skinTexture, ResourceLocation capeTexture) {
+        this(info.base(), skinTexture, capeTexture, info.params());
+    }
+
+    public SkinData(NameInfo info, ResourceLocation skinTexture) {
+        this(info, skinTexture, DEFAULT_CAPE);
+    }
+
     public String getName() {
         return name;
     }
@@ -80,16 +93,16 @@ public class SkinData {
         };
     }
 
-    public ResourceLocation getSkinTexture(String material, String blend) {
-        if (material != null && !material.isEmpty()) {
-            return TextureUtils.registerOverlayTexture(this.name, material, "skins", Integer.parseInt(blend));
+    public ResourceLocation getSkinTexture(NameInfo info) {
+        if (!info.overlay().isEmpty()) {
+            return TextureUtils.registerOverlayTexture(info, info.overlay(), "skin", info.blend());
         }
         return getTexture("skin");
     }
 
-    public ResourceLocation getCapeTexture(String material, String blend) {
-        if (material != null && !material.isEmpty()) {
-            return TextureUtils.registerOverlayTexture(this.name, material, "capes", Integer.parseInt(blend));
+    public ResourceLocation getCapeTexture(NameInfo info) {
+        if (!info.overlay().isEmpty()) {
+            return TextureUtils.registerOverlayTexture(info, info.overlay(), "capes", info.blend());
         }
         return getTexture("cape");
     }

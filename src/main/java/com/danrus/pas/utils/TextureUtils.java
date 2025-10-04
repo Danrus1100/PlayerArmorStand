@@ -2,9 +2,10 @@ package com.danrus.pas.utils;
 
 
 import com.danrus.pas.PlayerArmorStandsClient;
+import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.api.SkinData;
-import com.danrus.pas.utils.managers.OverlayMessageManger;
-import com.danrus.pas.utils.managers.SkinManger;
+import com.danrus.pas.managers.OverlayMessageManger;
+import com.danrus.pas.managers.SkinManager;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -44,10 +45,10 @@ public class TextureUtils {
             Minecraft.getInstance().execute(() -> {
                 try {
                     //? if <=1.21.4 {
-                    DynamicTexture texture = new DynamicTexture(finalImage);
-                    //?} else {
-                    /*DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
-                    *///?}
+                    /*DynamicTexture texture = new DynamicTexture(finalImage);
+                    *///?} else {
+                    DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
+                    //?}
                     Minecraft.getInstance().getTextureManager().register(identifier, texture);
 
                     future.complete(identifier);
@@ -163,8 +164,8 @@ public class TextureUtils {
         }
     }
 
-    public static ResourceLocation registerOverlayTexture(String name, String overlay, String prefix, int blendStrength) {
-        String cacheKey = name + "_" + overlay + "_" + blendStrength+ "_" + prefix;
+    public static ResourceLocation registerOverlayTexture(NameInfo info, String overlay, String prefix, int blendStrength) {
+        String cacheKey = info.base() + "_" + overlay + "_" + blendStrength+ "_" + prefix;
 
         // Проверяем, есть ли текстура уже в кэше
         ResourceLocation cachedTexture = overlayTextureCache.get(cacheKey);
@@ -173,13 +174,13 @@ public class TextureUtils {
         }
         ResourceLocation skinId;
         if (prefix.equals("capes")) {
-            skinId = SkinManger.getInstance().getData(Component.literal(name)).getCapeTexture();
+            skinId = SkinManager.getInstance().getData(info).getCapeTexture();
         } else {
-            skinId = SkinManger.getInstance().getData(Component.literal(name)).getSkinTexture();
+            skinId = SkinManager.getInstance().getData(info).getSkinTexture();
         }
         AbstractTexture skinTexture = Minecraft.getInstance().getTextureManager().getTexture(skinId);
 
-        ResourceLocation overlayId = VersioningUtils.getResourceLocation("minecraft", "textures/block/" + overlay + ".png");
+        ResourceLocation overlayId = Rl.vanilla("textures/block/" + overlay + ".png");
         AbstractTexture overlayTexture = Minecraft.getInstance().getTextureManager().getTexture(overlayId);
 
         if (overlayTexture == null) {
@@ -200,7 +201,7 @@ public class TextureUtils {
 
                 NativeImage finalImage = grayscaleSkinOverMaterial(skinImage, overlayImage, (float) blendStrength / 100f);
 
-                ResourceLocation finalIdentifier = VersioningUtils.getResourceLocation("pas", prefix + "/" + StringUtils.encodeToSha256(name) + "_" + overlay + "_" + blendStrength);
+                ResourceLocation finalIdentifier = Rl.pas(prefix + "/" + StringUtils.encodeToSha256(info.base()) + "_" + overlay + "_" + blendStrength);
                 registerTexture(finalImage, finalIdentifier, prefix == "skins");
 
                 // Сохраняем в кэш
@@ -209,7 +210,7 @@ public class TextureUtils {
                 return finalIdentifier;
             }
         } catch (Exception e) {
-            PlayerArmorStandsClient.LOGGER.warn("Failed to create overlay texture for: {} with overlay: {}", name, overlay, e);
+            PlayerArmorStandsClient.LOGGER.warn("Failed to create overlay texture for: {} with overlay: {}", info, overlay, e);
             OverlayMessageManger.getInstance().showOverlayNotFoundMessage(overlay);
         }
 

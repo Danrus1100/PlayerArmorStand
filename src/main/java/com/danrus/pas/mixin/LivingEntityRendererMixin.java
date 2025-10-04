@@ -1,20 +1,17 @@
 package com.danrus.pas.mixin;
 
+import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.config.ModConfig;
-import com.danrus.pas.mixin.accessors.LivingEntityRendererAccessor;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
-import com.danrus.pas.utils.managers.SkinManger;
+import com.danrus.pas.managers.SkinManager;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -52,10 +49,10 @@ public class LivingEntityRendererMixin<T extends
         }
 
         if (VersioningUtils.getCustomName(entity) != null && ModConfig.get().enableMod) {
-            cir.setReturnValue(RenderType.entityTranslucent(SkinManger.getInstance().getSkinTexture(VersioningUtils.getCustomName(entity))));
+            cir.setReturnValue(RenderType.entityTranslucent(SkinManager.getInstance().getSkinTexture(NameInfo.parse(VersioningUtils.getCustomName(entity)))));
             cir.cancel();
         } else if (VersioningUtils.getCustomName(entity) == null && !ModConfig.get().defaultSkin.isEmpty()) {
-            cir.setReturnValue(RenderType.entityTranslucent(SkinManger.getInstance().getSkinTexture(Component.literal(ModConfig.get().defaultSkin))));
+            cir.setReturnValue(RenderType.entityTranslucent(SkinManager.getInstance().getSkinTexture(NameInfo.parse(Component.literal(ModConfig.get().defaultSkin)))));
             cir.cancel();
         }
     }
@@ -73,8 +70,10 @@ public class LivingEntityRendererMixin<T extends
             return;
         }
 
-        if ((StringUtils.matchASName(entity.getCustomName().getString()).get(0).equals("Dinnerbone")
-                || StringUtils.matchASName(entity.getCustomName().getString()).get(0).equals("Grumm")
+        String name = NameInfo.parse(entity.getCustomName()).base();
+
+        if ((name.equals("Dinnerbone")
+                || name.equals("Grumm")
         ) && entity instanceof ArmorStand) {
             cir.setReturnValue(true);
             cir.cancel();

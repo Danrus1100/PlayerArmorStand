@@ -1,6 +1,6 @@
 package com.danrus.pas.api;
 
-import com.danrus.pas.utils.managers.SkinManger;
+import com.danrus.pas.managers.SkinManager;
 
 /**
  * PlayerArmorStandsApi provides access to the data manager and skin provider manager.
@@ -10,14 +10,14 @@ import com.danrus.pas.utils.managers.SkinManger;
 
 public class PlayerArmorStandsApi {
     public DataManager getDataManager() {
-        return SkinManger.getInstance().getDataManager();
+        return SkinManager.getInstance().getDataManager();
     }
 
     public SkinProvidersManager getSkinProviderManager() {
-        return SkinManger.getInstance().getSkinProviderManager();
+        return SkinManager.getInstance().getSkinProviderManager();
     }
 
-    public SkinData getSkinData(String name) {
-        return getDataManager().getData(name);
+    public SkinData getSkinData(NameInfo info) {
+        return getDataManager().getData(info);
     }
 }

@@ -1,5 +1,7 @@
 package com.danrus.pas.api;
 
+import com.danrus.pas.impl.data.GameData;
+
 import java.util.HashMap;
 
 /**
@@ -16,7 +18,7 @@ public interface DataManager {
      *
      * @param source the data source to add
      */
-    void addSource(DataCache<?> source);
+    void addSource(DataHolder<?> source);
 
     /**
      * Add a source of data to the manager with priority.
@@ -24,31 +26,31 @@ public interface DataManager {
      * @param source the data source to add
      * @param priority the priority of the source, higher values indicate higher priority
      */
-    void addSource(DataCache<?> source, int priority);
+    void addSource(DataHolder<?> source, int priority);
 
     /**
      * Retrieves data associated with the given string.
      *
-     * @param string the name of the player
+     * @param info the NameInfo of the player
      * @return SkinData associated with the identifier, or null if not found
      */
-    SkinData getData(String string);
+    SkinData getData(NameInfo info);
 
     /**
      * Retrieves all data available in the manager.
      *
-     * @param name the name of the player
+     * @param info the NameInfo of the player
      * @param data Object data to be stored
      */
-    void store(String name, Object data);
+    void store(NameInfo info, Object data);
 
     /**
      * Invalidates the data associated with the given name.
      * This method should be called when the data is no longer valid or needs to be refreshed.
      *
-     * @param name the identifier for the data to invalidate
+     * @param info the identifier for the data to invalidate
      */
-    void invalidateData(String name);
+    void invalidateData(NameInfo info);
 
     /**
      * Retrieves a specific data source by its key.
@@ -57,11 +59,11 @@ public interface DataManager {
      * @return the DataCache associated with the key, or null if not found
      */
 
-    DataCache<?> getSource(String key);
+    DataHolder<?> getSource(String key);
 
 
     /**
-     * Retrieves all data stored in {@link com.danrus.pas.utils.data.GameCache}
+     * Retrieves all data stored in {@link GameData}
      *
      * @return a HashMap containing all game data, where the key is the player name and the value is SkinData
      */
@@ -71,18 +73,18 @@ public interface DataManager {
     /**
      * Finds SkinData by a given string without download.
      *
-     * @param string the identifier for the skin data
+     * @param info the NameInfo for the skin data
      * @return SkinData associated with the identifier, or null if not found
      */
 
-    SkinData findData(String string);
+    SkinData findData(NameInfo info);
 
 
     /**
      * Deletes the data associated with the given string.
      *
-     * @param string the identifier for the data to delete
+     * @param info the NameInfo for the data to delete
      */
 
-    void delete(String string);
+    void delete(NameInfo info);
 }

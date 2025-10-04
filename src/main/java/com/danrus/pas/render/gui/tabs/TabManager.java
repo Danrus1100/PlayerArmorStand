@@ -1,5 +1,6 @@
 package com.danrus.pas.render.gui.tabs;
 
+import com.danrus.pas.render.gui.widgets.TabButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 

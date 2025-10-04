@@ -1,5 +1,6 @@
 package com.danrus.pas.mixin;
 
+import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.StringUtils;
 //? if !forge {
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -30,13 +32,13 @@ public class EntityRendererMixin {
     //? if !forge {
 
     //? if <1.21.6 {
-    @WrapOperation(
+    /*@WrapOperation(
             method = "renderNameTag",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)I")
     )
     private int pas$renderNameTag(Font instance, Component text, float x, float y, int color, boolean dropShadow, Matrix4f pose, MultiBufferSource bufferSource, Font.DisplayMode displayMode, int backgroundColor, int packedLightCoords, Operation<Integer> original){
         if (text.getString().contains("|") && ModConfig.get().hideParamsOnLabel && ModConfig.get().enableMod){
-            Component newText = Component.literal(StringUtils.matchASName(text.getString()).get(0));
+            Component newText = Component.literal(NameInfo.parse(text).base());
             x = (float)(-instance.width(newText)) / 2.0f;
             return original.call(instance, newText, x, y, color, dropShadow, pose, bufferSource, displayMode, backgroundColor, packedLightCoords);
         }
@@ -48,10 +50,10 @@ public class EntityRendererMixin {
             at = @At(value = "INVOKE", target = "Ljava/lang/String;equals(Ljava/lang/Object;)Z")
     )
     private boolean pas$deadmau5Equals(String instance, Object object) {
-        instance = StringUtils.matchASName(instance).get(0);
+        instance = NameInfo.parse(instance).base();
         return instance.equals(object);
     }
-    //?} else if >=1.21.6 && <1.21.9 {
+    *///?} else if >=1.21.6 && <1.21.9 {
 
     /*@Shadow
     @Final
@@ -66,8 +68,9 @@ public class EntityRendererMixin {
         if (renderState instanceof net.minecraft.client.renderer.entity.state.ArmorStandRenderState) {
             Vec3 vec3 = renderState.nameTagAttachment;
             if (vec3 != null) {
+                NameInfo info = NameInfo.parse(((ArmorStandRenderState) renderState).customName);
                 boolean bl = !renderState.isDiscrete;
-                int i = "deadmau5".equals(StringUtils.matchASName(displayName.getString()).get(0)) ? -10 : 0;
+                int i = "deadmau5".equals(info.base()) ? -10 : 0;
                 poseStack.pushPose();
                 poseStack.translate(vec3.x, vec3.y + (double) 0.5F, vec3.z);
                 poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
@@ -75,7 +78,7 @@ public class EntityRendererMixin {
                 Matrix4f matrix4f = poseStack.last().pose();
                 Font font = Minecraft.getInstance().font;
                 if (displayName.getString().contains("|") && ModConfig.get().hideParamsOnLabel && ModConfig.get().enableMod) {
-                    displayName = Component.literal(StringUtils.matchASName(displayName.getString()).get(0));
+                    displayName = Component.literal(info.base());
                 }
                 float f = (float) (-font.width(displayName)) / 2.0F;
                 int j = (int) (Minecraft.getInstance().options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
@@ -91,20 +94,20 @@ public class EntityRendererMixin {
     }
     *///?} else {
 
-    /*@WrapOperation(
+    @WrapOperation(
             method = "submitNameTag",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitNameTag(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/phys/Vec3;ILnet/minecraft/network/chat/Component;ZIDLnet/minecraft/client/renderer/state/CameraRenderState;)V")
     )
     private void pas$submitNameTag(net.minecraft.client.renderer.SubmitNodeCollector instance, PoseStack poseStack, Vec3 vec3, int i1, Component displayName, boolean b, int i2, double v, net.minecraft.client.renderer.state.CameraRenderState cameraRenderState, Operation<Void> original) {
         if (displayName.getString().contains("|") && ModConfig.get().hideParamsOnLabel && ModConfig.get().enableMod) {
-            Component newName = Component.literal(StringUtils.matchASName(displayName.getString()).get(0));
+            Component newName = Component.literal(NameInfo.parse(displayName).base());
             original.call(instance, poseStack, vec3, i1, newName, b, i2, v, cameraRenderState);
         } else {
             original.call(instance, poseStack, vec3, i1, displayName, b, i2, v, cameraRenderState);
         }
     }
 
-    *///?}
+    //?}
 
     //?}
 }

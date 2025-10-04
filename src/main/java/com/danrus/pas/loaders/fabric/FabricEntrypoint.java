@@ -3,8 +3,8 @@ package com.danrus.pas.loaders.fabric;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.config.ModConfig;
-import com.danrus.pas.utils.commands.PasCommands;
-import com.danrus.pas.utils.commands.SkinDataArgument;
+import com.danrus.pas.commands.PasCommands;
+import com.danrus.pas.commands.SkinDataArgument;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
