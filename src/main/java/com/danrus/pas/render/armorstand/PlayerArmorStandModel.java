@@ -4,9 +4,8 @@ import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.ModConfig;
-import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
-import com.danrus.pas.managers.SkinManager;
+import com.danrus.pas.managers.PasManager;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -14,7 +13,6 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.util.List;
 
@@ -168,7 +166,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         Component customName = VersioningUtils.getCustomName(armorStand);
         Rotations bodyPose = VersioningUtils.getBodyPose(armorStand);
         NameInfo info = NameInfo.parse(customName);
-        this.data = SkinManager.getInstance().getData(info);
+        this.data = PasManager.getInstance().getData(info);
 
         //? if <= 1.21.1
         /*cpp(this.head, this.hat);*/

@@ -5,8 +5,8 @@ import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
-import com.danrus.pas.managers.SkinManager;
 import net.minecraft.client.Minecraft;
 
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class ClientLevelData implements DataHolder<SkinData> {
         }
 
         if (dataAtomicReference.get().getStatus() == DownloadStatus.COMPLETED) {
-            SkinManager.getInstance().getDataManager().store(info, dataAtomicReference.get());
+            PasManager.getInstance().getDataManager().store(info, dataAtomicReference.get());
             return dataAtomicReference.get();
         }
 

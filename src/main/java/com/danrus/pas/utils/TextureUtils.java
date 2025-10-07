@@ -5,10 +5,9 @@ import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.api.SkinData;
 import com.danrus.pas.managers.OverlayMessageManger;
-import com.danrus.pas.managers.SkinManager;
+import com.danrus.pas.managers.PasManager;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -45,10 +44,10 @@ public class TextureUtils {
             Minecraft.getInstance().execute(() -> {
                 try {
                     //? if <=1.21.4 {
-                    /*DynamicTexture texture = new DynamicTexture(finalImage);
-                    *///?} else {
-                    DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
-                    //?}
+                    DynamicTexture texture = new DynamicTexture(finalImage);
+                    //?} else {
+                    /*DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
+                    *///?}
                     Minecraft.getInstance().getTextureManager().register(identifier, texture);
 
                     future.complete(identifier);
@@ -174,9 +173,9 @@ public class TextureUtils {
         }
         ResourceLocation skinId;
         if (prefix.equals("capes")) {
-            skinId = SkinManager.getInstance().getData(info).getCapeTexture();
+            skinId = PasManager.getInstance().getData(info).getCapeTexture();
         } else {
-            skinId = SkinManager.getInstance().getData(info).getSkinTexture();
+            skinId = PasManager.getInstance().getData(info).getSkinTexture();
         }
         AbstractTexture skinTexture = Minecraft.getInstance().getTextureManager().getTexture(skinId);
 

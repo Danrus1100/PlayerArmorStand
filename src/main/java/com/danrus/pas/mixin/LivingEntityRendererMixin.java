@@ -2,9 +2,8 @@ package com.danrus.pas.mixin;
 
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.config.ModConfig;
-import com.danrus.pas.utils.StringUtils;
+import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
-import com.danrus.pas.managers.SkinManager;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -49,10 +48,10 @@ public class LivingEntityRendererMixin<T extends
         }
 
         if (VersioningUtils.getCustomName(entity) != null && ModConfig.get().enableMod) {
-            cir.setReturnValue(RenderType.entityTranslucent(SkinManager.getInstance().getSkinTexture(NameInfo.parse(VersioningUtils.getCustomName(entity)))));
+            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinTexture(NameInfo.parse(VersioningUtils.getCustomName(entity)))));
             cir.cancel();
         } else if (VersioningUtils.getCustomName(entity) == null && !ModConfig.get().defaultSkin.isEmpty()) {
-            cir.setReturnValue(RenderType.entityTranslucent(SkinManager.getInstance().getSkinTexture(NameInfo.parse(Component.literal(ModConfig.get().defaultSkin)))));
+            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinTexture(NameInfo.parse(Component.literal(ModConfig.get().defaultSkin)))));
             cir.cancel();
         }
     }

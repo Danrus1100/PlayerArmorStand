@@ -2,11 +2,11 @@ package com.danrus.pas.mixin;
 
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.mixin.accessors.LivingEntityRendererAccessor;
 import com.danrus.pas.render.armorstand.ArmorStandCapeLayer;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.utils.VersioningUtils;
-import com.danrus.pas.managers.SkinManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.model.ArmorStandArmorModel;
@@ -14,7 +14,6 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -68,7 +67,7 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
         if (VersioningUtils.getCustomName(armorStand) == null || !ModConfig.get().enableMod) {
             return;
         }
-        cir.setReturnValue(SkinManager.getInstance().getSkinTexture(NameInfo.parse(VersioningUtils.getCustomName(armorStand))));
+        cir.setReturnValue(PasManager.getInstance().getSkinTexture(NameInfo.parse(VersioningUtils.getCustomName(armorStand))));
     }
 
     //? if >= 1.21.4 {
@@ -115,12 +114,12 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
     *///?}
 
     //? >=1.21.9 {
-    @Inject(
+    /*@Inject(
             method = "extractRenderState(Lnet/minecraft/world/entity/decoration/ArmorStand;Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;F)V",
             at = @At("RETURN")
     )
     private void setCustomName1219(ArmorStand armorStand, net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStandRenderState, float f, CallbackInfo ci) {
         ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandRenderState).pas$setCustomName(armorStand.getCustomName());
     }
-    //?}
+    *///?}
 }

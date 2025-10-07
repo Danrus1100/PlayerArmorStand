@@ -2,7 +2,7 @@ package com.danrus.pas.commands;
 
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.api.SkinData;
-import com.danrus.pas.managers.SkinManager;
+import com.danrus.pas.managers.PasManager;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -25,7 +25,7 @@ public class SkinDataArgument implements ArgumentType<SkinData> {
     @Override
     public SkinData parse(StringReader reader) throws CommandSyntaxException {
         String name = reader.readUnquotedString();
-        SkinData data = SkinManager.getInstance().findData(NameInfo.parse(name));
+        SkinData data = PasManager.getInstance().findData(NameInfo.parse(name));
         if (data == null) {
             throw SKIN_NOT_FOUND.create();
         }
@@ -34,7 +34,7 @@ public class SkinDataArgument implements ArgumentType<SkinData> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        HashMap<String, SkinData> allData = SkinManager.getInstance().getDataManager().getGameData();
+        HashMap<String, SkinData> allData = PasManager.getInstance().getDataManager().getGameData();
         allData.forEach((name, skinData) -> {
             if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase()) && !name.contains("|")) {
                 builder.suggest(name);

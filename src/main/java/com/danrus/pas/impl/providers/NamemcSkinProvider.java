@@ -5,21 +5,17 @@ import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.api.SkinData;
-import com.danrus.pas.api.SkinProvider;
+import com.danrus.pas.api.TextureProvider;
+import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.SkinDownloader;
-import com.danrus.pas.utils.StringUtils;
-import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.impl.data.NamemcDiskData;
 import com.danrus.pas.managers.OverlayMessageManger;
-import com.danrus.pas.managers.SkinManager;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-public class NamemcSkinProvider implements SkinProvider {
+public class NamemcSkinProvider implements TextureProvider {
 
     private String literal = "N";
     private Consumer<String> onComplete;
@@ -61,23 +57,23 @@ public class NamemcSkinProvider implements SkinProvider {
         SkinData data = new SkinData(info);
         OverlayMessageManger.getInstance().showDownloadMessage(info.base());
         data.setStatus(DownloadStatus.IN_PROGRESS);
-        SkinManager.getInstance().getDataManager().store(info, data);
+        PasManager.getInstance().getDataManager().store(info, data);
     }
 
     private void updateStatus(NameInfo info, DownloadStatus status) {
         SkinData data = getOrCreateModelData(info);
         data.setStatus(status);
-        SkinManager.getInstance().getDataManager().store(info, data);
+        PasManager.getInstance().getDataManager().store(info, data);
     }
 
     private void doFail(NameInfo info) {
-        SkinData data = SkinManager.getInstance().getData(info);
+        SkinData data = PasManager.getInstance().getData(info);
         if (data == null) {
             data = new SkinData(info);
         }
         OverlayMessageManger.getInstance().showFailMessage(info.base());
         data.setStatus(DownloadStatus.FAILED);
-        SkinManager.getInstance().getDataManager().store(info, data);
+        PasManager.getInstance().getDataManager().store(info, data);
     }
 
     private void updateSkinData(NameInfo info, ResourceLocation texture, boolean isSkin) {
@@ -87,11 +83,11 @@ public class NamemcSkinProvider implements SkinProvider {
         } else {
             data.setCapeTexture(texture);
         }
-        SkinManager.getInstance().getDataManager().store(info, data);
+        PasManager.getInstance().getDataManager().store(info, data);
     }
 
     private SkinData getOrCreateModelData(NameInfo info) {
-        SkinData data = SkinManager.getInstance().getDataManager().getSource("namemc").get(info);
+        SkinData data = PasManager.getInstance().getDataManager().getSource("namemc").get(info);
         return data != null ? data : new SkinData(info);
     }
 }

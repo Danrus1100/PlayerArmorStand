@@ -6,7 +6,7 @@ import com.danrus.pas.api.DataHolder;
 import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.TextureUtils;
-import com.danrus.pas.managers.SkinManager;
+import com.danrus.pas.managers.PasManager;
 import net.minecraft.resources.ResourceLocation;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class NamemcDiskData implements DataHolder<Path> {
             cache.put(info.base(), skinIdentifier);
             data.setSkinTexture(skinIdentifier);
             data.appendParams("N");
-            SkinManager.getInstance().getDataManager().store(info, data);
+            PasManager.getInstance().getDataManager().store(info, data);
             return data;
         }
         return null;

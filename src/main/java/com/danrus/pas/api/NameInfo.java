@@ -1,6 +1,6 @@
 package com.danrus.pas.api;
 
-import com.danrus.pas.managers.SkinManager;
+import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.StringUtils;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -9,21 +9,29 @@ import java.util.List;
 
 public class NameInfo {
     private String base;
-    private String params;  // порядок не важен, храним как строку уникальных символов
+    private String params;
     private String overlay;
     private int blend;
 
+    private boolean cape;
+    private String capeProvider;
+    private String capeId;
+
     private static final String FLAG_SLIM = "S";
-    private static final String FLAG_CAPE = "C";
 
     public NameInfo() { this("", ""); }
     public NameInfo(String base) { this(base, ""); }
     public NameInfo(String base, String params) { this(base, params, "", 100); }
-    public NameInfo(String base, String params, String overlay, int blend) {
+    public NameInfo(String base, String params, String overlay, int blend) {this(base, params, overlay, blend, new CapeInfo());}
+    private NameInfo(String base, String params, String overlay, int blend, CapeInfo cape) {
         this.base = base;
         this.params = normalizeParams(params);
         this.overlay = overlay;
         this.blend = clamp(blend, 0, 100);
+
+        this.cape = cape.enabled;
+        this.capeProvider = cape.provider;
+        this.capeId = cape.id;
     }
 
     public static NameInfo parse(Component input) {
@@ -46,13 +54,22 @@ public class NameInfo {
         String rawParams = divided[1].trim();
         String overlay = "";
         int blend = 100;
+
         List<String> textureMatch = StringUtils.matchTexture(rawParams);
         if (!textureMatch.get(0).isEmpty()) {
             overlay = textureMatch.get(0);
             blend = safeParseInt(textureMatch.get(1), 100);
             rawParams = textureMatch.get(2).trim();
         }
-        return new NameInfo(name, rawParams, overlay, blend);
+
+        List<String> capeMatch = StringUtils.matchCape(rawParams);
+        CapeInfo info = new CapeInfo();
+        if (capeMatch.get(0).contains("C")) {
+            info = new CapeInfo(true, capeMatch.get(1), capeMatch.get(2));
+        }
+        rawParams = capeMatch.get(3).trim();
+
+        return new NameInfo(name, rawParams, overlay, blend, info);
     }
 
     public String compile() {
@@ -64,6 +81,11 @@ public class NameInfo {
         if (overlay != null && !overlay.isEmpty()) {
             if (params == null || params.isEmpty()) out.append("|");
             out.append("T:").append(overlay).append("%").append(blend);
+        }
+        if (cape) {
+            if ((params == null || params.isEmpty()) && overlay.isEmpty()) out.append("|");
+            out.append("C");
+            if (!capeProvider.isEmpty() && !capeId.isEmpty()) out.append(":").append(capeProvider).append("%").append(capeId);
         }
         return out.toString();
     }
@@ -99,8 +121,7 @@ public class NameInfo {
 
     public boolean isEmpty() { return base == null || base.isEmpty(); }
     public String getDesiredProvider() {
-        // Выбираем первого из известных провайдеров, встреченного в params (порядок не важен — берём по списку провайдеров)
-        List<String> providers = SkinManager.getInstance().getExistingProviders();
+        List<String> providers = PasManager.getInstance().getExistingProviders();
         for (String prov : providers) {
             if (params.contains(prov)) return prov;
         }
@@ -108,13 +129,13 @@ public class NameInfo {
     }
 
     public boolean wantBeSlim() { return params.contains(FLAG_SLIM); }
-    public boolean wantCape() { return params.contains(FLAG_CAPE); }
+    public boolean wantCape() { return this.cape; }
 
     public void setSlim(boolean value) { toggleFlag(FLAG_SLIM, value); }
-    public void setCape(boolean value) { toggleFlag(FLAG_CAPE, value); }
+    public void setCape(boolean value) { this.cape = value; }
 
     public void setProvider(String literal) {
-        List<String> providers = SkinManager.getInstance().getExistingProviders();
+        List<String> providers = PasManager.getInstance().getExistingProviders();
         String p = params;
         for (String prov : providers) p = p.replace(prov, "");
         p = p + literal;
@@ -130,14 +151,22 @@ public class NameInfo {
     public void setName(String newName) { this.base = newName == null ? "" : newName; }
     public void setOverlay(String textureName) { this.overlay = textureName == null ? "" : textureName; }
     public void setBlend(int blend) { this.blend = clamp(blend, 0, 100); }
+    public void setCapeId(String capeId) {this.capeId = capeId;}
+    public void setCapeProvider(String capeProvider) {this.capeProvider = capeProvider;}
 
     public String base() { return base; }
     public String params() { return params; }
     public String overlay() { return overlay; }
     public int blend() { return blend; }
+    public String capeId() {return capeId;}
+    public String capeProvider() {return capeProvider;}
 
     @Override public @NotNull String toString() {
         return "NameInfo[" + this.base + ", " + this.params + "]";
+    }
+
+    private record CapeInfo(boolean enabled, String provider, String id) {
+        private CapeInfo() {this(false, "", "");}
     }
 }
 

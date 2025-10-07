@@ -21,7 +21,7 @@ public class SkinData {
     private String params = "";
     private DownloadStatus status = DownloadStatus.NOT_STARTED;
 
-    class TextureData {
+    static class TextureData {
         String type;
         ResourceLocation texture;
 

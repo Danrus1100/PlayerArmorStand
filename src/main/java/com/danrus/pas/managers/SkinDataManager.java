@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-public class DataManagerImpl implements DataManager {
+public class SkinDataManager implements DataManager {
     private final List<DataHolder<?>> sources = new CopyOnWriteArrayList<>();
 
     @Override
@@ -92,7 +92,7 @@ public class DataManagerImpl implements DataManager {
         if (needDownload.get() && data.get().getStatus() == DownloadStatus.NOT_STARTED) {
             data.get().setStatus(DownloadStatus.IN_PROGRESS);
             store(info, data.get());
-            SkinManager.getInstance().getSkinProviderManager().download(info);
+            PasManager.getInstance().getSkinProviderManager().download(info);
         }
         return data.get();
     }

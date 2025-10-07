@@ -1,18 +1,17 @@
 package com.danrus.pas.managers;
 
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.SkinProvider;
-import com.danrus.pas.api.SkinProvidersManager;
-import com.danrus.pas.utils.StringUtils;
+import com.danrus.pas.api.TextureProvider;
+import com.danrus.pas.api.TextureProvidersManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 /**
- * Manages registration and selection of {@link SkinProvider}s by literal markers.
+ * Manages registration and selection of {@link TextureProvider}s by literal markers.
  */
-public class SkinProvidersManagerImpl implements SkinProvidersManager {
+public class SkinProvidersManager implements TextureProvidersManager {
 
     private static final String DEFAULT_LITERAL = "M";  // Default literal for providers
     private static final String EXCLUDE_LITERALS = "NF"; // Prevents fallback to default providers
@@ -24,12 +23,12 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
     private final List<String> pendingList = new ArrayList<>();
 
     @Override
-    public void addProvider(SkinProvider provider) {
+    public void addProvider(TextureProvider provider) {
         addProvider(provider, 0);
     }
 
     @Override
-    public void addProvider(SkinProvider provider, int priority) {
+    public void addProvider(TextureProvider provider, int priority) {
         providers
                 .computeIfAbsent(provider.getLiteral(), k -> new ArrayList<>())
                 .add(new PrioritizedProvider(provider, priority));
@@ -84,7 +83,7 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
         if (!loaded) {
             LOGGER.error(getClass().getSimpleName() +
                     ": No provider could load " + info.base() + " with params: " + info.params());
-            SkinManager.getInstance().getDataManager().invalidateData(info);
+            PasManager.getInstance().getDataManager().invalidateData(info);
         }
     }
 
@@ -112,5 +111,5 @@ public class SkinProvidersManagerImpl implements SkinProvidersManager {
         return false;
     }
 
-    private record PrioritizedProvider(SkinProvider provider, int priority) {}
+    private record PrioritizedProvider(TextureProvider provider, int priority) {}
 }

@@ -2,7 +2,7 @@ package com.danrus.pas.compat.armorposer.mixin;
 
 //? if armorposer {
 
-/*import com.danrus.pas.mixin.accessors.ScreenAccessor;
+import com.danrus.pas.mixin.accessors.ScreenAccessor;
 import com.danrus.pas.render.gui.PasConfiguratorScreen;
 import com.danrus.pas.impl.namer.ArmorPoserNamer;
 import com.mrbysco.armorposer.client.gui.ArmorStandScreen;
@@ -37,4 +37,4 @@ public class ArmorStandScreenMixin {
         ((ScreenAccessor) this).pas$addRenderableWidget(configuratorButton);
     }
 }
-*///?}
+//?}

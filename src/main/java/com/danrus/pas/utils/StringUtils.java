@@ -60,4 +60,20 @@ public class StringUtils {
 
         return List.of("", "", "");
     }
+
+    public static List<String> matchCape(String input) {
+        String capeRegex = "C(?::([A-Z]))?(?:%([A-Z0-9_]+))?";
+        Pattern pattern = Pattern.compile(capeRegex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(input.trim());
+
+        if (matcher.find()) {
+            String param = matcher.group(1) != null ? matcher.group(1).toUpperCase() : "M";
+            String name = matcher.group(2) != null ? matcher.group(2) : "";
+            String rest = input.replaceFirst(capeRegex, "").trim();
+            return List.of("C", param, name, rest);
+        }
+
+        return List.of("", "M", "", input);
+    }
+
 }

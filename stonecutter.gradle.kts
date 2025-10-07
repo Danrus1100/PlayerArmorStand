@@ -1,7 +1,7 @@
 plugins {
     id("dev.kikugie.stonecutter")
 }
-stonecutter active "1.21.9-fabric"
+stonecutter active "1.21.4-fabric"
 
 stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) { 
     group = "project"
@@ -27,6 +27,7 @@ allprojects {
         maven ("https://maven.terraformersmc.com/releases/")
         maven("https://maven.isxander.dev/releases/")
         maven ("https://thedarkcolour.github.io/KotlinForForge/")
+        maven("https://maven.quiltmc.org/repository/release/")
         maven ("https://maven.architectury.dev/")
         maven ("https://maven.saps.dev/releases")
         maven ("https://api.modrinth.com/maven")

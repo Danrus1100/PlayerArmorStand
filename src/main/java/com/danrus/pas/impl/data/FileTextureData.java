@@ -4,11 +4,11 @@ import com.danrus.pas.api.DataHolder;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.api.SkinData;
+import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.TextureUtils;
 import com.danrus.pas.utils.VersioningUtils;
-import com.danrus.pas.managers.SkinManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
@@ -43,7 +43,7 @@ public class FileTextureData implements DataHolder<SkinData> {
             Minecraft.getInstance().execute(() -> {
 
                 TextureUtils.registerTexture(skinPath, skinLocation, true);
-                SkinManager.getInstance().getDataManager().store(info, new SkinData(info, skinLocation));
+                PasManager.getInstance().getDataManager().store(info, new SkinData(info, skinLocation));
             });
         }
         SkinData data = new SkinData(info, skinLocation);

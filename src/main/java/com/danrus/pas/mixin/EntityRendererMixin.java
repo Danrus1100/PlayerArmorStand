@@ -32,7 +32,7 @@ public class EntityRendererMixin {
     //? if !forge {
 
     //? if <1.21.6 {
-    /*@WrapOperation(
+    @WrapOperation(
             method = "renderNameTag",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)I")
     )
@@ -53,7 +53,7 @@ public class EntityRendererMixin {
         instance = NameInfo.parse(instance).base();
         return instance.equals(object);
     }
-    *///?} else if >=1.21.6 && <1.21.9 {
+    //?} else if >=1.21.6 && <1.21.9 {
 
     /*@Shadow
     @Final
@@ -94,7 +94,7 @@ public class EntityRendererMixin {
     }
     *///?} else {
 
-    @WrapOperation(
+    /*@WrapOperation(
             method = "submitNameTag",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitNameTag(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/phys/Vec3;ILnet/minecraft/network/chat/Component;ZIDLnet/minecraft/client/renderer/state/CameraRenderState;)V")
     )
@@ -107,7 +107,7 @@ public class EntityRendererMixin {
         }
     }
 
-    //?}
+    *///?}
 
     //?}
 }

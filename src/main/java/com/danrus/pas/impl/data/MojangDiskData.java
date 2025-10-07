@@ -7,7 +7,7 @@ import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.TextureUtils;
-import com.danrus.pas.managers.SkinManager;
+import com.danrus.pas.managers.PasManager;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
@@ -46,7 +46,7 @@ public class MojangDiskData implements DataHolder<Path> {
             }
         }
         if (doStoreData) {
-            SkinManager.getInstance().getDataManager().store(info, data);
+            PasManager.getInstance().getDataManager().store(info, data);
             return data;
         }
         return null;

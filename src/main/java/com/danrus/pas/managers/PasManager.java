@@ -10,19 +10,19 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SkinManager {
+public class PasManager {
 
-    private static final SkinManager INSTANCE = new SkinManager();
+    private static final PasManager INSTANCE = new PasManager();
 
-    private DataManagerImpl dataManager = new DataManagerImpl();
-    private SkinProvidersManagerImpl skinProviderManager = new SkinProvidersManagerImpl();
+    private SkinDataManager dataManager = new SkinDataManager();
+    private SkinProvidersManager skinProviderManager = new SkinProvidersManager();
 
     private List<String> existingProviders = new ArrayList<>(List.of("F"));
 
     private String currentName;
     private SkinData currentData;
 
-    private SkinManager() {
+    private PasManager() {
         getDataManager().addSource(new ClientLevelData(), 0);
         getDataManager().addSource(new GameData(), 2);
         getDataManager().addSource(new MojangDiskData());
@@ -41,6 +41,12 @@ public class SkinManager {
             return dataManager.getData(info).getSkinTexture();
         }
         return dataManager.getData(info).getSkinTexture(info);
+    }
+
+    public ResourceLocation getCapeTexture(NameInfo info) {
+        if ("M".equals(info.capeProvider())) {
+            return getData(info).getCapeTexture();
+        }
     }
 
     public SkinData getData(NameInfo info) {
@@ -91,7 +97,7 @@ public class SkinManager {
         });
     }
 
-    public static SkinManager getInstance() {
+    public static PasManager getInstance() {
         return INSTANCE;
     }
 
@@ -99,7 +105,7 @@ public class SkinManager {
         return dataManager;
     }
 
-    public SkinProvidersManager getSkinProviderManager() {
+    public TextureProvidersManager getSkinProviderManager() {
         return skinProviderManager;
     }
 
@@ -107,11 +113,11 @@ public class SkinManager {
         return List.copyOf(existingProviders);
     }
 
-    public void addProvider(SkinProvider provider) {
+    public void addProvider(TextureProvider provider) {
         addProvider(provider, 0);
     }
 
-    public void addProvider(SkinProvider provider, int priority) {
+    public void addProvider(TextureProvider provider, int priority) {
         skinProviderManager.addProvider(provider, priority);
         existingProviders.add(provider.getLiteral());
     }
