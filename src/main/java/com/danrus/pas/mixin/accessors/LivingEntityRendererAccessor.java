@@ -15,9 +15,9 @@ public interface LivingEntityRendererAccessor {
     @Invoker("addLayer")
     <T extends
             //? if <= 1.21.1 {
-            /*net.minecraft.world.entity.Entity
-            *///?} else {
-            net.minecraft.client.renderer.entity.state.EntityRenderState
-            //?}
+            net.minecraft.world.entity.Entity
+            //?} else {
+            /*net.minecraft.client.renderer.entity.state.EntityRenderState
+            *///?}
             , M extends EntityModel<T>> boolean invokeAddLayer(RenderLayer<T, M> layer);
 }

@@ -31,14 +31,14 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
     @Override
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i,
                         //? if <= 1.21.1 {
-                        /*ArmorStand
-                        *///?} else {
-                        net.minecraft.client.renderer.entity.state.ArmorStandRenderState
-                        //?}
+                        ArmorStand
+                        //?} else {
+                        /*net.minecraft.client.renderer.entity.state.ArmorStandRenderState
+                        *///?}
                         armorStand,
                         float f1, float f2
                         //? if <= 1.21.1
-                        /*, float f3, float f4, float f5, float f6*/
+                        , float f3, float f4, float f5, float f6
     )
     //?} else {
     /*@Override
@@ -70,16 +70,16 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
             poseStack.mulPose(Axis.YN.rotationDegrees(180.0F));
             poseStack.translate(0.0F, 0.02F, -0.12F);
             //? if <= 1.21.1 {
-            /*if (isBaby) {
+            if (isBaby) {
                 poseStack.translate(0.0F, 0.71F, 0.21F);
                 poseStack.scale(0.5F, 0.5F, 0.5F);
             }
-            *///?} else {
-            if (isBaby) {
+            //?} else {
+            /*if (isBaby) {
                 poseStack.translate(0.0F, -0.02F, 0.21F);
 //                poseStack.scale(0.5F, 0.5F, 0.5F);
             }
-            //?}
+            *///?}
 
 
             model.getCape().visible = true;

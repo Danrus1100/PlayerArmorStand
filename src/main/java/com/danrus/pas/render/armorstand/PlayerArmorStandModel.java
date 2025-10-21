@@ -13,6 +13,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.util.List;
 
@@ -149,17 +150,17 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
     @Override
     public void setupAnim(
             //? if <= 1.21.1 {
-            /*ArmorStand
-            *///?} else {
-            net.minecraft.client.renderer.entity.state.ArmorStandRenderState
-            //?}
+            ArmorStand
+            //?} else {
+            /*net.minecraft.client.renderer.entity.state.ArmorStandRenderState
+            *///?}
                     armorStand
             //? if <= 1.21.1
-            /*, float f, float g, float h, float i, float j*/
+            , float f, float g, float h, float i, float j
     ){
         super.setupAnim(armorStand
                 //? if <= 1.21.1
-                /*, f, g, h, i, j*/
+                , f, g, h, i, j
         );
         boolean showBase = !VersioningUtils.getNoBasePlate(armorStand);
         boolean showArms = VersioningUtils.getIsShowArms(armorStand);
@@ -169,7 +170,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         this.data = PasManager.getInstance().getData(info);
 
         //? if <= 1.21.1
-        /*cpp(this.head, this.hat);*/
+        cpp(this.head, this.hat);
 
         cpp(leftLeg, this.leftPants);
         cpp(rightLeg, this.rightPants);

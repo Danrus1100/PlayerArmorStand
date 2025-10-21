@@ -1,1 +1,6 @@
- - Fix: now if you use Configurator from Armor Poser, changes apples automatically
+ - Chore: Now if you use Configurator from Armor Poser, changes apply automatically
+ - Chore: Slightly reworked Configurator
+ - Fix: Then you tried to download skin with overlay it can display incorrect texture
+ - Fix: Improved stability of mod
+ - Fix: marked as Compatible with Minecraft 1.21.10
+ - Other: 1.20.1 are discontinued

@@ -14,7 +14,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -68,7 +67,7 @@ public class EntityRendererMixin {
         if (renderState instanceof net.minecraft.client.renderer.entity.state.ArmorStandRenderState) {
             Vec3 vec3 = renderState.nameTagAttachment;
             if (vec3 != null) {
-                NameInfo info = NameInfo.parse(((ArmorStandRenderState) renderState).customName);
+                NameInfo info = NameInfo.parse(((net.minecraft.client.renderer.entity.state.ArmorStandRenderState) renderState).customName);
                 boolean bl = !renderState.isDiscrete;
                 int i = "deadmau5".equals(info.base()) ? -10 : 0;
                 poseStack.pushPose();
