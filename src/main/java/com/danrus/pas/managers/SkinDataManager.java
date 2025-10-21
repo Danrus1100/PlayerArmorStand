@@ -2,6 +2,7 @@ package com.danrus.pas.managers;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
+import com.danrus.pas.impl.data.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,15 @@ import java.util.stream.Collectors;
 
 public class SkinDataManager implements DataManager {
     private final List<DataHolder<?>> sources = new CopyOnWriteArrayList<>();
+
+
+    public SkinDataManager() {
+        addSource(new ClientLevelData(), 0);
+        addSource(new GameData(), 2);
+        addSource(new MojangDiskData());
+        addSource(new NamemcDiskData());
+        addSource(new FileTextureData(), 999);
+    }
 
     @Override
     public void addSource(DataHolder<?> source) {

@@ -25,6 +25,11 @@ public class PasCommands {
         return 1;
     }
 
+    public static int dropCacheCommand(CommandContext<?> context) {
+        PasManager.getInstance().dropCache();
+        return 1;
+    }
+
     public static Component defaultCommand() {
         return Component.translatable("commands.pas.default_feedback");
     }

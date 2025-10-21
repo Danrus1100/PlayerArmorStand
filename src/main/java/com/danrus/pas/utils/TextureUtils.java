@@ -32,6 +32,10 @@ public class TextureUtils {
         }
     }
 
+    public static void clearOverlayCacheFor(String baseName) {
+        overlayTextureCache.entrySet().removeIf(entry -> entry.getKey().startsWith(baseName + "_"));
+    }
+
     public static CompletableFuture<ResourceLocation> registerTexture(NativeImage image, ResourceLocation identifier, boolean remap) {
         CompletableFuture<ResourceLocation> future = new CompletableFuture<>();
 
@@ -163,7 +167,7 @@ public class TextureUtils {
         }
     }
 
-    public static ResourceLocation registerOverlayTexture(NameInfo info, String overlay, String prefix, int blendStrength) {
+    public static ResourceLocation getOverlayTexture(NameInfo info, String overlay, String prefix, int blendStrength) {
         String cacheKey = info.base() + "_" + overlay + "_" + blendStrength+ "_" + prefix;
 
         // Проверяем, есть ли текстура уже в кэше

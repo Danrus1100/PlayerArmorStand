@@ -13,6 +13,7 @@ import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
 
 import com.danrus.pas.impl.data.FileTextureData;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -63,6 +64,7 @@ public class PasConfiguratorScreen extends Screen {
     public final TabButton overlayTabButton;
 
     private final Button acceptButton;
+    private final Button cancelButton;
     private final ArmorStand entity;
     private final ArmorStandNamerAdapter parent;
 
@@ -88,7 +90,8 @@ public class PasConfiguratorScreen extends Screen {
         this.info = NameInfo.parse(parent.getNameInputValue());
         setEntityName(this.info.compile());
 
-        this.acceptButton = Button.builder(Component.translatable("pas.menu.accept"), b -> acceptName()).bounds(width, height/2 + 90, 200, 20).build();
+        this.acceptButton = Button.builder(Component.translatable("pas.menu.accept").withStyle(ChatFormatting.GREEN), b -> acceptName()).bounds(width, height/2 - 110, 100, 20).build();
+        this.cancelButton = Button.builder(Component.translatable("pas.menu.cancel").withStyle(ChatFormatting.RED), b -> Minecraft.getInstance().setScreen(parent.getScreen())).bounds(width, height/2 + 110, 100, 20).build();
 
         skinTabButton = new TabButton(5, 5, 80, 15, Component.translatable("pas.menu.tab.skin"));
         capeTabButton = new TabButton(105, 5, 80, 15, Component.translatable("pas.menu.tab.cape"));
@@ -182,10 +185,14 @@ public class PasConfiguratorScreen extends Screen {
         Tab capeTab = new Tab("cape", (width, height) -> {
             capeActiveLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 87));
             capeAciveButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 70));
+            armTypeLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 50));
+            armTypeButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 30));
         });
 
         capeTab.addWidget(capeActiveLabel);
         capeTab.addWidget(capeAciveButton);
+        capeTab.addWidget(armTypeLabel);
+        capeTab.addWidget(armTypeButton);
 
         // --- Overlay Tab ---
 
@@ -236,6 +243,7 @@ public class PasConfiguratorScreen extends Screen {
 //        this.addRenderableWidget(rotateButton); // Removed =(
         tabManager.init();
         this.addRenderableWidget(acceptButton);
+        this.addRenderableWidget(cancelButton);
         repositionElements(this.width, this.height);
     }
 
@@ -244,7 +252,8 @@ public class PasConfiguratorScreen extends Screen {
         this.addRenderableWidget(capeTabButton);
         this.addRenderableWidget(overlayTabButton);
 
-        this.acceptButton.setPosition(width/2 - 100, height/2 + 120);
+        this.acceptButton.setPosition(width/2 + 10, height/2 + 120);
+        this.cancelButton.setPosition(width/2 - 110, height/2 + 120);
 
         this.skinTabButton.setPosition(width/2 - 124, height/2 - 109);
         this.capeTabButton.setPosition(width/2 - 43, height/2 - 109);

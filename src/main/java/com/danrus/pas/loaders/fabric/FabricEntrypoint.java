@@ -26,13 +26,9 @@ public class FabricEntrypoint implements ModInitializer {
 
                                 .then(ClientCommandManager.literal("reload_failed").executes(PasCommands::reloadFailedCommand))
                                 .then(ClientCommandManager.literal("reload").then(ClientCommandManager.argument("name/skin", new SkinDataArgument()).executes(PasCommands::reloadSingeCommand)))
-                                .then(ClientCommandManager.literal("config").executes((context) -> {
-                                    context.getSource().getClient().execute(() -> {
-                                        Minecraft mc = Minecraft.getInstance();
-                                        mc.setScreen(ModConfig.getConfigScreen(null));
-                                    });
-                                    return 1;
-                                }))
+                                .then(ClientCommandManager.literal("debug")
+                                        .then(ClientCommandManager.literal("drop_cache").executes(PasCommands::dropCacheCommand))
+                                )
                 );
             });
         } ));

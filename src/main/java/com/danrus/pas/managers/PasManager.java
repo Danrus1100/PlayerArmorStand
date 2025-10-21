@@ -5,6 +5,7 @@ import com.danrus.pas.api.*;
 import com.danrus.pas.impl.data.*;
 import com.danrus.pas.impl.providers.MojangSkinProvider;
 import com.danrus.pas.impl.providers.NamemcSkinProvider;
+import com.danrus.pas.utils.TextureUtils;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -22,16 +23,7 @@ public class PasManager {
     private String currentName;
     private SkinData currentData;
 
-    private PasManager() {
-        getDataManager().addSource(new ClientLevelData(), 0);
-        getDataManager().addSource(new GameData(), 2);
-        getDataManager().addSource(new MojangDiskData());
-        getDataManager().addSource(new NamemcDiskData());
-        getDataManager().addSource(new FileTextureData(), 999);
-
-        addProvider(new MojangSkinProvider());
-        addProvider(new NamemcSkinProvider());
-    }
+    private PasManager() {}
 
     public ResourceLocation getSkinTexture(NameInfo info) {
         if (info.isEmpty()) {
@@ -45,8 +37,9 @@ public class PasManager {
 
     public ResourceLocation getCapeTexture(NameInfo info) {
         if ("M".equals(info.capeProvider())) {
-            return getData(info).getCapeTexture();
+            return getData(info).getCapeTexture(info);
         }
+        return null;
     }
 
     public SkinData getData(NameInfo info) {
@@ -71,9 +64,20 @@ public class PasManager {
         return getDataManager().findData(info);
     }
 
+    public void dropCache() {
+        currentName = null;
+        currentData = null;
+
+        dataManager = new SkinDataManager();
+        skinProviderManager = new SkinProvidersManager();
+        existingProviders = new ArrayList<>(List.of("F"));
+        PlayerArmorStandsClient.LOGGER.info("SkinManger: Dropped all cached data");
+    }
+
     public void reloadData(String string){
         NameInfo info = NameInfo.parse(string);
         getDataManager().delete(info);
+        TextureUtils.clearOverlayCacheFor(string);
         if (info.isEmpty()) {
             PlayerArmorStandsClient.LOGGER.warn("SkinManger: Cannot reload data for an empty name");
             return;
@@ -111,15 +115,6 @@ public class PasManager {
 
     public List<String> getExistingProviders() {
         return List.copyOf(existingProviders);
-    }
-
-    public void addProvider(TextureProvider provider) {
-        addProvider(provider, 0);
-    }
-
-    public void addProvider(TextureProvider provider, int priority) {
-        skinProviderManager.addProvider(provider, priority);
-        existingProviders.add(provider.getLiteral());
     }
 }
 

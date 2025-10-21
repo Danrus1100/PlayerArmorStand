@@ -4,7 +4,6 @@ import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.TextureUtils;
-import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
@@ -74,7 +73,7 @@ public class SkinData {
     }
 
     public ResourceLocation getTexture(String type) {
-        if (type.isEmpty() || this.status != DownloadStatus.COMPLETED && this.status != DownloadStatus.NOT_STARTED) {
+        if (type.isEmpty()) {
             return getDefaultTexture(type);
         }
         for (TextureData textureData : textures) {
@@ -94,15 +93,18 @@ public class SkinData {
     }
 
     public ResourceLocation getSkinTexture(NameInfo info) {
+        if (this.status != DownloadStatus.COMPLETED && this.status != DownloadStatus.NOT_STARTED) {
+            return DEFAULT_TEXTURE;
+        }
         if (!info.overlay().isEmpty()) {
-            return TextureUtils.registerOverlayTexture(info, info.overlay(), "skin", info.blend());
+            return TextureUtils.getOverlayTexture(info, info.overlay(), "skin", info.blend());
         }
         return getTexture("skin");
     }
 
     public ResourceLocation getCapeTexture(NameInfo info) {
         if (!info.overlay().isEmpty()) {
-            return TextureUtils.registerOverlayTexture(info, info.overlay(), "capes", info.blend());
+            return TextureUtils.getOverlayTexture(info, info.overlay(), "capes", info.blend());
         }
         return getTexture("cape");
     }

@@ -27,6 +27,7 @@ public class ArmorPoserNamer implements ArmorStandNamerAdapter {
             Services.PLATFORM.renameArmorStand(accessor.pas$getEntityArmorStand(), accessor.pas$getChangedName());
             accessor.pas$setOldName(accessor.pas$getChangedName());
             accessor.pas$invokeUpdateRenameButton();
+            accessor.pas$getNameInput().setValue(value);
         }
     }
 

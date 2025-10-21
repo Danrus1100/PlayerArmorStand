@@ -3,6 +3,8 @@ package com.danrus.pas.managers;
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.api.TextureProvider;
 import com.danrus.pas.api.TextureProvidersManager;
+import com.danrus.pas.impl.providers.MojangSkinProvider;
+import com.danrus.pas.impl.providers.NamemcSkinProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +23,11 @@ public class SkinProvidersManager implements TextureProvidersManager {
     private final Map<String, List<PrioritizedProvider>> providers = new HashMap<>();
 
     private final List<String> pendingList = new ArrayList<>();
+
+    public SkinProvidersManager() {
+        addProvider(new MojangSkinProvider());
+        addProvider(new NamemcSkinProvider());
+    }
 
     @Override
     public void addProvider(TextureProvider provider) {
