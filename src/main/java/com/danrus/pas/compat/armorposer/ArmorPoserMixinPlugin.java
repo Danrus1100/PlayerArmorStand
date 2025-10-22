@@ -22,10 +22,10 @@ public class ArmorPoserMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         //? if armorposer {
-        /*return VersioningUtils.isModLoaded("armorposer");
-        *///?} else {
-        return false;
-        //?}
+        return VersioningUtils.isModLoaded("armorposer");
+        //?} else {
+        /*return false;
+        *///?}
     }
 
     @Override

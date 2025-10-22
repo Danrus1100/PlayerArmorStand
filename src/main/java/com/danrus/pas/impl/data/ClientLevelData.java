@@ -22,7 +22,6 @@ public class ClientLevelData implements DataHolder<SkinData> {
         if (!ModConfig.get().tryApplyFromServerPlayer) {
             return null;
         }
-
         AtomicReference<SkinData> dataAtomicReference = new AtomicReference<>(new SkinData(info));
         if (mc.level != null) {
             mc.level.players().stream()
@@ -38,6 +37,8 @@ public class ClientLevelData implements DataHolder<SkinData> {
                             }
                     );
         }
+
+
 
         if (dataAtomicReference.get().getStatus() == DownloadStatus.COMPLETED) {
             PasManager.getInstance().getDataManager().store(info, dataAtomicReference.get());

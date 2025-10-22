@@ -90,10 +90,10 @@ public class TextureUtils {
         } else if (texture instanceof SimpleTexture resourceTexture) {
             try {
                 //? if <=1.21.1 {
-                return resourceTexture.getTextureImage(Minecraft.getInstance().getResourceManager()).getImage();
-                //?} else {
-                /*return resourceTexture.loadContents(Minecraft.getInstance().getResourceManager()).image();
-                *///?}
+                /*return resourceTexture.getTextureImage(Minecraft.getInstance().getResourceManager()).getImage();
+                *///?} else {
+                return resourceTexture.loadContents(Minecraft.getInstance().getResourceManager()).image();
+                //?}
             } catch (Exception e) {
                 PlayerArmorStandsClient.LOGGER.error("Failed to load texture image for: {}", identifier, e);
                 PlayerArmorStandsClient.LOGGER.error("Unknown texture type: {}", texture.getClass().getName());
@@ -196,10 +196,10 @@ public class TextureUtils {
                 NativeImage skinImage = skinResourceTexture.getPixels();
 
                 //? if <=1.21.1 {
-                NativeImage overlayImage = overlayResourceTexture.getTextureImage(Minecraft.getInstance().getResourceManager()).getImage();
-                //?} else {
-                /*NativeImage overlayImage = overlayResourceTexture.loadContents(Minecraft.getInstance().getResourceManager()).image();
-                *///?}
+                /*NativeImage overlayImage = overlayResourceTexture.getTextureImage(Minecraft.getInstance().getResourceManager()).getImage();
+                *///?} else {
+                NativeImage overlayImage = overlayResourceTexture.loadContents(Minecraft.getInstance().getResourceManager()).image();
+                //?}
 
 
                 NativeImage finalImage = grayscaleSkinOverMaterial(skinImage, overlayImage, (float) blendStrength / 100f);
