@@ -15,7 +15,7 @@ public class PasCommands {
     public static int reloadSingeCommand(CommandContext<?> context) {
         SkinData data = SkinDataArgument.getData(context, "name/skin");
         data.setStatus(DownloadStatus.IN_PROGRESS);
-        String name = data.getParams().isEmpty() ? data.getName() : data.getName() + "|" + data.getParams();
+        String name = data.getNameInfo().compile();
         PasManager.getInstance().reloadData(name);
         return 1;
     }

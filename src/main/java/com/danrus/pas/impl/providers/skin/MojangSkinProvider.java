@@ -1,4 +1,4 @@
-package com.danrus.pas.impl.providers;
+package com.danrus.pas.impl.providers.skin;
 
 import com.danrus.pas.ModExecutor;
 import com.danrus.pas.PlayerArmorStandsClient;

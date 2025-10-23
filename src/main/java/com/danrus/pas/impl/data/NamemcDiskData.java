@@ -26,7 +26,6 @@ public class NamemcDiskData implements DataHolder<Path> {
             TextureUtils.registerTexture(SkinFilePath, skinIdentifier, true);
             cache.put(info.base(), skinIdentifier);
             data.setSkinTexture(skinIdentifier);
-            data.appendParams("N");
             PasManager.getInstance().getDataManager().store(info, data);
             return data;
         }

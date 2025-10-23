@@ -17,7 +17,7 @@ public class SkinData {
 
     private String name;
     private List<TextureData> textures;
-    private String params = "";
+    private NameInfo info;
     private DownloadStatus status = DownloadStatus.NOT_STARTED;
 
     static class TextureData {
@@ -29,39 +29,43 @@ public class SkinData {
             this.texture = texture;
         }
     }
+//
+//    public SkinData(String name, String params) {
+//        this(name, DEFAULT_TEXTURE, DEFAULT_CAPE, params);
+//    }
 
-    public SkinData(String name, String params) {
-        this(name, DEFAULT_TEXTURE, DEFAULT_CAPE, params);
-    }
-
-    public SkinData(String name, ResourceLocation skinTexture, ResourceLocation capeTexture, String params) {
+    public SkinData(String name, ResourceLocation skinTexture, ResourceLocation capeTexture, NameInfo info) {
         this.name = name;
-        this.params = params.toUpperCase();
+        this.info = info;
         this.textures = List.of(
                 new TextureData("skin", skinTexture),
                 new TextureData("cape", capeTexture)
         );
     }
 
-    public SkinData(String playerName, ResourceLocation skinTexture, ResourceLocation capeTexture, DownloadStatus status) {
-        this(playerName, skinTexture, capeTexture, "");
-        this.status = status;
-    }
+//    public SkinData(String playerName, ResourceLocation skinTexture, ResourceLocation capeTexture, DownloadStatus status) {
+//        this(playerName, skinTexture, capeTexture, "");
+//        this.status = status;
+//    }
+//
+//    public SkinData(String playerName, ResourceLocation skinTexture, ResourceLocation capeTexture) {
+//        this(playerName, skinTexture, capeTexture, "");
+//    }
 
-    public SkinData(String playerName, ResourceLocation skinTexture, ResourceLocation capeTexture) {
-        this(playerName, skinTexture, capeTexture, "");
-    }
-
-    public SkinData(String playerName) {
-        this(playerName, DEFAULT_TEXTURE, DEFAULT_CAPE, "");
-    }
+//    public SkinData(String playerName) {
+//        this(playerName, DEFAULT_TEXTURE, DEFAULT_CAPE, "");
+//    }
 
     public SkinData(NameInfo info) {
-        this(info.base(), DEFAULT_TEXTURE, DEFAULT_CAPE, info.params());
+        this(info.base(), DEFAULT_TEXTURE, DEFAULT_CAPE, info);
+    }
+
+    public SkinData(String name) {
+        this(NameInfo.parse(name));
     }
 
     public SkinData(NameInfo info, ResourceLocation skinTexture, ResourceLocation capeTexture) {
-        this(info.base(), skinTexture, capeTexture, info.params());
+        this(info.base(), skinTexture, capeTexture, info);
     }
 
     public SkinData(NameInfo info, ResourceLocation skinTexture) {
@@ -121,8 +125,8 @@ public class SkinData {
         return status;
     }
 
-    public String getParams() {
-        return params;
+    public NameInfo getNameInfo() {
+        return info;
     }
 
     public void setStatus(DownloadStatus status) {
@@ -146,33 +150,6 @@ public class SkinData {
                 textureData.texture = capeTexture;
                 return;
             }
-        }
-    }
-
-    public void setParams(String params) {
-        this.params = params.toUpperCase();
-    }
-
-    public void appendParams(String params) {
-        if (params.contains("T") && this.params.contains("T")) {
-            return;
-        }
-
-        if (params.contains("T")) {
-            List<String> texureParams = StringUtils.matchTexture(params);
-            if (texureParams.get(0).isEmpty()) {
-                this.params += texureParams.get(2);
-                return;
-            } else {
-                this.params += "T:" + texureParams.get(0) + texureParams.get(1) + texureParams.get(2);
-                return;
-            }
-        }
-
-        if (this.params.isEmpty()) {
-            this.params = params.toUpperCase();
-        } else if (this.params.contains("T")){
-            this.params = params + this.params;
         }
     }
 }

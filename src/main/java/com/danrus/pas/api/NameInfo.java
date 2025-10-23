@@ -1,37 +1,36 @@
 package com.danrus.pas.api;
 
-import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.utils.StringUtils;
+import com.danrus.pas.impl.features.CapeFeature;
+import com.danrus.pas.impl.features.OverlayFeature;
+import com.danrus.pas.impl.features.SkinProviderFeature;
+import com.danrus.pas.impl.features.SlimFeature;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class NameInfo {
+
+    private final Map<Class<? extends RenameFeature>, RenameFeature> features = new LinkedHashMap<>();
     private String base;
-    private String params;
-    private String overlay;
-    private int blend;
+    private String legacyParams;
 
-    private boolean cape;
-    private String capeProvider;
-    private String capeId;
+    public NameInfo() { this(""); }
+    public NameInfo(String base) {
+        this.base = base == null ? "" : base;
+        initializeFeatures();
+    }
 
-    private static final String FLAG_SLIM = "S";
-
-    public NameInfo() { this("", ""); }
-    public NameInfo(String base) { this(base, ""); }
-    public NameInfo(String base, String params) { this(base, params, "", 100); }
-    public NameInfo(String base, String params, String overlay, int blend) {this(base, params, overlay, blend, new CapeInfo());}
-    private NameInfo(String base, String params, String overlay, int blend, CapeInfo cape) {
-        this.base = base;
-        this.params = normalizeParams(params);
-        this.overlay = overlay;
-        this.blend = clamp(blend, 0, 100);
-
-        this.cape = cape.enabled;
-        this.capeProvider = cape.provider;
-        this.capeId = cape.id;
+    private void initializeFeatures() {
+        for (Class<? extends RenameFeature> featureClass : FeatureRegistry.getInstance().getOrderedFeatures()) {
+            RenameFeature feature = FeatureRegistry.getInstance().createFeature(featureClass);
+            if (feature != null) {
+                features.put(featureClass, feature);
+            }
+        }
     }
 
     public static NameInfo parse(Component input) {
@@ -42,62 +41,68 @@ public class NameInfo {
     }
 
     public static NameInfo parse(String input) {
-        if (input == null) return new NameInfo();
-        String[] divided = input.split("\\|", -1);
-        if (divided.length == 0 || divided[0].isEmpty()) return new NameInfo();
+        if (input == null || input.isEmpty()) return new NameInfo();
 
+        String[] divided = input.split("\\|", 2);
         String name = divided[0].trim();
-        if (name.matches(".*[<>:\"/\\?*].*")) return new NameInfo();
 
-        if (divided.length < 2) return new NameInfo(name);
+        if (name.matches(".*[<>:\"/\\\\?*].*")) return new NameInfo();
 
-        String rawParams = divided[1].trim();
-        String overlay = "";
-        int blend = 100;
+        NameInfo info = new NameInfo(name);
 
-        List<String> textureMatch = StringUtils.matchTexture(rawParams);
-        if (!textureMatch.get(0).isEmpty()) {
-            overlay = textureMatch.get(0);
-            blend = safeParseInt(textureMatch.get(1), 100);
-            rawParams = textureMatch.get(2).trim();
+        if (divided.length > 1) {
+            String params = divided[1].trim();
+
+            for (Class<? extends RenameFeature> featureClass : FeatureRegistry.getInstance().getOrderedFeatures()) {
+                RenameFeature feature = info.getFeature(featureClass);
+                if (feature != null && feature.parse(params)) {
+                    String compiled = feature.compile();
+                    params = params.replace(compiled, "").trim();
+                }
+            }
+
+            info.legacyParams = normalizeParams(params);
         }
 
-        List<String> capeMatch = StringUtils.matchCape(rawParams);
-        CapeInfo info = new CapeInfo();
-        if (capeMatch.get(0).contains("C")) {
-            info = new CapeInfo(true, capeMatch.get(1), capeMatch.get(2));
-        }
-        rawParams = capeMatch.get(3).trim();
-
-        return new NameInfo(name, rawParams, overlay, blend, info);
+        return info;
     }
 
     public String compile() {
         StringBuilder out = new StringBuilder();
         out.append(base == null ? "" : base);
-        if (params != null && !params.isEmpty()) {
-            out.append("|").append(params);
+
+        List<String> featureParts = features.values().stream()
+                .map(RenameFeature::compile)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+
+        if (legacyParams != null && !legacyParams.isEmpty()) {
+            featureParts.add(0, legacyParams);
         }
-        if (overlay != null && !overlay.isEmpty()) {
-            if (params == null || params.isEmpty()) out.append("|");
-            out.append("T:").append(overlay).append("%").append(blend);
+
+        if (!featureParts.isEmpty()) {
+            out.append("|").append(String.join("", featureParts));
         }
-        if (cape) {
-            if ((params == null || params.isEmpty()) && overlay.isEmpty()) out.append("|");
-            out.append("C");
-            if (!capeProvider.isEmpty() && !capeId.isEmpty()) out.append(":").append(capeProvider).append("%").append(capeId);
-        }
+
         return out.toString();
     }
-
 
     private static String normalizeParams(String raw) {
         if (raw == null || raw.isEmpty()) return "";
         String p = raw.replaceAll("\\s+", "").toUpperCase();
-        List<String> textureMatch = StringUtils.matchTexture(p);
-        if (!textureMatch.get(0).isEmpty()) {
-            p = textureMatch.get(2).trim().toUpperCase();
+
+        // Убираем все известные паттерны фич динамически
+        for (Class<? extends RenameFeature> featureClass : FeatureRegistry.getInstance().getOrderedFeatures()) {
+            RenameFeature feature = FeatureRegistry.getInstance().createFeature(featureClass);
+            if (feature != null) {
+                Pattern pattern = feature.getCleanupPattern();
+                if (pattern != null) {
+                    p = pattern.matcher(p).replaceAll("");
+                }
+            }
         }
+
+        // Дедупликация символов
         StringBuilder sb = new StringBuilder();
         boolean[] seen = new boolean[256];
         for (int i = 0; i < p.length(); i++) {
@@ -110,63 +115,102 @@ public class NameInfo {
         return sb.toString();
     }
 
-    private static int clamp(int v, int lo, int hi) {
-        return Math.max(lo, Math.min(hi, v));
-    }
-    private static int safeParseInt(String s, int def) {
-        try { return Integer.parseInt(s); } catch (Exception e) { return def; }
-    }
 
     // --- API ---
 
     public boolean isEmpty() { return base == null || base.isEmpty(); }
-    public String getDesiredProvider() {
-        List<String> providers = PasManager.getInstance().getExistingProviders();
-        for (String prov : providers) {
-            if (params.contains(prov)) return prov;
-        }
-        return "M";
+
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public <T extends RenameFeature> T getFeature(Class<T> featureClass) {
+        return (T) features.get(featureClass);
     }
 
-    public boolean wantBeSlim() { return params.contains(FLAG_SLIM); }
-    public boolean wantCape() { return this.cape; }
-
-    public void setSlim(boolean value) { toggleFlag(FLAG_SLIM, value); }
-    public void setCape(boolean value) { this.cape = value; }
-
-    public void setProvider(String literal) {
-        List<String> providers = PasManager.getInstance().getExistingProviders();
-        String p = params;
-        for (String prov : providers) p = p.replace(prov, "");
-        p = p + literal;
-        params = normalizeParams(p);
-    }
-
-    private void toggleFlag(String literal, boolean on) {
-        String p = params.replace(literal, "");
-        if (on) p = p + literal;
-        params = normalizeParams(p);
-    }
-    
     public void setName(String newName) { this.base = newName == null ? "" : newName; }
-    public void setOverlay(String textureName) { this.overlay = textureName == null ? "" : textureName; }
-    public void setBlend(int blend) { this.blend = clamp(blend, 0, 100); }
-    public void setCapeId(String capeId) {this.capeId = capeId;}
-    public void setCapeProvider(String capeProvider) {this.capeProvider = capeProvider;}
-
     public String base() { return base; }
-    public String params() { return params; }
-    public String overlay() { return overlay; }
-    public int blend() { return blend; }
-    public String capeId() {return capeId;}
-    public String capeProvider() {return capeProvider;}
+    public String legacyParams() { return legacyParams; }
 
-    @Override public @NotNull String toString() {
-        return "NameInfo[" + this.base + ", " + this.params + "]";
+    @Override
+    public @NotNull String toString() {
+        return "NameInfo[base=" + base + ", features=" + features.size() + "]";
     }
 
-    private record CapeInfo(boolean enabled, String provider, String id) {
-        private CapeInfo() {this(false, "", "");}
+    // --- Legacy ---
+
+    @Deprecated
+    public String getDesiredProvider() {
+        SkinProviderFeature feature = getFeature(SkinProviderFeature.class);
+        return feature != null ? feature.getProvider() : "M";
     }
+
+    @Deprecated
+    public boolean wantBeSlim() {
+        SlimFeature feature = getFeature(SlimFeature.class);
+        return feature != null && feature.isSlim();
+    }
+
+    @Deprecated
+    public void setSlim(boolean slim) {
+        SlimFeature feature = getFeature(SlimFeature.class);
+        if (feature != null) {
+            feature.setSlim(slim);
+        }
+    }
+
+    @Deprecated
+    public boolean wantCape() {
+        CapeFeature feature = getFeature(CapeFeature.class);
+        return feature != null && feature.isEnabled();
+    }
+
+    @Deprecated
+    public void setCape(boolean cape) {
+        CapeFeature feature = getFeature(CapeFeature.class);
+        if (feature != null) {
+            feature.setEnabled(cape);
+        }
+    }
+
+    @Deprecated
+    public void setOverlay(String texture) {
+        OverlayFeature feature = getFeature(OverlayFeature.class);
+        if (feature != null) {
+            feature.setTexture(texture);
+        }
+    }
+
+    @Deprecated
+    public void setBlend(int blend) {
+        OverlayFeature feature = getFeature(OverlayFeature.class);
+        if (feature != null) {
+            feature.setBlend(blend);
+        }
+    }
+
+    @Deprecated
+    public int blend() {
+        OverlayFeature feature = getFeature(OverlayFeature.class);
+        return feature != null ? feature.getBlend() : 100;
+    }
+
+    @Deprecated
+    public String overlay() {
+        OverlayFeature feature = getFeature(OverlayFeature.class);
+        return feature != null ? feature.getTexture() : "";
+    }
+
+    @Deprecated
+    public void setProvider(String provider) {
+        SkinProviderFeature feature = getFeature(SkinProviderFeature.class);
+        if (feature != null) {
+            feature.setProvider(provider);
+        }
+    }
+
+    @Deprecated
+    public String capeProvider() {
+        CapeFeature feature = getFeature(CapeFeature.class);
+        return feature != null ? feature.getProvider() : "";
+    }
+
 }
-

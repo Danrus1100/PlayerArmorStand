@@ -27,7 +27,7 @@ public class FileTextureData implements DataHolder<SkinData> {
             return cache.get(info.base());
         }
 
-        if (!info.params().contains("F")) {
+        if (!info.getDesiredProvider().equals("F")) {
             return null;
         }
 

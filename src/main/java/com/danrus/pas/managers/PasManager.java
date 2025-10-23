@@ -3,8 +3,6 @@ package com.danrus.pas.managers;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
 import com.danrus.pas.impl.data.*;
-import com.danrus.pas.impl.providers.MojangSkinProvider;
-import com.danrus.pas.impl.providers.NamemcSkinProvider;
 import com.danrus.pas.utils.TextureUtils;
 import net.minecraft.resources.ResourceLocation;
 
@@ -13,17 +11,26 @@ import java.util.List;
 
 public class PasManager {
 
-    private static final PasManager INSTANCE = new PasManager();
+    private static PasManager INSTANCE;
 
-    private SkinDataManager dataManager = new SkinDataManager();
-    private SkinProvidersManager skinProviderManager = new SkinProvidersManager();
-
-    private List<String> existingProviders = new ArrayList<>(List.of("F"));
+    private SkinDataManager dataManager;
+    private SkinProvidersManager skinProviderManager;
+    private List<String> existingProviders;
 
     private String currentName;
     private SkinData currentData;
 
-    private PasManager() {}
+    private PasManager() {
+        // Инициализируем список провайдеров первым
+        existingProviders = new ArrayList<>(List.of("F"));
+
+        // Создаем менеджеры
+        dataManager = new SkinDataManager();
+        skinProviderManager = new SkinProvidersManager();
+
+        // Инициализируем провайдеры, передавая ссылку на себя
+        skinProviderManager.initialize(this);
+    }
 
     public ResourceLocation getSkinTexture(NameInfo info) {
         if (info.isEmpty()) {
@@ -68,9 +75,13 @@ public class PasManager {
         currentName = null;
         currentData = null;
 
+        existingProviders = new ArrayList<>(List.of("F"));
         dataManager = new SkinDataManager();
         skinProviderManager = new SkinProvidersManager();
-        existingProviders = new ArrayList<>(List.of("F"));
+
+        // Реинициализируем провайдеры
+        skinProviderManager.initialize(this);
+
         PlayerArmorStandsClient.LOGGER.info("SkinManger: Dropped all cached data");
     }
 
@@ -102,6 +113,9 @@ public class PasManager {
     }
 
     public static PasManager getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new PasManager();
+        }
         return INSTANCE;
     }
 
@@ -114,7 +128,6 @@ public class PasManager {
     }
 
     public List<String> getExistingProviders() {
-        return List.copyOf(existingProviders);
+        return existingProviders;
     }
 }
-
