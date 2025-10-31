@@ -41,7 +41,7 @@
 
   "pas.menu.tab.skin": "Скин",
   "pas.menu.tab.cape": "Плащ",
-  "pas.menu.tab.overlay": "Наложение",
+  "pas.menu.tab.overlay": "Другое",
 
   "pas.menu.tab.skin.provider": "Источник скина",
   "pas.menu.tab.skin.provider.n": "NameMC",
@@ -64,5 +64,7 @@
 
   "pas.menu.tab.overlay.name": "Текстура наложения",
   "pas.menu.tab.overlay.name.tooltip": "В поле ниже нужно указать имя любой текстуры, которая находится в assets/minecraft/textures/blocks (например, stone)",
-  "pas.menu.tab.overlay.blend": "Смешивание"
+  "pas.menu.tab.overlay.blend": "Смешивание",
+
+  "pas.menu.tab.overlay.display_name": "Отображаемое имя"
 }

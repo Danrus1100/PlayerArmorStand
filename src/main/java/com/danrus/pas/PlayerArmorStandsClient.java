@@ -1,6 +1,6 @@
 package com.danrus.pas;
 
-import com.danrus.pas.api.FeatureRegistry;
+import com.danrus.pas.api.reg.FeatureRegistry;
 import com.danrus.pas.impl.features.*;
 import com.danrus.pas.managers.PasManager;
 import org.slf4j.Logger;

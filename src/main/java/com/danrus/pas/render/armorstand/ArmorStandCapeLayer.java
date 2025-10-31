@@ -1,9 +1,8 @@
 package com.danrus.pas.render.armorstand;
 
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.SkinData;
+import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.config.ModConfig;
-import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -12,9 +11,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
-
-import java.util.List;
 
 public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCapeLayer {
 
@@ -59,7 +55,7 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
         NameInfo info = NameInfo.parse(VersioningUtils.getCustomName(armorStand));
 
         if (info.wantCape() && this.getParentModel() instanceof PlayerArmorStandModel model) {
-            SkinData skinData = model.getData();
+            LegacySkinData skinData = model.getData();
             if (PlayerArmorStandModel.showArmorStandWhileDownload(customName, skinData)) {
                 return;
             }

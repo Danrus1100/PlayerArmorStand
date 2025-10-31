@@ -1,6 +1,6 @@
 package com.danrus.pas.config;
 
-import com.danrus.pas.api.SkinData;
+import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.config.categories.MainCategory;
 import com.danrus.pas.config.categories.PossessiveCategory;
 import com.danrus.pas.utils.Rl;
@@ -88,7 +88,7 @@ public class ModConfig {
 
     public static void save() {
         HANDLER.save();
-        SkinData.DEFAULT_TEXTURE = HANDLER.instance().showArmorStandWhileDownloading
+        LegacySkinData.DEFAULT_TEXTURE = HANDLER.instance().showArmorStandWhileDownloading
             ? Rl.vanilla("textures/entity/armorstand/wood.png")
             : Rl.vanilla("textures/entity/player/wide/steve.png");
     }

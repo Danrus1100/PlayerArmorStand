@@ -9,7 +9,7 @@ import com.danrus.pas.managers.PasManager;
  */
 
 public class PlayerArmorStandsApi {
-    public DataManager getDataManager() {
+    public DataRepository getDataManager() {
         return PasManager.getInstance().getDataManager();
     }
 
@@ -17,7 +17,7 @@ public class PlayerArmorStandsApi {
         return PasManager.getInstance().getSkinProviderManager();
     }
 
-    public SkinData getSkinData(NameInfo info) {
+    public LegacySkinData getSkinData(NameInfo info) {
         return getDataManager().getData(info);
     }
 }

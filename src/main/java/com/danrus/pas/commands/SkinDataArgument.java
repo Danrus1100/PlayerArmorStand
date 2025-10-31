@@ -1,7 +1,7 @@
 package com.danrus.pas.commands;
 
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.SkinData;
+import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.managers.PasManager;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -17,15 +17,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class SkinDataArgument implements ArgumentType<SkinData> {
+public class SkinDataArgument implements ArgumentType<LegacySkinData> {
 
     private static final List<String> EXAMPLES = List.of("Danrus110_", "4da4ce379e8b0d00");
     private static final SimpleCommandExceptionType SKIN_NOT_FOUND = new SimpleCommandExceptionType(Component.translatable("commands.pas.skin_not_found"));
 
     @Override
-    public SkinData parse(StringReader reader) throws CommandSyntaxException {
+    public LegacySkinData parse(StringReader reader) throws CommandSyntaxException {
         String name = reader.readUnquotedString();
-        SkinData data = PasManager.getInstance().findData(NameInfo.parse(name));
+        LegacySkinData data = PasManager.getInstance().findData(NameInfo.parse(name));
         if (data == null) {
             throw SKIN_NOT_FOUND.create();
         }
@@ -34,7 +34,7 @@ public class SkinDataArgument implements ArgumentType<SkinData> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        HashMap<String, SkinData> allData = PasManager.getInstance().getDataManager().getGameData();
+        HashMap<String, LegacySkinData> allData = PasManager.getInstance().getDataManager().getGameData();
         allData.forEach((name, skinData) -> {
             if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase()) && !name.contains("|")) {
                 builder.suggest(name);
@@ -48,7 +48,7 @@ public class SkinDataArgument implements ArgumentType<SkinData> {
         return EXAMPLES;
     }
 
-    public static SkinData getData(CommandContext<?> context, String name) {
-        return context.getArgument(name, SkinData.class);
+    public static LegacySkinData getData(CommandContext<?> context, String name) {
+        return context.getArgument(name, LegacySkinData.class);
     }
 }

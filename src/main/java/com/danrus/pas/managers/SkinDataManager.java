@@ -2,7 +2,7 @@ package com.danrus.pas.managers;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
-import com.danrus.pas.impl.data.*;
+import com.danrus.pas.impl.data.skin.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-public class SkinDataManager implements DataManager {
-    private final List<DataHolder<?>> sources = new CopyOnWriteArrayList<>();
+public class SkinDataManager implements DataRepository {
+    private final List<DataProvider<?>> sources = new CopyOnWriteArrayList<>();
 
 
     public SkinDataManager() {
@@ -25,12 +25,12 @@ public class SkinDataManager implements DataManager {
     }
 
     @Override
-    public void addSource(DataHolder<?> source) {
+    public void addSource(DataProvider<?> source) {
         sources.add(source);
     }
 
     @Override
-    public void addSource(DataHolder<?> source, int priority) {
+    public void addSource(DataProvider<?> source, int priority) {
         if (priority >= sources.size()) {
             sources.add(source);
         } else {
@@ -38,7 +38,7 @@ public class SkinDataManager implements DataManager {
         }
     }
 
-    public DataHolder<?> getSource(String key) {
+    public DataProvider<?> getSource(String key) {
         return sources.stream()
                 .filter(source -> source.getName().equals(key))
                 .findFirst()
@@ -46,10 +46,10 @@ public class SkinDataManager implements DataManager {
     }
 
     @Override
-    public HashMap<String, SkinData> getGameData() {
+    public HashMap<String, LegacySkinData> getGameData() {
         return sources.stream()
-                .map(source -> (DataHolder<SkinData>) source)
-                .map(DataHolder::getAll)
+                .map(source -> (DataProvider<LegacySkinData>) source)
+                .map(DataProvider::getAll)
                 .flatMap(map -> map.entrySet().stream())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -60,9 +60,9 @@ public class SkinDataManager implements DataManager {
     }
 
     @Override
-    public SkinData findData(NameInfo info) {
-        DataHolder<?> source = getSource("game");
-        DataHolder<SkinData> gameCache = source instanceof DataHolder<?> ? (DataHolder<SkinData>) source : null;
+    public LegacySkinData findData(NameInfo info) {
+        DataProvider<?> source = getSource("game");
+        DataProvider<LegacySkinData> gameCache = source instanceof DataProvider<?> ? (DataProvider<LegacySkinData>) source : null;
         if (gameCache != null) {
             return gameCache.get(info);
         }
@@ -79,21 +79,21 @@ public class SkinDataManager implements DataManager {
     }
 
 
-    public HashMap<String, DataHolder<?>> getSources(){
+    public HashMap<String, DataProvider<?>> getSources(){
         return sources.stream()
                 .collect(Collectors.toMap(
-                        DataHolder::getName,
+                        DataProvider::getName,
                         source -> source,
                         (a, b) -> b,
                         HashMap::new
                 ));
     }
 
-    public SkinData getData(NameInfo info) {
-        AtomicReference<SkinData> data = new AtomicReference<>(new SkinData(info));
+    public LegacySkinData getData(NameInfo info) {
+        AtomicReference<LegacySkinData> data = new AtomicReference<>(new LegacySkinData(info));
         AtomicBoolean needDownload = new AtomicBoolean(true);
         sources.forEach(source -> {
-            SkinData dataFromSource = needDownload.get() ? source.get(info) : null;
+            LegacySkinData dataFromSource = needDownload.get() ? source.get(info) : null;
             if (dataFromSource != null) {
                 needDownload.set(false);
                 data.set(dataFromSource);

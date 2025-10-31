@@ -44,4 +44,5 @@ public class DisplayNameFeature implements RenameFeature {
     public boolean isEnabled() { return enabled; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
 }

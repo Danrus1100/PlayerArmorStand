@@ -1,9 +1,9 @@
-package com.danrus.pas.impl.data;
+package com.danrus.pas.impl.data.skin;
 
-import com.danrus.pas.api.DataHolder;
+import com.danrus.pas.api.DataProvider;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.SkinData;
+import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
@@ -12,17 +12,17 @@ import net.minecraft.client.Minecraft;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ClientLevelData implements DataHolder<SkinData> {
+public class ClientLevelData implements DataProvider<LegacySkinData> {
 
     Minecraft mc = Minecraft.getInstance();
 
     @Override
-    public SkinData get(NameInfo info) {
+    public LegacySkinData get(NameInfo info) {
 
         if (!ModConfig.get().tryApplyFromServerPlayer) {
             return null;
         }
-        AtomicReference<SkinData> dataAtomicReference = new AtomicReference<>(new SkinData(info));
+        AtomicReference<LegacySkinData> dataAtomicReference = new AtomicReference<>(new LegacySkinData(info));
         if (mc.level != null) {
             mc.level.players().stream()
                     .filter(player -> player.getName().getString().equals(info.base()))
@@ -54,13 +54,13 @@ public class ClientLevelData implements DataHolder<SkinData> {
     }
 
     @Override
-    public HashMap<String, SkinData> getAll() {
+    public HashMap<String, LegacySkinData> getAll() {
         if (mc.level == null) {
             return new HashMap<>();
         }
         return mc.level.players().stream()
                 .map(player -> {
-                    SkinData data = new SkinData(player.getName().getString());
+                    LegacySkinData data = new LegacySkinData(player.getName().getString());
                     data.setStatus(DownloadStatus.COMPLETED);
                     data.setSkinTexture(VersioningUtils.getPlayerSkinTexture(player));
                     if (VersioningUtils.getPlayerCapeTexture(player) != null) {
@@ -87,7 +87,7 @@ public class ClientLevelData implements DataHolder<SkinData> {
 
     @Override
     public boolean isCompatibleWith(Object data) {
-        return data instanceof SkinData;
+        return data instanceof LegacySkinData;
     }
 
     @Override

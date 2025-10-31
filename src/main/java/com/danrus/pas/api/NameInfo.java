@@ -1,5 +1,6 @@
 package com.danrus.pas.api;
 
+import com.danrus.pas.api.reg.FeatureRegistry;
 import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.features.OverlayFeature;
 import com.danrus.pas.impl.features.SkinProviderFeature;
@@ -121,7 +122,6 @@ public class NameInfo {
     public boolean isEmpty() { return base == null || base.isEmpty(); }
 
     @SuppressWarnings("unchecked")
-    @Nullable
     public <T extends RenameFeature> T getFeature(Class<T> featureClass) {
         return (T) features.get(featureClass);
     }

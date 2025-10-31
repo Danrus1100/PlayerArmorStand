@@ -1,8 +1,8 @@
-package com.danrus.pas.impl.data;
+package com.danrus.pas.impl.data.skin;
 
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.SkinData;
-import com.danrus.pas.api.DataHolder;
+import com.danrus.pas.api.LegacySkinData;
+import com.danrus.pas.api.DataProvider;
 import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.TextureUtils;
@@ -11,15 +11,15 @@ import net.minecraft.resources.ResourceLocation;
 import java.nio.file.Path;
 import java.util.HashMap;
 
-public class NamemcDiskData implements DataHolder<Path> {
+public class NamemcDiskData implements DataProvider<Path> {
 
     public static Path CACHE_PATH = VersioningUtils.getGameDir().resolve("cache/pas");
     private Path cachePath = CACHE_PATH;
     private HashMap<String, ResourceLocation> cache = new HashMap<>();
 
     @Override
-    public SkinData get(NameInfo info) {
-        SkinData data = new SkinData(info);
+    public LegacySkinData get(NameInfo info) {
+        LegacySkinData data = new LegacySkinData(info);
         Path SkinFilePath = cachePath.resolve(info.base() + "_namemc.png");
         if (SkinFilePath.toFile().exists()) {
             ResourceLocation skinIdentifier = Rl.pas( "skins/" + info.base());

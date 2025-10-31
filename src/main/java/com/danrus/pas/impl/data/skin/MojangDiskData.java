@@ -1,8 +1,8 @@
-package com.danrus.pas.impl.data;
+package com.danrus.pas.impl.data.skin;
 
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.SkinData;
-import com.danrus.pas.api.DataHolder;
+import com.danrus.pas.api.LegacySkinData;
+import com.danrus.pas.api.DataProvider;
 import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.utils.StringUtils;
@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.nio.file.Path;
 import java.util.HashMap;
 
-public class MojangDiskData implements DataHolder<Path> {
+public class MojangDiskData implements DataProvider<Path> {
 
     public static final Path CACHE_PATH = VersioningUtils.getGameDir().resolve("cache/pas");
     private Path cachePath = CACHE_PATH;
@@ -26,8 +26,8 @@ public class MojangDiskData implements DataHolder<Path> {
     }
 
     @Override
-    public SkinData get(NameInfo info) {
-        SkinData data = new SkinData(info);
+    public LegacySkinData get(NameInfo info) {
+        LegacySkinData data = new LegacySkinData(info);
         String encodedName = StringUtils.encodeToSha256(info.base());
         boolean doStoreData = false;
         Path SkinFilePath = cachePath.resolve(encodedName + ".png");

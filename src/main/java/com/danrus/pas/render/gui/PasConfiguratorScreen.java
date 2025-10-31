@@ -1,7 +1,7 @@
 package com.danrus.pas.render.gui;
 
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.impl.features.SkinProviderFeature;
+import com.danrus.pas.impl.features.DisplayNameFeature;
 import com.danrus.pas.render.gui.tabs.Tab;
 import com.danrus.pas.render.gui.widgets.TabButton;
 import com.danrus.pas.render.gui.tabs.TabManager;
@@ -10,10 +10,9 @@ import com.danrus.pas.render.gui.widgets.EnterEditBox;
 import com.danrus.pas.render.gui.widgets.PasSliderButtonImpl;
 import com.danrus.pas.render.gui.widgets.TextWidget;
 import com.danrus.pas.utils.Rl;
-import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.VersioningUtils;
 
-import com.danrus.pas.impl.data.FileTextureData;
+import com.danrus.pas.impl.data.skin.FileTextureData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -30,8 +29,6 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-
-import java.util.List;
 
 public class PasConfiguratorScreen extends Screen {
 
@@ -192,10 +189,8 @@ public class PasConfiguratorScreen extends Screen {
 
         capeTab.addWidget(capeActiveLabel);
         capeTab.addWidget(capeAciveButton);
-        capeTab.addWidget(armTypeLabel);
-        capeTab.addWidget(armTypeButton);
 
-        // --- Overlay Tab ---
+        // --- Misc Tab ---
 
         TextWidget blockTextureNameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.overlay.name")).setTooltip(Component.translatable("pas.menu.tab.overlay.name.tooltip"));
         EnterEditBox blockTextureNameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Overlay Name"), editBox -> {
@@ -216,7 +211,20 @@ public class PasConfiguratorScreen extends Screen {
                     setEntityName(info.compile());
                 }
         );
+        TextWidget displayNameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.overlay.display_name")).setTooltip(Component.translatable("pas.menu.tab.overlay.display_name.tooltip"));
+        EnterEditBox displayNameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 120, 20, Component.literal("Display Name"), editBox -> {
+            DisplayNameFeature feature = info.getFeature(DisplayNameFeature.class);
+            if (feature != null) {
+                feature.setEnabled(!editBox.getValue().isEmpty());
+                feature.setName(editBox.getValue());
+                setEntityName(info.compile());
+            }
+        });
         blockTextureNameBox.setValue(info.overlay());
+        DisplayNameFeature displayNameFeature = info.getFeature(DisplayNameFeature.class);
+        if (displayNameFeature != null && displayNameFeature.isEnabled()) {
+            displayNameBox.setValue(displayNameFeature.getName());
+        }
         TextWidget blockTextureBlendLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.overlay.blend"));
 
         Tab overlayTab = new Tab("overlay", (width, height) -> {
@@ -225,6 +233,8 @@ public class PasConfiguratorScreen extends Screen {
             acceptOverlayNameButton.setPosition(Math.round(width / 2f + 92), Math.round(height / 2f - 70));
             blockTextureBlendLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 50));
             overlayBlendSlider.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 30));
+            displayNameLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 10));
+            displayNameBox.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f + 10));
         });
 
         overlayTab.addWidget(blockTextureNameLabel);
@@ -232,6 +242,8 @@ public class PasConfiguratorScreen extends Screen {
         overlayTab.addWidget(acceptOverlayNameButton);
         overlayTab.addWidget(blockTextureBlendLabel);
         overlayTab.addWidget(overlayBlendSlider);
+        overlayTab.addWidget(displayNameLabel);
+        overlayTab.addWidget(displayNameBox);
 
 
         tabManager.addTab(skinTabButton, skinTab);

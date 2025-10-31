@@ -1,19 +1,16 @@
-package com.danrus.pas.impl.providers;
+package com.danrus.pas.impl.providers.common;
 
 import com.danrus.pas.ModExecutor;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
-import com.danrus.pas.impl.data.NamemcDiskData;
 import com.danrus.pas.managers.OverlayMessageManger;
 import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.utils.Rl;
-import com.danrus.pas.utils.SkinDownloader;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public abstract class AbstractNamemcProvider implements TextureProvider {
+public abstract class AbstractNamemcProvider<T extends DataHolder> implements TextureProvider {
 
     private String literal = "N";
     private Consumer<String> onComplete;
@@ -47,22 +44,22 @@ public abstract class AbstractNamemcProvider implements TextureProvider {
 
     private void initializeDownload(NameInfo info) {
         PlayerArmorStandsClient.LOGGER.info("NamemcProvider: Downloading for " + info);
-        SkinData data = new SkinData(info);
+        LegacySkinData data = new LegacySkinData(info);
         OverlayMessageManger.getInstance().showDownloadMessage(info.base());
         data.setStatus(DownloadStatus.IN_PROGRESS);
         getDataManager().store(info, data);
     }
 
     private void updateStatus(NameInfo info, DownloadStatus status) {
-        SkinData data = getOrCreateModelData(info);
+        LegacySkinData data = getOrCreateModelData(info);
         data.setStatus(status);
         getDataManager().store(info, data);
     }
 
     private void doFail(NameInfo info) {
-        SkinData data = PasManager.getInstance().getData(info);
+        LegacySkinData data = PasManager.getInstance().getData(info);
         if (data == null) {
-            data = new SkinData(info);
+            data = new LegacySkinData(info);
         }
         OverlayMessageManger.getInstance().showFailMessage(info.base());
         data.setStatus(DownloadStatus.FAILED);
@@ -70,7 +67,7 @@ public abstract class AbstractNamemcProvider implements TextureProvider {
     }
 
     private void updateSkinData(NameInfo info, ResourceLocation texture, boolean isSkin) {
-        SkinData data = getOrCreateModelData(info);
+        LegacySkinData data = getOrCreateModelData(info);
         if (isSkin) {
             data.setSkinTexture(texture);
         } else {
@@ -79,11 +76,11 @@ public abstract class AbstractNamemcProvider implements TextureProvider {
         getDataManager().store(info, data);
     }
 
-    private SkinData getOrCreateModelData(NameInfo info) {
-        SkinData data = getDataManager().getSource("namemc").get(info);
-        return data != null ? data : new SkinData(info);
+    private LegacySkinData getOrCreateModelData(NameInfo info) {
+        LegacySkinData data = getDataManager().getSource("namemc").get(info);
+        return data != null ? data : new LegacySkinData(info);
     }
 
     protected abstract CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info);
-    protected abstract DataManager getDataManager();
+    protected abstract DataRepository<T> getDataManager();
 }

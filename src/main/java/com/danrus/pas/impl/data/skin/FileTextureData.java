@@ -1,9 +1,9 @@
-package com.danrus.pas.impl.data;
+package com.danrus.pas.impl.data.skin;
 
-import com.danrus.pas.api.DataHolder;
+import com.danrus.pas.api.DataProvider;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.SkinData;
+import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.StringUtils;
@@ -16,13 +16,13 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FileTextureData implements DataHolder<SkinData> {
+public class FileTextureData implements DataProvider<LegacySkinData> {
 
-    private static final Map<String, SkinData> cache = new HashMap<>();
+    private static final Map<String, LegacySkinData> cache = new HashMap<>();
     public static final Path SKINS_PATH = VersioningUtils.getGameDir().resolve("pas/skins");
 
     @Override
-    public SkinData get(NameInfo info) {
+    public LegacySkinData get(NameInfo info) {
         if (cache.containsKey(info.base())) {
             return cache.get(info.base());
         }
@@ -43,10 +43,10 @@ public class FileTextureData implements DataHolder<SkinData> {
             Minecraft.getInstance().execute(() -> {
 
                 TextureUtils.registerTexture(skinPath, skinLocation, true);
-                PasManager.getInstance().getDataManager().store(info, new SkinData(info, skinLocation));
+                PasManager.getInstance().getDataManager().store(info, new LegacySkinData(info, skinLocation));
             });
         }
-        SkinData data = new SkinData(info, skinLocation);
+        LegacySkinData data = new LegacySkinData(info, skinLocation);
         data.setStatus(DownloadStatus.COMPLETED);
         cache.put(info.base(), data);
         return data;
@@ -63,14 +63,14 @@ public class FileTextureData implements DataHolder<SkinData> {
     }
 
     @Override
-    public HashMap<String, SkinData> getAll() {
+    public HashMap<String, LegacySkinData> getAll() {
         // NO OP
         return new HashMap<>();
     }
 
     @Override
     public boolean isCompatibleWith(Object data) {
-        return data instanceof SkinData;
+        return data instanceof LegacySkinData;
     }
 
     @Override

@@ -1,18 +1,18 @@
-package com.danrus.pas.impl.data;
+package com.danrus.pas.impl.data.skin;
 
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.SkinData;
+import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.api.DownloadStatus;
-import com.danrus.pas.api.DataHolder;
+import com.danrus.pas.api.DataProvider;
 
 import java.util.HashMap;
 
-public class GameData implements DataHolder<SkinData> {
+public class GameData implements DataProvider<LegacySkinData> {
 
-    private HashMap<String, SkinData> cache = new HashMap<>();
+    private HashMap<String, LegacySkinData> cache = new HashMap<>();
 
     @Override
-    public SkinData get(NameInfo info) {
+    public LegacySkinData get(NameInfo info) {
         if (!cache.containsKey(info.base())) {
             return null;
         }
@@ -29,13 +29,13 @@ public class GameData implements DataHolder<SkinData> {
     }
 
     @Override
-    public HashMap<String, SkinData> getAll() {
+    public HashMap<String, LegacySkinData> getAll() {
         return cache;
     }
 
     @Override
     public void store(NameInfo info, Object data) {
-        cache.put(info.base(), (SkinData) data);
+        cache.put(info.base(), (LegacySkinData) data);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class GameData implements DataHolder<SkinData> {
         if (cache.containsKey(info.base())) {
             cache.get(info.base()).setStatus(DownloadStatus.FAILED);
         } else {
-            SkinData data = new SkinData(info);
+            LegacySkinData data = new LegacySkinData(info);
             data.setStatus(DownloadStatus.FAILED);
             cache.put(info.base(), data);
         }
@@ -51,7 +51,7 @@ public class GameData implements DataHolder<SkinData> {
 
     @Override
     public boolean isCompatibleWith(Object data) {
-        return data instanceof SkinData;
+        return data instanceof LegacySkinData;
     }
 
     @Override

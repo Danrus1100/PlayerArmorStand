@@ -1,6 +1,6 @@
 package com.danrus.pas.api;
 
-import com.danrus.pas.impl.data.GameData;
+import com.danrus.pas.impl.data.skin.GameData;
 
 import java.util.HashMap;
 
@@ -10,7 +10,7 @@ import java.util.HashMap;
  * and invalidating data when necessary.
  */
 
-public interface DataManager {
+public interface DataRepository<T extends DataHolder> {
 
     /**
      * Adds a source of data to the manager.
@@ -18,7 +18,7 @@ public interface DataManager {
      *
      * @param source the data source to add
      */
-    void addSource(DataHolder<?> source);
+    void addSource(DataProvider<?> source);
 
     /**
      * Add a source of data to the manager with priority.
@@ -26,7 +26,7 @@ public interface DataManager {
      * @param source the data source to add
      * @param priority the priority of the source, higher values indicate higher priority
      */
-    void addSource(DataHolder<?> source, int priority);
+    void addSource(DataProvider<?> source, int priority);
 
     /**
      * Retrieves data associated with the given string.
@@ -34,7 +34,7 @@ public interface DataManager {
      * @param info the NameInfo of the player
      * @return SkinData associated with the identifier, or null if not found
      */
-    SkinData getData(NameInfo info);
+    T getData(NameInfo info);
 
     /**
      * Retrieves all data available in the manager.
@@ -42,7 +42,7 @@ public interface DataManager {
      * @param info the NameInfo of the player
      * @param data Object data to be stored
      */
-    void store(NameInfo info, Object data);
+    void store(NameInfo info, T data);
 
     /**
      * Invalidates the data associated with the given name.
@@ -59,7 +59,7 @@ public interface DataManager {
      * @return the DataCache associated with the key, or null if not found
      */
 
-    DataHolder<?> getSource(String key);
+    DataProvider<?> getSource(String key);
 
 
     /**
@@ -68,7 +68,7 @@ public interface DataManager {
      * @return a HashMap containing all game data, where the key is the player name and the value is SkinData
      */
 
-    HashMap<String, SkinData> getGameData();
+    HashMap<String, T> getGameData();
 
     /**
      * Finds SkinData by a given string without download.
@@ -77,7 +77,7 @@ public interface DataManager {
      * @return SkinData associated with the identifier, or null if not found
      */
 
-    SkinData findData(NameInfo info);
+    T findData(NameInfo info);
 
 
     /**

@@ -3,12 +3,12 @@ package com.danrus.pas.impl.providers.skin;
 import com.danrus.pas.ModExecutor;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.SkinData;
+import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.api.TextureProvider;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.*;
-import com.danrus.pas.impl.data.MojangDiskData;
+import com.danrus.pas.impl.data.skin.MojangDiskData;
 import com.danrus.pas.managers.OverlayMessageManger;
 import com.google.gson.Gson;
 import net.minecraft.resources.ResourceLocation;
@@ -51,7 +51,7 @@ public class MojangSkinProvider implements TextureProvider {
     private void initializeDownload(NameInfo info) {
 
         PlayerArmorStandsClient.LOGGER.info("MojangSkinProvider: Downloading skin for " + info);
-        SkinData data = new SkinData(info);
+        LegacySkinData data = new LegacySkinData(info);
         OverlayMessageManger.getInstance().showDownloadMessage(info.base());
         data.setStatus(DownloadStatus.IN_PROGRESS);
         PasManager.getInstance().getDataManager().store(info, data);
@@ -134,7 +134,7 @@ public class MojangSkinProvider implements TextureProvider {
     }
 
     private void updateModelData(NameInfo info, ResourceLocation textureId, boolean isSkin) {
-        SkinData data = getOrCreateModelData(info);
+        LegacySkinData data = getOrCreateModelData(info);
         if (isSkin) {
             data.setSkinTexture(textureId);
         } else {
@@ -144,14 +144,14 @@ public class MojangSkinProvider implements TextureProvider {
     }
 
     private void updateStatus(NameInfo info, DownloadStatus status) {
-        SkinData data = getOrCreateModelData(info);
+        LegacySkinData data = getOrCreateModelData(info);
         data.setStatus(status);
         PasManager.getInstance().getDataManager().store(info, data);
     }
 
-    private SkinData getOrCreateModelData(NameInfo info) {
-        SkinData data = PasManager.getInstance().getData(info);
-        return data != null ? data : new SkinData(info);
+    private LegacySkinData getOrCreateModelData(NameInfo info) {
+        LegacySkinData data = PasManager.getInstance().getData(info);
+        return data != null ? data : new LegacySkinData(info);
     }
 
     private boolean isValidProfile(Profile profile) {
@@ -168,9 +168,9 @@ public class MojangSkinProvider implements TextureProvider {
     }
 
     private void doFail(NameInfo info) {
-        SkinData data = PasManager.getInstance().getData(info);
+        LegacySkinData data = PasManager.getInstance().getData(info);
         if (data == null) {
-            data = new SkinData(info);
+            data = new LegacySkinData(info);
         }
         OverlayMessageManger.getInstance().showFailMessage(info.base());
         data.setStatus(DownloadStatus.FAILED);

@@ -2,14 +2,14 @@ package com.danrus.pas.api;
 
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.Rl;
-import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.TextureUtils;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-public class SkinData {
+@Deprecated(forRemoval = true, since = "0.8.0")
+public class LegacySkinData {
     public static ResourceLocation DEFAULT_TEXTURE = ModConfig.get().showArmorStandWhileDownloading
             ? Rl.vanilla("textures/entity/armorstand/wood.png")
             : Rl.vanilla("textures/entity/player/wide/steve.png");
@@ -34,7 +34,7 @@ public class SkinData {
 //        this(name, DEFAULT_TEXTURE, DEFAULT_CAPE, params);
 //    }
 
-    public SkinData(String name, ResourceLocation skinTexture, ResourceLocation capeTexture, NameInfo info) {
+    public LegacySkinData(String name, ResourceLocation skinTexture, ResourceLocation capeTexture, NameInfo info) {
         this.name = name;
         this.info = info;
         this.textures = List.of(
@@ -56,19 +56,19 @@ public class SkinData {
 //        this(playerName, DEFAULT_TEXTURE, DEFAULT_CAPE, "");
 //    }
 
-    public SkinData(NameInfo info) {
+    public LegacySkinData(NameInfo info) {
         this(info.base(), DEFAULT_TEXTURE, DEFAULT_CAPE, info);
     }
 
-    public SkinData(String name) {
+    public LegacySkinData(String name) {
         this(NameInfo.parse(name));
     }
 
-    public SkinData(NameInfo info, ResourceLocation skinTexture, ResourceLocation capeTexture) {
+    public LegacySkinData(NameInfo info, ResourceLocation skinTexture, ResourceLocation capeTexture) {
         this(info.base(), skinTexture, capeTexture, info);
     }
 
-    public SkinData(NameInfo info, ResourceLocation skinTexture) {
+    public LegacySkinData(NameInfo info, ResourceLocation skinTexture) {
         this(info, skinTexture, DEFAULT_CAPE);
     }
 

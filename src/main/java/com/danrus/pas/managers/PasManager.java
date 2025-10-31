@@ -2,7 +2,6 @@ package com.danrus.pas.managers;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
-import com.danrus.pas.impl.data.*;
 import com.danrus.pas.utils.TextureUtils;
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,7 +17,7 @@ public class PasManager {
     private List<String> existingProviders;
 
     private String currentName;
-    private SkinData currentData;
+    private LegacySkinData currentData;
 
     private PasManager() {
         // Инициализируем список провайдеров первым
@@ -34,7 +33,7 @@ public class PasManager {
 
     public ResourceLocation getSkinTexture(NameInfo info) {
         if (info.isEmpty()) {
-            return SkinData.DEFAULT_TEXTURE;
+            return LegacySkinData.DEFAULT_TEXTURE;
         }
         if (info.overlay().isEmpty()) {
             return dataManager.getData(info).getSkinTexture();
@@ -49,9 +48,9 @@ public class PasManager {
         return null;
     }
 
-    public SkinData getData(NameInfo info) {
+    public LegacySkinData getData(NameInfo info) {
         if (info.isEmpty()) {
-            return new SkinData("default");
+            return new LegacySkinData("default");
         }
 
         if(currentData != null && !currentName.isEmpty() && currentName.equals(info.base()) ) {
@@ -63,7 +62,7 @@ public class PasManager {
         return currentData;
     }
 
-    public SkinData findData(NameInfo info) {
+    public LegacySkinData findData(NameInfo info) {
         if (info.isEmpty()) {
             return null;
         }
@@ -119,7 +118,7 @@ public class PasManager {
         return INSTANCE;
     }
 
-    public DataManager getDataManager() {
+    public DataRepository getDataManager() {
         return dataManager;
     }
 

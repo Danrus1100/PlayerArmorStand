@@ -2,7 +2,7 @@ package com.danrus.pas.render.armorstand;
 
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.SkinData;
+import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.managers.PasManager;
@@ -13,7 +13,6 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
     private final ModelPart leftEar;
     private final ModelPart rightEar;
 
-    private SkinData data;
+    private LegacySkinData data;
     private boolean isSlim = false;
     private boolean isOriginal = false;
 
@@ -294,11 +293,11 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
     }
 
     @Override
-    public SkinData getData() {
+    public LegacySkinData getData() {
         return data;
     }
 
-    public static boolean showArmorStandWhileDownload(Component customName, SkinData data) {
+    public static boolean showArmorStandWhileDownload(Component customName, LegacySkinData data) {
         boolean isDownlading = data.getStatus() == DownloadStatus.IN_PROGRESS ||
                 data.getStatus() == DownloadStatus.FAILED;
         return ModConfig.get().showArmorStandWhileDownloading && isDownlading;
