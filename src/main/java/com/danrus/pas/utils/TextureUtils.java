@@ -3,7 +3,7 @@ package com.danrus.pas.utils;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.LegacySkinData;
+import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.OverlayMessageManger;
 import com.danrus.pas.managers.PasManager;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -56,14 +56,14 @@ public class TextureUtils {
 
                     future.complete(identifier);
                 } catch (Exception e) {
-                    future.complete(LegacySkinData.DEFAULT_TEXTURE);
+                    future.complete(SkinData.DEFAULT_TEXTURE);
                     PlayerArmorStandsClient.LOGGER.warn("Failed to register texture: {}", identifier, e);
                 }
             });
 
         } catch (Exception e) {
             PlayerArmorStandsClient.LOGGER.warn("Failed to process texture: {}", identifier, e);
-            future.complete(LegacySkinData.DEFAULT_TEXTURE);
+            future.complete(SkinData.DEFAULT_TEXTURE);
         }
 
         return future;
@@ -177,9 +177,9 @@ public class TextureUtils {
         }
         ResourceLocation skinId;
         if (prefix.equals("capes")) {
-            skinId = PasManager.getInstance().getData(info).getCapeTexture();
+            skinId = PasManager.getInstance().getCapeTexture(info);
         } else {
-            skinId = PasManager.getInstance().getData(info).getSkinTexture();
+            skinId = PasManager.getInstance().getSkinTexture(info);
         }
         AbstractTexture skinTexture = Minecraft.getInstance().getTextureManager().getTexture(skinId);
 

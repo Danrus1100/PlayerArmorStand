@@ -1,9 +1,11 @@
 package com.danrus.pas.render.armorstand;
 
+import com.danrus.pas.api.DataHolder;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.impl.holder.CapeData;
+import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.utils.VersioningUtils;
 import com.danrus.pas.managers.PasManager;
 import net.minecraft.client.model.ArmorStandArmorModel;
@@ -47,7 +49,6 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
     private final ModelPart leftEar;
     private final ModelPart rightEar;
 
-    private LegacySkinData data;
     private boolean isSlim = false;
     private boolean isOriginal = false;
 
@@ -166,7 +167,6 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         Component customName = VersioningUtils.getCustomName(armorStand);
         Rotations bodyPose = VersioningUtils.getBodyPose(armorStand);
         NameInfo info = NameInfo.parse(customName);
-        this.data = PasManager.getInstance().getData(info);
 
         //? if <= 1.21.1
         /*cpp(this.head, this.hat);*/
@@ -213,7 +213,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         this.leftEar.visible = isEarsVisible;
         this.rightEar.visible = isEarsVisible;
 
-        this.setModelVisibility(!showArmorStandWhileDownload(customName, data), info.wantBeSlim(), showBase);
+        this.setModelVisibility(!showArmorStandWhileDownload(customName, new SkinData(info)), info.wantBeSlim(), showBase);
 
         if (customNameString.isEmpty() && ModConfig.get().defaultSkin.isEmpty()) {
             setOriginalAngles(showBase, showArms, bodyPose);
@@ -292,12 +292,13 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         return this.cloak;
     }
 
-    @Override
-    public LegacySkinData getData() {
-        return data;
-    }
 
-    public static boolean showArmorStandWhileDownload(Component customName, LegacySkinData data) {
+    public static boolean showArmorStandWhileDownload(Component customName, DataHolder data) {
+
+        if (data == null) {
+            return true;
+        }
+
         boolean isDownlading = data.getStatus() == DownloadStatus.IN_PROGRESS ||
                 data.getStatus() == DownloadStatus.FAILED;
         return ModConfig.get().showArmorStandWhileDownloading && isDownlading;

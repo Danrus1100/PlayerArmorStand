@@ -2,110 +2,129 @@ package com.danrus.pas.managers;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
+import com.danrus.pas.impl.holder.CapeData;
+import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.utils.TextureUtils;
 import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PasManager {
 
+    private final Logger LOGGER = LoggerFactory.getLogger("PasManager");
+
     private static PasManager INSTANCE;
 
-    private SkinDataManager dataManager;
+    private SkinDataRepository skinDataRepository;
+    private CapeDataRepository capeDataRepository;
     private SkinProvidersManager skinProviderManager;
+    private CapeProvidersManager capeProviderManager;
     private List<String> existingProviders;
 
     private String currentName;
-    private LegacySkinData currentData;
 
     private PasManager() {
         // Инициализируем список провайдеров первым
         existingProviders = new ArrayList<>(List.of("F"));
 
-        // Создаем менеджеры
-        dataManager = new SkinDataManager();
+        // Создаем репозитории
+        skinDataRepository = new SkinDataRepository();
+        capeDataRepository = new CapeDataRepository();
+
+        // Создаем менеджеры провайдеров
         skinProviderManager = new SkinProvidersManager();
+        capeProviderManager = new CapeProvidersManager();
 
         // Инициализируем провайдеры, передавая ссылку на себя
         skinProviderManager.initialize(this);
+        capeProviderManager.initialize(this);
     }
 
     public ResourceLocation getSkinTexture(NameInfo info) {
-        if (info.isEmpty()) {
-            return LegacySkinData.DEFAULT_TEXTURE;
-        }
-        if (info.overlay().isEmpty()) {
-            return dataManager.getData(info).getSkinTexture();
-        }
-        return dataManager.getData(info).getSkinTexture(info);
+        SkinData data = skinDataRepository.getData(info);
+        return data != null ? data.getTexture(info) : null;
     }
 
     public ResourceLocation getCapeTexture(NameInfo info) {
-        if ("M".equals(info.capeProvider())) {
-            return getData(info).getCapeTexture(info);
-        }
-        return null;
+        CapeData data = capeDataRepository.getData(info);
+        return data != null ? data.getTexture(info) : null;
     }
 
-    public LegacySkinData getData(NameInfo info) {
-        if (info.isEmpty()) {
-            return new LegacySkinData("default");
-        }
-
-        if(currentData != null && !currentName.isEmpty() && currentName.equals(info.base()) ) {
-            return currentData;
-        } else {
-            currentName = info.base();
-        }
-        currentData = dataManager.getData(info);
-        return currentData;
-    }
-
-    public LegacySkinData findData(NameInfo info) {
+    public SkinData findSkinData(NameInfo info) {
         if (info.isEmpty()) {
             return null;
         }
+        return getSkinDataManager().findData(info);
+    }
 
-        return getDataManager().findData(info);
+    public CapeData findCapeData(NameInfo info) {
+        if (info.isEmpty()) {
+            return null;
+        }
+        return getCapeDataManager().findData(info);
     }
 
     public void dropCache() {
         currentName = null;
-        currentData = null;
 
         existingProviders = new ArrayList<>(List.of("F"));
-        dataManager = new SkinDataManager();
+        skinDataRepository = new SkinDataRepository();
+        capeDataRepository = new CapeDataRepository();
         skinProviderManager = new SkinProvidersManager();
+        capeProviderManager = new CapeProvidersManager();
 
-        // Реинициализируем провайдеры
         skinProviderManager.initialize(this);
+        capeProviderManager.initialize(this);
 
-        PlayerArmorStandsClient.LOGGER.info("SkinManger: Dropped all cached data");
+        PlayerArmorStandsClient.LOGGER.info("PasManager: Dropped all cached data");
     }
 
     public void reloadData(String string){
         NameInfo info = NameInfo.parse(string);
-        getDataManager().delete(info);
+        getSkinDataManager().delete(info);
+        getCapeDataManager().delete(info);
         TextureUtils.clearOverlayCacheFor(string);
+
         if (info.isEmpty()) {
-            PlayerArmorStandsClient.LOGGER.warn("SkinManger: Cannot reload data for an empty name");
+            this.LOGGER.warn("Cannot reload data for an empty name");
             return;
         }
-        if (dataManager.getData(info) == null) {
-            PlayerArmorStandsClient.LOGGER.warn("SkinManger: No data found for " + info.base() + ", reloading from providers");
+
+        if (skinDataRepository.getData(info) == null) {
+            this.LOGGER.warn("No data found for " + info.base() + ", reloading from skin providers");
+            return;
+        }
+
+        if (capeDataRepository.getData(info) == null) {
+            this.LOGGER.warn("No data found for " + info.base() + ", reloading from cape providers");
             return;
         }
     }
 
     public void reloadFailed() {
-        PlayerArmorStandsClient.LOGGER.info("SkinManger: Reloading failed skins");
-        dataManager.getSources().forEach((key, source) -> {
+        this.LOGGER.info("Reloading failed textures");
+
+        // Перезагрузка failed скинов
+        skinDataRepository.getSources().forEach((key, source) -> {
             source.getAll().forEach((dataKey, data) -> {
                 if (data.getStatus() == DownloadStatus.FAILED) {
-                    PlayerArmorStandsClient.LOGGER.info("SkinManger: Reloading failed skin for " + dataKey);
+                    this.LOGGER.info("Reloading failed skin for " + dataKey);
                     data.setStatus(DownloadStatus.NOT_STARTED);
                     skinProviderManager.download(NameInfo.parse(dataKey));
+                }
+            });
+        });
+
+        // Перезагрузка failed плащей
+        capeDataRepository.getSources().forEach((key, source) -> {
+            source.getAll().forEach((dataKey, data) -> {
+                if (data.getStatus() == DownloadStatus.FAILED) {
+                    this.LOGGER.info("Reloading failed cape for " + dataKey);
+                    data.setStatus(DownloadStatus.NOT_STARTED);
+                    capeProviderManager.download(NameInfo.parse(dataKey));
                 }
             });
         });
@@ -118,12 +137,20 @@ public class PasManager {
         return INSTANCE;
     }
 
-    public DataRepository getDataManager() {
-        return dataManager;
+    public DataRepository<SkinData> getSkinDataManager() {
+        return skinDataRepository;
+    }
+
+    public DataRepository<CapeData> getCapeDataManager() {
+        return capeDataRepository;
     }
 
     public TextureProvidersManager getSkinProviderManager() {
         return skinProviderManager;
+    }
+
+    public TextureProvidersManager getCapeProviderManager() {
+        return capeProviderManager;
     }
 
     public List<String> getExistingProviders() {

@@ -12,7 +12,7 @@ import com.danrus.pas.render.gui.widgets.TextWidget;
 import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.VersioningUtils;
 
-import com.danrus.pas.impl.data.skin.FileTextureData;
+import com.danrus.pas.impl.data.skin.FileTextureSkinData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -122,8 +122,8 @@ public class PasConfiguratorScreen extends Screen {
 
         openFolderLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.open_folder"));
         openFolderButton = Button.builder(Component.translatable("pas.menu.tab.skin.open_folder.button"), button -> {
-            FileTextureData.SKINS_PATH.toFile().mkdirs();
-            Util.getPlatform().openFile(FileTextureData.SKINS_PATH.toFile());
+            FileTextureSkinData.SKINS_PATH.toFile().mkdirs();
+            Util.getPlatform().openFile(FileTextureSkinData.SKINS_PATH.toFile());
         }).bounds(0, 0, 120, 20).build();
 
         this.tabManager = new TabManager(this);

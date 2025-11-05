@@ -1,7 +1,15 @@
 package com.danrus.pas;
 
+import com.danrus.pas.api.InfoTranslator;
 import com.danrus.pas.api.reg.FeatureRegistry;
+import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.impl.features.*;
+import com.danrus.pas.impl.holder.CapeData;
+import com.danrus.pas.impl.holder.SkinData;
+import com.danrus.pas.impl.translators.cape.MojangCapeTranslator;
+import com.danrus.pas.impl.translators.cape.NamemcCapeTranslator;
+import com.danrus.pas.impl.translators.skin.MojangSkinTranslator;
+import com.danrus.pas.impl.translators.skin.NamemcSkinTranslator;
 import com.danrus.pas.managers.PasManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +22,20 @@ public class PlayerArmorStandsClient {
 
     public static void initialize() {
         PasManager.getInstance();
-        FeatureRegistry reg = FeatureRegistry.getInstance();
-        reg.register(OverlayFeature.class);
-        reg.register(CapeFeature.class);
-        reg.register(SkinProviderFeature.class);
-        reg.register(SlimFeature.class);
-        reg.register(DisplayNameFeature.class);
+        FeatureRegistry fratures = FeatureRegistry.getInstance();
+        fratures.register(OverlayFeature.class);
+        fratures.register(CapeFeature.class);
+        fratures.register(SkinProviderFeature.class);
+        fratures.register(SlimFeature.class);
+        fratures.register(DisplayNameFeature.class);
+
+        InfoTranslators translator = InfoTranslators.getInstance();
+        translator.register(SkinData.class, new NamemcSkinTranslator());
+        translator.register(SkinData.class, new MojangSkinTranslator());
+        translator.register(CapeData.class, new NamemcCapeTranslator());
+        translator.register(CapeData.class, new MojangCapeTranslator());
+
+        PasManager.getInstance().getCapeDataManager().discover();
+        PasManager.getInstance().getSkinDataManager().discover();
     }
 }

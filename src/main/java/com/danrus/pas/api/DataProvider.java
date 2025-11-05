@@ -8,5 +8,6 @@ public interface DataProvider<T extends DataHolder> {
     HashMap <String, T> getAll();
     void store(NameInfo info, T data);
     void invalidateData(NameInfo info);
+    default void discover() {};
     String getName();
 }

@@ -56,7 +56,7 @@ public class CapeFeature implements RenameFeature {
     @Nullable
     @Override
     public Pattern getCleanupPattern() {
-        return CLEANUP_PATTERN; // Удаляем из legacy params
+        return CLEANUP_PATTERN;
     }
 
     public boolean isEnabled() { return enabled; }

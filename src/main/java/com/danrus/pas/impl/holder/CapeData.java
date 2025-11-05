@@ -10,13 +10,17 @@ public class CapeData extends AbstractPasHolder{
 
     private ResourceLocation location = DEFAULT_TEXTURE;
 
+    public CapeData(NameInfo info) {
+        super(info);
+    }
+
     @Override
-    public ResourceLocation getResourceLocation(NameInfo info) {
+    public ResourceLocation getTexture(NameInfo info) {
         return location;
     }
 
     @Override
-    public void setResourceLocation(ResourceLocation location) {
+    public void setTexture(ResourceLocation location) {
         this.location = location;
     }
 }

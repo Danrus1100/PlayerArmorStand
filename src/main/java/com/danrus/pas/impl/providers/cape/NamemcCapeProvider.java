@@ -1,49 +1,53 @@
-package com.danrus.pas.impl.providers.skin;
+package com.danrus.pas.impl.providers.cape;
 
-import com.danrus.pas.api.*;
+import com.danrus.pas.api.DataRepository;
+import com.danrus.pas.api.DownloadStatus;
+import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
+import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.holder.CapeData;
-import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.impl.providers.common.AbstractNamemcProvider;
 import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.SkinDownloader;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-public class NamemcSkinProvider extends AbstractNamemcProvider<SkinData> {
+public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
+
     @Override
     protected CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info) {
-        ResourceLocation location = InfoTranslators.getInstance()
-                .toResourceLocation(SkinData.class, info);
+        ResourceLocation capeLocation = InfoTranslators.getInstance()
+                .toResourceLocation(CapeData.class, info);
         String fileName = InfoTranslators.getInstance()
-                .toFileName(SkinData.class, info);
+                .toFileName(CapeData.class, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
+
         return SkinDownloader.downloadAndRegister(
-                location,
+                capeLocation,
                 filePath,
-                "https://s.namemc.com/i/" + info.base() + ".png",
-                true
+                "https://s.namemc.com/i/" + info.getFeature(CapeFeature.class).getId() + ".png",
+                false
         );
     }
 
     @Override
-    protected DataRepository getDataManager() {
-        return PasManager.getInstance().getSkinDataManager();
+    protected DataRepository<CapeData> getDataManager() {
+        return PasManager.getInstance().getCapeDataManager();
     }
 
     @Override
-    protected SkinData createDataHolder(NameInfo info) {
-        return new SkinData(info);
+    protected CapeData createDataHolder(NameInfo info) {
+        return new CapeData(info);
     }
 
     @Override
     protected void updateSkinData(NameInfo info, ResourceLocation texture) {
-        SkinData data = this.getOrCreateDataHolder(info);
+        CapeData data = this.getOrCreateDataHolder(info);
         data.setTexture(texture);
+        data.setStatus(DownloadStatus.COMPLETED);
         getDataManager().store(info, data);
     }
 }

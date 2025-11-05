@@ -1,6 +1,6 @@
 package com.danrus.pas.api;
 
-import com.danrus.pas.impl.data.skin.GameData;
+import com.danrus.pas.impl.data.skin.CacheSkinData;
 
 import java.util.HashMap;
 
@@ -18,7 +18,7 @@ public interface DataRepository<T extends DataHolder> {
      *
      * @param source the data source to add
      */
-    void addSource(DataProvider<?> source);
+    void addSource(DataProvider<T> source);
 
     /**
      * Add a source of data to the manager with priority.
@@ -26,7 +26,7 @@ public interface DataRepository<T extends DataHolder> {
      * @param source the data source to add
      * @param priority the priority of the source, higher values indicate higher priority
      */
-    void addSource(DataProvider<?> source, int priority);
+    void addSource(DataProvider<T> source, int priority);
 
     /**
      * Retrieves data associated with the given string.
@@ -59,11 +59,18 @@ public interface DataRepository<T extends DataHolder> {
      * @return the DataCache associated with the key, or null if not found
      */
 
-    DataProvider<?> getSource(String key);
+    DataProvider<T> getSource(String key);
+
+    /**
+     * Retrieves all data sources managed by this DataManager.
+     * @return a HashMap containing all data sources, where the key is the source key and the value is the DataCache
+     */
+
+    HashMap<String, DataProvider<T>> getSources();
 
 
     /**
-     * Retrieves all data stored in {@link GameData}
+     * Retrieves all data stored in {@link CacheSkinData}
      *
      * @return a HashMap containing all game data, where the key is the player name and the value is SkinData
      */
@@ -87,4 +94,9 @@ public interface DataRepository<T extends DataHolder> {
      */
 
     void delete(NameInfo info);
+
+    /**
+     * Discovers all files in the data sources and loads them into the manager.
+     */
+    void discover();
 }

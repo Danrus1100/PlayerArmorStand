@@ -2,9 +2,9 @@ package com.danrus.pas.compat.possessive.mixin;
 
 //? if possessive {
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.compat.possessive.PossessiveRenderHand;
 import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.utils.Rl;
@@ -123,7 +123,7 @@ public class ArmorStandCameraMixin {
                 skinTexture = PasManager.getInstance().getSkinTexture(info);
             }
         } else {
-            skinTexture = LegacySkinData.DEFAULT_TEXTURE;
+            skinTexture = SkinData.DEFAULT_TEXTURE;
         }
 
         getPartsForRender(resolvedHand, armorStandModel).forEach(armorStandArm ->{

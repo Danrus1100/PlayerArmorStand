@@ -1,0 +1,54 @@
+package com.danrus.pas.impl.data.skin;
+
+import com.danrus.pas.api.DataHolder;
+import com.danrus.pas.api.DataRepository;
+import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.impl.data.common.AbstractFileTextureDataProvider;
+import com.danrus.pas.impl.holder.SkinData;
+import com.danrus.pas.managers.PasManager;
+import com.danrus.pas.utils.VersioningUtils;
+import net.minecraft.resources.ResourceLocation;
+
+import java.nio.file.Path;
+
+public class FileTextureSkinData extends AbstractFileTextureDataProvider<SkinData> {
+
+    public static final Path SKINS_PATH = VersioningUtils.getGameDir().resolve("pas/skins");
+
+    @Override
+    protected Path getFilePath(NameInfo info) {
+        return SKINS_PATH.resolve(info.base() + ".png");
+    }
+
+    @Override
+    protected Path getCachePath() {
+        return SKINS_PATH;
+    }
+
+    @Override
+    protected SkinData createDataHolder(NameInfo info, ResourceLocation texture) {
+        SkinData newData = new SkinData(info);
+        newData.setTexture(texture);
+        return newData;
+    }
+
+    @Override
+    protected DataRepository<SkinData> getDataManager() {
+        return PasManager.getInstance().getSkinDataManager();
+    }
+
+    @Override
+    protected String getProviderCode() {
+        return "F";
+    }
+
+    @Override
+    protected Class<? extends DataHolder> getDataHolderClass() {
+        return SkinData.class;
+    }
+
+    @Override
+    public String getName() {
+        return "texture_file";
+    }
+}

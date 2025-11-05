@@ -1,18 +1,18 @@
-package com.danrus.pas.impl.data.skin;
+package com.danrus.pas.impl.data.common;
 
-import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.LegacySkinData;
-import com.danrus.pas.api.DownloadStatus;
+import com.danrus.pas.api.DataHolder;
 import com.danrus.pas.api.DataProvider;
+import com.danrus.pas.api.DownloadStatus;
+import com.danrus.pas.api.NameInfo;
 
 import java.util.HashMap;
 
-public class GameData implements DataProvider<LegacySkinData> {
+public abstract class AbstractCacheDataProvider<T extends DataHolder> implements DataProvider<T> {
 
-    private HashMap<String, LegacySkinData> cache = new HashMap<>();
+    protected final HashMap<String, T> cache = new HashMap<>();
 
     @Override
-    public LegacySkinData get(NameInfo info) {
+    public T get(NameInfo info) {
         if (!cache.containsKey(info.base())) {
             return null;
         }
@@ -29,13 +29,13 @@ public class GameData implements DataProvider<LegacySkinData> {
     }
 
     @Override
-    public HashMap<String, LegacySkinData> getAll() {
+    public HashMap<String, T> getAll() {
         return cache;
     }
 
     @Override
-    public void store(NameInfo info, Object data) {
-        cache.put(info.base(), (LegacySkinData) data);
+    public void store(NameInfo info, T data) {
+        cache.put(info.base(), data);
     }
 
     @Override
@@ -43,19 +43,11 @@ public class GameData implements DataProvider<LegacySkinData> {
         if (cache.containsKey(info.base())) {
             cache.get(info.base()).setStatus(DownloadStatus.FAILED);
         } else {
-            LegacySkinData data = new LegacySkinData(info);
+            T data = createDataHolder(info);
             data.setStatus(DownloadStatus.FAILED);
             cache.put(info.base(), data);
         }
     }
 
-    @Override
-    public boolean isCompatibleWith(Object data) {
-        return data instanceof LegacySkinData;
-    }
-
-    @Override
-    public String getName() {
-        return "game";
-    }
+    protected abstract T createDataHolder(NameInfo info);
 }

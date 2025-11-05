@@ -10,14 +10,11 @@ import com.danrus.pas.managers.PasManager;
 
 public class PlayerArmorStandsApi {
     public DataRepository getDataManager() {
-        return PasManager.getInstance().getDataManager();
+        return PasManager.getInstance().getSkinDataManager();
     }
 
     public TextureProvidersManager getSkinProviderManager() {
         return PasManager.getInstance().getSkinProviderManager();
     }
 
-    public LegacySkinData getSkinData(NameInfo info) {
-        return getDataManager().getData(info);
-    }
 }

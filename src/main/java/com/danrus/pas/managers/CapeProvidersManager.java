@@ -1,25 +1,25 @@
 package com.danrus.pas.managers;
 
 import com.danrus.pas.api.DataRepository;
-import com.danrus.pas.impl.holder.SkinData;
+import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.providers.MojangProvider;
+import com.danrus.pas.impl.providers.cape.NamemcCapeProvider;
 import com.danrus.pas.impl.providers.common.AbstractTextureProviderManager;
-import com.danrus.pas.impl.providers.skin.NamemcSkinProvider;
 
-public class SkinProvidersManager extends AbstractTextureProviderManager<SkinData> {
+public class CapeProvidersManager extends AbstractTextureProviderManager<CapeData> {
 
     private static final String DEFAULT_LITERAL = "M";
-    private static final String EXCLUDE_LITERALS = "NF";
+    private static final String EXCLUDE_LITERALS = "F";
 
     @Override
     protected void prepareProviders() {
         this.addProvider(new MojangProvider());
-        this.addProvider(new NamemcSkinProvider(), 1);
+        this.addProvider(new NamemcCapeProvider(), 1);
     }
 
     @Override
     protected String getName() {
-        return "SkinProvidersManager";
+        return "CapeProvidersManager";
     }
 
     @Override
@@ -33,7 +33,7 @@ public class SkinProvidersManager extends AbstractTextureProviderManager<SkinDat
     }
 
     @Override
-    protected DataRepository<SkinData> getDataManager() {
-        return PasManager.getInstance().getSkinDataManager();
+    protected DataRepository<CapeData> getDataManager() {
+        return PasManager.getInstance().getCapeDataManager();
     }
 }

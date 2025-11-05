@@ -2,10 +2,16 @@ package com.danrus.pas.impl.holder;
 
 import com.danrus.pas.api.DataHolder;
 import com.danrus.pas.api.DownloadStatus;
+import com.danrus.pas.api.NameInfo;
 
 public abstract class AbstractPasHolder implements DataHolder {
 
     private DownloadStatus status = DownloadStatus.NOT_STARTED;
+    private final NameInfo info;
+
+    public AbstractPasHolder(NameInfo info) {
+        this.info = info;
+    }
 
     @Override
     public DownloadStatus getStatus() {
@@ -15,5 +21,10 @@ public abstract class AbstractPasHolder implements DataHolder {
     @Override
     public void setStatus(DownloadStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public NameInfo getInfo() {
+        return this.info;
     }
 }

@@ -30,7 +30,7 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
         ModExecutor.execute(() -> getDownloadTask(info)
                 .thenApply(identifier -> {
                     updateStatus(info, DownloadStatus.COMPLETED);
-                    updateSkinData(info, identifier, true);
+                    updateSkinData(info, identifier);
                     onComplete.accept(output);
                     OverlayMessageManger.getInstance().showSuccessMessage(info.base());
                     return null;
@@ -44,43 +44,35 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
 
     private void initializeDownload(NameInfo info) {
         PlayerArmorStandsClient.LOGGER.info("NamemcProvider: Downloading for " + info);
-        LegacySkinData data = new LegacySkinData(info);
+        T data = createDataHolder(info);
         OverlayMessageManger.getInstance().showDownloadMessage(info.base());
         data.setStatus(DownloadStatus.IN_PROGRESS);
         getDataManager().store(info, data);
     }
 
     private void updateStatus(NameInfo info, DownloadStatus status) {
-        LegacySkinData data = getOrCreateModelData(info);
+        T data = getOrCreateDataHolder(info);
         data.setStatus(status);
         getDataManager().store(info, data);
     }
 
     private void doFail(NameInfo info) {
-        LegacySkinData data = PasManager.getInstance().getData(info);
+        T data = getDataManager().getData(info);
         if (data == null) {
-            data = new LegacySkinData(info);
+            data = createDataHolder(info);
         }
         OverlayMessageManger.getInstance().showFailMessage(info.base());
         data.setStatus(DownloadStatus.FAILED);
         getDataManager().store(info, data);
     }
 
-    private void updateSkinData(NameInfo info, ResourceLocation texture, boolean isSkin) {
-        LegacySkinData data = getOrCreateModelData(info);
-        if (isSkin) {
-            data.setSkinTexture(texture);
-        } else {
-            data.setCapeTexture(texture);
-        }
-        getDataManager().store(info, data);
-    }
-
-    private LegacySkinData getOrCreateModelData(NameInfo info) {
-        LegacySkinData data = getDataManager().getSource("namemc").get(info);
-        return data != null ? data : new LegacySkinData(info);
+    protected T getOrCreateDataHolder(NameInfo info) {
+        T data = getDataManager().getSource("namemc").get(info);
+        return data != null ? data : createDataHolder(info);
     }
 
     protected abstract CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info);
     protected abstract DataRepository<T> getDataManager();
+    protected abstract T createDataHolder(NameInfo info);
+    protected abstract void updateSkinData(NameInfo info, ResourceLocation texture);
 }

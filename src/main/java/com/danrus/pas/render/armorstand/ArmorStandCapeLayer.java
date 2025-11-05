@@ -1,8 +1,9 @@
 package com.danrus.pas.render.armorstand;
 
 import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.LegacySkinData;
 import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.impl.holder.CapeData;
+import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -53,13 +54,14 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
         }
 
         NameInfo info = NameInfo.parse(VersioningUtils.getCustomName(armorStand));
+        CapeData skinData = PasManager.getInstance().getCapeDataManager().getData(info);
 
         if (info.wantCape() && this.getParentModel() instanceof PlayerArmorStandModel model) {
-            LegacySkinData skinData = model.getData();
+//            CapeData skinData = PasManager.getInstance().get
             if (PlayerArmorStandModel.showArmorStandWhileDownload(customName, skinData)) {
                 return;
             }
-            ResourceLocation capeTexture = skinData.getCapeTexture(info);
+            ResourceLocation capeTexture = PasManager.getInstance().getCapeTexture(info);
 
             poseStack.pushPose();
             poseStack.mulPose(Axis.XP.rotationDegrees(10.0F));
