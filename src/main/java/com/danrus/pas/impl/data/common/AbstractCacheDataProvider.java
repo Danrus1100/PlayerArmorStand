@@ -9,43 +9,43 @@ import java.util.HashMap;
 
 public abstract class AbstractCacheDataProvider<T extends DataHolder> implements DataProvider<T> {
 
-    protected final HashMap<String, T> cache = new HashMap<>();
+    protected final HashMap<NameInfo, T> cache = new HashMap<>();
 
     @Override
     public T get(NameInfo info) {
-        if (!cache.containsKey(info.base())) {
+        if (!cache.containsKey(info)) {
             return null;
         }
-        return cache.get(info.base());
+        return cache.get(info);
     }
 
     @Override
     public boolean delete(NameInfo info) {
-        if (cache.containsKey(info.base())) {
-            cache.remove(info.base());
+        if (cache.containsKey(info)) {
+            cache.remove(info);
             return true;
         }
         return false;
     }
 
     @Override
-    public HashMap<String, T> getAll() {
+    public HashMap<NameInfo, T> getAll() {
         return cache;
     }
 
     @Override
     public void store(NameInfo info, T data) {
-        cache.put(info.base(), data);
+        cache.put(info, data);
     }
 
     @Override
     public void invalidateData(NameInfo info) {
-        if (cache.containsKey(info.base())) {
-            cache.get(info.base()).setStatus(DownloadStatus.FAILED);
+        if (cache.containsKey(info)) {
+            cache.get(info).setStatus(DownloadStatus.FAILED);
         } else {
             T data = createDataHolder(info);
             data.setStatus(DownloadStatus.FAILED);
-            cache.put(info.base(), data);
+            cache.put(info, data);
         }
     }
 

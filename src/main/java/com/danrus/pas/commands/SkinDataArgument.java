@@ -32,12 +32,13 @@ public class SkinDataArgument implements ArgumentType<SkinData> {
         return data;
     }
 
+    //TODO: separate by providers
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        HashMap<String, SkinData> allData = PasManager.getInstance().getSkinDataManager().getGameData();
-        allData.forEach((name, skinData) -> {
-            if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase()) && !name.contains("|")) {
-                builder.suggest(name);
+        HashMap<NameInfo, SkinData> allData = PasManager.getInstance().getSkinDataManager().getGameData();
+        allData.forEach((info, skinData) -> {
+            if (info.base().toLowerCase().startsWith(builder.getRemaining().toLowerCase()) && !info.base().contains("|")) {
+                builder.suggest(info.base());
             }
         });
         return builder.buildFuture();

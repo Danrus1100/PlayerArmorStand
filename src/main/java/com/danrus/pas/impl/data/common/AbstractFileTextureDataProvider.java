@@ -63,7 +63,7 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
     }
 
     @Override
-    public HashMap<String, T> getAll() {
+    public HashMap<NameInfo, T> getAll() {
         return new HashMap<>();
     }
 

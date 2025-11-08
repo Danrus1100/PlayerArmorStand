@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SkinProviderFeature implements RenameFeature {
 
@@ -32,12 +33,30 @@ public class SkinProviderFeature implements RenameFeature {
 
     @Override
     public int getPriority() {
-        return 20;
+        return 2;
     }
 
     @Override
     public void reset() {
         this.provider = DEFAULT_PROVIDER;
+    }
+
+    @Override
+    public boolean affectsIdentity() {
+        return true;
+    }
+
+    @Override
+    public int identityHashCode() {
+        return provider.hashCode();
+    }
+
+    @Override
+    public boolean identityEquals(RenameFeature other) {
+        if (!(other instanceof SkinProviderFeature)) {
+            return false;
+        }
+        return Objects.equals(this.provider, ((SkinProviderFeature) other).provider);
     }
 
     public String getProvider() { return provider; }

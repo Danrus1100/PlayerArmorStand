@@ -75,7 +75,7 @@ public interface DataRepository<T extends DataHolder> {
      * @return a HashMap containing all game data, where the key is the player name and the value is SkinData
      */
 
-    HashMap<String, T> getGameData();
+    HashMap<NameInfo, T> getGameData();
 
     /**
      * Finds SkinData by a given string without download.
@@ -98,5 +98,7 @@ public interface DataRepository<T extends DataHolder> {
     /**
      * Discovers all files in the data sources and loads them into the manager.
      */
+
+    @Deprecated(forRemoval = true)
     void discover();
 }

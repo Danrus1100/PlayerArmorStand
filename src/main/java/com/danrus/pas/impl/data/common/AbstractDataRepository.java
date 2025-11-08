@@ -50,7 +50,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
         if (needDownload.get() && data.get().getStatus() == DownloadStatus.NOT_STARTED) {
             data.get().setStatus(DownloadStatus.IN_PROGRESS);
             store(info, data.get());
-            PasManager.getInstance().getSkinProviderManager().download(info);
+            getTextureProvidersManager().download(info);
         }
         return data.get();
     }
@@ -69,7 +69,6 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     @Nullable
-    @SuppressWarnings("unchecked")
     public DataProvider<T> getSource(String key) {
         return (DataProvider<T>) sources.stream()
                 .filter(source -> source.getName().equals(key))
@@ -78,7 +77,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
-    public HashMap<String, T> getGameData() {
+    public HashMap<NameInfo, T> getGameData() {
         return sources.stream()
                 .map(source -> (DataProvider<T>) source)
                 .map(DataProvider::getAll)
@@ -128,4 +127,5 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     protected abstract void prepareSources();
     protected abstract T createData(NameInfo info);
+    protected abstract TextureProvidersManager getTextureProvidersManager();
 }

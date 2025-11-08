@@ -1,5 +1,7 @@
 package com.danrus.pas.impl.translators.skin;
 
+import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.impl.features.SkinProviderFeature;
 import com.danrus.pas.impl.translators.common.AbstractMojangTranslator;
 
 public class MojangSkinTranslator extends AbstractMojangTranslator{
@@ -12,5 +14,10 @@ public class MojangSkinTranslator extends AbstractMojangTranslator{
     @Override
     protected String getSuffix() {
         return "";
+    }
+
+    @Override
+    protected String getProvider(NameInfo info) {
+        return info.getFeature(SkinProviderFeature.class).getProvider();
     }
 }

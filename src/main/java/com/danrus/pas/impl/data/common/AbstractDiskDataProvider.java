@@ -1,10 +1,7 @@
 package com.danrus.pas.impl.data.common;
 
 import com.danrus.pas.PlayerArmorStandsClient;
-import com.danrus.pas.api.DataHolder;
-import com.danrus.pas.api.DataProvider;
-import com.danrus.pas.api.DataRepository;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.*;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.utils.TextureUtils;
 import com.danrus.pas.utils.VersioningUtils;
@@ -30,6 +27,10 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
 
     @Override
     public T get(NameInfo info) {
+        if (getDataManager().findData(info) != null && getDataManager().findData(info).getStatus() == DownloadStatus.IMPOSSIBLE_TO_DOWNLOAD) {
+            return null;
+        }
+
         String fileName = InfoTranslators.getInstance()
                 .toFileName(getDataHolderClass(), info) + ".png";
         Path filePath = cachePath.resolve(fileName);
@@ -70,7 +71,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     }
 
     @Override
-    public HashMap<String, T> getAll() {
+    public HashMap<NameInfo, T> getAll() {
         return new HashMap<>();
     }
 

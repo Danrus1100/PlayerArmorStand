@@ -5,6 +5,7 @@ import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.features.OverlayFeature;
 import com.danrus.pas.impl.features.SkinProviderFeature;
 import com.danrus.pas.impl.features.SlimFeature;
+import com.danrus.pas.utils.NIParser;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +18,7 @@ public class NameInfo {
 
     private final Map<Class<? extends RenameFeature>, RenameFeature> features = new LinkedHashMap<>();
     private String base;
-    private String legacyParams;
+    public String legacyParams;
 
     public NameInfo() { this(""); }
     public NameInfo(String base) {
@@ -42,30 +43,7 @@ public class NameInfo {
     }
 
     public static NameInfo parse(String input) {
-        if (input == null || input.isEmpty()) return new NameInfo();
-
-        String[] divided = input.split("\\|", 2);
-        String name = divided[0].trim();
-
-        if (name.matches(".*[<>:\"/\\\\?*].*")) return new NameInfo();
-
-        NameInfo info = new NameInfo(name);
-
-        if (divided.length > 1) {
-            String params = divided[1].trim();
-
-            for (Class<? extends RenameFeature> featureClass : FeatureRegistry.getInstance().getOrderedFeatures()) {
-                RenameFeature feature = info.getFeature(featureClass);
-                if (feature != null && feature.parse(params)) {
-                    String compiled = feature.compile();
-                    params = params.replace(compiled, "").trim();
-                }
-            }
-
-            info.legacyParams = normalizeParams(params);
-        }
-
-        return info;
+        return NIParser.getInstance().parse(input);
     }
 
     public String compile() {
@@ -88,34 +66,6 @@ public class NameInfo {
         return out.toString();
     }
 
-    private static String normalizeParams(String raw) {
-        if (raw == null || raw.isEmpty()) return "";
-        String p = raw.replaceAll("\\s+", "").toUpperCase();
-
-        // Убираем все известные паттерны фич динамически
-        for (Class<? extends RenameFeature> featureClass : FeatureRegistry.getInstance().getOrderedFeatures()) {
-            RenameFeature feature = FeatureRegistry.getInstance().createFeature(featureClass);
-            if (feature != null) {
-                Pattern pattern = feature.getCleanupPattern();
-                if (pattern != null) {
-                    p = pattern.matcher(p).replaceAll("");
-                }
-            }
-        }
-
-        // Дедупликация символов
-        StringBuilder sb = new StringBuilder();
-        boolean[] seen = new boolean[256];
-        for (int i = 0; i < p.length(); i++) {
-            char ch = p.charAt(i);
-            if (ch < 256 && !seen[ch]) {
-                seen[ch] = true;
-                sb.append(ch);
-            }
-        }
-        return sb.toString();
-    }
-
 
     // --- API ---
 
@@ -132,8 +82,48 @@ public class NameInfo {
 
     @Override
     public @NotNull String toString() {
-        return "NameInfo[base=" + base + ", features=" + features.size() + "]";
+        return "NameInfo[" + this.compile() + "(" + this.hashCode() + ")]";
     }
+
+    @Override
+    public int hashCode() {
+        int result = base != null ? base.hashCode() : 0;
+
+        for (RenameFeature feature : features.values()) {
+            if (feature.affectsIdentity()) {
+                result = 31 * result + feature.identityHashCode();
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof NameInfo)) return false;
+
+        NameInfo other = (NameInfo) obj;
+
+        if (!Objects.equals(this.base, other.base)) {
+            return false;
+        }
+
+        for (Map.Entry<Class<? extends RenameFeature>, RenameFeature> entry : features.entrySet()) {
+            RenameFeature thisFeature = entry.getValue();
+
+            if (thisFeature.affectsIdentity()) {
+                RenameFeature otherFeature = other.features.get(entry.getKey());
+
+                if (!thisFeature.identityEquals(otherFeature)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 
     // --- Legacy ---
 

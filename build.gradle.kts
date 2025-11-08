@@ -184,12 +184,14 @@ publishMods {
     val targets = property("pub.target.versions").toString().split(' ')
     val requiresLibs = property("pub.libs.required").toString().split(' ')
     val optionalLibs = property("pub.libs.optional").toString().split(' ')
+    val optionalLibsModrinth = property("pub.libs.optional.modrinth").toString().split(' ')
     modrinth {
         projectId = property("publish.modrinth").toString()
         accessToken = modrinthToken.toString()
         targets.forEach(minecraftVersions::add)
         requiresLibs.forEach{requires(it)}
         optionalLibs.forEach{optional(it)}
+        optionalLibsModrinth.forEach{optional(it)}
     }
 
     curseforge {

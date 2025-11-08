@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class CapeFeature implements RenameFeature {
 
-    private static final Pattern PARSE_PATTERN = Pattern.compile("C(?::([^%|]+)%([^|]+))?");
+    private static final Pattern PARSE_PATTERN = Pattern.compile("C(?::([^%|]+)%([^|]+)%)?");
     private static final Pattern CLEANUP_PATTERN = Pattern.compile("C(?::[^|]+)?");
 
     private boolean enabled = false;
@@ -43,7 +43,7 @@ public class CapeFeature implements RenameFeature {
 
     @Override
     public int getPriority() {
-        return 60;
+        return 1;
     }
 
     @Override
@@ -57,6 +57,22 @@ public class CapeFeature implements RenameFeature {
     @Override
     public Pattern getCleanupPattern() {
         return CLEANUP_PATTERN;
+    }
+
+    @Override
+    public boolean affectsIdentity() {
+        return true;
+    }
+
+    @Override
+    public int identityHashCode() {
+        return this.provider.hashCode();
+    }
+
+    @Override
+    public boolean identityEquals(RenameFeature other) {
+        if (!(other instanceof CapeFeature o)) return false;
+        return this.enabled == o.enabled && this.provider.equals(o.provider) && this.id.equals(o.id);
     }
 
     public boolean isEnabled() { return enabled; }

@@ -24,8 +24,6 @@ public class PasManager {
     private CapeProvidersManager capeProviderManager;
     private List<String> existingProviders;
 
-    private String currentName;
-
     private PasManager() {
         // Инициализируем список провайдеров первым
         existingProviders = new ArrayList<>(List.of("F"));
@@ -41,6 +39,14 @@ public class PasManager {
         // Инициализируем провайдеры, передавая ссылку на себя
         skinProviderManager.initialize(this);
         capeProviderManager.initialize(this);
+    }
+
+    public ResourceLocation getSkinWithOverlayTexture(NameInfo info) {
+        return TextureUtils.getOverlayedTexture(info, SkinData.class);
+    }
+
+    public ResourceLocation getCapeWithOverlayTexture(NameInfo info) {
+        return TextureUtils.getOverlayedTexture(info, CapeData.class);
     }
 
     public ResourceLocation getSkinTexture(NameInfo info) {
@@ -68,7 +74,6 @@ public class PasManager {
     }
 
     public void dropCache() {
-        currentName = null;
 
         existingProviders = new ArrayList<>(List.of("F"));
         skinDataRepository = new SkinDataRepository();
@@ -113,7 +118,7 @@ public class PasManager {
                 if (data.getStatus() == DownloadStatus.FAILED) {
                     this.LOGGER.info("Reloading failed skin for " + dataKey);
                     data.setStatus(DownloadStatus.NOT_STARTED);
-                    skinProviderManager.download(NameInfo.parse(dataKey));
+                    skinProviderManager.download(dataKey);
                 }
             });
         });
@@ -124,7 +129,7 @@ public class PasManager {
                 if (data.getStatus() == DownloadStatus.FAILED) {
                     this.LOGGER.info("Reloading failed cape for " + dataKey);
                     data.setStatus(DownloadStatus.NOT_STARTED);
-                    capeProviderManager.download(NameInfo.parse(dataKey));
+                    capeProviderManager.download(dataKey);
                 }
             });
         });

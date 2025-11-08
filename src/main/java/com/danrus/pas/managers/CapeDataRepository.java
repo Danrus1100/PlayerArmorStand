@@ -1,6 +1,7 @@
 package com.danrus.pas.managers;
 
 import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.TextureProvidersManager;
 import com.danrus.pas.impl.data.cape.CacheCapeData;
 import com.danrus.pas.impl.data.cape.ClientLevelCapeData;
 import com.danrus.pas.impl.data.cape.MojangDiskCapeData;
@@ -21,5 +22,10 @@ public class CapeDataRepository extends AbstractDataRepository<CapeData> {
     @Override
     protected CapeData createData(NameInfo info) {
         return new CapeData(info);
+    }
+
+    @Override
+    protected TextureProvidersManager getTextureProvidersManager() {
+        return PasManager.getInstance().getCapeProviderManager();
     }
 }

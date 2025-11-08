@@ -21,4 +21,9 @@ public class SkinDataRepository extends AbstractDataRepository<SkinData> {
     protected SkinData createData(NameInfo info) {
         return new SkinData(info);
     }
+
+    @Override
+    protected TextureProvidersManager getTextureProvidersManager() {
+        return PasManager.getInstance().getSkinProviderManager();
+    }
 }

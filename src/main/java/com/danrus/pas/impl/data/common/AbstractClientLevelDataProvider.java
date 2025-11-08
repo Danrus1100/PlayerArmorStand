@@ -50,7 +50,7 @@ import java.util.concurrent.atomic.AtomicReference;
     }
 
     @Override
-    public HashMap<String, T> getAll() {
+    public HashMap<NameInfo, T> getAll() {
         if (mc.level == null) {
             return new HashMap<>();
         }
@@ -65,7 +65,7 @@ import java.util.concurrent.atomic.AtomicReference;
                 })
                 .collect(
                         HashMap::new,
-                        (map, data) -> map.put(data.getInfo().base(), data),
+                        (map, data) -> map.put(data.getInfo(), data),
                         HashMap::putAll
                 );
     }

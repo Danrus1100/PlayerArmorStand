@@ -68,7 +68,7 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
         if (VersioningUtils.getCustomName(armorStand) == null || !ModConfig.get().enableMod) {
             return;
         }
-        cir.setReturnValue(PasManager.getInstance().getSkinTexture(NameInfo.parse(VersioningUtils.getCustomName(armorStand))));
+        cir.setReturnValue(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(VersioningUtils.getCustomName(armorStand))));
     }
 
     //? if >= 1.21.4 {

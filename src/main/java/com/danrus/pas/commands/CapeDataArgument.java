@@ -2,7 +2,6 @@ package com.danrus.pas.commands;
 
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.impl.holder.CapeData;
-import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -33,12 +32,13 @@ public class CapeDataArgument implements ArgumentType<CapeData> {
         return data;
     }
 
+    // TODO: separate by providers
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        HashMap<String, CapeData> allData = PasManager.getInstance().getCapeDataManager().getGameData();
-        allData.forEach((name, capeData) -> {
-            if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase()) && !name.contains("|")) {
-                builder.suggest(name);
+        HashMap<NameInfo, CapeData> allData = PasManager.getInstance().getCapeDataManager().getGameData();
+        allData.forEach((info, capeData) -> {
+            if (info.base().toLowerCase().startsWith(builder.getRemaining().toLowerCase()) && !info.base().contains("|")) {
+                builder.suggest(info.base());
             }
         });
         return builder.buildFuture();

@@ -18,6 +18,11 @@ import java.util.concurrent.CompletableFuture;
 public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
 
     @Override
+    public String getLiteral() {
+        return "A";
+    }
+
+    @Override
     protected CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info) {
         ResourceLocation capeLocation = InfoTranslators.getInstance()
                 .toResourceLocation(CapeData.class, info);

@@ -26,6 +26,8 @@ public class FeatureRegistry {
                     return 100;
                 }
             }));
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException("Feature class must have a public no-arg constructor: " + featureClass.getName(), e);
         } catch (Exception e) {
             throw new RuntimeException("Failed to register feature: " + featureClass.getName(), e);
         }

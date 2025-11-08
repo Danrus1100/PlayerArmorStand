@@ -47,7 +47,7 @@ public class ArmorStandCameraMixin {
 
             if (info.wantBeSlim()) {
                 return PossessiveRenderHand.RIGHT_SLIM;
-            } else if (info.isEmpty()) {
+            } else if (!info.isEmpty()) {
                 return PossessiveRenderHand.RIGHT_WIDE;
             } else {
                 return PossessiveRenderHand.RIGHT_ORIGINAL;
@@ -120,7 +120,7 @@ public class ArmorStandCameraMixin {
             if (ModConfig.get().possessiveShowDefaultHand) {
                 skinTexture = Rl.vanilla("textures/entity/armorstand/wood.png");
             } else {
-                skinTexture = PasManager.getInstance().getSkinTexture(info);
+                skinTexture = PasManager.getInstance().getSkinWithOverlayTexture(info);
             }
         } else {
             skinTexture = SkinData.DEFAULT_TEXTURE;

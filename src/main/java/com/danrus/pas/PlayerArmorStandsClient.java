@@ -34,8 +34,5 @@ public class PlayerArmorStandsClient {
         translator.register(SkinData.class, new MojangSkinTranslator());
         translator.register(CapeData.class, new NamemcCapeTranslator());
         translator.register(CapeData.class, new MojangCapeTranslator());
-
-        PasManager.getInstance().getCapeDataManager().discover();
-        PasManager.getInstance().getSkinDataManager().discover();
     }
 }

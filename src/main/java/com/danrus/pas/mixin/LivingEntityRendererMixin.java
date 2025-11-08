@@ -48,10 +48,10 @@ public class LivingEntityRendererMixin<T extends
         }
 
         if (VersioningUtils.getCustomName(entity) != null && ModConfig.get().enableMod) {
-            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinTexture(NameInfo.parse(VersioningUtils.getCustomName(entity)))));
+            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(VersioningUtils.getCustomName(entity)))));
             cir.cancel();
         } else if (VersioningUtils.getCustomName(entity) == null && !ModConfig.get().defaultSkin.isEmpty()) {
-            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinTexture(NameInfo.parse(Component.literal(ModConfig.get().defaultSkin)))));
+            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(Component.literal(ModConfig.get().defaultSkin)))));
             cir.cancel();
         }
     }

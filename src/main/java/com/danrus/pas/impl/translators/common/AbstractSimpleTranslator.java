@@ -13,14 +13,8 @@ public abstract class AbstractSimpleTranslator implements InfoTranslator {
     @Override
     public boolean isApplicable(NameInfo info) {
         try {
-            SkinProviderFeature feature = info.getFeature(SkinProviderFeature.class);
 
-            if (feature == null) {
-                PlayerArmorStandsClient.LOGGER.error("SkinProviderFeature is NULL for {}", info);
-                return false;
-            }
-
-            String provider = feature.getProvider();
+            String provider = getProvider(info);
 
             if (provider == null) {
                 PlayerArmorStandsClient.LOGGER.error("Provider is NULL for {}", info);
@@ -57,4 +51,5 @@ public abstract class AbstractSimpleTranslator implements InfoTranslator {
     protected abstract String getPrefix();
     protected abstract String getSuffix();
     abstract boolean shouldEncode();
+    protected abstract String getProvider(NameInfo info);
 }

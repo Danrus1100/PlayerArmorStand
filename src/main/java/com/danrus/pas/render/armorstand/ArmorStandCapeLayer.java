@@ -1,5 +1,6 @@
 package com.danrus.pas.render.armorstand;
 
+import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.NameInfo;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.impl.holder.CapeData;
@@ -54,41 +55,70 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
         }
 
         NameInfo info = NameInfo.parse(VersioningUtils.getCustomName(armorStand));
-        CapeData skinData = PasManager.getInstance().getCapeDataManager().getData(info);
 
-        if (info.wantCape() && this.getParentModel() instanceof PlayerArmorStandModel model) {
-//            CapeData skinData = PasManager.getInstance().get
-            if (PlayerArmorStandModel.showArmorStandWhileDownload(customName, skinData)) {
-                return;
-            }
-            ResourceLocation capeTexture = PasManager.getInstance().getCapeTexture(info);
-
-            poseStack.pushPose();
-            poseStack.mulPose(Axis.XP.rotationDegrees(10.0F));
-            poseStack.mulPose(Axis.YN.rotationDegrees(180.0F));
-            poseStack.translate(0.0F, 0.02F, -0.12F);
-            //? if <= 1.21.1 {
-            /*if (isBaby) {
-                poseStack.translate(0.0F, 0.71F, 0.21F);
-                poseStack.scale(0.5F, 0.5F, 0.5F);
-            }
-            *///?} else {
-            if (isBaby) {
-                poseStack.translate(0.0F, -0.02F, 0.21F);
-//                poseStack.scale(0.5F, 0.5F, 0.5F);
-            }
-            //?}
-
-
-            model.getCape().visible = true;
-            //? <1.21.9 {
-            VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entitySolid(capeTexture));
-            model.getCape().render(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY);
-            //?} else {
-            /*collector.submitModel(capeModel, armorStand, poseStack, RenderType.entitySolid(capeTexture), i, OverlayTexture.NO_OVERLAY, armorStand.outlineColor, (net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay)null);
-            *///?}
-
-            poseStack.popPose();
+        if (!info.wantCape()) {
+            return;
         }
+
+        if (!(this.getParentModel() instanceof PlayerArmorStandModel model)) {
+            return;
+        }
+
+        // 1. Сначала пытаемся найти в кеше
+        CapeData capeData = PasManager.getInstance().getCapeDataManager().findData(info);
+
+        // 2. Если нет в кеше - запускаем загрузку ОДИН РАЗ
+        if (capeData == null) {
+            capeData = PasManager.getInstance().getCapeDataManager().getData(info);
+
+            // Если загрузка началась - показываем стандартную стойку
+            if (capeData != null && capeData.getStatus() == DownloadStatus.IN_PROGRESS) {
+                return; // Или показывай индикатор загрузки
+            }
+        }
+
+        // 3. Проверяем что данные готовы
+        if (PlayerArmorStandModel.showArmorStandWhileDownload(customName, capeData)) {
+            return;
+        }
+
+        // 4. Получаем текстуру
+        ResourceLocation capeTexture = PasManager.getInstance().getCapeWithOverlayTexture(info);
+
+        if (capeTexture == null) {
+            return; // Нет текстуры плаща
+        }
+
+        if (PlayerArmorStandModel.showArmorStandWhileDownload(customName, capeData)) {
+            return;
+        }
+
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.XP.rotationDegrees(10.0F));
+        poseStack.mulPose(Axis.YN.rotationDegrees(180.0F));
+        poseStack.translate(0.0F, 0.02F, -0.12F);
+        //? if <= 1.21.1 {
+        /*if (isBaby) {
+            poseStack.translate(0.0F, 0.71F, 0.21F);
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+        }
+        *///?} else {
+        if (isBaby) {
+            poseStack.translate(0.0F, -0.02F, 0.21F);
+//                poseStack.scale(0.5F, 0.5F, 0.5F);
+        }
+        //?}
+
+
+        model.getCape().visible = true;
+        //? <1.21.9 {
+        VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entitySolid(capeTexture));
+        model.getCape().render(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY);
+        //?} else {
+        /*collector.submitModel(capeModel, armorStand, poseStack, RenderType.entitySolid(capeTexture), i, OverlayTexture.NO_OVERLAY, armorStand.outlineColor, (net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay)null);
+        *///?}
+
+        poseStack.popPose();
+
     }
 }
