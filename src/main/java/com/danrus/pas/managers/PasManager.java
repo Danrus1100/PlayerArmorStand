@@ -2,6 +2,9 @@ package com.danrus.pas.managers;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
+import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.data.TextureProvidersManager;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.utils.TextureUtils;
@@ -118,7 +121,8 @@ public class PasManager {
                 if (data.getStatus() == DownloadStatus.FAILED) {
                     this.LOGGER.info("Reloading failed skin for " + dataKey);
                     data.setStatus(DownloadStatus.NOT_STARTED);
-                    skinProviderManager.download(dataKey);
+                    NameInfo info = dataKey.toNameInfo();
+                    skinProviderManager.download(info);
                 }
             });
         });
@@ -129,7 +133,8 @@ public class PasManager {
                 if (data.getStatus() == DownloadStatus.FAILED) {
                     this.LOGGER.info("Reloading failed cape for " + dataKey);
                     data.setStatus(DownloadStatus.NOT_STARTED);
-                    capeProviderManager.download(dataKey);
+                    NameInfo info = dataKey.toNameInfo();
+                    capeProviderManager.download(info);
                 }
             });
         });

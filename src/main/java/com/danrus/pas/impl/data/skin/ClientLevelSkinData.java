@@ -1,7 +1,8 @@
 package com.danrus.pas.impl.data.skin;
 
-import com.danrus.pas.api.DataRepository;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.data.DataStoreKey;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.data.common.AbstractClientLevelDataProvider;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
@@ -25,5 +26,15 @@ public class ClientLevelSkinData extends AbstractClientLevelDataProvider<SkinDat
     @Override
     protected DataRepository<SkinData> getDataManager() {
         return PasManager.getInstance().getSkinDataManager();
+    }
+
+    @Override
+    protected DataStoreKey getKey(NameInfo info) {
+        return DataStoreKey.forSkin(info);
+    }
+
+    @Override
+    public DataStoreKey.DataType getDataType() {
+        return DataStoreKey.DataType.SKIN;
     }
 }

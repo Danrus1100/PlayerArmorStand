@@ -1,9 +1,9 @@
 package com.danrus.pas.api.reg;
 
 import com.danrus.pas.PlayerArmorStandsClient;
-import com.danrus.pas.api.DataHolder;
-import com.danrus.pas.api.InfoTranslator;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.data.DataHolder;
+import com.danrus.pas.api.info.InfoTranslator;
+import com.danrus.pas.api.info.NameInfo;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.danrus.pas.compat.possessive.mixin;
 
 //? if possessive {
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.compat.possessive.PossessiveRenderHand;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.impl.holder.SkinData;

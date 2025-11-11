@@ -1,13 +1,12 @@
 package com.danrus.pas.impl.providers.skin;
 
-import com.danrus.pas.api.*;
+import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
-import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.impl.providers.common.AbstractNamemcProvider;
 import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.SkinDownloader;
 import net.minecraft.resources.ResourceLocation;
 
@@ -45,5 +44,10 @@ public class NamemcSkinProvider extends AbstractNamemcProvider<SkinData> {
         SkinData data = this.getOrCreateDataHolder(info);
         data.setTexture(texture);
         getDataManager().store(info, data);
+    }
+
+    @Override
+    protected SkinData getDataFromNamemcRepository(NameInfo info) {
+        return PasManager.getInstance().getSkinDataManager().getSource("namemc").get(info);
     }
 }

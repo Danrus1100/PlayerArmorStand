@@ -1,8 +1,9 @@
 package com.danrus.pas.impl.data.skin;
 
-import com.danrus.pas.api.DataHolder;
-import com.danrus.pas.api.DataRepository;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.data.DataHolder;
+import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.data.DataStoreKey;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.data.common.AbstractFileTextureDataProvider;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
@@ -48,7 +49,17 @@ public class FileTextureSkinData extends AbstractFileTextureDataProvider<SkinDat
     }
 
     @Override
+    protected DataStoreKey getKey(NameInfo info) {
+        return DataStoreKey.forSkin(info);
+    }
+
+    @Override
     public String getName() {
         return "texture_file";
+    }
+
+    @Override
+    public DataStoreKey.DataType getDataType() {
+        return DataStoreKey.DataType.SKIN;
     }
 }

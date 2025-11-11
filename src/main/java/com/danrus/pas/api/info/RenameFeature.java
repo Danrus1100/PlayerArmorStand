@@ -1,4 +1,4 @@
-package com.danrus.pas.api;
+package com.danrus.pas.api.info;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,11 +11,4 @@ public interface RenameFeature {
     default int getPriority() { return 100; } // Bigger number = later parsing
     @Nullable default Pattern getCleanupPattern() { return null; }
     void reset();
-
-
-    default boolean affectsIdentity() { return false; }
-    default int identityHashCode() { return 0; }
-    default boolean identityEquals(RenameFeature other) {
-        return other != null && this.getClass().equals(other.getClass());
-    }
 }

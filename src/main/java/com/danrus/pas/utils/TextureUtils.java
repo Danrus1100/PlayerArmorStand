@@ -2,8 +2,8 @@ package com.danrus.pas.utils;
 
 
 import com.danrus.pas.PlayerArmorStandsClient;
-import com.danrus.pas.api.DataHolder;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.data.DataHolder;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.features.OverlayFeature;
 import com.danrus.pas.impl.holder.CapeData;

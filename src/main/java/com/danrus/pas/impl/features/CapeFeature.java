@@ -1,6 +1,6 @@
 package com.danrus.pas.impl.features;
 
-import com.danrus.pas.api.RenameFeature;
+import com.danrus.pas.api.info.RenameFeature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class CapeFeature implements RenameFeature {
 
     private static final Pattern PARSE_PATTERN = Pattern.compile("C(?::([^%|]+)%([^|]+)%)?");
-    private static final Pattern CLEANUP_PATTERN = Pattern.compile("C(?::[^|]+)?");
+    private static final Pattern CLEANUP_PATTERN = Pattern.compile("C(?::[^|]+%)?");
 
     private boolean enabled = false;
     private String provider = "";
@@ -23,7 +23,7 @@ public class CapeFeature implements RenameFeature {
             this.enabled = true;
             String prov = matcher.group(1);
             String capeId = matcher.group(2);
-            this.provider = prov != null ? prov.trim() : "";
+            this.provider = prov != null ? prov.trim() : "M";
             this.id = capeId != null ? capeId.trim() : "";
             return true;
         }
@@ -35,7 +35,7 @@ public class CapeFeature implements RenameFeature {
         if (!enabled) return "";
 
         StringBuilder sb = new StringBuilder("C");
-        if (!provider.isEmpty() && !id.isEmpty()) {
+        if (!"M".equals(provider) && !id.isEmpty()) {
             sb.append(":").append(provider).append("%").append(id);
         }
         return sb.toString();
@@ -57,22 +57,6 @@ public class CapeFeature implements RenameFeature {
     @Override
     public Pattern getCleanupPattern() {
         return CLEANUP_PATTERN;
-    }
-
-    @Override
-    public boolean affectsIdentity() {
-        return true;
-    }
-
-    @Override
-    public int identityHashCode() {
-        return this.provider.hashCode();
-    }
-
-    @Override
-    public boolean identityEquals(RenameFeature other) {
-        if (!(other instanceof CapeFeature o)) return false;
-        return this.enabled == o.enabled && this.provider.equals(o.provider) && this.id.equals(o.id);
     }
 
     public boolean isEnabled() { return enabled; }

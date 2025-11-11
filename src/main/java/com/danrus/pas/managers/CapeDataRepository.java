@@ -1,7 +1,7 @@
 package com.danrus.pas.managers;
 
-import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.TextureProvidersManager;
+import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.data.TextureProvidersManager;
 import com.danrus.pas.impl.data.cape.CacheCapeData;
 import com.danrus.pas.impl.data.cape.ClientLevelCapeData;
 import com.danrus.pas.impl.data.cape.MojangDiskCapeData;

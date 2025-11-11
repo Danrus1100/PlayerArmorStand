@@ -3,11 +3,6 @@
     public abstract class AbstractNamemcTranslator extends AbstractSimpleTranslator {
 
         @Override
-        String getLiteral() {
-            return "N";
-        }
-
-        @Override
         protected String getSuffix() {
             return "namemc";
         }

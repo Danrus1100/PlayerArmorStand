@@ -1,13 +1,13 @@
 package com.danrus.pas.impl.data.common;
 
 import com.danrus.pas.PlayerArmorStandsClient;
-import com.danrus.pas.api.DataHolder;
-import com.danrus.pas.api.DataProvider;
-import com.danrus.pas.api.DataRepository;
+import com.danrus.pas.api.data.DataHolder;
+import com.danrus.pas.api.data.DataProvider;
+import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.DownloadStatus;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.data.DataStoreKey;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
-import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.TextureUtils;
 import net.minecraft.client.Minecraft;
@@ -20,19 +20,19 @@ import java.util.Map;
 
 public abstract class AbstractFileTextureDataProvider<T extends DataHolder> implements DataProvider<T> {
 
-    private final Map<String, T> cache = new HashMap<>();
+    private final Map<DataStoreKey, T> cache = new HashMap<>();
 
     @Override
     public T get(NameInfo info) {
-        if (cache.containsKey(info.base())) {
-            return cache.get(info.base());
+        DataStoreKey key = getKey(info);
+        if (cache.containsKey(key)){
+            return cache.get(key);
         }
 
         if (!info.getDesiredProvider().equals(getProviderCode())) {
             return null;
         }
 
-        String encodedName = StringUtils.encodeToSha256(info.base());
         if (!isValidName(info.base())) {
             return null;
         }
@@ -49,8 +49,13 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
 
         T data = createDataHolder(info, textureLocation);
         data.setStatus(DownloadStatus.COMPLETED);
-        cache.put(info.base(), data);
+        cache.put(key, data);
         return data;
+    }
+
+    @Override
+    public T get(DataStoreKey key) {
+        return cache.get(key);
     }
 
     private boolean isValidName(String name) {
@@ -63,7 +68,7 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
     }
 
     @Override
-    public HashMap<NameInfo, T> getAll() {
+    public HashMap<DataStoreKey, T> getAll() {
         return new HashMap<>();
     }
 
@@ -75,25 +80,6 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
     @Override
     public void invalidateData(NameInfo info) {
         cache.remove(info.base());
-    }
-
-    @Override
-    public void discover() {
-        List<Path> files = getCacheFiles();
-        for (Path file : files) {
-            String fileName = file.getFileName().toString();
-            String baseName = fileName.substring(0, fileName.length() - 4);
-            NameInfo info = NameInfo.parse(baseName);
-            if (info.isEmpty()) {
-                PlayerArmorStandsClient.LOGGER.warn("Cannot parse NameInfo from cached file name: " + fileName);
-                continue;
-            }
-            ResourceLocation texture = InfoTranslators.getInstance()
-                    .toResourceLocation(getDataHolderClass(), info);
-            TextureUtils.registerTexture(file, texture, true);
-            cache.put(info.base(), createDataHolder(info, texture));
-            getDataManager().store(info, createDataHolder(info, texture));
-        }
     }
 
     private List<Path> getCacheFiles() {
@@ -114,4 +100,5 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
     protected abstract DataRepository<T> getDataManager();
     protected abstract String getProviderCode();
     protected abstract Class<? extends DataHolder> getDataHolderClass();
+    protected abstract DataStoreKey getKey(NameInfo info);
 }

@@ -1,6 +1,6 @@
 package com.danrus.pas.impl.features;
 
-import com.danrus.pas.api.RenameFeature;
+import com.danrus.pas.api.info.RenameFeature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

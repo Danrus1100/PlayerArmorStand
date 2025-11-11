@@ -1,6 +1,6 @@
 package com.danrus.pas.api.reg;
 
-import com.danrus.pas.api.RenameFeature;
+import com.danrus.pas.api.info.RenameFeature;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

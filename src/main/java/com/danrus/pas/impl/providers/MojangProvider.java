@@ -3,10 +3,11 @@ package com.danrus.pas.impl.providers;
 import com.danrus.pas.ModExecutor;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.DownloadStatus;
-import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.TextureProvider;
+import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.data.TextureProvider;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
+import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.OverlayMessageManger;
@@ -21,18 +22,27 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class MojangProvider implements TextureProvider {
+
+    private static final MojangProvider INSTANCE = new MojangProvider();
 
     private static final String MOJANG_API_URL = "https://api.mojang.com/users/profiles/minecraft/";
     private static final String SESSION_SERVER_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
     private static final int MAX_USERNAME_LENGTH = 16;
     private static final String USERNAME_PATTERN = "[a-zA-Z0-9_]+";
 
-    private final Map<String, CompletableFuture<Void>> activeDownloads = new HashMap<>();
+    private final Map<String, CompletableFuture<Void>> activeDownloads = new ConcurrentHashMap<>();
     private final Gson gson = new Gson();
     private final String literal = "M";
+
+    private MojangProvider() {}
+
+    public static MojangProvider getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public String getLiteral() {
@@ -41,9 +51,13 @@ public class MojangProvider implements TextureProvider {
 
     @Override
     public void load(NameInfo info, Consumer<String> onComplete) {
+        // Проверка: уже загружается?
         synchronized (activeDownloads) {
-            if (activeDownloads.containsKey(info.base())) {
-                activeDownloads.get(info.base()).thenAccept(v -> onComplete.accept(info.base()));
+            CompletableFuture<Void> existing = activeDownloads.get(info.base());
+            if (existing != null) {
+                // Подключаемся к существующей загрузке
+                existing.thenAccept(v -> onComplete.accept(info.base()));
+                PlayerArmorStandsClient.LOGGER.info("MojangProvider: Reusing active download for " + info.base());
                 return;
             }
         }
@@ -51,6 +65,7 @@ public class MojangProvider implements TextureProvider {
         if (!isValidName(info.base())) {
             OverlayMessageManger.getInstance().showInvalidNameMessage(info.base());
             ModExecutor.execute(() -> invalidateAllData(info));
+            onComplete.accept(info.base());
             return;
         }
 

@@ -1,5 +1,6 @@
-package com.danrus.pas.api;
+package com.danrus.pas.api.info;
 
+import com.danrus.pas.api.data.DataStoreKey;
 import com.danrus.pas.api.reg.FeatureRegistry;
 import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.features.OverlayFeature;
@@ -8,10 +9,8 @@ import com.danrus.pas.impl.features.SlimFeature;
 import com.danrus.pas.utils.NIParser;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class NameInfo {
@@ -87,41 +86,15 @@ public class NameInfo {
 
     @Override
     public int hashCode() {
-        int result = base != null ? base.hashCode() : 0;
-
-        for (RenameFeature feature : features.values()) {
-            if (feature.affectsIdentity()) {
-                result = 31 * result + feature.identityHashCode();
-            }
-        }
-
-        return result;
+        return base.hashCode() + getFeature(SkinProviderFeature.class).getProvider().hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof NameInfo)) return false;
-
-        NameInfo other = (NameInfo) obj;
-
-        if (!Objects.equals(this.base, other.base)) {
-            return false;
-        }
-
-        for (Map.Entry<Class<? extends RenameFeature>, RenameFeature> entry : features.entrySet()) {
-            RenameFeature thisFeature = entry.getValue();
-
-            if (thisFeature.affectsIdentity()) {
-                RenameFeature otherFeature = other.features.get(entry.getKey());
-
-                if (!thisFeature.identityEquals(otherFeature)) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return obj instanceof NameInfo other &&
+                Objects.equals(this.base, other.base) &&
+                Objects.equals(this.getFeature(SkinProviderFeature.class).getProvider(),
+                        other.getFeature(SkinProviderFeature.class).getProvider());
     }
 
 

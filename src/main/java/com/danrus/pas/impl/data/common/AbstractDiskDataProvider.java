@@ -2,6 +2,11 @@ package com.danrus.pas.impl.data.common;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
+import com.danrus.pas.api.data.DataHolder;
+import com.danrus.pas.api.data.DataProvider;
+import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.data.DataStoreKey;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.utils.TextureUtils;
 import com.danrus.pas.utils.VersioningUtils;
@@ -16,7 +21,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     public static final Path CACHE_PATH = VersioningUtils.getGameDir().resolve("cache/pas");
 
     protected final Path cachePath;
-    protected final HashMap<String, ResourceLocation> cache = new HashMap<>();
+    protected final HashMap<DataStoreKey, ResourceLocation> cache = new HashMap<>();
 
     public AbstractDiskDataProvider() {
         this.cachePath = CACHE_PATH;
@@ -53,6 +58,12 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     }
 
     @Override
+    public T get(DataStoreKey key) {
+        // Not implemented
+        return null;
+    }
+
+    @Override
     public boolean delete(NameInfo info) {
         String fileName = InfoTranslators.getInstance()
                 .toFileName(getDataHolderClass(), info);
@@ -71,12 +82,8 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     }
 
     @Override
-    public HashMap<NameInfo, T> getAll() {
+    public HashMap<DataStoreKey, T> getAll() {
         return new HashMap<>();
-    }
-
-    protected String getCacheKey(NameInfo info) {
-        return info.base() + getKeySuffix();
     }
 
     @Override
@@ -96,32 +103,6 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
         cache.remove(getCacheKey(info));
     }
 
-    @Override
-    public void discover() {
-        List<Path> files = getCacheFiles();
-        for (Path filePath : files) {
-            String fileName = filePath.getFileName().toString();
-            String baseName = fileName.substring(0, fileName.length() - 4); // Remove .png extension
-
-            NameInfo info = NameInfo.parse(baseName);
-            if (info.isEmpty()) {
-                PlayerArmorStandsClient.LOGGER.warn("Cannot parse NameInfo from cached file name: " + fileName);
-                continue;
-            }
-
-            ResourceLocation texture = InfoTranslators.getInstance()
-                    .toResourceLocation(getDataHolderClass(), info);
-
-            TextureUtils.registerTexture(filePath, texture, shouldProcessSkin());
-            cache.put(getCacheKey(info), texture);
-
-            T data = createDataHolder(info);
-            data.setTexture(texture);
-
-            getDataManager().store(info, data);
-        }
-    }
-
     private List<Path> getCacheFiles() {
         try {
             return List.of(cachePath.toFile().listFiles()).stream()
@@ -138,5 +119,5 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     protected abstract DataRepository<T> getDataManager();
     protected abstract Class<? extends DataHolder> getDataHolderClass();
     protected abstract boolean shouldProcessSkin();
-    protected abstract String getKeySuffix();
+    protected abstract DataStoreKey getCacheKey(NameInfo info);
 }

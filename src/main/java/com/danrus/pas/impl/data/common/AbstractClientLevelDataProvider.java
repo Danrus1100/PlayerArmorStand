@@ -1,6 +1,11 @@
 package com.danrus.pas.impl.data.common;
 
 import com.danrus.pas.api.*;
+import com.danrus.pas.api.data.DataHolder;
+import com.danrus.pas.api.data.DataProvider;
+import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.data.DataStoreKey;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -44,13 +49,19 @@ import java.util.concurrent.atomic.AtomicReference;
         return null;
     }
 
-    @Override
+        @Override
+        public T get(DataStoreKey key) {
+            // Not implemented
+            return null;
+        }
+
+        @Override
     public boolean delete(NameInfo info) {
         return false;
     }
 
     @Override
-    public HashMap<NameInfo, T> getAll() {
+    public HashMap<DataStoreKey, T> getAll() {
         if (mc.level == null) {
             return new HashMap<>();
         }
@@ -65,7 +76,7 @@ import java.util.concurrent.atomic.AtomicReference;
                 })
                 .collect(
                         HashMap::new,
-                        (map, data) -> map.put(data.getInfo(), data),
+                        (map, data) -> map.put( getKey(data.getInfo()) , data),
                         HashMap::putAll
                 );
     }
@@ -89,4 +100,5 @@ import java.util.concurrent.atomic.AtomicReference;
     protected abstract ResourceLocation getTexture(AbstractClientPlayer player);
     protected abstract T createDataHolder(NameInfo info);
     protected abstract DataRepository<T> getDataManager();
+    protected abstract DataStoreKey getKey(NameInfo info);
 }

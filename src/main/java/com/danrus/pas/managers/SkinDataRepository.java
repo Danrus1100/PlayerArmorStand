@@ -1,11 +1,10 @@
 package com.danrus.pas.managers;
 
-import com.danrus.pas.api.*;
+import com.danrus.pas.api.data.TextureProvidersManager;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.data.common.AbstractDataRepository;
 import com.danrus.pas.impl.data.skin.*;
 import com.danrus.pas.impl.holder.SkinData;
-
-import java.util.HashMap;
 
 public class SkinDataRepository extends AbstractDataRepository<SkinData> {
     @Override

@@ -1,6 +1,7 @@
 package com.danrus.pas.impl.providers.common;
 
-import com.danrus.pas.api.*;
+import com.danrus.pas.api.data.*;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.managers.PasManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
 
         for (char c : getExcludeLiterals().toCharArray()) {
             String literal = String.valueOf(c);
-            if (info.getDesiredProvider().equals(literal)) {
+            if (getProvider(info).equals(literal)) {
                 if (tryLoadFromProviders(literal, info)) {
                     loaded = true;
                     break;
@@ -68,8 +69,8 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
             }
         }
 
-        if (!loaded && !getExcludeLiterals().contains(info.getDesiredProvider())) {
-            String literal = info.getDesiredProvider();
+        if (!loaded && !getExcludeLiterals().contains(getProvider(info))) {
+            String literal = getProvider(info);
             if (tryLoadFromProviders(literal, info)) {
                 loaded = true;
             }
@@ -114,6 +115,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
     }
 
     protected abstract void prepareProviders();
+    protected abstract String getProvider(NameInfo info);
     protected abstract String getName();
     protected abstract String getDefaultLiteral();
     protected abstract String getExcludeLiterals();

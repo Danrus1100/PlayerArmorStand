@@ -1,6 +1,6 @@
 package com.danrus.pas.impl.holder;
 
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.utils.Rl;
 import net.minecraft.resources.ResourceLocation;

@@ -1,8 +1,8 @@
 package com.danrus.pas.impl.providers.cape;
 
-import com.danrus.pas.api.DataRepository;
+import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.DownloadStatus;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
 import com.danrus.pas.impl.features.CapeFeature;
@@ -54,5 +54,10 @@ public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
         data.setTexture(texture);
         data.setStatus(DownloadStatus.COMPLETED);
         getDataManager().store(info, data);
+    }
+
+    @Override
+    protected CapeData getDataFromNamemcRepository(NameInfo info) {
+        return PasManager.getInstance().getCapeDataManager().getSource("namemc_cape").get(info);
     }
 }

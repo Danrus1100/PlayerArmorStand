@@ -1,6 +1,8 @@
 package com.danrus.pas.managers;
 
-import com.danrus.pas.api.DataRepository;
+import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.impl.features.SkinProviderFeature;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.impl.providers.MojangProvider;
 import com.danrus.pas.impl.providers.common.AbstractTextureProviderManager;
@@ -13,8 +15,13 @@ public class SkinProvidersManager extends AbstractTextureProviderManager<SkinDat
 
     @Override
     protected void prepareProviders() {
-        this.addProvider(new MojangProvider());
+        this.addProvider(MojangProvider.getInstance());
         this.addProvider(new NamemcSkinProvider(), 1);
+    }
+
+    @Override
+    protected String getProvider(NameInfo info) {
+        return info.getFeature(SkinProviderFeature.class).getProvider();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.danrus.pas.impl.holder;
 
-import com.danrus.pas.api.DataHolder;
+import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.DownloadStatus;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.info.NameInfo;
 
 public abstract class AbstractPasHolder implements DataHolder {
 

@@ -1,6 +1,6 @@
 package com.danrus.pas.mixin;
 
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;

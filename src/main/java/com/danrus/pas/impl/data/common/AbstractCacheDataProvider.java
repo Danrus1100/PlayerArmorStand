@@ -1,53 +1,63 @@
 package com.danrus.pas.impl.data.common;
 
-import com.danrus.pas.api.DataHolder;
-import com.danrus.pas.api.DataProvider;
+import com.danrus.pas.api.data.DataHolder;
+import com.danrus.pas.api.data.DataProvider;
 import com.danrus.pas.api.DownloadStatus;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.data.DataStoreKey;
+import com.danrus.pas.api.info.NameInfo;
 
 import java.util.HashMap;
 
 public abstract class AbstractCacheDataProvider<T extends DataHolder> implements DataProvider<T> {
 
-    protected final HashMap<NameInfo, T> cache = new HashMap<>();
+    protected final HashMap<DataStoreKey, T> cache = new HashMap<>();
 
     @Override
     public T get(NameInfo info) {
-        if (!cache.containsKey(info)) {
+        DataStoreKey key = getKey(info);
+        if (!cache.containsKey(key)) {
             return null;
         }
-        return cache.get(info);
+        return cache.get(key);
+    }
+
+    @Override
+    public T get(DataStoreKey key) {
+        return cache.get(key);
     }
 
     @Override
     public boolean delete(NameInfo info) {
-        if (cache.containsKey(info)) {
-            cache.remove(info);
+        DataStoreKey key = getKey(info);
+        if (cache.containsKey(key)) {
+            cache.remove(key);
             return true;
         }
         return false;
     }
 
     @Override
-    public HashMap<NameInfo, T> getAll() {
+    public HashMap<DataStoreKey, T> getAll() {
         return cache;
     }
 
     @Override
     public void store(NameInfo info, T data) {
-        cache.put(info, data);
+        cache.put(getKey(info), data);
     }
 
     @Override
     public void invalidateData(NameInfo info) {
-        if (cache.containsKey(info)) {
-            cache.get(info).setStatus(DownloadStatus.FAILED);
+        DataStoreKey key = getKey(info);
+        if (cache.containsKey(key)) {
+            cache.get(key).setStatus(DownloadStatus.FAILED);
         } else {
             T data = createDataHolder(info);
             data.setStatus(DownloadStatus.FAILED);
-            cache.put(info, data);
+            cache.put(key, data);
         }
     }
 
     protected abstract T createDataHolder(NameInfo info);
+    protected abstract DataStoreKey getKey(NameInfo info);
 }

@@ -1,6 +1,7 @@
 package com.danrus.pas.commands;
 
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.data.DataStoreKey;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.managers.PasManager;
 import com.mojang.brigadier.StringReader;
@@ -35,10 +36,10 @@ public class CapeDataArgument implements ArgumentType<CapeData> {
     // TODO: separate by providers
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        HashMap<NameInfo, CapeData> allData = PasManager.getInstance().getCapeDataManager().getGameData();
-        allData.forEach((info, capeData) -> {
-            if (info.base().toLowerCase().startsWith(builder.getRemaining().toLowerCase()) && !info.base().contains("|")) {
-                builder.suggest(info.base());
+        HashMap<DataStoreKey, CapeData> allData = PasManager.getInstance().getCapeDataManager().getGameData();
+        allData.forEach((key, capeData) -> {
+            if (key.asString().toLowerCase().startsWith(builder.getRemaining().toLowerCase()) && !key.asString().contains("|")) {
+                builder.suggest(key.asString());
             }
         });
         return builder.buildFuture();

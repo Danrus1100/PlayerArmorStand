@@ -3,8 +3,11 @@ package com.danrus.pas.impl.providers.common;
 import com.danrus.pas.ModExecutor;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
+import com.danrus.pas.api.data.DataHolder;
+import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.data.TextureProvider;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.managers.OverlayMessageManger;
-import com.danrus.pas.managers.PasManager;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.CompletableFuture;
@@ -67,7 +70,7 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
     }
 
     protected T getOrCreateDataHolder(NameInfo info) {
-        T data = getDataManager().getSource("namemc").get(info);
+        T data = getDataFromNamemcRepository(info);
         return data != null ? data : createDataHolder(info);
     }
 
@@ -75,4 +78,5 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
     protected abstract DataRepository<T> getDataManager();
     protected abstract T createDataHolder(NameInfo info);
     protected abstract void updateSkinData(NameInfo info, ResourceLocation texture);
+    protected abstract T getDataFromNamemcRepository(NameInfo info);
 }

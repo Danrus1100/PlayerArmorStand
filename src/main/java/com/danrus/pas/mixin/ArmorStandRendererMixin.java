@@ -1,6 +1,6 @@
 package com.danrus.pas.mixin;
 
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.mixin.accessors.LivingEntityRendererAccessor;
@@ -14,7 +14,6 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

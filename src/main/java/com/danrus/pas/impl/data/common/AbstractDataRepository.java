@@ -2,8 +2,8 @@ package com.danrus.pas.impl.data.common;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
-import com.danrus.pas.impl.holder.SkinData;
-import com.danrus.pas.managers.PasManager;
+import com.danrus.pas.api.data.*;
+import com.danrus.pas.api.info.NameInfo;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -77,7 +77,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
-    public HashMap<NameInfo, T> getGameData() {
+    public HashMap<DataStoreKey, T> getGameData() {
         return sources.stream()
                 .map(source -> (DataProvider<T>) source)
                 .map(DataProvider::getAll)
@@ -118,11 +118,6 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
                         (a, b) -> b,
                         HashMap::new
                 ));
-    }
-
-    @Override
-    public void discover() {
-        sources.forEach(DataProvider::discover);
     }
 
     protected abstract void prepareSources();

@@ -1,6 +1,6 @@
 package com.danrus.pas.render.gui;
 
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.features.DisplayNameFeature;
 import com.danrus.pas.render.gui.tabs.Tab;
 import com.danrus.pas.render.gui.widgets.TabButton;

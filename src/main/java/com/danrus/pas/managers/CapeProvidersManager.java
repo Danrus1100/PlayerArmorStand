@@ -1,6 +1,8 @@
 package com.danrus.pas.managers;
 
-import com.danrus.pas.api.DataRepository;
+import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.providers.MojangProvider;
 import com.danrus.pas.impl.providers.cape.NamemcCapeProvider;
@@ -13,8 +15,13 @@ public class CapeProvidersManager extends AbstractTextureProviderManager<CapeDat
 
     @Override
     protected void prepareProviders() {
-        this.addProvider(new MojangProvider());
+        this.addProvider(MojangProvider.getInstance());
         this.addProvider(new NamemcCapeProvider(), 1);
+    }
+
+    @Override
+    protected String getProvider(NameInfo info) {
+        return info.getFeature(CapeFeature.class).getProvider();
     }
 
     @Override

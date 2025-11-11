@@ -1,13 +1,11 @@
 package com.danrus.pas.render.armorstand;
 
-import com.danrus.pas.api.DataHolder;
+import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.DownloadStatus;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.ModConfig;
-import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.utils.VersioningUtils;
-import com.danrus.pas.managers.PasManager;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;

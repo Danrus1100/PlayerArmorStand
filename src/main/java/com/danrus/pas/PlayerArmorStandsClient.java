@@ -1,6 +1,5 @@
 package com.danrus.pas;
 
-import com.danrus.pas.api.InfoTranslator;
 import com.danrus.pas.api.reg.FeatureRegistry;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.impl.features.*;

@@ -1,4 +1,4 @@
-package com.danrus.pas.api;
+package com.danrus.pas.api.info;
 
 import net.minecraft.resources.ResourceLocation;
 

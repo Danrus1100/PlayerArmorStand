@@ -1,7 +1,7 @@
 package com.danrus.pas.utils;
 
-import com.danrus.pas.api.NameInfo;
-import com.danrus.pas.api.RenameFeature;
+import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.info.RenameFeature;
 import com.danrus.pas.api.reg.FeatureRegistry;
 
 import java.util.regex.Pattern;

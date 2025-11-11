@@ -1,5 +1,7 @@
 package com.danrus.pas.api;
 
+import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.data.TextureProvidersManager;
 import com.danrus.pas.managers.PasManager;
 
 /**

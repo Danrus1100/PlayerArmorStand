@@ -1,12 +1,11 @@
 package com.danrus.pas.impl.features;
 
-import com.danrus.pas.api.RenameFeature;
+import com.danrus.pas.api.info.RenameFeature;
 import com.danrus.pas.managers.PasManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public class SkinProviderFeature implements RenameFeature {
 
@@ -39,24 +38,6 @@ public class SkinProviderFeature implements RenameFeature {
     @Override
     public void reset() {
         this.provider = DEFAULT_PROVIDER;
-    }
-
-    @Override
-    public boolean affectsIdentity() {
-        return true;
-    }
-
-    @Override
-    public int identityHashCode() {
-        return provider.hashCode();
-    }
-
-    @Override
-    public boolean identityEquals(RenameFeature other) {
-        if (!(other instanceof SkinProviderFeature)) {
-            return false;
-        }
-        return Objects.equals(this.provider, ((SkinProviderFeature) other).provider);
     }
 
     public String getProvider() { return provider; }

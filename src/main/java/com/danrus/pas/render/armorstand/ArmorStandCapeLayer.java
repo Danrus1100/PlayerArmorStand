@@ -1,7 +1,7 @@
 package com.danrus.pas.render.armorstand;
 
 import com.danrus.pas.api.DownloadStatus;
-import com.danrus.pas.api.NameInfo;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.managers.PasManager;
@@ -67,26 +67,22 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
         // 1. Сначала пытаемся найти в кеше
         CapeData capeData = PasManager.getInstance().getCapeDataManager().findData(info);
 
-        // 2. Если нет в кеше - запускаем загрузку ОДИН РАЗ
         if (capeData == null) {
             capeData = PasManager.getInstance().getCapeDataManager().getData(info);
 
-            // Если загрузка началась - показываем стандартную стойку
             if (capeData != null && capeData.getStatus() == DownloadStatus.IN_PROGRESS) {
-                return; // Или показывай индикатор загрузки
+                return;
             }
         }
 
-        // 3. Проверяем что данные готовы
         if (PlayerArmorStandModel.showArmorStandWhileDownload(customName, capeData)) {
             return;
         }
 
-        // 4. Получаем текстуру
         ResourceLocation capeTexture = PasManager.getInstance().getCapeWithOverlayTexture(info);
 
         if (capeTexture == null) {
-            return; // Нет текстуры плаща
+            return;
         }
 
         if (PlayerArmorStandModel.showArmorStandWhileDownload(customName, capeData)) {

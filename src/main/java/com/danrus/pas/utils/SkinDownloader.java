@@ -88,6 +88,6 @@ public class SkinDownloader {
             }
         }
 
-        throw new IOException("Failed to download after " + maxRetries + " attempts", lastException);
+        throw new IOException("Failed to download after " + maxRetries + " attempts, uri: " + uri, lastException);
     }
 }
