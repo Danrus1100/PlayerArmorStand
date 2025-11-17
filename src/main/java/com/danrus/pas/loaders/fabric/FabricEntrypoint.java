@@ -1,5 +1,5 @@
 //? if fabric {
-package com.danrus.pas.loaders.fabric;
+/*package com.danrus.pas.loaders.fabric;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.commands.CapeDataArgument;
@@ -40,4 +40,4 @@ public class FabricEntrypoint implements ModInitializer {
         } ));
     }
 }
-//?}
+*///?}

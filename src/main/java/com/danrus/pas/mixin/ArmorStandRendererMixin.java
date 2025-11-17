@@ -115,12 +115,12 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
     *///?}
 
     //? >=1.21.9 {
-    @Inject(
+    /*@Inject(
             method = "extractRenderState(Lnet/minecraft/world/entity/decoration/ArmorStand;Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;F)V",
             at = @At("RETURN")
     )
     private void setCustomName1219(ArmorStand armorStand, net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStandRenderState, float f, CallbackInfo ci) {
         ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandRenderState).pas$setCustomName(armorStand.getCustomName());
     }
-    //?}
+    *///?}
 }

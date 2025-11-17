@@ -8,16 +8,21 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 //?}
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
@@ -57,7 +62,7 @@ public class EntityRendererMixin {
     }
     *///?} else if >=1.21.6 && <1.21.9 {
 
-    /*@Shadow
+    @Shadow
     @Final
     protected net.minecraft.client.renderer.entity.EntityRenderDispatcher entityRenderDispatcher;
 
@@ -86,7 +91,7 @@ public class EntityRendererMixin {
                 int j = (int) (Minecraft.getInstance().options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
                 font.drawInBatch(displayName, f, (float) i, -2130706433, false, matrix4f, bufferSource, bl ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, j, packedLight);
                 if (bl) {
-                    font.drawInBatch(displayName, f, (float) i, -1, false, matrix4f, bufferSource, Font.DisplayMode.NORMAL, 0, LightTexture.lightCoordsWithEmission(packedLight, 2));
+                    font.drawInBatch(displayName, f, (float) i, -1, false, matrix4f, bufferSource, Font.DisplayMode.NORMAL, 0, net.minecraft.client.renderer.LightTexture.lightCoordsWithEmission(packedLight, 2));
                 }
 
                 poseStack.popPose();
@@ -94,9 +99,9 @@ public class EntityRendererMixin {
             }
         }
     }
-    *///?} else {
+    //?} else {
 
-    @WrapOperation(
+    /*@WrapOperation(
             method = "submitNameTag",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitNameTag(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/phys/Vec3;ILnet/minecraft/network/chat/Component;ZIDLnet/minecraft/client/renderer/state/CameraRenderState;)V")
     )
@@ -109,7 +114,7 @@ public class EntityRendererMixin {
         }
     }
 
-    //?}
+    *///?}
 
     //?}
 }

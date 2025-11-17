@@ -49,7 +49,7 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
 
         T data = createDataHolder(info, textureLocation);
         data.setStatus(DownloadStatus.COMPLETED);
-        cache.put(key, data);
+        getDataManager().store(info, data);
         return data;
     }
 

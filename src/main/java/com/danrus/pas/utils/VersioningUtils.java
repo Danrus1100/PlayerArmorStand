@@ -18,20 +18,20 @@ import java.util.function.Function;
 public class VersioningUtils {
     public static Path getGameDir() {
         //? if fabric {
-        return net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir();
-        //?} else if neoforge {
-        /*return net.neoforged.fml.loading.FMLPaths.GAMEDIR.get();
-        *///?} else if forge {
+        /*return net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir();
+        *///?} else if neoforge {
+        return net.neoforged.fml.loading.FMLPaths.GAMEDIR.get();
+        //?} else if forge {
         /*return net.minecraftforge.fml.loading.FMLPaths.GAMEDIR.get();
         *///?}
     }
 
     public static boolean isModLoaded(String modId) {
         //? if fabric {
-        return net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded(modId);
-        //?} else if neoforge {
-        /*return net.neoforged.fml.loading.FMLLoader.getLoadingModList().getModFileById(modId) != null;
-        *///?} else if forge {
+        /*return net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded(modId);
+        *///?} else if neoforge {
+        return net.neoforged.fml.loading.FMLLoader.getLoadingModList().getModFileById(modId) != null;
+        //?} else if forge {
         /*return net.minecraftforge.fml.ModList.get().isLoaded(modId);
         *///?}
     }
@@ -45,10 +45,10 @@ public class VersioningUtils {
             *///?} else {
             if (object instanceof net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStandState) {
                 //? <1.21.9 {
-                /*return armorStandState.customName;
-                *///?} else {
-                return ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandState).pas$getCustomName();
-                //?}
+                return armorStandState.customName;
+                //?} else {
+                /*return ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandState).pas$getCustomName();
+                *///?}
             }
             //?}
             else {
@@ -213,31 +213,31 @@ public class VersioningUtils {
         //? if <= 1.20.1 {
         /*return player.getSkinTextureLocation();
         *///?} else if >1.20.1 && <1.21.9 {
-        /*return player.getSkin().texture();
-        *///?} else {
-        return player.getSkin().body().texturePath();
-        //?}
+        return player.getSkin().texture();
+        //?} else {
+        /*return player.getSkin().body().texturePath();
+        *///?}
     }
 
     public static ResourceLocation getPlayerCapeTexture(AbstractClientPlayer player){
         //? if <= 1.20.1 {
         /*return player.getCloakTextureLocation();
         *///?} else if >1.20.1 && <1.21.9 {
-        /*return player.getSkin().capeTexture();
-        *///?} else {
-        try {
+        return player.getSkin().capeTexture();
+        //?} else {
+        /*try {
             return player.getSkin().cape().texturePath();
         } catch (Exception e) {
             return CapeData.DEFAULT_TEXTURE;
         }
-        //?}
+        *///?}
     }
 
     public static void copyPartPose(ModelPart from, ModelPart to){
         //? <1.21.9 {
-        /*to.copyFrom(from);
-        *///?} else {
-        to.x = from.x;
+        to.copyFrom(from);
+        //?} else {
+        /*to.x = from.x;
         to.y = from.y;
         to.z = from.z;
         to.xRot = from.xRot;
@@ -246,7 +246,7 @@ public class VersioningUtils {
         to.xScale = from.xScale;
         to.yScale = from.yScale;
         to.zScale = from.zScale;
-        //?}
+        *///?}
     }
 
     public abstract static class VersionlessArmorStandCapeLayer extends RenderLayer<

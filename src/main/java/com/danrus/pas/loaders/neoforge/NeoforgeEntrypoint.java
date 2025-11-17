@@ -1,8 +1,7 @@
 //? if neoforge {
-/*package com.danrus.pas.loaders.neoforge;
+package com.danrus.pas.loaders.neoforge;
 
 import com.danrus.pas.PlayerArmorStandsClient;
-import com.danrus.pas.api.SkinData;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.commands.PasCommands;
 import com.danrus.pas.commands.SkinDataArgument;
@@ -45,14 +44,8 @@ public class NeoforgeEntrypoint {
                             })
                             .then(LiteralArgumentBuilder.<CommandSourceStack>literal("reload_failed")
                                     .executes(PasCommands::reloadFailedCommand))
-                            .then(LiteralArgumentBuilder.<CommandSourceStack>literal("reload")
-                                    .then(RequiredArgumentBuilder.<CommandSourceStack, SkinData>argument(
-                                                    "name/skin", new SkinDataArgument()
-                                            ).executes(PasCommands::reloadSingeCommand)
-                                    )
-                            )
             );
         });
     }
 }
-*///?}
+//?}
