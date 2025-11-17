@@ -52,11 +52,6 @@ public class MojangProvider implements TextureProvider {
 
     @Override
     public void load(NameInfo info, Consumer<String> onComplete) {
-        if  (!checkProvider(info)) {
-            PlayerArmorStandsClient.LOGGER.info("MojangProvider: Skipping download for " + info + " due to provider mismatch.");
-            onComplete.accept(info.base());
-            return;
-        }
         synchronized (activeDownloads) {
             CompletableFuture<Void> existing = activeDownloads.get(info.base());
             if (existing != null) {
@@ -87,25 +82,21 @@ public class MojangProvider implements TextureProvider {
         });
     }
 
-    private boolean checkProvider(NameInfo info) {
-        if (!info.getFeature(SkinProviderFeature.class).getProvider().equals(getLiteral()) ||
-            !info.getFeature(CapeFeature.class).getProvider().equals(getLiteral())) {
-            return false;
-        }
-        return true;
-    }
-
     private void initializeDownload(NameInfo info) {
         PlayerArmorStandsClient.LOGGER.info("MojangProvider: Downloading textures for " + info);
         OverlayMessageManger.getInstance().showDownloadMessage(info.base());
 
-        SkinData skinData = new SkinData(info);
-        skinData.setStatus(DownloadStatus.IN_PROGRESS);
-        PasManager.getInstance().getSkinDataManager().store(info, skinData);
+        if (info.getFeature(SkinProviderFeature.class).getProvider().equals(getLiteral())) {
+            SkinData skinData = new SkinData(info);
+            skinData.setStatus(DownloadStatus.IN_PROGRESS);
+            PasManager.getInstance().getSkinDataManager().store(info, skinData);
+        }
 
-        CapeData capeData = new CapeData(info);
-        capeData.setStatus(DownloadStatus.IN_PROGRESS);
-        PasManager.getInstance().getCapeDataManager().store(info, capeData);
+        if (info.getFeature(CapeFeature.class).getProvider().equals(getLiteral())) {
+            CapeData capeData = new CapeData(info);
+            capeData.setStatus(DownloadStatus.IN_PROGRESS);
+            PasManager.getInstance().getCapeDataManager().store(info, capeData);
+        }
     }
 
     private CompletableFuture<Void> downloadProfile(NameInfo info, Consumer<String> onComplete) {
@@ -161,6 +152,9 @@ public class MojangProvider implements TextureProvider {
     }
 
     private CompletableFuture<Void> processSkinTexture(TexturedProfile profile, NameInfo info) {
+        if (!info.getFeature(SkinProviderFeature.class).getProvider().equals("M")) {
+            return CompletableFuture.completedFuture(null);
+        }
         PlayerArmorStandsClient.LOGGER.info("processSkinTexture called for {}", info);
         if (profile.textures.SKIN == null || profile.textures.SKIN.url == null) {
             SkinData data = new SkinData(info);
@@ -185,6 +179,9 @@ public class MojangProvider implements TextureProvider {
     }
 
     private CompletableFuture<Void> processCapeTexture(TexturedProfile profile, NameInfo info) {
+        if (!info.getFeature(CapeFeature.class).getProvider().equals("M")) {
+            return CompletableFuture.completedFuture(null);
+        }
         PlayerArmorStandsClient.LOGGER.info("processCapeTexture called for {}", info);
         if (profile.textures.CAPE == null || profile.textures.CAPE.url == null) {
             CapeData data = new CapeData(info);

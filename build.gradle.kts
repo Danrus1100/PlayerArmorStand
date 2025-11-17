@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.apply
+
 plugins {
     id("dev.isxander.modstitch.base") version "0.7.0-unstable"
     id("me.modmuss50.mod-publish-plugin") version "0.8.4"

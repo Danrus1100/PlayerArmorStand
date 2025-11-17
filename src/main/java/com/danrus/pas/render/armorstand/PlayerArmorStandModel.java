@@ -5,6 +5,7 @@ import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.impl.holder.SkinData;
+import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -211,7 +212,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         this.leftEar.visible = isEarsVisible;
         this.rightEar.visible = isEarsVisible;
 
-        this.setModelVisibility(!showArmorStandWhileDownload(customName, new SkinData(info)), info.wantBeSlim(), showBase);
+        this.setModelVisibility(!showArmorStandWhileDownload(customName, PasManager.getInstance().findSkinData(info)), info.wantBeSlim(), showBase);
 
         if (customNameString.isEmpty() && ModConfig.get().defaultSkin.isEmpty()) {
             setOriginalAngles(showBase, showArms, bodyPose);
@@ -298,7 +299,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Model
         }
 
         boolean isDownlading = data.getStatus() == DownloadStatus.IN_PROGRESS ||
-                data.getStatus() == DownloadStatus.FAILED;
+                data.getStatus() == DownloadStatus.FAILED || data.getStatus() == DownloadStatus.NOT_STARTED;
         return ModConfig.get().showArmorStandWhileDownloading && isDownlading;
     }
 

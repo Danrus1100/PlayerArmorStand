@@ -1,5 +1,5 @@
 //? >=1.21.9 {
-/*package com.danrus.pas.mixin;
+package com.danrus.pas.mixin;
 
 import com.danrus.pas.extenders.ArmorStandRenderStateExtender;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
@@ -23,4 +23,4 @@ public class ArmorStandRenderStateMixin implements ArmorStandRenderStateExtender
         this.component = component;
     }
 }
-*///?}
+//?}

@@ -18,7 +18,7 @@ public class PlayerArmorStandsClient {
     public static final Logger LOGGER = LoggerFactory.getLogger("PlayerArmorStands");
 
     //? >=1.21.9
-    /*public static ModelPart capeDef = com.danrus.pas.render.armorstand.PasCapeModel.createCapeLayer().bakeRoot();*/
+    public static net.minecraft.client.model.geom.ModelPart capeDef = com.danrus.pas.render.armorstand.PasCapeModel.createCapeLayer().bakeRoot();
 
     public static void initialize() {
         PasManager.getInstance();

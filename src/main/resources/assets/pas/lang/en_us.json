@@ -23,7 +23,7 @@
   "pas.config.hide_params_on_label": "Hide Parameters on Nameplate",
   "pas.config.default_skin": "Default Skin",
   "pas.config.enable_mod": "Enable Mod",
-  "pas.config.show_armor_stand_while_downloading": "Show Armor Stand While Downloading",
+  "pas.config.show_armor_stand_while_downloading": "Show Armor Stand Model While Downloading",
   "pas.config.try_apply_from_server_player": "Try to Apply Skin from Server Player",
 
   "pas.config.download_status_display": "Show Download Status",
@@ -48,6 +48,12 @@
   "pas.menu.tab.skin.provider.m": "Mojang",
   "pas.menu.tab.skin.provider.f": "Local File",
 
+  "pas.menu.tab.cape.provider": "Cape Source",
+  "pas.menu.tab.cape.provider.m": "Mojang",
+  "pas.menu.tab.cape.provider.a": "NameMC",
+  "pas.menu.tab.cape.name": "Cape name / ID",
+  "pas.menu.tab.cape.name.tooltip": "To download Cape from NameMC you should specify cape ID. For example, in \"https://namemc.com/cape/cb5dd34bee340182\" id is \"cb5dd34bee340182\" ",
+
   "pas.menu.tab.skin.arm_type": "Arm Type",
   "pas.menu.tab.skin.arm_type.slim": "Slim",
   "pas.menu.tab.skin.arm_type.wide": "Wide",
@@ -66,5 +72,6 @@
   "pas.menu.tab.overlay.name.tooltip": "In the field below, specify any name of texture located in assets/minecraft/textures/blocks (e.g. stone)",
   "pas.menu.tab.overlay.blend": "Blend",
 
-  "pas.menu.tab.overlay.display_name": "Display Name"
+  "pas.menu.tab.overlay.display_name": "Display Name",
+  "pas.menu.tab.overlay.display_name.tooltip": "Name from box below will be displayed instead player name. To apply name, you should press enter"
 }

@@ -219,17 +219,32 @@ public class PasConfiguratorScreen extends Screen {
             setEntityName(info.compile());
         });
 
+        capeNameBox.setValue(info.getFeature(CapeFeature.class).getId());
+
+        ImageButton acceptCapeButton = new ImageButton(0, 0, 20, 20,
+                new WidgetSprites(
+                        Rl.pas("accept"),
+                        Rl.pas("accept_disabled"),
+                        Rl.pas("accept_highlighted")
+                ),
+                button -> {
+                    info.getFeature(CapeFeature.class).setId(capeNameBox.getValue());
+                    setEntityName(info.compile());
+                }
+        );
+
         Tab capeTab = new Tab("cape", (width, height) -> {
             capeActiveLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 87));
             capeAciveButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 70));
-            armTypeLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 50));
-            armTypeButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 30));
+            armTypeLabel2.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 50));
+            armTypeButton2.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 30));
             capeProviderLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 10));
             capeProviderButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f + 10));
             capeNameLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f + 30));
             capeNameBox.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f + 50));
             armTypeLabel2.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 50));
             armTypeButton2.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 30));
+            acceptCapeButton.setPosition(Math.round(width / 2f + 92), Math.round(height / 2f + 50));
         });
 
         capeTab.addWidget(capeActiveLabel);
@@ -240,6 +255,7 @@ public class PasConfiguratorScreen extends Screen {
         capeTab.addWidget(capeProviderButton);
         capeTab.addWidget(capeNameLabel);
         capeTab.addWidget(capeNameBox);
+        capeTab.addWidget(acceptCapeButton);
 
         // --- Misc Tab ---
 
@@ -397,7 +413,7 @@ public class PasConfiguratorScreen extends Screen {
                 .rotateY((float) Math.toRadians(currentRotation + 30F));
 
         //? if <= 1.21.5 {
-        InventoryScreen.renderEntityInInventory(
+        /*InventoryScreen.renderEntityInInventory(
                 g, (int) (this.width / 2f - 68), (int) (this.height / 2f + 80), 70,
                 //? >= 1.21.1
                 new Vector3f(0, 0, 0),
@@ -405,8 +421,8 @@ public class PasConfiguratorScreen extends Screen {
                 null,
                 entity
         );
-        //?} else {
-        /*int left = this.width / 2 - 130; // Approx. left boundary
+        *///?} else {
+        int left = this.width / 2 - 130; // Approx. left boundary
         int top = this.height / 2 - 70;  // Approx. top boundary
         int right = this.width / 2 - 18; // Approx. right boundary
         int bottom = this.height / 2 + 120; // Approx. bottom boundary
@@ -425,7 +441,7 @@ public class PasConfiguratorScreen extends Screen {
                 null,
                 entity
         );
-        *///?}
+        //?}
     }
 
     private float lerp(float start, float end, float speed, float partialTick) {

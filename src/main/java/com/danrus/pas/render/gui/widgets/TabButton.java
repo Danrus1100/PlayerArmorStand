@@ -26,9 +26,9 @@ public class TabButton extends Button {
 
     @Override
     //? <1.21.9
-    public void onPress() {
+    /*public void onPress() {*/
     //? >=1.21.9
-    /*public void onPress(net.minecraft.client.input.InputWithModifiers inputWithModifiers) {*/
+    public void onPress(net.minecraft.client.input.InputWithModifiers inputWithModifiers) {
         if (this.tabOnPress != null) {
             this.tabOnPress.onPress(this);
         }

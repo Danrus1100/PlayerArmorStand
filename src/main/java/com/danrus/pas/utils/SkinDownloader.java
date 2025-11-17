@@ -53,6 +53,15 @@ public class SkinDownloader {
                 connection.connect();
 
                 int responseCode = connection.getResponseCode();
+
+                if (responseCode == 404) {
+                    throw new IOException("Skin not found (404), uri: " + uri);
+                }
+
+                if (responseCode == 403) {
+                    throw new IOException("Access to skin forbidden (403), uri: " + uri);
+                }
+
                 if (responseCode == 200) {
                     byte[] data = connection.getInputStream().readAllBytes();
 

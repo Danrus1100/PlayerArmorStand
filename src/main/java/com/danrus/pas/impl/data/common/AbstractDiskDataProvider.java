@@ -52,6 +52,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
 
         T data = createDataHolder(info);
         data.setTexture(texture);
+        data.setStatus(DownloadStatus.COMPLETED);
 
         getDataManager().store(info, data);
         return data;

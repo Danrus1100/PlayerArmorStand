@@ -41,6 +41,8 @@ plugins {
     id("dev.kikugie.stonecutter") version "0.6+"
 }
 
+//includeBuild("../modstitch")
+
 stonecutter {
     kotlinController = true
     centralScript = "build.gradle.kts"

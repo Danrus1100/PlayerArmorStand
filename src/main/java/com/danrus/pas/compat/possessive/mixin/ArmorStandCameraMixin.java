@@ -1,7 +1,7 @@
 package com.danrus.pas.compat.possessive.mixin;
 
 //? if possessive {
-import com.danrus.pas.api.info.NameInfo;
+/*import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.compat.possessive.PossessiveRenderHand;
 import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.impl.holder.SkinData;
@@ -31,14 +31,8 @@ public class ArmorStandCameraMixin {
     @Final
     private ArmorStand possessedArmorStand;
 
-    // For Just_S: ты бы сэкономил бы мне кучу времени и нервов, если бы свой if-else где ты выбираешь модель руки арморстенда как здесь вынес бы в отдельный метод изначально
     @Unique
     private static PossessiveRenderHand resolveHand(ModelPart playerHand, PlayerModel playerModel, PlayerArmorStandModel armorStandModel, NameInfo info) {
-//        if (playerHand == playerModel.rightArm) {
-//            return armorStandModel.rightArm;
-//        } else {
-//            return armorStandModel.leftArm;
-//        }
 
         if (playerHand.equals(playerModel.rightArm)) {
             if (ModConfig.get().possessiveShowDefaultHand) {
@@ -78,17 +72,19 @@ public class ArmorStandCameraMixin {
         };
     }
 
-    /**
+    /^*
      * @author Danrus110_
      * @reason Rewrite hand rendering for {@link PlayerArmorStandModel}
-     */
+     ^/
     @Overwrite
     //? if =1.20.1 {
-    /*public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
-    *///?} else if =1.21.1 {
-    /*public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
-    *///?} else {
-    public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, ResourceLocation resourceLocation, ModelPart modelPart, boolean bl){
+    /^public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
+    ^///?} else if =1.21.1 {
+    /^public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
+    ^///?} else if <=1.21.8 {
+    /^public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, ResourceLocation resourceLocation, ModelPart modelPart, boolean bl){
+    ^///?} else {
+    
     //?}
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         ArmorStandRenderer entityRenderer = (ArmorStandRenderer)entityRenderDispatcher.getRenderer(this.possessedArmorStand);
@@ -136,4 +132,4 @@ public class ArmorStandCameraMixin {
 
     }
 }
-//?}
+*///?}

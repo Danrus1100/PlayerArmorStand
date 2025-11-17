@@ -22,10 +22,10 @@ public class PossessiveMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         //? if possessive {
-        return VersioningUtils.isModLoaded("possessive");
-        //?} else {
-        /*return false;
-        *///?}
+        /*return VersioningUtils.isModLoaded("possessive");
+        *///?} else {
+        return false;
+        //?}
     }
 
     @Override

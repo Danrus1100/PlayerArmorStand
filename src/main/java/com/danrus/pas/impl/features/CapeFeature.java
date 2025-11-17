@@ -13,7 +13,7 @@ public class CapeFeature implements RenameFeature {
     private static final Pattern CLEANUP_PATTERN = Pattern.compile("C(?::[^%]+%[^%|]+%)?");
 
     private boolean enabled = false;
-    private String provider = "";
+    private String provider = "M";
     private String id = "";
 
     @Override
