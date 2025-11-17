@@ -1,6 +1,7 @@
 package com.danrus.pas.render.gui;
 
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.features.DisplayNameFeature;
 import com.danrus.pas.render.gui.tabs.Tab;
 import com.danrus.pas.render.gui.widgets.TabButton;
@@ -68,16 +69,15 @@ public class PasConfiguratorScreen extends Screen {
 
     private final ButtonWithIcon skinProviderButton;
     private final ButtonWithIcon armTypeButton;
+    private final ButtonWithIcon armTypeButton2;
 
     private final TextWidget openFolderLabel;
     private final Button openFolderButton;
 
     private final ButtonWithIcon capeAciveButton;
+    private final ButtonWithIcon capeProviderButton;
 
     private NameInfo info;
-
-    private String capeProvider = "M";
-    private String capeId = "";
 
     private final TabManager tabManager;
 
@@ -107,6 +107,34 @@ public class PasConfiguratorScreen extends Screen {
                     info.setSlim(!info.wantBeSlim());
                     ((ButtonWithIcon) button).icon = info.wantBeSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO;
                     button.setMessage(Component.translatable("pas.menu.tab.skin.arm_type." + (info.wantBeSlim() ? "slim" : "wide")));
+                    setEntityName(info.compile());
+                });
+
+        armTypeButton2 = new ButtonWithIcon(0, 0, 120, 20,
+                info.wantBeSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO,
+                Component.translatable("pas.menu.tab.skin.arm_type." + (info.wantBeSlim() ? "slim" : "wide")),
+                button -> {
+                    info.setSlim(!info.wantBeSlim());
+                    ((ButtonWithIcon) button).icon = info.wantBeSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO;
+                    button.setMessage(Component.translatable("pas.menu.tab.skin.arm_type." + (info.wantBeSlim() ? "slim" : "wide")));
+                    setEntityName(info.compile());
+                });
+
+        capeProviderButton = new ButtonWithIcon(0, 0, 120, 20,
+                MOJANG_LOGO,
+                Component.translatable("pas.menu.tab.cape.provider." + info.getFeature(CapeFeature.class).getProvider().toLowerCase()),
+                button -> {
+                    CapeFeature capeFeature = info.getFeature(CapeFeature.class);
+                    switch (capeFeature.getProvider()) {
+                        case "M" -> {
+                            capeFeature.setProvider("A");
+                            button.setMessage(Component.translatable("pas.menu.tab.cape.provider.a"));
+                        }
+                        case "A" -> {
+                            capeFeature.setProvider("M");
+                            button.setMessage(Component.translatable("pas.menu.tab.cape.provider.m"));
+                        }
+                    }
                     setEntityName(info.compile());
                 });
 
@@ -179,16 +207,39 @@ public class PasConfiguratorScreen extends Screen {
 
         TextWidget capeActiveLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.cape.label"));
 
+        TextWidget capeProviderLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.cape.provider"));
+
+        TextWidget capeNameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.cape.name")).setTooltip(Component.translatable("pas.menu.tab.cape.name.tooltip"));
+
+        TextWidget armTypeLabel2 = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.arm_type"));
+
+        EnterEditBox capeNameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Cape Name"), editBox -> {
+            CapeFeature capeFeature = info.getFeature(CapeFeature.class);
+            capeFeature.setId(editBox.getValue());
+            setEntityName(info.compile());
+        });
 
         Tab capeTab = new Tab("cape", (width, height) -> {
             capeActiveLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 87));
             capeAciveButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 70));
             armTypeLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 50));
             armTypeButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 30));
+            capeProviderLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 10));
+            capeProviderButton.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f + 10));
+            capeNameLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f + 30));
+            capeNameBox.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f + 50));
+            armTypeLabel2.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 50));
+            armTypeButton2.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 30));
         });
 
         capeTab.addWidget(capeActiveLabel);
         capeTab.addWidget(capeAciveButton);
+        capeTab.addWidget(armTypeLabel2);
+        capeTab.addWidget(armTypeButton2);
+        capeTab.addWidget(capeProviderLabel);
+        capeTab.addWidget(capeProviderButton);
+        capeTab.addWidget(capeNameLabel);
+        capeTab.addWidget(capeNameBox);
 
         // --- Misc Tab ---
 
@@ -334,6 +385,11 @@ public class PasConfiguratorScreen extends Screen {
             skinProviderButton.icon = FILE_LOGO;
         }
 
+        if (info.getFeature(CapeFeature.class).getProvider().equals("M")) {
+            capeProviderButton.icon = MOJANG_LOGO;
+        } else if (info.getFeature(CapeFeature.class).getProvider().equals("A")) {
+            capeProviderButton.icon = NAMEMC_LOGO;
+        }
         g.drawCenteredString(Minecraft.getInstance().font, Component.translatable("pas.menu.name"), this.width / 2, 15, 0xFFFFFF);
         entity.setHeadPose(new Rotations(currentHeadX, currentHeadY, currentHeadZ));
 
