@@ -15,25 +15,26 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-    public abstract class AbstractClientLevelDataProvider<T extends DataHolder> implements DataProvider<T> {
-
-    Minecraft mc = Minecraft.getInstance();
+public abstract class AbstractClientLevelDataProvider<T extends DataHolder> implements DataProvider<T> {
 
     @Override
     public T get(NameInfo info) {
+        if (Minecraft.getInstance().level == null) {
+            return null;
+        }
         if (!ModConfig.get().tryApplyFromServerPlayer) {
             return null;
         }
-        AtomicReference<T> dataAtomicReference = new AtomicReference<>(createDataHolder(info));
-        if (mc.level != null) {
-            mc.level.players().stream()
+        T holder = createDataHolder(info);
+        if (Minecraft.getInstance().level != null) {
+            Minecraft.getInstance().level.players().stream()
                     .filter(player -> player.getName().getString().equals(info.base()))
                     .findFirst()
                     .ifPresent(
                             player -> {
                                 if (getTexture(player) != null) {
-                                    dataAtomicReference.get().setStatus(DownloadStatus.COMPLETED);
-                                    dataAtomicReference.get().setTexture(getTexture(player));
+                                    holder.setStatus(DownloadStatus.COMPLETED);
+                                    holder.setTexture(getTexture(player));
                                 }
                             }
                     );
@@ -41,9 +42,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 
-        if (dataAtomicReference.get().getStatus() == DownloadStatus.COMPLETED) {
-            getDataManager().store(info, dataAtomicReference.get());
-            return dataAtomicReference.get();
+        if (holder.getStatus() == DownloadStatus.COMPLETED) {
+            getDataManager().store(info, holder);
+            return holder;
         }
 
         return null;
@@ -62,10 +63,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
     @Override
     public HashMap<DataStoreKey, T> getAll() {
-        if (mc.level == null) {
+        if (Minecraft.getInstance().level == null) {
             return new HashMap<>();
         }
-        return mc.level.players().stream()
+        return Minecraft.getInstance().level.players().stream()
                 .map(player -> {
                     T data = createDataHolder(NameInfo.parse(player.getName().getString()));
                     if (getTexture(player) != null) {

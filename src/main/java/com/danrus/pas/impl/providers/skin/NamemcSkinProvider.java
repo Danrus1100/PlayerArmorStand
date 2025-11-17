@@ -50,4 +50,9 @@ public class NamemcSkinProvider extends AbstractNamemcProvider<SkinData> {
     protected SkinData getDataFromNamemcRepository(NameInfo info) {
         return PasManager.getInstance().getSkinDataManager().getSource("namemc").get(info);
     }
+
+    @Override
+    protected String getOutputString(NameInfo info) {
+        return info.base();
+    }
 }

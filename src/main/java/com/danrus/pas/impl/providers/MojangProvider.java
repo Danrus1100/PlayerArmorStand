@@ -8,6 +8,7 @@ import com.danrus.pas.api.data.TextureProvider;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
 import com.danrus.pas.impl.features.CapeFeature;
+import com.danrus.pas.impl.features.SkinProviderFeature;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.OverlayMessageManger;
@@ -51,11 +52,14 @@ public class MojangProvider implements TextureProvider {
 
     @Override
     public void load(NameInfo info, Consumer<String> onComplete) {
-        // Проверка: уже загружается?
+        if  (!checkProvider(info)) {
+            PlayerArmorStandsClient.LOGGER.info("MojangProvider: Skipping download for " + info + " due to provider mismatch.");
+            onComplete.accept(info.base());
+            return;
+        }
         synchronized (activeDownloads) {
             CompletableFuture<Void> existing = activeDownloads.get(info.base());
             if (existing != null) {
-                // Подключаемся к существующей загрузке
                 existing.thenAccept(v -> onComplete.accept(info.base()));
                 PlayerArmorStandsClient.LOGGER.info("MojangProvider: Reusing active download for " + info.base());
                 return;
@@ -81,6 +85,14 @@ public class MojangProvider implements TextureProvider {
                 activeDownloads.remove(info.base());
             }
         });
+    }
+
+    private boolean checkProvider(NameInfo info) {
+        if (!info.getFeature(SkinProviderFeature.class).getProvider().equals(getLiteral()) ||
+            !info.getFeature(CapeFeature.class).getProvider().equals(getLiteral())) {
+            return false;
+        }
+        return true;
     }
 
     private void initializeDownload(NameInfo info) {

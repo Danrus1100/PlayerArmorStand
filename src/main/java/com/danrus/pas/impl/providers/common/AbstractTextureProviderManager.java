@@ -101,18 +101,20 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
         for (PrioritizedProvider prioritized : providerList) {
             try {
                 LOGGER.info("Trying to download from {}", prioritized.provider.getClass().getSimpleName());
-                pendingList.add(info.base());
+                pendingList.add(getOutputString(info));
                 prioritized.provider().load(info, pendingList::remove);
                 return true;
             } catch (Exception e) {
                 LOGGER.error(
                         "Provider {} failed to load {}: {}",
-                        prioritized.provider().getClass().getSimpleName(), info.base(), e.getMessage()
+                        prioritized.provider().getClass().getSimpleName(), getOutputString(info), e.getMessage()
                 );
             }
         }
         return false;
     }
+
+    protected abstract String getOutputString(NameInfo info);
 
     protected abstract void prepareProviders();
     protected abstract String getProvider(NameInfo info);

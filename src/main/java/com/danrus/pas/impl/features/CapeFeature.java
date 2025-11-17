@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 public class CapeFeature implements RenameFeature {
 
-    private static final Pattern PARSE_PATTERN = Pattern.compile("C(?::([^%|]+)%([^|]+)%)?");
-    private static final Pattern CLEANUP_PATTERN = Pattern.compile("C(?::[^|]+%)?");
+    private static final Pattern PARSE_PATTERN = Pattern.compile("C(?::([^%]+)%([^%|]+)%)?");
+    private static final Pattern CLEANUP_PATTERN = Pattern.compile("C(?::[^%]+%[^%|]+%)?");
 
     private boolean enabled = false;
     private String provider = "";
@@ -35,8 +35,8 @@ public class CapeFeature implements RenameFeature {
         if (!enabled) return "";
 
         StringBuilder sb = new StringBuilder("C");
-        if (!"M".equals(provider) && !id.isEmpty()) {
-            sb.append(":").append(provider).append("%").append(id);
+        if (!id.isEmpty()) {
+            sb.append(":").append(provider).append("%").append(id).append("%");
         }
         return sb.toString();
     }

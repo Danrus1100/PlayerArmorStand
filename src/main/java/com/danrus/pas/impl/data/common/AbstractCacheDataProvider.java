@@ -15,10 +15,11 @@ public abstract class AbstractCacheDataProvider<T extends DataHolder> implements
     @Override
     public T get(NameInfo info) {
         DataStoreKey key = getKey(info);
-        if (!cache.containsKey(key)) {
+                T value = cache.get(key);
+        if (value == null) {
             return null;
         }
-        return cache.get(key);
+        return value;
     }
 
     @Override
@@ -38,7 +39,7 @@ public abstract class AbstractCacheDataProvider<T extends DataHolder> implements
 
     @Override
     public HashMap<DataStoreKey, T> getAll() {
-        return cache;
+        return new HashMap<>(cache);
     }
 
     @Override
@@ -49,10 +50,11 @@ public abstract class AbstractCacheDataProvider<T extends DataHolder> implements
     @Override
     public void invalidateData(NameInfo info) {
         DataStoreKey key = getKey(info);
-        if (cache.containsKey(key)) {
-            cache.get(key).setStatus(DownloadStatus.FAILED);
+        T data = cache.get(key);
+        if (data != null) {
+            data.setStatus(DownloadStatus.FAILED);
         } else {
-            T data = createDataHolder(info);
+            data = createDataHolder(info);
             data.setStatus(DownloadStatus.FAILED);
             cache.put(key, data);
         }

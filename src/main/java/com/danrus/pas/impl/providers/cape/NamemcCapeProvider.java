@@ -60,4 +60,9 @@ public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
     protected CapeData getDataFromNamemcRepository(NameInfo info) {
         return PasManager.getInstance().getCapeDataManager().getSource("namemc_cape").get(info);
     }
+
+    @Override
+    protected String getOutputString(NameInfo info) {
+        return info.getFeature(CapeFeature.class).compile();
+    }
 }

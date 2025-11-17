@@ -28,7 +28,7 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
     @Override
     public void load(NameInfo info, Consumer<String> onComplete) {
         this.onComplete = onComplete;
-        this.output = info.base();
+        this.output = getOutputString(info);
         initializeDownload(info);
         ModExecutor.execute(() -> getDownloadTask(info)
                 .thenApply(identifier -> {
@@ -79,4 +79,5 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
     protected abstract T createDataHolder(NameInfo info);
     protected abstract void updateSkinData(NameInfo info, ResourceLocation texture);
     protected abstract T getDataFromNamemcRepository(NameInfo info);
+    protected abstract String getOutputString(NameInfo info);
 }

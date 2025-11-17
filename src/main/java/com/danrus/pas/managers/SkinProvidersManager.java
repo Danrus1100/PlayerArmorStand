@@ -14,6 +14,11 @@ public class SkinProvidersManager extends AbstractTextureProviderManager<SkinDat
     private static final String EXCLUDE_LITERALS = "NF";
 
     @Override
+    protected String getOutputString(NameInfo info) {
+        return info.base();
+    }
+
+    @Override
     protected void prepareProviders() {
         this.addProvider(MojangProvider.getInstance());
         this.addProvider(new NamemcSkinProvider(), 1);

@@ -28,7 +28,10 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
-    public void addSource(DataProvider<T> source, int priority) {
+        public void addSource(DataProvider<T> source, int priority) {
+        if (priority < 0) {
+            throw new IllegalArgumentException("Priority cannot be negative");
+        }
         if (priority >= sources.size()) {
             sources.add(source);
         } else {
@@ -38,21 +41,21 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     public T getData(NameInfo info) {
-        AtomicReference<T> data = new AtomicReference<>(createData(info));
-        AtomicBoolean needDownload = new AtomicBoolean(true);
-        sources.forEach(source -> {
-            T dataFromSource = needDownload.get() ? source.get(info) : null;
+        T data = createData(info);
+        boolean needDownload = true;
+        for (DataProvider<T> source : sources) {
+            T dataFromSource = needDownload ? source.get(info) : null;
             if (dataFromSource != null) {
-                needDownload.set(false);
-                data.set(dataFromSource);
+                needDownload = false;
+                data = dataFromSource;
             }
-        });
-        if (needDownload.get() && data.get().getStatus() == DownloadStatus.NOT_STARTED) {
-            data.get().setStatus(DownloadStatus.IN_PROGRESS);
-            store(info, data.get());
+        }
+        if (data.getStatus() == DownloadStatus.NOT_STARTED) {
+            data.setStatus(DownloadStatus.IN_PROGRESS);
+            store(info, data);
             getTextureProvidersManager().download(info);
         }
-        return data.get();
+        return data;
     }
 
     @Override
@@ -70,7 +73,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     @Override
     @Nullable
     public DataProvider<T> getSource(String key) {
-        return (DataProvider<T>) sources.stream()
+                return sources.stream()
                 .filter(source -> source.getName().equals(key))
                 .findFirst()
                 .orElse(null);
@@ -93,7 +96,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     @Override
     public T findData(NameInfo info) {
         DataProvider<T> source = getSource("game");
-        DataProvider<T> gameCache = source instanceof DataProvider<?> ? source : null;
+                DataProvider<T> gameCache = source;
         if (gameCache != null) {
             return gameCache.get(info);
         }
@@ -104,7 +107,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     public void delete(NameInfo info) {
         sources.forEach(source -> {
             if (source.delete(info)) {
-                PlayerArmorStandsClient.LOGGER.info("Deleted data from source: " + source.getName() + " for string: " + info);
+                                PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for string: {}", source.getName(), info);
             }
         });
     }

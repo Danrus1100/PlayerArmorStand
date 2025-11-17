@@ -7,6 +7,7 @@ import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.impl.translators.cape.MojangCapeTranslator;
 import com.danrus.pas.impl.translators.cape.NamemcCapeTranslator;
+import com.danrus.pas.impl.translators.skin.FileSkinTranslator;
 import com.danrus.pas.impl.translators.skin.MojangSkinTranslator;
 import com.danrus.pas.impl.translators.skin.NamemcSkinTranslator;
 import com.danrus.pas.managers.PasManager;
@@ -31,6 +32,7 @@ public class PlayerArmorStandsClient {
         InfoTranslators translator = InfoTranslators.getInstance();
         translator.register(SkinData.class, new NamemcSkinTranslator());
         translator.register(SkinData.class, new MojangSkinTranslator());
+        translator.register(SkinData.class, new FileSkinTranslator());
         translator.register(CapeData.class, new NamemcCapeTranslator());
         translator.register(CapeData.class, new MojangCapeTranslator());
     }

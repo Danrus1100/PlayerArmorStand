@@ -14,6 +14,11 @@ public class CapeProvidersManager extends AbstractTextureProviderManager<CapeDat
     private static final String EXCLUDE_LITERALS = "F";
 
     @Override
+    protected String getOutputString(NameInfo info) {
+        return info.getFeature(CapeFeature.class).compile();
+    }
+
+    @Override
     protected void prepareProviders() {
         this.addProvider(MojangProvider.getInstance());
         this.addProvider(new NamemcCapeProvider(), 1);
