@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface ArmorStandScreenAccessor {
     @Accessor("nameField")
     //? if <=1.21.5 {
-    /*com.mrbysco.armorposer.client.gui.widgets.NameBox pas$getNameInput();
-    *///?} else {
-    EditBox pas$getNameInput();
-    //?}
+    com.mrbysco.armorposer.client.gui.widgets.NameBox pas$getNameInput();
+    //?} else {
+    /*EditBox pas$getNameInput();
+    *///?}
 
     @Accessor("renameButton")
     Button pas$getRenameButton();

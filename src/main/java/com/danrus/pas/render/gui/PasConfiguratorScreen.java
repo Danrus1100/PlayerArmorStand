@@ -413,7 +413,7 @@ public class PasConfiguratorScreen extends Screen {
                 .rotateY((float) Math.toRadians(currentRotation + 30F));
 
         //? if <= 1.21.5 {
-        /*InventoryScreen.renderEntityInInventory(
+        InventoryScreen.renderEntityInInventory(
                 g, (int) (this.width / 2f - 68), (int) (this.height / 2f + 80), 70,
                 //? >= 1.21.1
                 new Vector3f(0, 0, 0),
@@ -421,8 +421,8 @@ public class PasConfiguratorScreen extends Screen {
                 null,
                 entity
         );
-        *///?} else {
-        int left = this.width / 2 - 130; // Approx. left boundary
+        //?} else {
+        /*int left = this.width / 2 - 130; // Approx. left boundary
         int top = this.height / 2 - 70;  // Approx. top boundary
         int right = this.width / 2 - 18; // Approx. right boundary
         int bottom = this.height / 2 + 120; // Approx. bottom boundary
@@ -441,7 +441,7 @@ public class PasConfiguratorScreen extends Screen {
                 null,
                 entity
         );
-        //?}
+        *///?}
     }
 
     private float lerp(float start, float end, float speed, float partialTick) {

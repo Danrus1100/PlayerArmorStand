@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.nio.file.Path;
 import java.util.function.Function;
@@ -18,20 +19,20 @@ import java.util.function.Function;
 public class VersioningUtils {
     public static Path getGameDir() {
         //? if fabric {
-        /*return net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir();
-        *///?} else if neoforge {
-        return net.neoforged.fml.loading.FMLPaths.GAMEDIR.get();
-        //?} else if forge {
+        return net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir();
+        //?} else if neoforge {
+        /*return net.neoforged.fml.loading.FMLPaths.GAMEDIR.get();
+        *///?} else if forge {
         /*return net.minecraftforge.fml.loading.FMLPaths.GAMEDIR.get();
         *///?}
     }
 
     public static boolean isModLoaded(String modId) {
         //? if fabric {
-        /*return net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded(modId);
-        *///?} else if neoforge {
-        return net.neoforged.fml.loading.FMLLoader.getLoadingModList().getModFileById(modId) != null;
-        //?} else if forge {
+        return net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded(modId);
+        //?} else if neoforge {
+        /*return net.neoforged.fml.loading.FMLLoader.getLoadingModList().getModFileById(modId) != null;
+        *///?} else if forge {
         /*return net.minecraftforge.fml.ModList.get().isLoaded(modId);
         *///?}
     }
@@ -168,40 +169,40 @@ public class VersioningUtils {
 
     public static float getXRot(Rotations rot) {
         //? if <= 1.21.4 {
-        /*return rot.getX();
-        *///?} else {
-        return rot.x();
-        //?}
+        return rot.getX();
+        //?} else {
+        /*return rot.x();
+        *///?}
     }
     public static float getYRot(Rotations rot) {
         //? if <= 1.21.4 {
-        /*return rot.getY();
-        *///?} else {
-        return rot.y();
-        //?}
+        return rot.getY();
+        //?} else {
+        /*return rot.y();
+        *///?}
     }
     public static float getZRot(Rotations rot) {
         //? if <= 1.21.4 {
-        /*return rot.getZ();
-        *///?} else {
-        return rot.z();
-        //?}
+        return rot.getZ();
+        //?} else {
+        /*return rot.z();
+        *///?}
     }
 
 
     //? if >= 1.21.4 {
     public static
         //? if >= 1.21.6 {
-        com.mojang.blaze3d.pipeline.RenderPipeline
-        //?} else {
-        /*Function<ResourceLocation, RenderType>
-        *///?}
+        /*com.mojang.blaze3d.pipeline.RenderPipeline
+        *///?} else {
+        Function<ResourceLocation, RenderType>
+        //?}
         getGuiRender() {
             //? if >= 1.21.6 {
-            return net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
-            //?} else {
-            /*return RenderType::guiTextured;
-            *///?}
+            /*return net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
+            *///?} else {
+            return RenderType::guiTextured;
+            //?}
             }
     //?}
 
