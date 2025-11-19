@@ -71,8 +71,8 @@ public class LivingEntityRendererMixin<T extends
 
         String name = NameInfo.parse(entity.getCustomName()).base();
 
-        if ((name.equals("Dinnerbone")
-                || name.equals("Grumm")
+        if ((name.equalsIgnoreCase("Dinnerbone")
+                || name.equalsIgnoreCase("Grumm")
         ) && entity instanceof ArmorStand) {
             cir.setReturnValue(true);
             cir.cancel();

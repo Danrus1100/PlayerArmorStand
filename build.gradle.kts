@@ -24,6 +24,7 @@ val loaderInitials: String = when (loader) {
 
 var isPossessive: Boolean = loader == "fabric" && findProperty("deps.possessive") != null
 var isArmorposer: Boolean = stonecutter.eval(minecraft, ">=1.21.4") && findProperty("deps.armorposer") != null
+var isEasyAnvils: Boolean = findProperty("deps.easyanvils") != null
 var hasModMenu: Boolean = findProperty("deps.modmenu") != null
 
 modstitch {
@@ -108,9 +109,15 @@ modstitch {
         if (isArmorposer) {
             configs.register("pas.armorposer") {side = CLIENT}
         }
+
         if (isPossessive) {
             configs.register("pas.possessive") {side = CLIENT}
         }
+
+        if (isEasyAnvils) {
+            configs.register("pas.easyanvils") {side = CLIENT}
+        }
+
         if (stonecutter.eval(minecraft, ">=1.21.9")) {
             configs.register("pas.1219")
         }
@@ -133,6 +140,7 @@ stonecutter {
         "vanilla" to constraint.equals("vanilla"),
         "possessive" to isPossessive,
         "armorposer" to isArmorposer,
+        "easyanvils" to isEasyAnvils,
         "modmenu" to hasModMenu
     )
 }
@@ -159,6 +167,14 @@ dependencies {
     modstitchModImplementation("dev.isxander:yet-another-config-lib:${property("deps.yacl")}")
     prop("deps.armorposer") {
         modstitchModImplementation("com.mrbysco.armorposer:ArmorPoser-${loader}-${property("deps.armorposer")}")
+    }
+
+    prop("deps.easyanvils") {
+        modstitchModImplementation("maven.modrinth:easy-anvils:${it}")
+        modstitchModImplementation("maven.modrinth:puzzles-lib:${property("deps.puzzles")}")
+        modstitchModImplementation("maven.modrinth:forge-config-api-port:${property("deps.fcapi")}")
+        modstitchModImplementation("com.electronwill.night-config:core:3.8.3")
+        modstitchModImplementation("com.electronwill.night-config:toml:3.8.3")
     }
 }
 

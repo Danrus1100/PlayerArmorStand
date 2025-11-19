@@ -1,13 +1,10 @@
-package com.danrus.pas.mixin;
+package com.danrus.pas.compat.easyanvils.mixin;
 
-import com.danrus.pas.mixin.accessors.ScreenAccessor;
-import com.danrus.pas.render.gui.PasConfiguratorScreen;
 import com.danrus.pas.impl.namer.AnvilArmorStandNamer;
+import com.danrus.pas.render.gui.PasConfiguratorScreen;
 import com.danrus.pas.utils.GuiUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import fuzs.easyanvils.client.gui.screens.inventory.ModAnvilScreen;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,11 +18,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(AnvilScreen.class)
-public class AnvilScreenMixin {
+@Mixin(ModAnvilScreen.class)
+public class EaAnvilScreenMixin {
     @Unique
     private Button configuratorButton = GuiUtils.getStandardButtonBuilder(
-            () -> new PasConfiguratorScreen(new AnvilArmorStandNamer((AnvilScreen) (Object) this)))
+                    () -> new PasConfiguratorScreen(new AnvilArmorStandNamer((AnvilScreen) (Object) this)))
             .build();
 
     @Inject(

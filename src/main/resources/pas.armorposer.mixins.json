@@ -1,7 +1,7 @@
 {
   "package": "com.danrus.pas.compat.armorposer.mixin",
   "required": true,
-  "plugin": "com.danrus.pas.compat.armorposer.ArmorPoserMixinPlugin",
+  "plugin": "com.danrus.pas.compat.armorposer.ArmorPoserCompatPlugin",
   "minVersion": "0.8",
   "injectors": {
     "defaultRequire": 1

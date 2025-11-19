@@ -104,8 +104,8 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
 
         NameInfo info = NameInfo.parse(entityLiving.getCustomName().getString());
 
-        if (info.base().equals("Dinnerbone")
-        || info.base().equals("Grumm")) {
+        if (info.base().equalsIgnoreCase("Dinnerbone")
+        || info.base().equalsIgnoreCase("Grumm")) {
             poseStack.translate(0.0F, entityLiving.getBbHeight() - 0.1F, 0.0F);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
