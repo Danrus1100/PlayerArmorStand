@@ -3,13 +3,19 @@ package com.danrus.pas.render.armorstand;
 //? >=1.21.9 {
 
 /*import com.danrus.pas.PlayerArmorStandsClient;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 
-public class PasCapeModel extends ArmorStandArmorModel {
+public class PasCapeModel extends ArmorStandArmorModel implements Cape {
 
     public PasCapeModel() {
         this(PlayerArmorStandsClient.capeDef);
@@ -31,6 +37,14 @@ public class PasCapeModel extends ArmorStandArmorModel {
         partdefinition.clearChild("right_leg");
         partdefinition2.addOrReplaceChild("cloak", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, 0.0F, -1.0F, 10.0F, 16.0F, 1.0F, CubeDeformation.NONE, 1.0F, 0.5F), PartPose.offset(0.0F, 0.0F, 0.0F));
         return LayerDefinition.create(meshdefinition, 64, 64);
+    }
+
+    @Override
+    public void draw(PoseStack stack, ResourceLocation textureLocation, RenderVersionContext context, int light) {
+        SubmitNodeStorage collector = context.getData(SubmitNodeStorage.class);
+        PasCapeModel capeModel = context.getData(PasCapeModel.class);
+        ArmorStandRenderState armorStand = context.getData(ArmorStandRenderState.class);
+        collector.submitModel(capeModel, armorStand, stack, RenderType.entitySolid(textureLocation), light, OverlayTexture.NO_OVERLAY, armorStand.outlineColor, null);
     }
 }
 *///?}

@@ -8,7 +8,6 @@ import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.data.DataStoreKey;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
-import com.danrus.pas.utils.StringUtils;
 import com.danrus.pas.utils.TextureUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;

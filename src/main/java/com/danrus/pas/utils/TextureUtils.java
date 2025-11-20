@@ -242,7 +242,7 @@ public class TextureUtils {
 
                 NativeImage finalImage = grayscaleSkinOverMaterial(skinImage, overlayImage, (float) blendStrength / 100f);
 
-                ResourceLocation finalIdentifier = Rl.pas(prefix + "/" + StringUtils.encodeToSha256(info.base()) + "_" + overlay + "_" + blendStrength);
+                ResourceLocation finalIdentifier = Rl.pas(prefix + "/" + EncodeUtils.encodeToSha256(info.base()) + "_" + overlay + "_" + blendStrength);
                 registerTexture(finalImage, finalIdentifier, prefix == "skins");
 
                 // Сохраняем в кэш

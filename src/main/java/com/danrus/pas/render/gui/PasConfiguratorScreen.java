@@ -37,6 +37,7 @@ public class PasConfiguratorScreen extends Screen {
 
     public static final ResourceLocation MOJANG_LOGO = Rl.pas("mojang");
     public static final ResourceLocation NAMEMC_LOGO = Rl.pas("namemc");
+    public static final ResourceLocation MCCAPES_LOGO = Rl.pas("minecraftcapes");
     public static final ResourceLocation FILE_LOGO = Rl.pas("file");
     public static final ResourceLocation WIDE_ARM_LOGO = Rl.pas("wide");
     public static final ResourceLocation SLIM_ARM_LOGO = Rl.pas("slim");
@@ -131,6 +132,10 @@ public class PasConfiguratorScreen extends Screen {
                             button.setMessage(Component.translatable("pas.menu.tab.cape.provider.a"));
                         }
                         case "A" -> {
+                            capeFeature.setProvider("I");
+                            button.setMessage(Component.translatable("pas.menu.tab.cape.provider.i"));
+                        }
+                        case "I" ->{
                             capeFeature.setProvider("M");
                             button.setMessage(Component.translatable("pas.menu.tab.cape.provider.m"));
                         }
@@ -405,6 +410,8 @@ public class PasConfiguratorScreen extends Screen {
             capeProviderButton.icon = MOJANG_LOGO;
         } else if (info.getFeature(CapeFeature.class).getProvider().equals("A")) {
             capeProviderButton.icon = NAMEMC_LOGO;
+        } else if (info.getFeature(CapeFeature.class).getProvider().equals("I")) {
+            capeProviderButton.icon = MCCAPES_LOGO;
         }
         g.drawCenteredString(Minecraft.getInstance().font, Component.translatable("pas.menu.name"), this.width / 2, 15, 0xFFFFFF);
         entity.setHeadPose(new Rotations(currentHeadX, currentHeadY, currentHeadZ));

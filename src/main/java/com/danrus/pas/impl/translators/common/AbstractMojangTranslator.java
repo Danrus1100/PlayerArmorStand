@@ -8,7 +8,7 @@ public abstract class AbstractMojangTranslator extends AbstractSimpleTranslator 
     }
 
     @Override
-    boolean shouldEncode() {
+    public boolean shouldEncode() {
         return true;
     }
 }

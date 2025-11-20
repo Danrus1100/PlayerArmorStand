@@ -2,10 +2,7 @@ package com.danrus.pas.managers;
 
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.data.TextureProvidersManager;
-import com.danrus.pas.impl.data.cape.CacheCapeData;
-import com.danrus.pas.impl.data.cape.ClientLevelCapeData;
-import com.danrus.pas.impl.data.cape.MojangDiskCapeData;
-import com.danrus.pas.impl.data.cape.NamemcDiskCapeData;
+import com.danrus.pas.impl.data.cape.*;
 import com.danrus.pas.impl.data.common.AbstractDataRepository;
 import com.danrus.pas.impl.holder.CapeData;
 
@@ -17,6 +14,7 @@ public class CapeDataRepository extends AbstractDataRepository<CapeData> {
         addSource(new CacheCapeData(), 2);
         addSource(new MojangDiskCapeData());
         addSource(new NamemcDiskCapeData());
+        addSource(new MinecraftCapesDiskData());
     }
 
     @Override

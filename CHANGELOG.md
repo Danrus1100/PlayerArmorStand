@@ -1,3 +1,5 @@
+ - New: Support for capes from [Minecraft Capes](https://minecraftcapes.net/)
+ - Fix: Fixed cape rendering bug
  - Fix: now deadmau5, dinnerbone, and grumm renames are case insensitive
  - Other: version names x.x.x-PLATFORM-***1.21.6*** are now x.x.x-PLATFORM-***1.21.8***
  - Other: compatibility with EasyAnvils

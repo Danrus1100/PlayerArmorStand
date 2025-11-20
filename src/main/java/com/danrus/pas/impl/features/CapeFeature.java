@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 public class CapeFeature implements RenameFeature {
 
-    private static final Pattern PARSE_PATTERN = Pattern.compile("C(?::([^%]+)%([^%|]+)%)?");
-    private static final Pattern CLEANUP_PATTERN = Pattern.compile("C(?::[^%]+%[^%|]+%)?");
+    private static final Pattern PARSE_PATTERN = Pattern.compile("C(?::([^%|]+)(?:%([^%|]+)%)?)?");
+    private static final Pattern CLEANUP_PATTERN = Pattern.compile("C(?::[^%|]+(?:%[^%|]+%)?)?");
 
     private boolean enabled = false;
     private String provider = "M";
@@ -19,12 +19,20 @@ public class CapeFeature implements RenameFeature {
     @Override
     public boolean parse(@NotNull String input) {
         Matcher matcher = PARSE_PATTERN.matcher(input);
+
         if (matcher.find()) {
             this.enabled = true;
+
             String prov = matcher.group(1);
             String capeId = matcher.group(2);
-            this.provider = prov != null ? prov.trim() : "M";
-            this.id = capeId != null ? capeId.trim() : "";
+
+            if (prov != null || capeId != null) {
+                this.provider = prov == null ? "M" : prov.trim();
+                this.id = capeId == null ? "" : capeId.trim();
+            } else {
+                this.provider = "M";
+                this.id = "";
+            }
             return true;
         }
         return false;
@@ -35,8 +43,11 @@ public class CapeFeature implements RenameFeature {
         if (!enabled) return "";
 
         StringBuilder sb = new StringBuilder("C");
-        if (!id.isEmpty()) {
-            sb.append(":").append(provider).append("%").append(id).append("%");
+        if (!provider.isEmpty() && !provider.equals("M")) {
+            sb.append(":").append(provider);
+        }
+        if (!id.isEmpty() && !provider.equals("M")) {
+            sb.append("%").append(id).append("%");
         }
         return sb.toString();
     }
@@ -49,7 +60,7 @@ public class CapeFeature implements RenameFeature {
     @Override
     public void reset() {
         this.enabled = false;
-        this.provider = "";
+        this.provider = "M";
         this.id = "";
     }
 

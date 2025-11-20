@@ -19,7 +19,7 @@ public abstract class AbstractFileTranslator extends AbstractSimpleTranslator{
     }
 
     @Override
-    boolean shouldEncode() {
+    public boolean shouldEncode() {
         return false;
     }
 }

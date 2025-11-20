@@ -1,13 +1,10 @@
 package com.danrus.pas.utils;
 
 import com.danrus.pas.PlayerArmorStandsClient;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Base64;
 
-public class StringUtils {
+public class EncodeUtils {
     public static String encodeToBase64(String source) {
         try {
             return java.util.Base64.getEncoder().encodeToString(source.getBytes("UTF-8"));
@@ -19,11 +16,15 @@ public class StringUtils {
 
     public static String decodeBase64(String base64) {
         try {
-            return new String(java.util.Base64.getDecoder().decode(base64), "UTF-8");
+            return new String(decodeBase64Bytes(base64), "UTF-8");
         } catch (java.io.UnsupportedEncodingException e) {
             PlayerArmorStandsClient.LOGGER.warn("Failed to decode Base64 string: {}", base64, e);
             return null;
         }
+    }
+
+    public static byte[] decodeBase64Bytes(String base64) {
+        return Base64.getDecoder().decode(base64);
     }
 
     public static String encodeToSha256(String source) {
@@ -42,38 +43,6 @@ public class StringUtils {
             PlayerArmorStandsClient.LOGGER.warn("Failed to encode string to SHA-256: {}", source, e);
             return null;
         }
-    }
-
-    public static List<String> matchTexture(String input){
-        String textureRegex = "T:([A-Z0-9_]+)(?:%(\\d+))?";
-        Pattern pattern = Pattern.compile(textureRegex);
-        Matcher matcher = pattern.matcher(input.toUpperCase());
-
-        if (matcher.find()) {
-            String textureName = matcher.group(1).toLowerCase();
-            String blendFactor = matcher.group(2) != null ? matcher.group(2) : "100";
-
-            String params = input.replaceFirst(textureRegex, "").trim().toUpperCase();
-
-            return List.of(textureName, blendFactor, params);
-        }
-
-        return List.of("", "", "");
-    }
-
-    public static List<String> matchCape(String input) {
-        String capeRegex = "C(?::([A-Z]))?(?:%([A-Z0-9_]+))?";
-        Pattern pattern = Pattern.compile(capeRegex, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(input.trim());
-
-        if (matcher.find()) {
-            String param = matcher.group(1) != null ? matcher.group(1).toUpperCase() : "M";
-            String name = matcher.group(2) != null ? matcher.group(2) : "";
-            String rest = input.replaceFirst(capeRegex, "").trim();
-            return List.of("C", param, name, rest);
-        }
-
-        return List.of("", "M", "", input);
     }
 
 }

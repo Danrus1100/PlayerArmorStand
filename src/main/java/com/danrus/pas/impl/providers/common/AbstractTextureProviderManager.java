@@ -40,7 +40,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
         providers.get(provider.getLiteral())
                 .sort(Comparator.comparingInt(PrioritizedProvider::priority).reversed());
 
-        if (pasManager != null && pasManager.getExistingProviders() != null) {
+        if (pasManager != null && pasManager.getExistingProviders() != null && registerAsExistingProvider()) {
             pasManager.getExistingProviders().add(provider.getLiteral());
         }
     }
@@ -122,6 +122,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
     protected abstract String getDefaultLiteral();
     protected abstract String getExcludeLiterals();
     protected abstract DataRepository<T> getDataManager();
+    protected abstract boolean registerAsExistingProvider();
 
     private record PrioritizedProvider(TextureProvider provider, int priority) {}
 }

@@ -48,4 +48,9 @@ public class SkinProvidersManager extends AbstractTextureProviderManager<SkinDat
     protected DataRepository<SkinData> getDataManager() {
         return PasManager.getInstance().getSkinDataManager();
     }
+
+    @Override
+    protected boolean registerAsExistingProvider() {
+        return true;
+    }
 }

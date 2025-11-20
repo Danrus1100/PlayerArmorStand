@@ -1,13 +1,21 @@
 package com.danrus.pas.utils;
 
+import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.impl.holder.CapeData;
+import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
+import com.danrus.pas.render.armorstand.RenderVersionContext;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -258,6 +266,9 @@ public class VersioningUtils {
             //?}
             ArmorStandArmorModel>
     {
+        //? >= 1.21.9
+        /*private final com.danrus.pas.render.armorstand.PasCapeModel capeModel;*/
+
         public VersionlessArmorStandCapeLayer(RenderLayerParent<
                 //? if <= 1.21.1 {
                 /*ArmorStand,
@@ -266,7 +277,67 @@ public class VersioningUtils {
                 //?}
                 ArmorStandArmorModel> renderer) {
             super(renderer);
+            //? >= 1.21.9
+            /*capeModel = new com.danrus.pas.render.armorstand.PasCapeModel();*/
         }
+
+        //? <1.21.9 {
+        @Override
+        public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i,
+                           //? if <= 1.21.1 {
+                /*ArmorStand
+                 *///?} else {
+                           net.minecraft.client.renderer.entity.state.ArmorStandRenderState
+                                   //?}
+                                   armorStand,
+                           float f1, float f2
+                           //? if <= 1.21.1
+                /*, float f3, float f4, float f5, float f6*/
+        )
+        //?} else {
+        /*@Override
+        public void submit(PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, int i, net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStand, float f, float g)
+        *///?}
+        {
+            if (!ModConfig.get().enableMod || VersioningUtils.isInvisible(armorStand)) {
+                return;
+            }
+
+            Component customName = VersioningUtils.getCustomName(armorStand);
+            boolean isBaby = VersioningUtils.getIsBaby(armorStand);
+
+            if (customName == null) {
+                return;
+            }
+
+            NameInfo info = NameInfo.parse(customName);
+
+            if (!info.wantCape()) {
+                return;
+            }
+
+            if (!(this.getParentModel() instanceof PlayerArmorStandModel model)) {
+                return;
+            }
+
+            RenderVersionContext context = new RenderVersionContext(
+                    //? <1.21.9
+                    model
+                    //? >=1.21.9
+                    /*capeModel*/
+            );
+
+            //? <1.21.9 {
+            context.putData(multiBufferSource);
+            //?} else {
+            /*context.putData(capeModel);
+            context.putData(armorStand);
+            context.putData(collector);
+             *///?}
+            draw(poseStack, context, info, i, isBaby);
+        }
+
+        protected abstract void draw(PoseStack poseStack, RenderVersionContext context, NameInfo info, int light, boolean isBaby);
     }
 
     public interface VersionlessArmorStandCape extends RenderLayerParent <

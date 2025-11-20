@@ -13,14 +13,14 @@ import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.OverlayMessageManger;
 import com.danrus.pas.managers.PasManager;
+import com.danrus.pas.utils.MojangUtils;
 import com.danrus.pas.utils.RestHelper;
 import com.danrus.pas.utils.SkinDownloader;
-import com.danrus.pas.utils.StringUtils;
+import com.danrus.pas.utils.EncodeUtils;
 import com.google.gson.Gson;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,10 +30,8 @@ public class MojangProvider implements TextureProvider {
 
     private static final MojangProvider INSTANCE = new MojangProvider();
 
-    private static final String MOJANG_API_URL = "https://api.mojang.com/users/profiles/minecraft/";
     private static final String SESSION_SERVER_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
-    private static final int MAX_USERNAME_LENGTH = 16;
-    private static final String USERNAME_PATTERN = "[a-zA-Z0-9_]+";
+
 
     private final Map<String, CompletableFuture<Void>> activeDownloads = new ConcurrentHashMap<>();
     private final Gson gson = new Gson();
@@ -61,7 +59,7 @@ public class MojangProvider implements TextureProvider {
             }
         }
 
-        if (!isValidName(info.base())) {
+        if (!MojangUtils.isNicknameValid(info.base())) {
             OverlayMessageManger.getInstance().showInvalidNameMessage(info.base());
             ModExecutor.execute(() -> invalidateAllData(info));
             onComplete.accept(info.base());
@@ -100,9 +98,8 @@ public class MojangProvider implements TextureProvider {
     }
 
     private CompletableFuture<Void> downloadProfile(NameInfo info, Consumer<String> onComplete) {
-        return RestHelper.get(MOJANG_API_URL + info.base())
-                .thenCompose(response -> processSimpleProfile(response, info))
-                .thenCompose(uuid -> downloadTexturedProfile(uuid, info))
+        return MojangUtils.getUUID(info)
+                .thenCompose(this::downloadTexturedProfile)
                 .thenCompose(texturedProfile -> processTexturedProfile(texturedProfile, info, onComplete))
                 .exceptionally(throwable -> {
                     doFail(info);
@@ -111,16 +108,9 @@ public class MojangProvider implements TextureProvider {
                 });
     }
 
-    private CompletableFuture<String> processSimpleProfile(String response, NameInfo info) {
-        SimpleProfile simpleProfile = gson.fromJson(response, SimpleProfile.class);
-        if (simpleProfile == null || simpleProfile.id == null) {
-            doFail(info);
-            return CompletableFuture.failedFuture(new RuntimeException("Invalid simple profile"));
-        }
-        return CompletableFuture.completedFuture(simpleProfile.id);
-    }
 
-    private CompletableFuture<TexturedProfile> downloadTexturedProfile(String uuid, NameInfo info) {
+
+    private CompletableFuture<TexturedProfile> downloadTexturedProfile(String uuid) {
         return RestHelper.get(SESSION_SERVER_URL + uuid)
                 .thenApply(response -> {
                     Profile profile = gson.fromJson(response, Profile.class);
@@ -128,7 +118,7 @@ public class MojangProvider implements TextureProvider {
                         throw new RuntimeException("Invalid profile");
                     }
 
-                    String encodedSkin = StringUtils.decodeBase64(profile.properties[0].value);
+                    String encodedSkin = EncodeUtils.decodeBase64(profile.properties[0].value);
                     TexturedProfile texturedProfile = gson.fromJson(encodedSkin, TexturedProfile.class);
 
                     if (!isValidTexturedProfile(texturedProfile)) {
@@ -214,10 +204,6 @@ public class MojangProvider implements TextureProvider {
         return profile != null && profile.textures != null;
     }
 
-    private boolean isValidName(String name) {
-        return name != null && !name.isEmpty() && name.length() <= MAX_USERNAME_LENGTH && name.matches(USERNAME_PATTERN);
-    }
-
     private void doFail(NameInfo info) {
         OverlayMessageManger.getInstance().showFailMessage(info.base());
 
@@ -236,10 +222,6 @@ public class MojangProvider implements TextureProvider {
     }
 
     // Inner classes
-    static class SimpleProfile {
-        public String id;
-        public String name;
-    }
 
     static class Profile {
         public String id;

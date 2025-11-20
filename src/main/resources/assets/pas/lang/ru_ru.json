@@ -51,6 +51,7 @@
   "pas.menu.tab.cape.provider": "Источник плаща",
   "pas.menu.tab.cape.provider.m": "Mojang",
   "pas.menu.tab.cape.provider.a": "NameMC",
+  "pas.menu.tab.cape.provider.i": "Minecraft Capes",
   "pas.menu.tab.cape.name": "Имя / ID плаща",
   "pas.menu.tab.cape.name.tooltip": "Чтобы загрузить Плащ из NameMC, вы должны указать ID плаща. Например, у \"https://namemc.com/cape/cb5dd34bee340182\" id будет \"cb5dd34bee340182\" ",
 

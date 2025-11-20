@@ -8,7 +8,7 @@
         }
 
         @Override
-        boolean shouldEncode() {
-            return false; // NameMC использует обычные имена
+        public boolean shouldEncode() {
+            return false;
         }
     }

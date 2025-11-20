@@ -51,6 +51,7 @@
   "pas.menu.tab.cape.provider": "Cape Source",
   "pas.menu.tab.cape.provider.m": "Mojang",
   "pas.menu.tab.cape.provider.a": "NameMC",
+  "pas.menu.tab.cape.provider.i": "Minecraft Capes",
   "pas.menu.tab.cape.name": "Cape name / ID",
   "pas.menu.tab.cape.name.tooltip": "To download Cape from NameMC you should specify cape ID. For example, in \"https://namemc.com/cape/cb5dd34bee340182\" id is \"cb5dd34bee340182\" ",
 

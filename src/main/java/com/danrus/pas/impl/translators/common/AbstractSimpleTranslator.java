@@ -4,7 +4,7 @@ import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.info.InfoTranslator;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.utils.Rl;
-import com.danrus.pas.utils.StringUtils;
+import com.danrus.pas.utils.EncodeUtils;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class AbstractSimpleTranslator implements InfoTranslator {
@@ -36,12 +36,12 @@ public abstract class AbstractSimpleTranslator implements InfoTranslator {
 
     @Override
     public ResourceLocation toResourceLocation(NameInfo info) {
-        return Rl.pas(getPrefix() + "/" + (shouldEncode() ? StringUtils.encodeToSha256(getName(info)) : getName(info)));
+        return Rl.pas(getPrefix() + "/" + (shouldEncode() ? EncodeUtils.encodeToSha256(getName(info)) : getName(info)));
     }
 
     @Override
     public String toFileName(NameInfo info) {
-        String name = shouldEncode() ? StringUtils.encodeToSha256(getName(info)) : getName(info);
+        String name = shouldEncode() ? EncodeUtils.encodeToSha256(getName(info)) : getName(info);
         String suffix = getSuffix().isEmpty() ? "" : "_" + getSuffix();
         return name + suffix;
     }
@@ -50,6 +50,6 @@ public abstract class AbstractSimpleTranslator implements InfoTranslator {
     protected abstract String getPrefix();
     protected abstract String getSuffix();
     protected abstract String getName(NameInfo info);
-    abstract boolean shouldEncode();
+    public abstract boolean shouldEncode();
     protected abstract String getProvider(NameInfo info);
 }
