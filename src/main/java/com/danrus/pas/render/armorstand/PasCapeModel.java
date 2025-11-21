@@ -41,9 +41,9 @@ public class PasCapeModel extends ArmorStandArmorModel implements Cape {
 
     @Override
     public void draw(PoseStack stack, ResourceLocation textureLocation, RenderVersionContext context, int light) {
-        SubmitNodeStorage collector = context.getData(SubmitNodeStorage.class);
-        PasCapeModel capeModel = context.getData(PasCapeModel.class);
-        ArmorStandRenderState armorStand = context.getData(ArmorStandRenderState.class);
+        SubmitNodeStorage collector = context.getData(SubmitNodeStorage.class, "collector");
+        PasCapeModel capeModel = context.getData(PasCapeModel.class, "capeModel");
+        ArmorStandRenderState armorStand = context.getData(ArmorStandRenderState.class, "armorStand");
         collector.submitModel(capeModel, armorStand, stack, RenderType.entitySolid(textureLocation), light, OverlayTexture.NO_OVERLAY, armorStand.outlineColor, null);
     }
 }

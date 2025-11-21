@@ -317,7 +317,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape 
     public void draw(PoseStack stack, ResourceLocation textureLocation, RenderVersionContext context, int i) {
         //? <1.21.9 {
         getCape().visible = true;
-        VertexConsumer vertexConsumer = context.getData(MultiBufferSource.BufferSource.class).getBuffer(RenderType.entitySolid(textureLocation));
+        VertexConsumer vertexConsumer = context.getData(MultiBufferSource.class, "multiBufferSource").getBuffer(RenderType.entitySolid(textureLocation));
         getCape().render(stack, vertexConsumer, i, OverlayTexture.NO_OVERLAY);
         //?}
     }
