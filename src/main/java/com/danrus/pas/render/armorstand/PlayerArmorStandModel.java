@@ -3,8 +3,7 @@ package com.danrus.pas.render.armorstand;
 import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.config.ModConfig;
-import com.danrus.pas.impl.holder.SkinData;
+import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,7 +19,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.util.List;
 
@@ -200,28 +198,28 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape 
 
         this.basePlate.yRot = ((float)Math.PI / 180F) * -VersioningUtils.getYRot(armorStand);
 
-        if (!ModConfig.get().enableMod) {
+        if (!PasConfig.getInstance().isEnableMod()) {
             setOriginalAngles(showBase, showArms, bodyPose);
             return;
         }
 
 
         String customNameString;
-        if (!ModConfig.get().defaultSkin.isEmpty() && customName == null) {
-            customNameString = ModConfig.get().defaultSkin;
+        if (!PasConfig.getInstance().getDefaultSkin().isEmpty() && customName == null) {
+            customNameString = PasConfig.getInstance().getDefaultSkin();
         } else if (customName != null) {
             customNameString = customName.getString();
         } else {
             customNameString = "";
         }
 
-        boolean isEarsVisible = "deadmau5".equalsIgnoreCase(info.base()) && ModConfig.get().showEasterEggs;
+        boolean isEarsVisible = "deadmau5".equalsIgnoreCase(info.base()) && PasConfig.getInstance().isShowEasterEggs();
         this.leftEar.visible = isEarsVisible;
         this.rightEar.visible = isEarsVisible;
 
         this.setModelVisibility(!showArmorStandWhileDownload(PasManager.getInstance().findSkinData(info)), info.wantBeSlim(), showBase);
 
-        if (customNameString.isEmpty() && ModConfig.get().defaultSkin.isEmpty()) {
+        if (customNameString.isEmpty() && PasConfig.getInstance().getDefaultSkin().isEmpty()) {
             setOriginalAngles(showBase, showArms, bodyPose);
         }
 
@@ -306,7 +304,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape 
 
         boolean isDownlading = data.getStatus() == DownloadStatus.IN_PROGRESS ||
                 data.getStatus() == DownloadStatus.FAILED || data.getStatus() == DownloadStatus.NOT_STARTED;
-        return ModConfig.get().showArmorStandWhileDownloading && isDownlading;
+        return PasConfig.getInstance().isShowArmorStandWhileDownloading()&& isDownlading;
     }
 
     private static void cpp(ModelPart from, ModelPart to) {

@@ -1,28 +1,21 @@
 package com.danrus.pas.mixin;
 
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.impl.features.DisplayNameFeature;
 //? if !forge {
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 //?}
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
@@ -44,7 +37,7 @@ public class EntityRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)I")
     )
     private int pas$renderNameTag(Font instance, Component text, float x, float y, int color, boolean dropShadow, Matrix4f pose, MultiBufferSource bufferSource, Font.DisplayMode displayMode, int backgroundColor, int packedLightCoords, Operation<Integer> original){
-        if (text.getString().contains("|") && ModConfig.get().hideParamsOnLabel && ModConfig.get().enableMod){
+        if (text.getString().contains("|") && PasConfig.getInstance().isHideParamsOnLabel() && PasConfig.getInstance().isEnableMod()){
             Component newText = getNameWithoutParams(NameInfo.parse(text));
             x = (float)(-instance.width(newText)) / 2.0f;
             return original.call(instance, newText, x, y, color, dropShadow, pose, bufferSource, displayMode, backgroundColor, packedLightCoords);
@@ -84,7 +77,7 @@ public class EntityRendererMixin {
                 poseStack.scale(0.025F, -0.025F, 0.025F);
                 Matrix4f matrix4f = poseStack.last().pose();
                 Font font = Minecraft.getInstance().font;
-                if (displayName.getString().contains("|") && ModConfig.get().hideParamsOnLabel && ModConfig.get().enableMod) {
+                if (displayName.getString().contains("|") && PasConfig.getInstance().isHideParamsOnLabel() && PasConfig.getInstance().isEnableMod()) {
                     displayName = getNameWithoutParams(info);
                 }
                 float f = (float) (-font.width(displayName)) / 2.0F;
@@ -106,7 +99,7 @@ public class EntityRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitNameTag(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/phys/Vec3;ILnet/minecraft/network/chat/Component;ZIDLnet/minecraft/client/renderer/state/CameraRenderState;)V")
     )
     private void pas$submitNameTag(net.minecraft.client.renderer.SubmitNodeCollector instance, PoseStack poseStack, Vec3 vec3, int i1, Component displayName, boolean b, int i2, double v, net.minecraft.client.renderer.state.CameraRenderState cameraRenderState, Operation<Void> original) {
-        if (displayName.getString().contains("|") && ModConfig.get().hideParamsOnLabel && ModConfig.get().enableMod) {
+        if (displayName.getString().contains("|") && PasConfig.getInstance().isHideParamsOnLabel() && PasConfig.getInstance().isEnableMod()) {
             Component newName = getNameWithoutParams(NameInfo.parse(displayName));
             original.call(instance, poseStack, vec3, i1, newName, b, i2, v, cameraRenderState);
         } else {

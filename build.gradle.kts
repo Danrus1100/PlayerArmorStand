@@ -26,6 +26,7 @@ var isPossessive: Boolean = loader == "fabric" && findProperty("deps.possessive"
 var isArmorposer: Boolean = stonecutter.eval(minecraft, ">=1.21.4") && findProperty("deps.armorposer") != null
 var isEasyAnvils: Boolean = findProperty("deps.easyanvils") != null
 var hasModMenu: Boolean = findProperty("deps.modmenu") != null
+var hasYacl: Boolean = findProperty("deps.yacl") != null
 
 modstitch {
     minecraftVersion = minecraft
@@ -141,7 +142,8 @@ stonecutter {
         "possessive" to isPossessive,
         "armorposer" to isArmorposer,
         "easyanvils" to isEasyAnvils,
-        "modmenu" to hasModMenu
+        "modmenu" to hasModMenu,
+        "yacl" to hasYacl
     )
 }
 
@@ -155,7 +157,6 @@ dependencies {
         prop("deps.modmenu") {
             modstitchModApi("com.terraformersmc:modmenu:${it}")
         }
-//        modstitchModImplementation("maven.modrinth:skinshuffle:${property("deps.shuffle")}")
         prop("deps.possessive") {
             modstitchModImplementation("maven.modrinth:possessive:${it}")
         }
@@ -163,8 +164,9 @@ dependencies {
     }
 
     // Anything else in the dependencies block will be used for all platforms.
-//    modstitchModApi("dev.architectury:architectury-${property("deps.arch")}")
-    modstitchModImplementation("dev.isxander:yet-another-config-lib:${property("deps.yacl")}")
+    prop("deps.yacl") {
+        modstitchModImplementation("dev.isxander:yet-another-config-lib:${it}")
+    }
     prop("deps.armorposer") {
         modstitchModImplementation("com.mrbysco.armorposer:ArmorPoser-${loader}-${property("deps.armorposer")}")
     }

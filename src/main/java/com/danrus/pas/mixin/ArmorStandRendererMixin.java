@@ -1,7 +1,7 @@
 package com.danrus.pas.mixin;
 
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.mixin.accessors.LivingEntityRendererAccessor;
 import com.danrus.pas.render.armorstand.ArmorStandCapeLayer;
@@ -14,7 +14,6 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -65,7 +64,7 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
             net.minecraft.client.renderer.entity.state.ArmorStandRenderState
             //?}
                     armorStand, CallbackInfoReturnable<ResourceLocation> cir){
-        if (VersioningUtils.getCustomName(armorStand) == null || !ModConfig.get().enableMod) {
+        if (VersioningUtils.getCustomName(armorStand) == null || !PasConfig.getInstance().isEnableMod()) {
             return;
         }
         cir.setReturnValue(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(VersioningUtils.getCustomName(armorStand))));
@@ -77,7 +76,7 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
             at = @At("HEAD")
     )
     private void pas$setupRotations(net.minecraft.client.renderer.entity.state.ArmorStandRenderState renderState, PoseStack poseStack, float f, float scale, CallbackInfo ci) {
-        if (renderState.isUpsideDown && ModConfig.get().enableMod && ModConfig.get().showEasterEggs) {
+        if (renderState.isUpsideDown && PasConfig.getInstance().isEnableMod() && PasConfig.getInstance().isShowEasterEggs()) {
             poseStack.translate(0.0F, (renderState.boundingBoxHeight + 0.1F) / scale, 0.0F);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
@@ -98,7 +97,7 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
     )
     private void pas$setupRotations(ArmorStand entityLiving, PoseStack poseStack, float bob, float yBodyRot, float partialTick, float scale, CallbackInfo ci){
     //?}
-        if (!ModConfig.get().enableMod || VersioningUtils.getCustomName(entityLiving) == null) {
+        if (!PasConfig.getInstance().isEnableMod() || VersioningUtils.getCustomName(entityLiving) == null) {
             return;
         }
 

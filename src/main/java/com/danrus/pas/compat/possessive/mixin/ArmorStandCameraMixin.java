@@ -3,7 +3,7 @@ package com.danrus.pas.compat.possessive.mixin;
 //? if possessive {
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.compat.possessive.PossessiveRenderHand;
-import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
@@ -13,7 +13,6 @@ import net.just_s.camera.ArmorStandCamera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
@@ -36,7 +35,7 @@ public class ArmorStandCameraMixin {
     private static PossessiveRenderHand resolveHand(ModelPart playerHand, PlayerModel playerModel, PlayerArmorStandModel armorStandModel, NameInfo info) {
 
         if (playerHand.equals(playerModel.rightArm)) {
-            if (ModConfig.get().possessiveShowDefaultHand) {
+            if (PasConfig.getInstance().isPossessiveShowDefaultHand()) {
                 return PossessiveRenderHand.RIGHT_ORIGINAL;
             }
 
@@ -48,7 +47,7 @@ public class ArmorStandCameraMixin {
                 return PossessiveRenderHand.RIGHT_ORIGINAL;
             }
         } else  {
-            if (ModConfig.get().possessiveShowDefaultHand) {
+            if (PasConfig.getInstance().isPossessiveShowDefaultHand()) {
                 return PossessiveRenderHand.LEFT_ORIGINAL;
             }
 
@@ -114,7 +113,7 @@ public class ArmorStandCameraMixin {
 
         ResourceLocation skinTexture;
         if (!info.isEmpty()) {
-            if (ModConfig.get().possessiveShowDefaultHand) {
+            if (PasConfig.getInstance().isPossessiveShowDefaultHand()) {
                 skinTexture = Rl.vanilla("textures/entity/armorstand/wood.png");
             } else {
                 skinTexture = PasManager.getInstance().getSkinWithOverlayTexture(info);

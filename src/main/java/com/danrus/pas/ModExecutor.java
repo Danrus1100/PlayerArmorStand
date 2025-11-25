@@ -1,16 +1,16 @@
 package com.danrus.pas;
 
-import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.config.PasConfig;
 
 import java.util.*;
 import java.util.concurrent.*;
 
 public class ModExecutor {
-    public static ExecutorService MAIN_EXECUTOR = Executors.newFixedThreadPool(ModConfig.get().downloadThreads);
-    public static ExecutorService DOWNLOAD_EXECUTOR = Executors.newFixedThreadPool(ModConfig.get().downloadThreads);
+    public static ExecutorService MAIN_EXECUTOR = Executors.newFixedThreadPool(PasConfig.getInstance().getDownloadThreads());
+    public static ExecutorService DOWNLOAD_EXECUTOR = Executors.newFixedThreadPool(PasConfig.getInstance().getDownloadThreads());
 
     public static void reload() {
-        int threadsCount = ModConfig.get().downloadThreads;
+        int threadsCount = PasConfig.getInstance().getDownloadThreads();
         List<Runnable> runnables = MAIN_EXECUTOR.shutdownNow();
         MAIN_EXECUTOR = Executors.newFixedThreadPool(threadsCount);
         for (Runnable runnable : runnables) {

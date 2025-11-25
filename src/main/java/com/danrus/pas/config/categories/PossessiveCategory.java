@@ -1,6 +1,6 @@
 package com.danrus.pas.config.categories;
 
-import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.config.YaclConfig;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionGroup;
@@ -18,8 +18,8 @@ public class PossessiveCategory {
                                 .name(Component.translatable("pas.config.possessive_show_default_hand"))
                                 .binding(
                                         false,
-                                        () -> ModConfig.get().possessiveShowDefaultHand,
-                                        newVal -> ModConfig.get().possessiveShowDefaultHand = newVal
+                                        () -> YaclConfig.get().possessiveShowDefaultHand,
+                                        newVal -> YaclConfig.get().possessiveShowDefaultHand = newVal
                                 )
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())

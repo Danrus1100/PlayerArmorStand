@@ -2,6 +2,7 @@ package com.danrus.pas;
 
 import com.danrus.pas.api.reg.FeatureRegistry;
 import com.danrus.pas.api.reg.InfoTranslators;
+import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.impl.features.*;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
@@ -22,6 +23,7 @@ public class PlayerArmorStandsClient {
     /*public static net.minecraft.client.model.geom.ModelPart capeDef = com.danrus.pas.render.armorstand.PasCapeModel.createCapeLayer().bakeRoot();*/
 
     public static void initialize() {
+        PasConfig.init();
         PasManager.getInstance();
         FeatureRegistry features = FeatureRegistry.getInstance();
         features.register(OverlayFeature.class);

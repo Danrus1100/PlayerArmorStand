@@ -1,7 +1,7 @@
 package com.danrus.pas.mixin;
 
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.model.EntityModel;
@@ -43,15 +43,15 @@ public class LivingEntityRendererMixin<T extends
                 *///?} else {
                 net.minecraft.client.renderer.entity.state.ArmorStandRenderState
                 //?}
-        && ModConfig.get().enableMod) || VersioningUtils.isInvisible(entity)) {
+        && PasConfig.getInstance().isEnableMod()) || VersioningUtils.isInvisible(entity)) {
             return;
         }
 
-        if (VersioningUtils.getCustomName(entity) != null && ModConfig.get().enableMod) {
+        if (VersioningUtils.getCustomName(entity) != null && PasConfig.getInstance().isEnableMod()) {
             cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(VersioningUtils.getCustomName(entity)))));
             cir.cancel();
-        } else if (VersioningUtils.getCustomName(entity) == null && !ModConfig.get().defaultSkin.isEmpty()) {
-            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(Component.literal(ModConfig.get().defaultSkin)))));
+        } else if (VersioningUtils.getCustomName(entity) == null && !PasConfig.getInstance().getDefaultSkin().isEmpty()) {
+            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(Component.literal(PasConfig.getInstance().getDefaultSkin())))));
             cir.cancel();
         }
     }
@@ -62,7 +62,7 @@ public class LivingEntityRendererMixin<T extends
             cancellable = true
     )
     private static void pas$isEntityUpsideDown(LivingEntity entity, CallbackInfoReturnable<Boolean> cir){
-        if ((!ModConfig.get().enableMod && !ModConfig.get().showEasterEggs)
+        if ((!PasConfig.getInstance().isEnableMod() && !PasConfig.getInstance().isShowEasterEggs())
                 || !(entity instanceof ArmorStand)
                 || entity.getCustomName() == null
         ) {

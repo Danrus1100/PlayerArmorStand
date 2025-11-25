@@ -2,7 +2,6 @@
 /*package com.danrus.pas.loaders.neoforge;
 
 import com.danrus.pas.PlayerArmorStandsClient;
-import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.commands.PasCommands;
 import com.danrus.pas.commands.SkinDataArgument;
 import com.mojang.brigadier.CommandDispatcher;
@@ -24,7 +23,6 @@ public class NeoforgeEntrypoint {
 
     public NeoforgeEntrypoint() {
         PlayerArmorStandsClient.initialize();
-        ModConfig.initialize();
         ModLoadingContext.get().registerExtensionPoint(
                 IConfigScreenFactory.class,
                 () -> (modContainer, parent) -> ModConfig.getConfigScreen(parent)

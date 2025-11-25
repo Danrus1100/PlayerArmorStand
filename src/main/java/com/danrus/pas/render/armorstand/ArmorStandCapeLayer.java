@@ -2,19 +2,12 @@ package com.danrus.pas.render.armorstand;
 
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCapeLayer {
     public ArmorStandCapeLayer(VersioningUtils.VersionlessArmorStandCape parent) {

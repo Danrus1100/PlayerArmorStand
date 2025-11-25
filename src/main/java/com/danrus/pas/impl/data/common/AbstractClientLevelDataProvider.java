@@ -6,14 +6,13 @@ import com.danrus.pas.api.data.DataProvider;
 import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.data.DataStoreKey;
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.config.PasConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractClientLevelDataProvider<T extends DataHolder> implements DataProvider<T> {
 
@@ -22,7 +21,7 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
         if (Minecraft.getInstance().level == null) {
             return null;
         }
-        if (!ModConfig.get().tryApplyFromServerPlayer) {
+        if (!PasConfig.getInstance().isTryApplyFromServerPlayer()) {
             return null;
         }
         T holder = createDataHolder(info);

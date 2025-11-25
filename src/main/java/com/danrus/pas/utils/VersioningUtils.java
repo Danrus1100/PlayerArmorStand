@@ -1,13 +1,11 @@
 package com.danrus.pas.utils;
 
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.config.ModConfig;
-import com.danrus.pas.impl.holder.CapeData;
+import com.danrus.pas.config.YaclConfig;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.render.armorstand.RenderVersionContext;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -15,11 +13,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.nio.file.Path;
 import java.util.function.Function;
@@ -299,7 +295,7 @@ public class VersioningUtils {
         public void submit(PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, int i, net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStand, float f, float g)
         *///?}
         {
-            if (!ModConfig.get().enableMod || VersioningUtils.isInvisible(armorStand)) {
+            if (!YaclConfig.get().enableMod || VersioningUtils.isInvisible(armorStand)) {
                 return;
             }
 

@@ -1,6 +1,6 @@
 package com.danrus.pas.managers;
 
-import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.config.PasConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 
@@ -34,7 +34,7 @@ public class OverlayMessageManger {
         if (name.isEmpty()) {
             return;
         }
-        switch (ModConfig.get().downloadStatusDisplay) {
+        switch (PasConfig.getInstance().getDownloadStatusDisplay()) {
             case NONE:
                 return;
             case ABOVE_HOTBAR:
@@ -42,9 +42,6 @@ public class OverlayMessageManger {
                 return;
             case CHAT:
                 Minecraft.getInstance().gui.getChat().addMessage(Component.translatable(key, name).withStyle(color));
-                return;
-            default:
-                throw new IllegalStateException("Unexpected value: " + ModConfig.get().downloadStatusDisplay);
         }
     }
 

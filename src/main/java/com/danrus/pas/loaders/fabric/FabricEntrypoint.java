@@ -3,7 +3,6 @@ package com.danrus.pas.loaders.fabric;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.commands.CapeDataArgument;
-import com.danrus.pas.config.ModConfig;
 import com.danrus.pas.commands.PasCommands;
 import com.danrus.pas.commands.SkinDataArgument;
 import net.fabricmc.api.ModInitializer;
@@ -14,7 +13,6 @@ public class FabricEntrypoint implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ModConfig.initialize();
         PlayerArmorStandsClient.initialize();
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> {
             PasCommands.COMMANDS_NAMES.forEach(s -> {

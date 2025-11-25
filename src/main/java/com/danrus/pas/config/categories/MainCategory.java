@@ -1,7 +1,8 @@
 package com.danrus.pas.config.categories;
 
 import com.danrus.pas.ModExecutor;
-import com.danrus.pas.config.ModConfig;
+import com.danrus.pas.config.DownloadStatusDisplay;
+import com.danrus.pas.config.YaclConfig;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
@@ -20,8 +21,8 @@ public class MainCategory {
                                 .name(Component.translatable("pas.config.enable_mod"))
                                 .binding(
                                         true,
-                                        () -> ModConfig.get().enableMod,
-                                        newVal -> ModConfig.get().enableMod = newVal
+                                        () -> YaclConfig.get().enableMod,
+                                        newVal -> YaclConfig.get().enableMod = newVal
                                 )
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
@@ -36,8 +37,8 @@ public class MainCategory {
                                 .name(Component.translatable("pas.config.hide_params_on_label"))
                                 .binding(
                                         true,
-                                        () -> ModConfig.get().hideParamsOnLabel,
-                                        newVal -> ModConfig.get().hideParamsOnLabel = newVal
+                                        () -> YaclConfig.get().hideParamsOnLabel,
+                                        newVal -> YaclConfig.get().hideParamsOnLabel = newVal
                                 )
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
@@ -47,8 +48,8 @@ public class MainCategory {
                                 .name(Component.translatable("pas.config.default_skin"))
                                 .binding(
                                         "",
-                                        () -> ModConfig.get().defaultSkin,
-                                        newVal -> ModConfig.get().defaultSkin = newVal
+                                        () -> YaclConfig.get().defaultSkin,
+                                        newVal -> YaclConfig.get().defaultSkin = newVal
                                 )
                                 .controller(StringControllerBuilder::create)
                                 .build())
@@ -62,29 +63,29 @@ public class MainCategory {
                                 .name(Component.translatable("pas.config.download_threads"))
                                 .binding(
                                         3,
-                                        () -> ModConfig.get().downloadThreads, // a getter to getData the current value from
-                                        newVal -> ModConfig.get().downloadThreads = newVal
+                                        () -> YaclConfig.get().downloadThreads, // a getter to getData the current value from
+                                        newVal -> YaclConfig.get().downloadThreads = newVal
                                 )
                                 .controller(IntegerFieldControllerBuilder::create)
                                 .addListener(((option, event) -> ModExecutor.reload()))
                                 .build())
 
-                        .option(Option.<ModConfig.DOWNLOAD_STATUS_DISPLAY>createBuilder()
+                        .option(Option.<DownloadStatusDisplay>createBuilder()
                                 .name(Component.translatable("pas.config.download_status_display"))
                                 .binding(
-                                        ModConfig.DOWNLOAD_STATUS_DISPLAY.ABOVE_HOTBAR,
-                                        () -> ModConfig.get().downloadStatusDisplay, // a getter to getData the current value from
-                                        newVal -> ModConfig.get().downloadStatusDisplay = newVal
+                                        DownloadStatusDisplay.ABOVE_HOTBAR,
+                                        () -> YaclConfig.get().downloadStatusDisplay, // a getter to getData the current value from
+                                        newVal -> YaclConfig.get().downloadStatusDisplay = newVal
                                 )
-                                .controller(opt -> EnumControllerBuilder.create(opt).enumClass(ModConfig.DOWNLOAD_STATUS_DISPLAY.class).formatValue((v) -> Component.translatable("pas.config.download_status_display." + v.name().toLowerCase())))
+                                .controller(opt -> EnumControllerBuilder.create(opt).enumClass(DownloadStatusDisplay.class).formatValue((v) -> Component.translatable("pas.config.download_status_display." + v.name().toLowerCase())))
                                 .build())
 
                         .option(Option.<Boolean>createBuilder()
                                 .name(Component.translatable("pas.config.try_apply_from_server_player"))
                                 .binding(
                                         true,
-                                        () -> ModConfig.get().tryApplyFromServerPlayer,
-                                        newVal -> ModConfig.get().tryApplyFromServerPlayer = newVal
+                                        () -> YaclConfig.get().tryApplyFromServerPlayer,
+                                        newVal -> YaclConfig.get().tryApplyFromServerPlayer = newVal
                                 )
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
@@ -93,8 +94,8 @@ public class MainCategory {
                                 .name(Component.translatable("pas.config.show_armor_stand_while_downloading"))
                                 .binding(
                                         true,
-                                        () -> ModConfig.get().showArmorStandWhileDownloading,
-                                        newVal -> ModConfig.get().showArmorStandWhileDownloading = newVal
+                                        () -> YaclConfig.get().showArmorStandWhileDownloading,
+                                        newVal -> YaclConfig.get().showArmorStandWhileDownloading = newVal
                                 )
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
@@ -109,8 +110,8 @@ public class MainCategory {
                                 .name(Component.translatable("pas.config.show_easter_eggs"))
                                 .binding(
                                         true,
-                                        () -> ModConfig.get().showEasterEggs,
-                                        newVal -> ModConfig.get().showEasterEggs = newVal
+                                        () -> YaclConfig.get().showEasterEggs,
+                                        newVal -> YaclConfig.get().showEasterEggs = newVal
                                 )
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
