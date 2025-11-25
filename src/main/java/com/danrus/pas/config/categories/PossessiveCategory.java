@@ -1,5 +1,6 @@
 package com.danrus.pas.config.categories;
 
+//? if yacl {
 import com.danrus.pas.config.YaclConfig;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
@@ -29,3 +30,5 @@ public class PossessiveCategory {
                 .build();
     }
 }
+
+//?}

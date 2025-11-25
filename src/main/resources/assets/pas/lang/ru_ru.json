@@ -74,5 +74,8 @@
   "pas.menu.tab.overlay.blend": "Смешивание",
 
   "pas.menu.tab.overlay.display_name": "Отображаемое имя",
-  "pas.menu.tab.overlay.display_name.tooltip": "Имя из поля ниже будет отображаться вмето имени игрока. Чтобы применить имя, вы должны нажать enter"
+  "pas.menu.tab.overlay.display_name.tooltip": "Имя из поля ниже будет отображаться вмето имени игрока. Чтобы применить имя, вы должны нажать enter",
+
+  "pas.yacl_required.1": "Чтобы настраивать этот мод необходимо установить Yet Another Config Lib (YACL)",
+  "pas.yacl_required.2": "Пожалуйста, загрузите её из Modrinth, чтобы продолжить!"
 }

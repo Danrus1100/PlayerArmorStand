@@ -74,5 +74,8 @@
   "pas.menu.tab.overlay.blend": "Blend",
 
   "pas.menu.tab.overlay.display_name": "Display Name",
-  "pas.menu.tab.overlay.display_name.tooltip": "Name from box below will be displayed instead player name. To apply name, you should press enter"
+  "pas.menu.tab.overlay.display_name.tooltip": "Name from box below will be displayed instead player name. To apply name, you should press enter",
+
+  "pas.yacl_required.1": "To configure this mod, you need to install Yet Another Config Lib (YACL).",
+  "pas.yacl_required.2": "Please download it from Modrinth to continue!"
 }

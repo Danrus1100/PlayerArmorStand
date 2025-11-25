@@ -1,7 +1,7 @@
 package com.danrus.pas.utils;
 
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.config.YaclConfig;
+import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.render.armorstand.RenderVersionContext;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -295,7 +295,7 @@ public class VersioningUtils {
         public void submit(PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, int i, net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStand, float f, float g)
         *///?}
         {
-            if (!YaclConfig.get().enableMod || VersioningUtils.isInvisible(armorStand)) {
+            if (!PasConfig.getInstance().isEnableMod() || VersioningUtils.isInvisible(armorStand)) {
                 return;
             }
 
