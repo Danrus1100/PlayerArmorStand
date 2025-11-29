@@ -7,7 +7,7 @@ import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCapeLayer {
     public ArmorStandCapeLayer(VersioningUtils.VersionlessArmorStandCape parent) {
@@ -37,7 +37,7 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
             }
         }
 
-        ResourceLocation capeTexture = PasManager.getInstance().getCapeWithOverlayTexture(info);
+        Identifier capeTexture = PasManager.getInstance().getCapeWithOverlayTexture(info);
 
         if (capeTexture == null) {
             return;

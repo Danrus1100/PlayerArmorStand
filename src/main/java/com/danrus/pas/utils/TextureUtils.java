@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class TextureUtils {
-    private static final HashMap<String, ResourceLocation> overlayTextureCache = new HashMap<>();
+    private static final HashMap<String, Identifier> overlayTextureCache = new HashMap<>();
     private static final List<String> notExistingOverlays = new ArrayList<>();
 
-    public static CompletableFuture<ResourceLocation> registerTexture(Path path, ResourceLocation identifier, boolean remap){
+    public static CompletableFuture<Identifier> registerTexture(Path path, Identifier identifier, boolean remap){
         NativeImage image = parseImageFile(path);
         if (image != null) {
             return registerTexture(image, identifier, remap);
@@ -43,8 +43,8 @@ public class TextureUtils {
         overlayTextureCache.entrySet().removeIf(entry -> entry.getKey().startsWith(baseName + "_"));
     }
 
-    public static CompletableFuture<ResourceLocation> registerTexture(NativeImage image, ResourceLocation identifier, boolean remap) {
-        CompletableFuture<ResourceLocation> future = new CompletableFuture<>();
+    public static CompletableFuture<Identifier> registerTexture(NativeImage image, Identifier identifier, boolean remap) {
+        CompletableFuture<Identifier> future = new CompletableFuture<>();
 
         try {
             if (remap) {
@@ -55,10 +55,10 @@ public class TextureUtils {
             Minecraft.getInstance().execute(() -> {
                 try {
                     //? if <=1.21.4 {
-                    DynamicTexture texture = new DynamicTexture(finalImage);
-                    //?} else {
-                    /*DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
-                    *///?}
+                    /*DynamicTexture texture = new DynamicTexture(finalImage);
+                    *///?} else {
+                    DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
+                    //?}
                     Minecraft.getInstance().getTextureManager().register(identifier, texture);
 
                     future.complete(identifier);
@@ -76,7 +76,7 @@ public class TextureUtils {
         return future;
     }
 
-    public static void unregisterTexture(ResourceLocation identifier) {
+    public static void unregisterTexture(Identifier identifier) {
         Minecraft.getInstance().getTextureManager().release(identifier);
         overlayTextureCache.remove(identifier.toString());
     }
@@ -90,7 +90,7 @@ public class TextureUtils {
         }
     }
 
-    public static NativeImage getNativeImage(ResourceLocation identifier) {
+    public static NativeImage getNativeImage(Identifier identifier) {
         AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(identifier);
         if (texture instanceof DynamicTexture nativeImageBackedTexture) {
             return nativeImageBackedTexture.getPixels();
@@ -110,7 +110,7 @@ public class TextureUtils {
 
     }
 
-    public static void SaveImage(ResourceLocation identifier, Path path) {
+    public static void SaveImage(Identifier identifier, Path path) {
         NativeImage image = getNativeImage(identifier);
         if (image != null) {
             SaveImage(image, path);
@@ -175,7 +175,7 @@ public class TextureUtils {
     }
 
     //FIXME: hack, need refactor
-    public static ResourceLocation getOverlayedTexture(NameInfo info, Class<? extends DataHolder> holderType) {
+    public static Identifier getOverlayedTexture(NameInfo info, Class<? extends DataHolder> holderType) {
         OverlayFeature feature = info.getFeature(OverlayFeature.class);
 
         if (!feature.isEnabled()) {
@@ -197,7 +197,7 @@ public class TextureUtils {
     }
 
 
-    public static ResourceLocation getOverlayTexture(NameInfo info, String overlay, String prefix, int blendStrength) {
+    public static Identifier getOverlayTexture(NameInfo info, String overlay, String prefix, int blendStrength) {
         String cacheKey = info.base() + "_" + overlay + "_" + blendStrength+ "_" + prefix;
 
         if (notExistingOverlays.contains(overlay)) {
@@ -208,11 +208,11 @@ public class TextureUtils {
             }
         }
 
-        ResourceLocation cachedTexture = overlayTextureCache.get(cacheKey);
+        Identifier cachedTexture = overlayTextureCache.get(cacheKey);
         if (cachedTexture != null) {
             return cachedTexture;
         }
-        ResourceLocation skinId;
+        Identifier skinId;
         if (prefix.equals("capes")) {
             skinId = PasManager.getInstance().getCapeTexture(info);
         } else {
@@ -220,7 +220,7 @@ public class TextureUtils {
         }
         AbstractTexture skinTexture = Minecraft.getInstance().getTextureManager().getTexture(skinId);
 
-        ResourceLocation overlayId = Rl.vanilla("textures/block/" + overlay + ".png");
+        Identifier overlayId = Rl.vanilla("textures/block/" + overlay + ".png");
         AbstractTexture overlayTexture = Minecraft.getInstance().getTextureManager().getTexture(overlayId);
 
         if (overlayTexture == null) {
@@ -242,7 +242,7 @@ public class TextureUtils {
 
                 NativeImage finalImage = grayscaleSkinOverMaterial(skinImage, overlayImage, (float) blendStrength / 100f);
 
-                ResourceLocation finalIdentifier = Rl.pas(prefix + "/" + EncodeUtils.encodeToSha256(info.base()) + "_" + overlay + "_" + blendStrength);
+                Identifier finalIdentifier = Rl.pas(prefix + "/" + EncodeUtils.encodeToSha256(info.base()) + "_" + overlay + "_" + blendStrength);
                 registerTexture(finalImage, finalIdentifier, prefix == "skins");
 
                 // Сохраняем в кэш

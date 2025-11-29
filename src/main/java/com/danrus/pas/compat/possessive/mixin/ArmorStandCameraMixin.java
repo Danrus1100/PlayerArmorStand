@@ -1,7 +1,7 @@
 package com.danrus.pas.compat.possessive.mixin;
 
 //? if possessive {
-import com.danrus.pas.api.info.NameInfo;
+/*import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.compat.possessive.PossessiveRenderHand;
 import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.impl.holder.SkinData;
@@ -14,12 +14,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.*;
 
@@ -72,18 +72,18 @@ public class ArmorStandCameraMixin {
         };
     }
 
-    /**
+    /^*
      * @author Danrus110_
      * @reason Rewrite hand rendering for {@link PlayerArmorStandModel}
-     */
+     ^/
     @Overwrite
     //? if =1.20.1 {
-    /*public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
-    *///?} else if =1.21.1 {
-    /*public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
-    *///?} else if <=1.21.8 {
-    public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, ResourceLocation resourceLocation, ModelPart modelPart, boolean bl){
-    //?} else {
+    /^public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
+    ^///?} else if =1.21.1 {
+    /^public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, ModelPart modelPart, ModelPart modelPart2) {
+    ^///?} else if <=1.21.8 {
+    /^public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, Identifier resourceLocation, ModelPart modelPart, boolean bl){
+    ^///?} else {
     
     //?}
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
@@ -111,7 +111,7 @@ public class ArmorStandCameraMixin {
         armorStandModel.leftSlimSleeve.zRot = leftZRot;
         armorStandModel.rightSlimSleeve.zRot = rightZRot;
 
-        ResourceLocation skinTexture;
+        Identifier skinTexture;
         if (!info.isEmpty()) {
             if (PasConfig.getInstance().isPossessiveShowDefaultHand()) {
                 skinTexture = Rl.vanilla("textures/entity/armorstand/wood.png");
@@ -126,10 +126,10 @@ public class ArmorStandCameraMixin {
             armorStandArm.resetPose();
             armorStandArm.visible = true;
 
-            armorStandArm.render(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(skinTexture)), i, OverlayTexture.NO_OVERLAY);
+            armorStandArm.render(poseStack, multiBufferSource.getBuffer(RenderTypes.entityTranslucent(skinTexture)), i, OverlayTexture.NO_OVERLAY);
         });
 
 
     }
 }
-//?}
+*///?}

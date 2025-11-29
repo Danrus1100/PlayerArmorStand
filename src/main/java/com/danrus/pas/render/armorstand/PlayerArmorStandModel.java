@@ -8,17 +8,19 @@ import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;
+//? if < 1.21.9 {
+/*import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+*///?}
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
@@ -312,11 +314,11 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape 
     }
 
     @Override
-    public void draw(PoseStack stack, ResourceLocation textureLocation, RenderVersionContext context, int i) {
+    public void draw(PoseStack stack, Identifier textureLocation, RenderVersionContext context, int i) {
         //? <1.21.9 {
-        getCape().visible = true;
-        VertexConsumer vertexConsumer = context.getData(MultiBufferSource.class, "multiBufferSource").getBuffer(RenderType.entitySolid(textureLocation));
+        /*getCape().visible = true;
+        VertexConsumer vertexConsumer = context.getData(MultiBufferSource.class, "multiBufferSource").getBuffer(RenderTypes.entitySolid(textureLocation));
         getCape().render(stack, vertexConsumer, i, OverlayTexture.NO_OVERLAY);
-        //?}
+        *///?}
     }
 }

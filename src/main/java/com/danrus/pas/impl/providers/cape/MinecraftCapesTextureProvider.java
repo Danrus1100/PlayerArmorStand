@@ -15,7 +15,7 @@ import com.danrus.pas.utils.MojangUtils;
 import com.danrus.pas.utils.RestHelper;
 import com.danrus.pas.utils.SkinDownloader;
 import com.google.gson.Gson;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
@@ -66,8 +66,8 @@ public class MinecraftCapesTextureProvider implements TextureProvider{
             return CompletableFuture.completedFuture(null);
         }
 
-        ResourceLocation capeLocation = InfoTranslators.getInstance()
-                .toResourceLocation(CapeData.class, info);
+        Identifier capeLocation = InfoTranslators.getInstance()
+                .toIdentifier(CapeData.class, info);
         String fileName = InfoTranslators.getInstance()
                 .toFileName(CapeData.class, info);
         Path filePath = CACHE_PATH.resolve(fileName + ".png");

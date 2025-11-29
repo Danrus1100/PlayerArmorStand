@@ -8,13 +8,13 @@ import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class ClientLevelSkinData extends AbstractClientLevelDataProvider<SkinData> {
 
     @Override
-    protected @Nullable ResourceLocation getTexture(AbstractClientPlayer player) {
+    protected @Nullable Identifier getTexture(AbstractClientPlayer player) {
         return VersioningUtils.getPlayerSkinTexture(player);
     }
 

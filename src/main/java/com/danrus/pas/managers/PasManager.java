@@ -8,7 +8,7 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.utils.TextureUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,20 +44,20 @@ public class PasManager {
         capeProviderManager.initialize(this);
     }
 
-    public ResourceLocation getSkinWithOverlayTexture(NameInfo info) {
+    public Identifier getSkinWithOverlayTexture(NameInfo info) {
         return TextureUtils.getOverlayedTexture(info, SkinData.class);
     }
 
-    public ResourceLocation getCapeWithOverlayTexture(NameInfo info) {
+    public Identifier getCapeWithOverlayTexture(NameInfo info) {
         return TextureUtils.getOverlayedTexture(info, CapeData.class);
     }
 
-    public ResourceLocation getSkinTexture(NameInfo info) {
+    public Identifier getSkinTexture(NameInfo info) {
         SkinData data = skinDataRepository.getData(info);
         return data != null ? data.getTexture(info) : null;
     }
 
-    public ResourceLocation getCapeTexture(NameInfo info) {
+    public Identifier getCapeTexture(NameInfo info) {
         CapeData data = capeDataRepository.getData(info);
         return data != null ? data.getTexture(info) : null;
     }

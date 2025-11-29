@@ -2,20 +2,23 @@ package com.danrus.pas.utils;
 
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.PasConfig;
+import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.render.armorstand.RenderVersionContext;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.ArmorStandArmorModel;
+import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+//? if <1.21.9 {
+/*import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+*///?}
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.util.function.Function;
@@ -50,10 +53,10 @@ public class VersioningUtils {
             *///?} else {
             if (object instanceof net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStandState) {
                 //? <1.21.9 {
-                return armorStandState.customName;
-                //?} else {
-                /*return ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandState).pas$getCustomName();
-                *///?}
+                /*return armorStandState.customName;
+                *///?} else {
+                return ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandState).pas$getCustomName();
+                //?}
             }
             //?}
             else {
@@ -173,40 +176,40 @@ public class VersioningUtils {
 
     public static float getXRot(Rotations rot) {
         //? if <= 1.21.4 {
-        return rot.getX();
-        //?} else {
-        /*return rot.x();
-        *///?}
+        /*return rot.getX();
+        *///?} else {
+        return rot.x();
+        //?}
     }
     public static float getYRot(Rotations rot) {
         //? if <= 1.21.4 {
-        return rot.getY();
-        //?} else {
-        /*return rot.y();
-        *///?}
+        /*return rot.getY();
+        *///?} else {
+        return rot.y();
+        //?}
     }
     public static float getZRot(Rotations rot) {
         //? if <= 1.21.4 {
-        return rot.getZ();
-        //?} else {
-        /*return rot.z();
-        *///?}
+        /*return rot.getZ();
+        *///?} else {
+        return rot.z();
+        //?}
     }
 
 
     //? if >= 1.21.4 {
     public static
         //? if >= 1.21.6 {
-        /*com.mojang.blaze3d.pipeline.RenderPipeline
-        *///?} else {
-        Function<ResourceLocation, RenderType>
-        //?}
+        com.mojang.blaze3d.pipeline.RenderPipeline
+        //?} else {
+        /*Function<Identifier, RenderType>
+        *///?}
         getGuiRender() {
             //? if >= 1.21.6 {
-            /*return net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
-            *///?} else {
-            return RenderType::guiTextured;
-            //?}
+            return net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
+            //?} else {
+            /*return RenderType::guiTextured;
+            *///?}
             }
     //?}
 
@@ -214,35 +217,35 @@ public class VersioningUtils {
         return (int) Math.floor(alpha * 255.0F) << 24 | 16777215;
     }
 
-    public static ResourceLocation getPlayerSkinTexture(AbstractClientPlayer player){
+    public static Identifier getPlayerSkinTexture(AbstractClientPlayer player){
         //? if <= 1.20.1 {
         /*return player.getSkinTextureLocation();
         *///?} else if >1.20.1 && <1.21.9 {
-        return player.getSkin().texture();
-        //?} else {
-        /*return player.getSkin().body().texturePath();
-        *///?}
+        /*return player.getSkin().texture();
+        *///?} else {
+        return player.getSkin().body().texturePath();
+        //?}
     }
 
-    public static ResourceLocation getPlayerCapeTexture(AbstractClientPlayer player){
+    public static Identifier getPlayerCapeTexture(AbstractClientPlayer player){
         //? if <= 1.20.1 {
         /*return player.getCloakTextureLocation();
         *///?} else if >1.20.1 && <1.21.9 {
-        return player.getSkin().capeTexture();
-        //?} else {
-        /*try {
+        /*return player.getSkin().capeTexture();
+        *///?} else {
+        try {
             return player.getSkin().cape().texturePath();
         } catch (Exception e) {
             return CapeData.DEFAULT_TEXTURE;
         }
-        *///?}
+        //?}
     }
 
     public static void copyPartPose(ModelPart from, ModelPart to){
         //? <1.21.9 {
-        to.copyFrom(from);
-        //?} else {
-        /*to.x = from.x;
+        /*to.copyFrom(from);
+        *///?} else {
+        to.x = from.x;
         to.y = from.y;
         to.z = from.z;
         to.xRot = from.xRot;
@@ -251,7 +254,7 @@ public class VersioningUtils {
         to.xScale = from.xScale;
         to.yScale = from.yScale;
         to.zScale = from.zScale;
-        *///?}
+        //?}
     }
 
     public abstract static class VersionlessArmorStandCapeLayer extends RenderLayer<
@@ -263,7 +266,7 @@ public class VersioningUtils {
             ArmorStandArmorModel>
     {
         //? >= 1.21.9
-        /*private final com.danrus.pas.render.armorstand.PasCapeModel capeModel;*/
+        private final com.danrus.pas.render.armorstand.PasCapeModel capeModel;
 
         public VersionlessArmorStandCapeLayer(RenderLayerParent<
                 //? if <= 1.21.1 {
@@ -274,26 +277,26 @@ public class VersioningUtils {
                 ArmorStandArmorModel> renderer) {
             super(renderer);
             //? >= 1.21.9
-            /*capeModel = new com.danrus.pas.render.armorstand.PasCapeModel();*/
+            capeModel = new com.danrus.pas.render.armorstand.PasCapeModel();
         }
 
         //? <1.21.9 {
-        @Override
+        /*@Override
         public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i,
                            //? if <= 1.21.1 {
-                /*ArmorStand
-                 *///?} else {
+                /^ArmorStand
+                 ^///?} else {
                            net.minecraft.client.renderer.entity.state.ArmorStandRenderState
                                    //?}
                                    armorStand,
                            float f1, float f2
                            //? if <= 1.21.1
-                /*, float f3, float f4, float f5, float f6*/
+                /^, float f3, float f4, float f5, float f6^/
         )
-        //?} else {
-        /*@Override
+        *///?} else {
+        @Override
         public void submit(PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, int i, net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStand, float f, float g)
-        *///?}
+        //?}
         {
             if (!PasConfig.getInstance().isEnableMod() || VersioningUtils.isInvisible(armorStand)) {
                 return;
@@ -318,18 +321,18 @@ public class VersioningUtils {
 
             RenderVersionContext context = new RenderVersionContext(
                     //? <1.21.9
-                    model
+                    /*model*/
                     //? >=1.21.9
-                    /*capeModel*/
+                    capeModel
             );
 
             //? <1.21.9 {
-            context.putData(multiBufferSource, "multiBufferSource");
-            //?} else {
-            /*context.putData(capeModel, "capeModel");
+            /*context.putData(multiBufferSource, "multiBufferSource");
+            *///?} else {
+            context.putData(capeModel, "capeModel");
             context.putData(armorStand, "armorStand");
             context.putData(collector, "collector");
-             *///?}
+             //?}
             draw(poseStack, context, info, i, isBaby);
         }
 

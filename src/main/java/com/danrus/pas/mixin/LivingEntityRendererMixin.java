@@ -5,7 +5,9 @@ import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+//if >=1.21.11
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -48,10 +50,10 @@ public class LivingEntityRendererMixin<T extends
         }
 
         if (VersioningUtils.getCustomName(entity) != null && PasConfig.getInstance().isEnableMod()) {
-            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(VersioningUtils.getCustomName(entity)))));
+            cir.setReturnValue(RenderTypes.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(VersioningUtils.getCustomName(entity)))));
             cir.cancel();
         } else if (VersioningUtils.getCustomName(entity) == null && !PasConfig.getInstance().getDefaultSkin().isEmpty()) {
-            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(Component.literal(PasConfig.getInstance().getDefaultSkin())))));
+            cir.setReturnValue(RenderTypes.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(Component.literal(PasConfig.getInstance().getDefaultSkin())))));
             cir.cancel();
         }
     }

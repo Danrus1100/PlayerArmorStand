@@ -38,7 +38,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.6+"
+    id("dev.kikugie.stonecutter") version "0.7.11"
 }
 
 //includeBuild("../modstitch")
@@ -56,6 +56,7 @@ stonecutter {
             loaders.forEach { vers("$name-$it", mcVersion) }
 
         // Configure your targets here!
+        mc("1.21.11", loaders = listOf("fabric"))
         mc("1.21.10", loaders = listOf("fabric"))
         mc("1.21.8", loaders = listOf("fabric", "neoforge"))
         mc("1.21.5", loaders = listOf("fabric", "neoforge"))

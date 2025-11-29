@@ -10,7 +10,7 @@ import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.providers.common.AbstractNamemcProvider;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.SkinDownloader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
@@ -23,9 +23,9 @@ public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
     }
 
     @Override
-    protected CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info) {
-        ResourceLocation capeLocation = InfoTranslators.getInstance()
-                .toResourceLocation(CapeData.class, info);
+    protected CompletableFuture<Identifier> getDownloadTask(NameInfo info) {
+        Identifier capeLocation = InfoTranslators.getInstance()
+                .toIdentifier(CapeData.class, info);
         String fileName = InfoTranslators.getInstance()
                 .toFileName(CapeData.class, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
@@ -49,7 +49,7 @@ public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
     }
 
     @Override
-    protected void updateSkinData(NameInfo info, ResourceLocation texture) {
+    protected void updateSkinData(NameInfo info, Identifier texture) {
         CapeData data = this.getOrCreateDataHolder(info);
         data.setTexture(texture);
         data.setStatus(DownloadStatus.COMPLETED);

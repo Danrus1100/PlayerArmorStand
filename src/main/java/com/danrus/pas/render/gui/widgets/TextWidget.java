@@ -9,11 +9,11 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class TextWidget extends AbstractWidget {
 
-    public static ResourceLocation QUESTION_MARK_ICON = Rl.pas("question");
+    public static Identifier QUESTION_MARK_ICON = Rl.pas("question");
 
     private boolean hasTooltip = false;
     public TextWidget(int x, int y, int width, int height, Component message) {

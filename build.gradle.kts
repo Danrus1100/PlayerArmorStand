@@ -1,8 +1,8 @@
 import org.gradle.kotlin.dsl.apply
 
 plugins {
-    id("dev.isxander.modstitch.base") version "0.7.0-unstable"
-    id("me.modmuss50.mod-publish-plugin") version "0.8.4"
+    id("dev.isxander.modstitch.base")
+    id("me.modmuss50.mod-publish-plugin")
 }
 
 fun prop(name: String, consumer: (prop: String) -> Unit) {
@@ -71,7 +71,7 @@ modstitch {
 
     // Fabric Loom (Fabric)
     loom {
-        fabricLoaderVersion = "0.17.2"
+        fabricLoaderVersion = "0.17.3"
 
         // Configure loom like normal in this block.
         configureLoom {
@@ -145,6 +145,38 @@ stonecutter {
         "modmenu" to hasModMenu,
         "yacl" to hasYacl
     )
+
+    replacements {
+        string {
+            direction = eval(current.version, ">=1.21.11")
+            replace("ResourceLocation", "Identifier")
+        }
+        string {
+            direction = eval(current.version, ">=1.21.11")
+            replace("import net.minecraft.Util;", "import net.minecraft.util.Util;")
+        }
+        string {
+            direction = eval(current.version, ">=1.21.11")
+            replace(
+                "import net.minecraft.client.model.ArmorStandArmorModel;",
+                "import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;"
+            )
+        }
+        string {
+            direction = eval(current.version, ">=1.21.11")
+            replace(
+                "import net.minecraft.client.renderer.RenderType;",
+                "import net.minecraft.client.renderer.rendertype.RenderTypes;"
+            )
+        }
+        string {
+            direction = eval(current.version, ">=1.21.11")
+            replace(
+                "RenderType.",
+                "RenderTypes."
+            )
+        }
+    }
 }
 
 // All dependencies should be specified through modstitch's proxy configuration.
@@ -181,6 +213,7 @@ dependencies {
 }
 
 publishMods {
+    val defaultReleaseType = BETA
     val modrinthToken = findProperty("modrinth-token")
     val curseforgeToken = findProperty("curseforge-token")
     val discordWebhookDR = findProperty("discord-webhook")
@@ -194,7 +227,16 @@ publishMods {
     }
 
     changelog = rootProject.file("CHANGELOG.md").readText()
-    type = BETA
+    if (findProperty("meta.release_type") != null) {
+        var rType = findProperty("meta.release_type").toString()
+        if (rType == "alpha") {
+            type = ALPHA
+        } else {
+            type = defaultReleaseType
+        }
+    } else {
+        type = defaultReleaseType
+    }
 
     val loaders = property("pub.target.platforms").toString().split(' ')
     loaders.forEach(modLoaders::add)

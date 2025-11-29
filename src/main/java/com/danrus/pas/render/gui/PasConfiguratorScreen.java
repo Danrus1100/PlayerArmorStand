@@ -15,7 +15,10 @@ import com.danrus.pas.utils.VersioningUtils;
 
 import com.danrus.pas.impl.data.skin.FileTextureSkinData;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -25,25 +28,27 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class PasConfiguratorScreen extends Screen {
 
-    public static final ResourceLocation BACKGROUND_TEXTURE = Rl.pas("pas_gui");
+    public static final Identifier BACKGROUND_TEXTURE = Rl.pas("pas_gui");
 
-    public static final ResourceLocation MOJANG_LOGO = Rl.pas("mojang");
-    public static final ResourceLocation NAMEMC_LOGO = Rl.pas("namemc");
-    public static final ResourceLocation MCCAPES_LOGO = Rl.pas("minecraftcapes");
-    public static final ResourceLocation FILE_LOGO = Rl.pas("file");
-    public static final ResourceLocation WIDE_ARM_LOGO = Rl.pas("wide");
-    public static final ResourceLocation SLIM_ARM_LOGO = Rl.pas("slim");
+    public static final Identifier MOJANG_LOGO = Rl.pas("mojang");
+    public static final Identifier NAMEMC_LOGO = Rl.pas("namemc");
+    public static final Identifier MCCAPES_LOGO = Rl.pas("minecraftcapes");
+    public static final Identifier FILE_LOGO = Rl.pas("file");
+    public static final Identifier WIDE_ARM_LOGO = Rl.pas("wide");
+    public static final Identifier SLIM_ARM_LOGO = Rl.pas("slim");
 
-    public static final ResourceLocation YES_LOGO = Rl.pas("yes");
-    public static final ResourceLocation NO_LOGO = Rl.pas("no");
+    public static final Identifier YES_LOGO = Rl.pas("yes");
+    public static final Identifier NO_LOGO = Rl.pas("no");
 
     private static final float ANIMATION_SPEED = 0.5f;
 
@@ -185,7 +190,7 @@ public class PasConfiguratorScreen extends Screen {
         );
         TextWidget skinProviderLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.provider"));
         TextWidget armTypeLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.arm_type"));
-        
+
         Tab skinTab = new Tab("skin", (width, height) -> {
             nameLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 87));
             nameBox.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 70));
@@ -346,11 +351,20 @@ public class PasConfiguratorScreen extends Screen {
         tabManager.reposition(width, height);
     }
 
-    @Override
+    //? <=1.21.10 {
+    /*@Override
     public void resize(Minecraft minecraft, int width, int height) {
         super.resize(minecraft, width, height);
         repositionElements(width, height);
     }
+    *///?} else {
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        repositionElements(width, height);
+    }
+    //?}
+
 
     @Override
     public boolean isPauseScreen() {
@@ -420,7 +434,7 @@ public class PasConfiguratorScreen extends Screen {
                 .rotateY((float) Math.toRadians(currentRotation + 30F));
 
         //? if <= 1.21.5 {
-        InventoryScreen.renderEntityInInventory(
+        /*InventoryScreen.renderEntityInInventory(
                 g, (int) (this.width / 2f - 68), (int) (this.height / 2f + 80), 70,
                 //? >= 1.21.1
                 new Vector3f(0, 0, 0),
@@ -428,15 +442,18 @@ public class PasConfiguratorScreen extends Screen {
                 null,
                 entity
         );
-        //?} else {
-        /*int left = this.width / 2 - 130; // Approx. left boundary
+        *///?} else {
+        int left = this.width / 2 - 130; // Approx. left boundary
         int top = this.height / 2 - 70;  // Approx. top boundary
         int right = this.width / 2 - 18; // Approx. right boundary
         int bottom = this.height / 2 + 120; // Approx. bottom boundary
         float scale = 70.0F; // Adjust scale as needed
         Vector3f translation = new Vector3f(0.1f, 0.75f, 0); // Use default translation
 
-        InventoryScreen.renderEntityInInventory(
+        //? <=1.21.10
+        /*InventoryScreen.renderEntityInInventory(*/
+        //? >=1.21.11
+        renderEntityInInventory12111(
                 g,
                 left,
                 top,
@@ -448,7 +465,7 @@ public class PasConfiguratorScreen extends Screen {
                 null,
                 entity
         );
-        *///?}
+        //?}
     }
 
     private float lerp(float start, float end, float speed, float partialTick) {
@@ -514,4 +531,17 @@ public class PasConfiguratorScreen extends Screen {
         IDLE,
         CAPE,
     }
+
+    //? >=1.21.10 {
+    public static void renderEntityInInventory12111(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, float scale, Vector3f translation, Quaternionf rotation, @Nullable Quaternionf overrideCameraAngle, LivingEntity entity) {
+        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        EntityRenderer<? super LivingEntity, ?> entityRenderer = entityRenderDispatcher.getRenderer(entity);
+        EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1.0F);
+        entityRenderState.lightCoords = 15728880;
+        //        entityRenderState.hitboxesRenderState = null;
+        entityRenderState.shadowPieces.clear();
+        entityRenderState.outlineColor = 0;
+        guiGraphics.submitEntityRenderState(entityRenderState, scale, translation, rotation, overrideCameraAngle, x1, y1, x2, y2);
+    }
+    //?}
 }

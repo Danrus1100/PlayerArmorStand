@@ -7,10 +7,10 @@ public class PossessiveCompatPlugin extends PasCompatPlugin {
     @Override
     public boolean shouldApply() {
         //? if possessive {
-        return VersioningUtils.isModLoaded("possessive");
-        //?} else {
-        /*return false;
-        *///?}
+        /*return VersioningUtils.isModLoaded("possessive");
+        *///?} else {
+        return false;
+        //?}
     }
 
     @Override

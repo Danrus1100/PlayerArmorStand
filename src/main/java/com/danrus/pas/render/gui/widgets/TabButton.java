@@ -26,16 +26,21 @@ public class TabButton extends Button {
 
     @Override
     //? <1.21.9
-    public void onPress() {
+    /*public void onPress() {*/
     //? >=1.21.9
-    /*public void onPress(net.minecraft.client.input.InputWithModifiers inputWithModifiers) {*/
+    public void onPress(net.minecraft.client.input.InputWithModifiers inputWithModifiers) {
         if (this.tabOnPress != null) {
             this.tabOnPress.onPress(this);
         }
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void
+    //? <1.21.11
+    /*renderWidget*/
+    //? >=1.21.11
+    renderContents
+    (GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         //? >= 1.21.1 {
         guiGraphics.blitSprite(/*? >= 1.21.4 {*/VersioningUtils.getGuiRender(),/*?}*/ TAB_BUTTON_SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight() /*? >= 1.21.4 {*/, VersioningUtils.getARGBwhite(this.alpha)/*?}*/);
@@ -43,6 +48,6 @@ public class TabButton extends Button {
         /*guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(TAB_LOCATION, this.getX(), this.getY(), 0, 0, 80, 15, 80, 15);
         *///?}
-        this.renderString(guiGraphics, minecraft.font, 16777215 | Mth.ceil(this.alpha * 255.0F) << 24);
+//        this.renderString(guiGraphics, minecraft.font, 16777215 | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 }

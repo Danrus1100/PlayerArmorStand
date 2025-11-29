@@ -1,22 +1,30 @@
+import org.gradle.kotlin.dsl.version
+
 plugins {
     id("dev.kikugie.stonecutter")
-}
-stonecutter active "1.21.4-fabric"
 
-stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) { 
-    group = "project"
-    ofTask("build")
-}
+    val modstitchVersion = "0.7.0-unstable"
+    id("dev.isxander.modstitch.base") version modstitchVersion apply false
+    id("fabric-loom") version "1.13-SNAPSHOT" apply false
 
-stonecutter registerChiseled tasks.register("chiseledBuildAndCollect", stonecutter.chiseled) {
-    group = "project"
-    ofTask("buildAndCollect")
+    id("me.modmuss50.mod-publish-plugin") version "0.8.4" apply false
 }
+stonecutter active "1.21.11-fabric"
 
-stonecutter registerChiseled tasks.register("chiseledPublishMods", stonecutter.chiseled) {
-    group = "project"
-    ofTask("publishMods")
-}
+//stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) {
+//    group = "project"
+//    ofTask("build")
+//}
+//
+//stonecutter registerChiseled tasks.register("chiseledBuildAndCollect", stonecutter.chiseled) {
+//    group = "project"
+//    ofTask("buildAndCollect")
+//}
+//
+//stonecutter registerChiseled tasks.register("chiseledPublishMods", stonecutter.chiseled) {
+//    group = "project"
+//    ofTask("publishMods")
+//}
 
 allprojects {
     repositories {

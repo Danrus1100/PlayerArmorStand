@@ -7,10 +7,10 @@ public class ArmorPoserCompatPlugin extends PasCompatPlugin {
     @Override
     public boolean shouldApply() {
         //? if armorposer {
-        return VersioningUtils.isModLoaded("armorposer");
-        //?} else {
-        /*return false;
-        *///?}
+        /*return VersioningUtils.isModLoaded("armorposer");
+        *///?} else {
+        return false;
+        //?}
     }
 
     @Override

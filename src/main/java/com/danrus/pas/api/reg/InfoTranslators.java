@@ -5,7 +5,7 @@ import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.info.InfoTranslator;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.utils.Rl;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class InfoTranslators {
         registry.computeIfAbsent(clazz, k -> new ArrayList<>()).add(resolver);
     }
 
-    public ResourceLocation toResourceLocation(Class<? extends DataHolder> type, NameInfo info) {
+    public Identifier toIdentifier(Class<? extends DataHolder> type, NameInfo info) {
         List<InfoTranslator> list = this.registry.get(type);
 
         if (list == null || list.isEmpty()) {
@@ -29,7 +29,7 @@ public class InfoTranslators {
         for (InfoTranslator translator : list) {
             try {
                 if (translator.isApplicable(info)) {
-                    ResourceLocation location = translator.toResourceLocation(info);
+                    Identifier location = translator.toIdentifier(info);
                     if (location != null) {
                         return location;
                     }

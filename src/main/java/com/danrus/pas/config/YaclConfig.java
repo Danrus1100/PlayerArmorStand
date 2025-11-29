@@ -1,7 +1,7 @@
 package com.danrus.pas.config;
 
 //? if yacl {
-import com.danrus.pas.config.categories.MainCategory;
+/*import com.danrus.pas.config.categories.MainCategory;
 import com.danrus.pas.config.categories.PossessiveCategory;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.utils.Rl;
@@ -146,4 +146,4 @@ public class YaclConfig extends PasConfig {
         return possessiveShowDefaultHand;
     }
 }
-//?}
+*///?}

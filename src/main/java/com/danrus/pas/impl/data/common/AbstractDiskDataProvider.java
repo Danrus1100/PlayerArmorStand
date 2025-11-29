@@ -10,7 +10,7 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.utils.TextureUtils;
 import com.danrus.pas.utils.VersioningUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     public static final Path CACHE_PATH = VersioningUtils.getGameDir().resolve("cache/pas");
 
     protected final Path cachePath;
-    protected final HashMap<DataStoreKey, ResourceLocation> cache = new HashMap<>();
+    protected final HashMap<DataStoreKey, Identifier> cache = new HashMap<>();
 
     public AbstractDiskDataProvider() {
         this.cachePath = CACHE_PATH;
@@ -44,8 +44,8 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
             return null;
         }
 
-        ResourceLocation texture = InfoTranslators.getInstance()
-                .toResourceLocation(getDataHolderClass(), info);
+        Identifier texture = InfoTranslators.getInstance()
+                .toIdentifier(getDataHolderClass(), info);
 
         TextureUtils.registerTexture(filePath, texture, shouldProcessSkin());
         cache.put(getCacheKey(info), texture);

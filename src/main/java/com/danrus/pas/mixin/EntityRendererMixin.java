@@ -7,10 +7,12 @@ import com.danrus.pas.impl.features.DisplayNameFeature;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 //?}
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -32,7 +34,7 @@ public class EntityRendererMixin {
     //? if !forge {
 
     //? if <1.21.6 {
-    @WrapOperation(
+    /*@WrapOperation(
             method = "renderNameTag",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;drawInBatch(Lnet/minecraft/network/chat/Component;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)I")
     )
@@ -53,7 +55,7 @@ public class EntityRendererMixin {
         instance = NameInfo.parse(instance).base();
         return instance.equals(object);
     }
-    //?} else if >=1.21.6 && <1.21.9 {
+    *///?} else if >=1.21.6 && <1.21.9 {
 
     /*@Shadow
     @Final
@@ -94,7 +96,7 @@ public class EntityRendererMixin {
     }
     *///?} else {
 
-    /*@WrapOperation(
+    @WrapOperation(
             method = "submitNameTag",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitNameTag(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/phys/Vec3;ILnet/minecraft/network/chat/Component;ZIDLnet/minecraft/client/renderer/state/CameraRenderState;)V")
     )
@@ -107,7 +109,7 @@ public class EntityRendererMixin {
         }
     }
 
-    *///?}
+    //?}
 
     //?}
 }

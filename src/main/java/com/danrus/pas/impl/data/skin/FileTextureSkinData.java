@@ -8,7 +8,7 @@ import com.danrus.pas.impl.data.common.AbstractFileTextureDataProvider;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.VersioningUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 
@@ -27,7 +27,7 @@ public class FileTextureSkinData extends AbstractFileTextureDataProvider<SkinDat
     }
 
     @Override
-    protected SkinData createDataHolder(NameInfo info, ResourceLocation texture) {
+    protected SkinData createDataHolder(NameInfo info, Identifier texture) {
         SkinData newData = new SkinData(info);
         newData.setTexture(texture);
         return newData;

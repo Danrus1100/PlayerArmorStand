@@ -5,7 +5,7 @@ import com.danrus.pas.api.info.InfoTranslator;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.utils.Rl;
 import com.danrus.pas.utils.EncodeUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public abstract class AbstractSimpleTranslator implements InfoTranslator {
 
@@ -35,7 +35,7 @@ public abstract class AbstractSimpleTranslator implements InfoTranslator {
 
 
     @Override
-    public ResourceLocation toResourceLocation(NameInfo info) {
+    public Identifier toIdentifier(NameInfo info) {
         return Rl.pas(getPrefix() + "/" + (shouldEncode() ? EncodeUtils.encodeToSha256(getName(info)) : getName(info)));
     }
 

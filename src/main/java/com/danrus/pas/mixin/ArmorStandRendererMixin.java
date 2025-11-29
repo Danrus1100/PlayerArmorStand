@@ -9,11 +9,12 @@ import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.utils.VersioningUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -50,9 +51,9 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
 
     @Inject(
             //? if <= 1.21.1 {
-            /*method = "getTextureLocation(Lnet/minecraft/world/entity/decoration/ArmorStand;)Lnet/minecraft/resources/ResourceLocation;",
+            /*method = "getTextureLocation(Lnet/minecraft/world/entity/decoration/ArmorStand;)Lnet/minecraft/resources/Identifier;",
             *///?} else {
-            method = "getTextureLocation(Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;)Lnet/minecraft/resources/ResourceLocation;",
+            method = "getTextureLocation(Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;)Lnet/minecraft/resources/Identifier;",
             //?}
             at = @At("RETURN"),
             cancellable = true
@@ -63,7 +64,7 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
             *///?} else {
             net.minecraft.client.renderer.entity.state.ArmorStandRenderState
             //?}
-                    armorStand, CallbackInfoReturnable<ResourceLocation> cir){
+                    armorStand, CallbackInfoReturnable<Identifier> cir){
         if (VersioningUtils.getCustomName(armorStand) == null || !PasConfig.getInstance().isEnableMod()) {
             return;
         }
@@ -114,12 +115,12 @@ public abstract class ArmorStandRendererMixin implements VersioningUtils.Version
     *///?}
 
     //? >=1.21.9 {
-    /*@Inject(
+    @Inject(
             method = "extractRenderState(Lnet/minecraft/world/entity/decoration/ArmorStand;Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;F)V",
             at = @At("RETURN")
     )
     private void setCustomName1219(ArmorStand armorStand, net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStandRenderState, float f, CallbackInfo ci) {
         ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandRenderState).pas$setCustomName(armorStand.getCustomName());
     }
-    *///?}
+    //?}
 }
