@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class TextureUtils {
-    private static final HashMap<String, Identifier> overlayTextureCache = new HashMap<>();
+    private static final HashMap<String, ResourceLocation> overlayTextureCache = new HashMap<>();
     private static final List<String> notExistingOverlays = new ArrayList<>();
 
-    public static CompletableFuture<Identifier> registerTexture(Path path, Identifier identifier, boolean remap){
+    public static CompletableFuture<ResourceLocation> registerTexture(Path path, ResourceLocation identifier, boolean remap){
         NativeImage image = parseImageFile(path);
         if (image != null) {
             return registerTexture(image, identifier, remap);
@@ -43,8 +43,8 @@ public class TextureUtils {
         overlayTextureCache.entrySet().removeIf(entry -> entry.getKey().startsWith(baseName + "_"));
     }
 
-    public static CompletableFuture<Identifier> registerTexture(NativeImage image, Identifier identifier, boolean remap) {
-        CompletableFuture<Identifier> future = new CompletableFuture<>();
+    public static CompletableFuture<ResourceLocation> registerTexture(NativeImage image, ResourceLocation identifier, boolean remap) {
+        CompletableFuture<ResourceLocation> future = new CompletableFuture<>();
 
         try {
             if (remap) {
@@ -55,10 +55,10 @@ public class TextureUtils {
             Minecraft.getInstance().execute(() -> {
                 try {
                     //? if <=1.21.4 {
-                    /*DynamicTexture texture = new DynamicTexture(finalImage);
-                    *///?} else {
-                    DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
-                    //?}
+                    DynamicTexture texture = new DynamicTexture(finalImage);
+                    //?} else {
+                    /*DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
+                    *///?}
                     Minecraft.getInstance().getTextureManager().register(identifier, texture);
 
                     future.complete(identifier);
@@ -76,7 +76,7 @@ public class TextureUtils {
         return future;
     }
 
-    public static void unregisterTexture(Identifier identifier) {
+    public static void unregisterTexture(ResourceLocation identifier) {
         Minecraft.getInstance().getTextureManager().release(identifier);
         overlayTextureCache.remove(identifier.toString());
     }
@@ -90,7 +90,7 @@ public class TextureUtils {
         }
     }
 
-    public static NativeImage getNativeImage(Identifier identifier) {
+    public static NativeImage getNativeImage(ResourceLocation identifier) {
         AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(identifier);
         if (texture instanceof DynamicTexture nativeImageBackedTexture) {
             return nativeImageBackedTexture.getPixels();
@@ -110,7 +110,7 @@ public class TextureUtils {
 
     }
 
-    public static void SaveImage(Identifier identifier, Path path) {
+    public static void SaveImage(ResourceLocation identifier, Path path) {
         NativeImage image = getNativeImage(identifier);
         if (image != null) {
             SaveImage(image, path);
@@ -175,7 +175,7 @@ public class TextureUtils {
     }
 
     //FIXME: hack, need refactor
-    public static Identifier getOverlayedTexture(NameInfo info, Class<? extends DataHolder> holderType) {
+    public static ResourceLocation getOverlayedTexture(NameInfo info, Class<? extends DataHolder> holderType) {
         OverlayFeature feature = info.getFeature(OverlayFeature.class);
 
         if (!feature.isEnabled()) {
@@ -197,7 +197,7 @@ public class TextureUtils {
     }
 
 
-    public static Identifier getOverlayTexture(NameInfo info, String overlay, String prefix, int blendStrength) {
+    public static ResourceLocation getOverlayTexture(NameInfo info, String overlay, String prefix, int blendStrength) {
         String cacheKey = info.base() + "_" + overlay + "_" + blendStrength+ "_" + prefix;
 
         if (notExistingOverlays.contains(overlay)) {
@@ -208,11 +208,11 @@ public class TextureUtils {
             }
         }
 
-        Identifier cachedTexture = overlayTextureCache.get(cacheKey);
+        ResourceLocation cachedTexture = overlayTextureCache.get(cacheKey);
         if (cachedTexture != null) {
             return cachedTexture;
         }
-        Identifier skinId;
+        ResourceLocation skinId;
         if (prefix.equals("capes")) {
             skinId = PasManager.getInstance().getCapeTexture(info);
         } else {
@@ -220,7 +220,7 @@ public class TextureUtils {
         }
         AbstractTexture skinTexture = Minecraft.getInstance().getTextureManager().getTexture(skinId);
 
-        Identifier overlayId = Rl.vanilla("textures/block/" + overlay + ".png");
+        ResourceLocation overlayId = Rl.vanilla("textures/block/" + overlay + ".png");
         AbstractTexture overlayTexture = Minecraft.getInstance().getTextureManager().getTexture(overlayId);
 
         if (overlayTexture == null) {
@@ -242,13 +242,13 @@ public class TextureUtils {
 
                 NativeImage finalImage = grayscaleSkinOverMaterial(skinImage, overlayImage, (float) blendStrength / 100f);
 
-                Identifier finalIdentifier = Rl.pas(prefix + "/" + EncodeUtils.encodeToSha256(info.base()) + "_" + overlay + "_" + blendStrength);
-                registerTexture(finalImage, finalIdentifier, prefix == "skins");
+                ResourceLocation finalResourceLocation = Rl.pas(prefix + "/" + EncodeUtils.encodeToSha256(info.base()) + "_" + overlay + "_" + blendStrength);
+                registerTexture(finalImage, finalResourceLocation, prefix == "skins");
 
                 // Сохраняем в кэш
-                overlayTextureCache.put(cacheKey, finalIdentifier);
+                overlayTextureCache.put(cacheKey, finalResourceLocation);
 
-                return finalIdentifier;
+                return finalResourceLocation;
             }
         } catch (Exception e) {
             PlayerArmorStandsClient.LOGGER.warn("Failed to create overlay texture for: {} with overlay: {}", info, overlay, e);
@@ -270,11 +270,11 @@ public class TextureUtils {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                int skinArgb = VersioningUtils.getPixel(skin, x, y);
+                int skinArgb = ModUtils.getPixel(skin, x, y);
                 int sa = (skinArgb >> 24) & 0xFF;
 
                 if (sa < 10) {
-                    VersioningUtils.setPixel(result, x, y, 0);
+                    ModUtils.setPixel(result, x, y, 0);
                     continue;
                 }
 
@@ -286,7 +286,7 @@ public class TextureUtils {
 
                 int mx = x % matWidth;
                 int my = y % matHeight;
-                int matArgb = VersioningUtils.getPixel(material, mx, my);
+                int matArgb = ModUtils.getPixel(material, mx, my);
 
                 int mr = (matArgb >> 16) & 0xFF;
                 int mg = (matArgb >> 8) & 0xFF;
@@ -297,7 +297,7 @@ public class TextureUtils {
                 int b = (int)(mb * brightness * blendStrength + sb * (1 - blendStrength));
 
                 int resultArgb = (sa << 24) | (r << 16) | (g << 8) | b;
-                VersioningUtils.setPixel(result, x, y, resultArgb);
+                ModUtils.setPixel(result, x, y, resultArgb);
             }
         }
 
@@ -308,7 +308,7 @@ public class TextureUtils {
     private static void stripColor(NativeImage image, int x1, int y1, int x2, int y2) {
         for(int i = x1; i < x2; ++i) {
             for(int j = y1; j < y2; ++j) {
-                int k = VersioningUtils.getPixel(image, i, j);
+                int k = ModUtils.getPixel(image, i, j);
                 if ((k >> 24 & 255) < 128) {
                     return;
                 }
@@ -317,14 +317,14 @@ public class TextureUtils {
 
         for(int i = x1; i < x2; ++i) {
             for(int j = y1; j < y2; ++j) {
-                VersioningUtils.setPixel(image, i, j, VersioningUtils.getPixel(image, i, j) & 16777215);
+                ModUtils.setPixel(image, i, j, ModUtils.getPixel(image, i, j) & 16777215);
             }
         }
     }
     private static void stripAlpha(NativeImage image, int x1, int y1, int x2, int y2) {
         for(int i = x1; i < x2; ++i) {
             for(int j = y1; j < y2; ++j) {
-                VersioningUtils.setPixel(image, i, j, VersioningUtils.getPixel(image, i, j) | -16777216);
+                ModUtils.setPixel(image, i, j, ModUtils.getPixel(image, i, j) | -16777216);
 
             }
         }

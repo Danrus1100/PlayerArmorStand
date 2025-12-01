@@ -4,13 +4,13 @@ import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.utils.VersioningUtils;
+import com.danrus.pas.utils.ModUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
-public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCapeLayer {
-    public ArmorStandCapeLayer(VersioningUtils.VersionlessArmorStandCape parent) {
+public class ArmorStandCapeLayer extends ModUtils.VersionlessArmorStandCapeLayer {
+    public ArmorStandCapeLayer(ModUtils.VersionlessArmorStandCape parent) {
         super(parent);
     }
 
@@ -37,7 +37,7 @@ public class ArmorStandCapeLayer extends VersioningUtils.VersionlessArmorStandCa
             }
         }
 
-        Identifier capeTexture = PasManager.getInstance().getCapeWithOverlayTexture(info);
+        ResourceLocation capeTexture = PasManager.getInstance().getCapeWithOverlayTexture(info);
 
         if (capeTexture == null) {
             return;

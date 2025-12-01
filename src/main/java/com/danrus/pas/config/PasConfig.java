@@ -1,7 +1,7 @@
 package com.danrus.pas.config;
 
 
-import com.danrus.pas.utils.VersioningUtils;
+import com.danrus.pas.utils.ModUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,19 +26,19 @@ public abstract class PasConfig {
 
     public static PasConfig getInstance() {
         //? if yacl {
-        /*if (VersioningUtils.isModLoaded("yet_another_config_lib_v3")) {
+        if (ModUtils.isModLoaded("yet_another_config_lib_v3")) {
             return YaclConfig.get();
         }
-        *///?}
+        //?}
         return new DummyConfig();
     }
 
     public static void init() {
         //? if yacl {
-        /*if (VersioningUtils.isModLoaded("yet_another_config_lib_v3")) {
+        if (ModUtils.isModLoaded("yet_another_config_lib_v3")) {
             YaclConfig.init();
         }
-        *///?}
+        //?}
     }
 
     public abstract boolean isEnableMod();

@@ -1,7 +1,7 @@
 package com.danrus.pas.compat.easyanvils.mixin;
 
 //? if easyanvils {
-/*import com.danrus.pas.impl.namer.AnvilArmorStandNamer;
+import com.danrus.pas.impl.namer.AnvilArmorStandNamer;
 import com.danrus.pas.render.gui.PasConfiguratorScreen;
 import com.danrus.pas.utils.GuiUtils;
 import fuzs.easyanvils.client.gui.screens.inventory.ModAnvilScreen;
@@ -54,4 +54,4 @@ public class EaAnvilScreenMixin {
         );
     }
 }
-*///?}
+//?}

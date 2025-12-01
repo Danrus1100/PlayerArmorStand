@@ -6,16 +6,16 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.data.common.AbstractClientLevelDataProvider;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.utils.VersioningUtils;
+import com.danrus.pas.utils.ModUtils;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 public class ClientLevelCapeData extends AbstractClientLevelDataProvider<CapeData> {
 
     @Override
-    protected @Nullable Identifier getTexture(AbstractClientPlayer player) {
-        return VersioningUtils.getPlayerCapeTexture(player);
+    protected @Nullable ResourceLocation getTexture(AbstractClientPlayer player) {
+        return ModUtils.getPlayerCapeTexture(player);
     }
 
     @Override

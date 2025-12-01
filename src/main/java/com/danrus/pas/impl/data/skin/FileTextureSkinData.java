@@ -7,14 +7,14 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.data.common.AbstractFileTextureDataProvider;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.utils.VersioningUtils;
-import net.minecraft.resources.Identifier;
+import com.danrus.pas.utils.ModUtils;
+import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
 
 public class FileTextureSkinData extends AbstractFileTextureDataProvider<SkinData> {
 
-    public static final Path SKINS_PATH = VersioningUtils.getGameDir().resolve("pas/skins");
+    public static final Path SKINS_PATH = ModUtils.getGameDir().resolve("pas/skins");
 
     @Override
     protected Path getFilePath(NameInfo info) {
@@ -27,7 +27,7 @@ public class FileTextureSkinData extends AbstractFileTextureDataProvider<SkinDat
     }
 
     @Override
-    protected SkinData createDataHolder(NameInfo info, Identifier texture) {
+    protected SkinData createDataHolder(NameInfo info, ResourceLocation texture) {
         SkinData newData = new SkinData(info);
         newData.setTexture(texture);
         return newData;

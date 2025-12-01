@@ -2,7 +2,7 @@ package com.danrus.pas.impl.namer;
 
 //? if armorposer {
 
-/*import com.danrus.pas.compat.armorposer.mixin.accessor.ArmorStandScreenAccessor;
+import com.danrus.pas.compat.armorposer.mixin.accessor.ArmorStandScreenAccessor;
 import com.danrus.pas.render.gui.ArmorStandNamerAdapter;
 import com.mrbysco.armorposer.client.gui.ArmorStandScreen;
 import com.mrbysco.armorposer.platform.Services;
@@ -41,4 +41,4 @@ public class ArmorPoserNamer implements ArmorStandNamerAdapter {
         return screen;
     }
 }
-*///?}
+//?}

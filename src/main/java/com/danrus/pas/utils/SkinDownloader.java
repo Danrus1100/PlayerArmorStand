@@ -3,7 +3,7 @@ package com.danrus.pas.utils;
 import com.danrus.pas.ModExecutor;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public class SkinDownloader {
-    public static CompletableFuture<Identifier> downloadAndRegister(Identifier texture, Path path, String uri, boolean remap) {
+    public static CompletableFuture<ResourceLocation> downloadAndRegister(ResourceLocation texture, Path path, String uri, boolean remap) {
     return CompletableFuture.supplyAsync(() -> {
         NativeImage nativeImage;
         try {

@@ -1,7 +1,7 @@
 package com.danrus.pas.render.gui.widgets;
 
+import com.danrus.pas.utils.ModUtils;
 import com.danrus.pas.utils.Rl;
-import com.danrus.pas.utils.VersioningUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -26,9 +26,9 @@ public class TabButton extends Button {
 
     @Override
     //? <1.21.9
-    /*public void onPress() {*/
+    public void onPress() {
     //? >=1.21.9
-    public void onPress(net.minecraft.client.input.InputWithModifiers inputWithModifiers) {
+    /*public void onPress(net.minecraft.client.input.InputWithModifiers inputWithModifiers) {*/
         if (this.tabOnPress != null) {
             this.tabOnPress.onPress(this);
         }
@@ -37,17 +37,22 @@ public class TabButton extends Button {
     @Override
     protected void
     //? <1.21.11
-    /*renderWidget*/
+    renderWidget
     //? >=1.21.11
-    renderContents
+    /*renderContents*/
     (GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         //? >= 1.21.1 {
-        guiGraphics.blitSprite(/*? >= 1.21.4 {*/VersioningUtils.getGuiRender(),/*?}*/ TAB_BUTTON_SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight() /*? >= 1.21.4 {*/, VersioningUtils.getARGBwhite(this.alpha)/*?}*/);
+        guiGraphics.blitSprite(/*? >= 1.21.4 {*/ModUtils.getGuiRender(),/*?}*/ TAB_BUTTON_SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight() /*? >= 1.21.4 {*/, ModUtils.getARGBwhite(this.alpha)/*?}*/);
         //?} else {
         /*guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(TAB_LOCATION, this.getX(), this.getY(), 0, 0, 80, 15, 80, 15);
         *///?}
-//        this.renderString(guiGraphics, minecraft.font, 16777215 | Mth.ceil(this.alpha * 255.0F) << 24);
+
+        //? <1.21.11 {
+        this.renderString(guiGraphics, minecraft.font, 16777215 | Mth.ceil(this.alpha * 255.0F) << 24);
+        //?} else {
+        /*this.renderScrollingStringOverContents(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE), this.getMessage(), 2);
+        *///?}
     }
 }

@@ -44,7 +44,7 @@ modstitch {
 
     var versionName = "${property("mod.version")}-${loaderInitials}-${minecraft}"
     if (!gitBranchName.equals("main")) {
-        versionName += "-$gitBranchName"
+        versionName += "-$gitBranchName".replace('/', '-')
     }
     // This metadata is used to fill out the information inside
     // the metadata files found in the templates folder.

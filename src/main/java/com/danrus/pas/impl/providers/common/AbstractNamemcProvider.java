@@ -8,7 +8,7 @@ import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.data.TextureProvider;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.managers.OverlayMessageManger;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -74,10 +74,10 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
         return data != null ? data : createDataHolder(info);
     }
 
-    protected abstract CompletableFuture<Identifier> getDownloadTask(NameInfo info);
+    protected abstract CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info);
     protected abstract DataRepository<T> getDataManager();
     protected abstract T createDataHolder(NameInfo info);
-    protected abstract void updateSkinData(NameInfo info, Identifier texture);
+    protected abstract void updateSkinData(NameInfo info, ResourceLocation texture);
     protected abstract T getDataFromNamemcRepository(NameInfo info);
     protected abstract String getOutputString(NameInfo info);
 }

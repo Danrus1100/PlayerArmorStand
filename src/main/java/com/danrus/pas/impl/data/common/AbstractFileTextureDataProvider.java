@@ -10,7 +10,7 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.utils.TextureUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
         }
 
         Path filePath = getFilePath(info);
-        Identifier textureLocation = InfoTranslators.getInstance().toIdentifier(getDataHolderClass(), info);
+        ResourceLocation textureLocation = InfoTranslators.getInstance().toResourceLocation(getDataHolderClass(), info);
 
         if (filePath.toFile().exists()) {
             Minecraft.getInstance().execute(() -> {
@@ -95,7 +95,7 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
 
     protected abstract Path getFilePath(NameInfo info);
     protected abstract Path getCachePath();
-    protected abstract T createDataHolder(NameInfo info, Identifier texture);
+    protected abstract T createDataHolder(NameInfo info, ResourceLocation texture);
     protected abstract DataRepository<T> getDataManager();
     protected abstract String getProviderCode();
     protected abstract Class<? extends DataHolder> getDataHolderClass();

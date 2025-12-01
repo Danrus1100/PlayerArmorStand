@@ -2,12 +2,12 @@ package com.danrus.pas.api.data;
 
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.info.NameInfo;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public interface DataHolder {
-    Identifier getTexture(NameInfo info);
+    ResourceLocation getTexture(NameInfo info);
     DownloadStatus getStatus();
     void setStatus(DownloadStatus status);
-    void setTexture(Identifier location);
+    void setTexture(ResourceLocation location);
     NameInfo getInfo();
 }

@@ -9,7 +9,7 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.PasConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -97,7 +97,7 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
     }
 
     @Nullable
-    protected abstract Identifier getTexture(AbstractClientPlayer player);
+    protected abstract ResourceLocation getTexture(AbstractClientPlayer player);
     protected abstract T createDataHolder(NameInfo info);
     protected abstract DataRepository<T> getDataManager();
     protected abstract DataStoreKey getKey(NameInfo info);

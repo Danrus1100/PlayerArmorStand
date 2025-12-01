@@ -18,7 +18,7 @@ import com.danrus.pas.utils.RestHelper;
 import com.danrus.pas.utils.SkinDownloader;
 import com.danrus.pas.utils.EncodeUtils;
 import com.google.gson.Gson;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -153,8 +153,8 @@ public class MojangProvider implements TextureProvider {
             return CompletableFuture.completedFuture(null);
         }
 
-        Identifier skinLocation = InfoTranslators.getInstance()
-                .toIdentifier(SkinData.class, info);
+        ResourceLocation skinLocation = InfoTranslators.getInstance()
+                .toResourceLocation(SkinData.class, info);
         String fileName = InfoTranslators.getInstance()
                 .toFileName(SkinData.class, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
@@ -180,8 +180,8 @@ public class MojangProvider implements TextureProvider {
             return CompletableFuture.completedFuture(null);
         }
 
-        Identifier capeLocation = InfoTranslators.getInstance()
-                .toIdentifier(CapeData.class, info);
+        ResourceLocation capeLocation = InfoTranslators.getInstance()
+                .toResourceLocation(CapeData.class, info);
         String fileName = InfoTranslators.getInstance()
                 .toFileName(CapeData.class, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");

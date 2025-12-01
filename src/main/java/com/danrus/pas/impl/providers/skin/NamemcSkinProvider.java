@@ -8,16 +8,16 @@ import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.impl.providers.common.AbstractNamemcProvider;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.utils.SkinDownloader;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public class NamemcSkinProvider extends AbstractNamemcProvider<SkinData> {
     @Override
-    protected CompletableFuture<Identifier> getDownloadTask(NameInfo info) {
-        Identifier location = InfoTranslators.getInstance()
-                .toIdentifier(SkinData.class, info);
+    protected CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info) {
+        ResourceLocation location = InfoTranslators.getInstance()
+                .toResourceLocation(SkinData.class, info);
         String fileName = InfoTranslators.getInstance()
                 .toFileName(SkinData.class, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
@@ -40,7 +40,7 @@ public class NamemcSkinProvider extends AbstractNamemcProvider<SkinData> {
     }
 
     @Override
-    protected void updateSkinData(NameInfo info, Identifier texture) {
+    protected void updateSkinData(NameInfo info, ResourceLocation texture) {
         SkinData data = this.getOrCreateDataHolder(info);
         data.setTexture(texture);
         getDataManager().store(info, data);

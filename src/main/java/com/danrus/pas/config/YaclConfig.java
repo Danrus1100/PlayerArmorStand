@@ -1,11 +1,11 @@
 package com.danrus.pas.config;
 
 //? if yacl {
-/*import com.danrus.pas.config.categories.MainCategory;
+import com.danrus.pas.config.categories.MainCategory;
 import com.danrus.pas.config.categories.PossessiveCategory;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.utils.Rl;
-import com.danrus.pas.utils.VersioningUtils;
+import com.danrus.pas.utils.ModUtils;
 import net.minecraft.client.gui.screens.Screen;
 
 import com.google.gson.GsonBuilder;
@@ -81,7 +81,7 @@ public class YaclConfig extends PasConfig {
     public static void initialize() {
         load();
         CATEGORIES.add(MainCategory.get());
-        if (VersioningUtils.isModLoaded("possessive")) {
+        if (ModUtils.isModLoaded("possessive")) {
             CATEGORIES.add(PossessiveCategory.get());
         }
     }
@@ -146,4 +146,4 @@ public class YaclConfig extends PasConfig {
         return possessiveShowDefaultHand;
     }
 }
-*///?}
+//?}
