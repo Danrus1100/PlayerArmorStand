@@ -74,7 +74,7 @@ public class MainCategory {
                         .option(Option.<DownloadStatusDisplay>createBuilder()
                                 .name(Component.translatable("pas.config.download_status_display"))
                                 .binding(
-                                        DownloadStatusDisplay.ABOVE_HOTBAR,
+                                        DownloadStatusDisplay.NONE,
                                         () -> YaclConfig.get().downloadStatusDisplay, // a getter to getData the current value from
                                         newVal -> YaclConfig.get().downloadStatusDisplay = newVal
                                 )

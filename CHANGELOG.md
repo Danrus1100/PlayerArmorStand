@@ -1,1 +1,7 @@
-- Sodium(?) related issue fix
+- New: NeoForge 1.21.10 support
+- Fix: Skin download messages are now hidden by default
+- Other: Yet Another Config Lib is now optional
+- Other: Possessive support for 1.21.10
+- Other: Added German, Spanish, French, Japanese, Korean, Portuguese (BR), and Simplified Chinese translations (translations are AI-generated — if you find an issue, please [report it](https://github.com/Danrus1100/PlayerArmorStand/issues) or [submit a pull request](https://github.com/Danrus1100/PlayerArmorStand/pulls))
+- Other: Updated pre-reform Russian translation
+- Other: Experimental support for 1.21.11

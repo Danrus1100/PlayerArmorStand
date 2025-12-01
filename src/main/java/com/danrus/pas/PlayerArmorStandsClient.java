@@ -23,7 +23,6 @@ public class PlayerArmorStandsClient {
     /*public static net.minecraft.client.model.geom.ModelPart capeDef = com.danrus.pas.render.armorstand.PasCapeModel.createCapeLayer().bakeRoot();*/
 
     public static void initialize() {
-        PasConfig.init();
         PasManager.getInstance();
         FeatureRegistry features = FeatureRegistry.getInstance();
         features.register(OverlayFeature.class);
@@ -39,5 +38,7 @@ public class PlayerArmorStandsClient {
         translator.register(CapeData.class, new NamemcCapeTranslator());
         translator.register(CapeData.class, new MojangCapeTranslator());
         translator.register(CapeData.class, new MinecraftCapesTranslator());
+
+        PasConfig.init();
     }
 }

@@ -43,7 +43,7 @@ public class YaclConfig extends PasConfig {
 
     @ConfigField
     @SerialEntry
-    public DownloadStatusDisplay downloadStatusDisplay = DownloadStatusDisplay.ABOVE_HOTBAR;
+    public DownloadStatusDisplay downloadStatusDisplay = DownloadStatusDisplay.NONE;
 
     @ConfigField
     @SerialEntry

@@ -15,10 +15,12 @@ import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.*;
@@ -85,12 +87,12 @@ public class ArmorStandCameraMixin {
     *///?} else if <=1.21.8 {
     public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, ResourceLocation resourceLocation, ModelPart modelPart, boolean bl){
     //?} else {
-    
-    //?}
+    /*public void onRenderHand(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, ResourceLocation resourceLocation, ModelPart modelPart, boolean bl) {
+    *///?}
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         ArmorStandRenderer entityRenderer = (ArmorStandRenderer)entityRenderDispatcher.getRenderer(this.possessedArmorStand);
-        PlayerRenderer playerRenderer = (PlayerRenderer)entityRenderDispatcher.getRenderer(Minecraft.getInstance().player);
-        PlayerModel playerModel = playerRenderer.getModel();
+        AvatarRenderer playerRenderer = (AvatarRenderer)entityRenderDispatcher.getRenderer(Minecraft.getInstance().player);
+        PlayerModel playerModel = (PlayerModel) playerRenderer.getModel();
         PlayerArmorStandModel armorStandModel = (PlayerArmorStandModel) entityRenderer.getModel();
         NameInfo info = possessedArmorStand.getCustomName() != null ?
                 NameInfo.parse(possessedArmorStand.getCustomName().getString())
@@ -123,11 +125,14 @@ public class ArmorStandCameraMixin {
             skinTexture = SkinData.DEFAULT_TEXTURE;
         }
 
-        getPartsForRender(resolvedHand, armorStandModel).forEach(armorStandArm ->{
+        getPartsForRender(resolvedHand, armorStandModel).forEach(armorStandArm -> {
             armorStandArm.resetPose();
             armorStandArm.visible = true;
 
+            //? <1.21.10
             armorStandArm.render(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(skinTexture)), i, OverlayTexture.NO_OVERLAY);
+            //? >=1.21.10
+            /*submitNodeCollector.submitModelPart(armorStandArm, poseStack, RenderType.entityTranslucent(skinTexture), i, OverlayTexture.NO_OVERLAY, null);*/
         });
 
 
