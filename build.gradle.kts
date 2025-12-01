@@ -176,6 +176,10 @@ stonecutter {
                 "RenderTypes."
             )
         }
+        string {
+            direction = eval(current.version, "=1.21.10")
+            replace("PlayerRenderer", "AvatarRenderer")
+        }
     }
 }
 

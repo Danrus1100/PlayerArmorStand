@@ -15,10 +15,9 @@ import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
@@ -87,11 +86,11 @@ public class ArmorStandCameraMixin {
     *///?} else if <=1.21.8 {
     public void onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, ResourceLocation resourceLocation, ModelPart modelPart, boolean bl){
     //?} else {
-    /*public void onRenderHand(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, ResourceLocation resourceLocation, ModelPart modelPart, boolean bl) {
+    /*public void onRenderHand(PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector, int i, ResourceLocation resourceLocation, ModelPart modelPart, boolean bl) {
     *///?}
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         ArmorStandRenderer entityRenderer = (ArmorStandRenderer)entityRenderDispatcher.getRenderer(this.possessedArmorStand);
-        AvatarRenderer playerRenderer = (AvatarRenderer)entityRenderDispatcher.getRenderer(Minecraft.getInstance().player);
+        PlayerRenderer playerRenderer = (PlayerRenderer)entityRenderDispatcher.getRenderer(Minecraft.getInstance().player);
         PlayerModel playerModel = (PlayerModel) playerRenderer.getModel();
         PlayerArmorStandModel armorStandModel = (PlayerArmorStandModel) entityRenderer.getModel();
         NameInfo info = possessedArmorStand.getCustomName() != null ?
