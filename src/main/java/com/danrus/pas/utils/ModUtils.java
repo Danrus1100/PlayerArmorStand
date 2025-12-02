@@ -24,6 +24,9 @@ import java.nio.file.Path;
 import java.util.function.Function;
 
 public class ModUtils {
+    public static String YACL_MOD_ID = "yet_another_config_lib_v3";
+    public static String MOD_ID = "pas";
+
     public static Path getGameDir() {
         //? if fabric {
         return net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir();

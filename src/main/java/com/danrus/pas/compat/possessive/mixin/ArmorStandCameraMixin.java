@@ -114,14 +114,10 @@ public class ArmorStandCameraMixin {
         armorStandModel.rightSlimSleeve.zRot = rightZRot;
 
         ResourceLocation skinTexture;
-        if (!info.isEmpty()) {
-            if (PasConfig.getInstance().isPossessiveShowDefaultHand()) {
-                skinTexture = Rl.vanilla("textures/entity/armorstand/wood.png");
-            } else {
-                skinTexture = PasManager.getInstance().getSkinWithOverlayTexture(info);
-            }
-        } else {
+        if (info.isEmpty() || PasConfig.getInstance().isPossessiveShowDefaultHand()) {
             skinTexture = SkinData.DEFAULT_TEXTURE;
+        } else {
+            skinTexture = PasManager.getInstance().getSkinWithOverlayTexture(info);
         }
 
         getPartsForRender(resolvedHand, armorStandModel).forEach(armorStandArm -> {

@@ -26,7 +26,7 @@ public abstract class PasConfig {
 
     public static PasConfig getInstance() {
         //? if yacl {
-        if (ModUtils.isModLoaded("yet_another_config_lib_v3")) {
+        if (ModUtils.isModLoaded(ModUtils.YACL_MOD_ID)) {
             return YaclConfig.get();
         }
         //?}
@@ -35,7 +35,7 @@ public abstract class PasConfig {
 
     public static void init() {
         //? if yacl {
-        if (ModUtils.isModLoaded("yet_another_config_lib_v3")) {
+        if (ModUtils.isModLoaded(ModUtils.YACL_MOD_ID)) {
             YaclConfig.initialize();
         }
         //?}
