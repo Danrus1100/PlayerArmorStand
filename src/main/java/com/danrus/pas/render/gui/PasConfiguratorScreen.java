@@ -432,39 +432,25 @@ public class PasConfiguratorScreen extends Screen {
         Quaternionf rotation = new Quaternionf().rotateX((float) Math.PI * 1.1F)
                 .rotateY((float) Math.toRadians(currentRotation + 30F));
 
-        //? if <= 1.21.5 {
-        InventoryScreen.renderEntityInInventory(
-                g, (int) (this.width / 2f - 68), (int) (this.height / 2f + 80), 70,
-                //? >= 1.21.1
-                new Vector3f(0, 0, 0),
-                rotation,
-                null,
-                entity
-        );
-        //?} else {
-        /*int left = this.width / 2 - 130; // Approx. left boundary
+        int left = this.width / 2 - 130; // Approx. left boundary
         int top = this.height / 2 - 70;  // Approx. top boundary
         int right = this.width / 2 - 18; // Approx. right boundary
         int bottom = this.height / 2 + 120; // Approx. bottom boundary
-        float scale = 70.0F; // Adjust scale as needed
         Vector3f translation = new Vector3f(0.1f, 0.75f, 0); // Use default translation
 
-        //? <=1.21.10
-        InventoryScreen.renderEntityInInventory(
-        //? >=1.21.11
-        /^renderEntityInInventory12111(^/
+        ModUtils.renderEntityOnScreen(
                 g,
+                rotation,
+                this.width / 2 - 68,
+                this.height / 2 + 80,
+                70,
+                translation,
                 left,
                 top,
                 right,
                 bottom,
-                scale,
-                translation,
-                rotation,
-                null,
                 entity
         );
-        *///?}
     }
 
     private float lerp(float start, float end, float speed, float partialTick) {
@@ -530,17 +516,4 @@ public class PasConfiguratorScreen extends Screen {
         IDLE,
         CAPE,
     }
-
-    //? >=1.21.10 {
-    /*public static void renderEntityInInventory12111(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, float scale, Vector3f translation, Quaternionf rotation, @Nullable Quaternionf overrideCameraAngle, LivingEntity entity) {
-        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-        EntityRenderer<? super LivingEntity, ?> entityRenderer = entityRenderDispatcher.getRenderer(entity);
-        net.minecraft.client.renderer.entity.state.EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1.0F);
-        entityRenderState.lightCoords = 15728880;
-        //        entityRenderState.hitboxesRenderState = null;
-        entityRenderState.shadowPieces.clear();
-        entityRenderState.outlineColor = 0;
-        guiGraphics.submitEntityRenderState(entityRenderState, scale, translation, rotation, overrideCameraAngle, x1, y1, x2, y2);
-    }
-    *///?}
 }

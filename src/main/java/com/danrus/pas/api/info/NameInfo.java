@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 public class NameInfo {
 
+    public static final NameInfo EMPTY = new NameInfo();
+
     private final Map<Class<? extends RenameFeature>, RenameFeature> features = new LinkedHashMap<>();
     private String base;
     public String legacyParams;
@@ -74,6 +76,7 @@ public class NameInfo {
     public <T extends RenameFeature> T getFeature(Class<T> featureClass) {
         return (T) features.get(featureClass);
     }
+    public List<RenameFeature> getFeatures() { return new ArrayList<>(features.values()); }
 
     public void setName(String newName) { this.base = newName == null ? "" : newName; }
     public String base() { return base; }
@@ -175,5 +178,4 @@ public class NameInfo {
         CapeFeature feature = getFeature(CapeFeature.class);
         return feature != null ? feature.getProvider() : "";
     }
-
 }

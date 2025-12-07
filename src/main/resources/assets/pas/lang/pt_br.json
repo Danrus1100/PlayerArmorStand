@@ -14,6 +14,8 @@
   "pas.download_failed": "Falha ao baixar o skin para %s",
   "pas.overlay_not_found": "Overlay não encontrado no Minecraft: %s",
 
+  "pas.tooltip.features": "",
+
   "pas.config.group.general": "Geral",
   "pas.config.group.armorstands": "Suportes de armadura",
   "pas.config.group.skin_loading": "Download",

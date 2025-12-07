@@ -1,6 +1,8 @@
 package com.danrus.pas.impl.features;
 
 import com.danrus.pas.api.info.RenameFeature;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +33,21 @@ public class OverlayFeature implements RenameFeature {
     public @NotNull String compile() {
         if (texture == null || texture.isEmpty()) return "";
         return "T:" + texture + "%" + blend;
+    }
+
+    @Override
+    public @Nullable Component getDisplayText() {
+        if (texture.isEmpty()) return null;
+        MutableComponent component = Component.translatable("pas.tooltip.overlay", texture);
+        if (blend != 100) {
+            component.append(Component.translatable("pas.tooltip.overlay.blended", String.valueOf(blend)));
+        }
+        return component;
+    }
+
+    @Override
+    public int getTextOffset() {
+        return 0;
     }
 
     @Override

@@ -7,6 +7,8 @@ import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.render.armorstand.RenderVersionContext;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -19,6 +21,10 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.nio.file.Path;
 import java.util.function.Function;
@@ -217,6 +223,62 @@ public class ModUtils {
             //?}
             }
     //?}
+
+    public static void renderEntityOnScreen(
+            GuiGraphics guiGraphics,
+            Quaternionf rotation,
+            int x,
+            int y,
+            float scale,
+            Vector3f translation1215,
+            int left,
+            int top,
+            int right,
+            int bottom,
+            LivingEntity entity
+    ) {
+        //? if <= 1.21.5 {
+        InventoryScreen.renderEntityInInventory(
+                guiGraphics, x, y, scale,
+                //? >= 1.21.1
+                new Vector3f(0, 0, 0),
+                rotation,
+                null,
+                entity
+        );
+        //?} else {
+        /*
+        //? <=1.21.10
+        InventoryScreen.renderEntityInInventory(
+        //? >=1.21.11
+        /^renderEntityInInventory12111(^/
+                g,
+                left,
+                top,
+                right,
+                bottom,
+                scale,
+                translation,
+                rotation,
+                null,
+                entity
+        );
+        *///?}
+    }
+
+    //? >=1.21.10 {
+    /*public static void renderEntityInInventory12111(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, float scale, Vector3f translation, Quaternionf rotation, @Nullable Quaternionf overrideCameraAngle, LivingEntity entity) {
+        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        EntityRenderer<? super LivingEntity, ?> entityRenderer = entityRenderDispatcher.getRenderer(entity);
+        net.minecraft.client.renderer.entity.state.EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1.0F);
+        entityRenderState.lightCoords = 15728880;
+        //        entityRenderState.hitboxesRenderState = null;
+        entityRenderState.shadowPieces.clear();
+        entityRenderState.outlineColor = 0;
+        guiGraphics.submitEntityRenderState(entityRenderState, scale, translation, rotation, overrideCameraAngle, x1, y1, x2, y2);
+    }
+    *///?}
+
 
     public static int getARGBwhite(float alpha) {
         return (int) Math.floor(alpha * 255.0F) << 24 | 16777215;

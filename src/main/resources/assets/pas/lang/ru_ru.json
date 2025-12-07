@@ -14,6 +14,8 @@
   "pas.download_failed": "Ошибка при загрузке скина: %s",
   "pas.overlay_not_found": "Наложение не найдено в Minecraft: %s",
 
+  "pas.tooltip.features": "Особенности",
+
   "pas.config.group.general": "Основные",
   "pas.config.group.armorstands": "Стойка",
   "pas.config.group.skin_loading": "Загрузка",

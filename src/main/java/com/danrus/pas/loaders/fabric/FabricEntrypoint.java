@@ -5,14 +5,17 @@ import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.commands.CapeDataArgument;
 import com.danrus.pas.commands.PasCommands;
 import com.danrus.pas.commands.SkinDataArgument;
+import com.danrus.pas.render.tooltip.PasClientTooltip;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 
 public class FabricEntrypoint implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        TooltipComponentCallback.EVENT.register(PasClientTooltip::new);
         PlayerArmorStandsClient.initialize();
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> {
             PasCommands.COMMANDS_NAMES.forEach(s -> {
