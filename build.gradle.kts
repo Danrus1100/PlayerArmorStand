@@ -2,6 +2,7 @@ import org.gradle.kotlin.dsl.apply
 
 plugins {
     id("dev.isxander.modstitch.base")
+    id("dev.isxander.modstitch.publishing")
     id("me.modmuss50.mod-publish-plugin")
 }
 
@@ -216,78 +217,80 @@ dependencies {
     }
 }
 
-publishMods {
-    val defaultReleaseType = BETA
-    val modrinthToken = findProperty("modrinth-token")
-    val curseforgeToken = findProperty("curseforge-token")
-    val discordWebhookDR = findProperty("discord-webhook")
-    val discordWebhookFrame = findProperty("discord-webhook-frame")
-    val discordWebhookDry = findProperty("discord-webhook-dry")
+msPublishing {
+    mpp {
+        val defaultReleaseType = BETA
+        val modrinthToken = findProperty("modrinth-token")
+        val curseforgeToken = findProperty("curseforge-token")
+        val discordWebhookDR = findProperty("discord-webhook")
+        val discordWebhookFrame = findProperty("discord-webhook-frame")
+        val discordWebhookDry = findProperty("discord-webhook-dry")
 
-    dryRun = gitBranchName != "main"
+        dryRun = gitBranchName != "main"
 
-    modstitch.onEnable {
-        file = modstitch.finalJarTask.flatMap { it.archiveFile }
-    }
+        modstitch.onEnable {
+            file = modstitch.finalJarTask.flatMap { it.archiveFile }
+        }
 
-    changelog = rootProject.file("CHANGELOG.md").readText()
-    if (findProperty("meta.release_type") != null) {
-        var rType = findProperty("meta.release_type").toString()
-        if (rType == "alpha") {
-            type = ALPHA
+        changelog = rootProject.file("CHANGELOG.md").readText()
+        if (findProperty("meta.release_type") != null) {
+            var rType = findProperty("meta.release_type").toString()
+            if (rType == "alpha") {
+                type = ALPHA
+            } else {
+                type = defaultReleaseType
+            }
         } else {
             type = defaultReleaseType
         }
-    } else {
-        type = defaultReleaseType
-    }
 
-    val loaders = property("pub.target.platforms").toString().split(' ')
-    loaders.forEach(modLoaders::add)
-    displayName = "Player Armor Stands ${property("mod.version")} for ${loader} ${minecraft}"
-    version = "${property("mod.version")}-${loaderInitials}-${minecraft}"
+        val loaders = property("pub.target.platforms").toString().split(' ')
+        loaders.forEach(modLoaders::add)
+        displayName = "Player Armor Stands ${property("mod.version")} for ${loader} ${minecraft}"
+        version = "${property("mod.version")}-${loaderInitials}-${minecraft}"
 
-    val targets = property("pub.target.versions").toString().split(' ')
-    val requiresLibs = property("pub.libs.required").toString().split(' ')
-    val optionalLibs = property("pub.libs.optional").toString().split(' ')
+        val targets = property("pub.target.versions").toString().split(' ')
+        val requiresLibs = property("pub.libs.required").toString().split(' ')
+        val optionalLibs = property("pub.libs.optional").toString().split(' ')
 //    val optionalLibsModrinth = prop("pub.libs.optional.modrinth").toString().split(' ')
-    modrinth {
-        projectId = property("publish.modrinth").toString()
-        accessToken = modrinthToken.toString()
-        targets.forEach(minecraftVersions::add)
-        requiresLibs.forEach{requires(it)}
-        optionalLibs.forEach{optional(it)}
+        modrinth {
+            projectId = property("publish.modrinth").toString()
+            accessToken = modrinthToken.toString()
+            targets.forEach(minecraftVersions::add)
+            requiresLibs.forEach{requires(it)}
+            optionalLibs.forEach{optional(it)}
 //        optionalLibsModrinth.forEach{optional(it)}
-    }
-
-    curseforge {
-        projectId = property("publish.curseforge").toString()
-        accessToken = curseforgeToken.toString()
-        projectSlug = "player-armor-stands"
-        targets.forEach(minecraftVersions::add)
-        requiresLibs.forEach{requires(it)}
-        optionalLibs.forEach{optional(it)}
-    }
-
-    if (targets.contains("1.21.4") && loaders.contains("fabric")) {
-        discord ("DR freak mods anonuncement") {
-            webhookUrl = discordWebhookDR.toString()
-            dryRunWebhookUrl = discordWebhookDry.toString()
-
-            username  = "Player Armor Stands"
-            avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
-
-            content = changelog.map{ "# " + findProperty("mod.version") + " version here! \n\n" + rootProject.file("CHANGELOG.md").readText() +"\n\n<@&1388295587866083338>"}
         }
 
-        discord ("Frame Server anonuncement") {
-            webhookUrl = discordWebhookFrame.toString()
-            dryRunWebhookUrl = discordWebhookDry.toString()
+        curseforge {
+            projectId = property("publish.curseforge").toString()
+            accessToken = curseforgeToken.toString()
+            projectSlug = "player-armor-stands"
+            targets.forEach(minecraftVersions::add)
+            requiresLibs.forEach{requires(it)}
+            optionalLibs.forEach{optional(it)}
+        }
 
-            username  = "Player Armor Stands"
-            avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
+        if (targets.contains("1.21.4") && loaders.contains("fabric")) {
+            discord ("DR freak mods anonuncement") {
+                webhookUrl = discordWebhookDR.toString()
+                dryRunWebhookUrl = discordWebhookDry.toString()
 
-            content = changelog.map{ "# Вышла версия " + findProperty("mod.version") + "! \n\n" + rootProject.file("CHANGELOG_RU.md").readText() + "\n\n<@&1406626250520400092>"}
+                username  = "Player Armor Stands"
+                avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
+
+                content = changelog.map{ "# " + findProperty("mod.version") + " version here! \n\n" + rootProject.file("CHANGELOG.md").readText() +"\n\n<@&1388295587866083338>"}
+            }
+
+            discord ("Frame Server anonuncement") {
+                webhookUrl = discordWebhookFrame.toString()
+                dryRunWebhookUrl = discordWebhookDry.toString()
+
+                username  = "Player Armor Stands"
+                avatarUrl = "https://github.com/Danrus1100/PlayerArmorStand/blob/main/src/main/resources/assets/pas/icon.png?raw=true"
+
+                content = changelog.map{ "# Вышла версия " + findProperty("mod.version") + "! \n\n" + rootProject.file("CHANGELOG_RU.md").readText() + "\n\n<@&1406626250520400092>"}
+            }
         }
     }
 }
