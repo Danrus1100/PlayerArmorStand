@@ -1,9 +1,11 @@
 package com.danrus.pas.render.armorstand;
 
+import com.danrus.pas.render.PasRenderContext;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class RenderVersionContext {
+public class RenderVersionContext implements PasRenderContext {
     private final Map<String, Object> contextMap = new HashMap<>(16);
     private final Cape cape;
 
