@@ -61,7 +61,7 @@ stonecutter {
         mc("1.21.8", loaders = listOf("fabric", "neoforge"))
         mc("1.21.5", loaders = listOf("fabric", "neoforge"))
         mc("1.21.4", loaders = listOf("fabric", "neoforge"))
-        mc("1.21.1", loaders = listOf("fabric", "neoforge"))
+//        mc("1.21.1", loaders = listOf("fabric", "neoforge"))
 
         // This is the default target.
         // https://stonecutter.kikugie.dev/stonecutter/guide/setup#settings-settings-gradle-kts
