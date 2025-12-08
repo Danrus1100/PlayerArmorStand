@@ -242,6 +242,26 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape 
         return List.of(this.hat, this.head, this.originalHead, this.leftEar, this.rightEar);
     }
 
+    public Iterable<ModelPart> getPlayerHeadParts() {
+        return List.of(this.hat, this.head);
+    }
+
+    public Iterable<ModelPart> getOriginalHead() {
+        return List.of(this.originalHead);
+    }
+
+    public Iterable<ModelPart> getBasePartsForItem() {
+        return List.of(
+                this.rightBodyStick,
+                this.leftBodyStick,
+                this.shoulderStick,
+                this.basePlate,
+                this.originalBody,
+                this.originalLeftLeg,
+                this.originalRightLeg
+        );
+    }
+
     private void  setModelVisibility(boolean player, boolean slim, boolean showBase) {
 
         this.hat.visible = player;

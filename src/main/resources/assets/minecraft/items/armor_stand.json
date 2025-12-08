@@ -1,0 +1,10 @@
+{
+  "oversized_in_gui": true,
+  "model": {
+    "type": "minecraft:special",
+    "base": "pas:item/pas_transformer",
+    "model": {
+        "type": "pas:armor_stand"
+    }
+  }
+}
