@@ -1,9 +1,6 @@
 {
   "id": "player-armor-stands",
-  "platforms": {
-    "modrinth": "player-armor-stands",
-    "curseforge": "player-armor-stands"
-  },
+  "platforms": { "modrinth": "player-armor-stands" },
   "modid": "pas",
   "owners": [ "Danrus1100" ],
   "licenses": {
