@@ -1,10 +1,14 @@
 package com.danrus.pas.render.item;
 
+import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.impl.holder.SkinData;
+import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Rotations;
 import net.minecraft.util.ExtraCodecs;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 public class PasItemModelPart {
@@ -42,12 +46,14 @@ public class PasItemModelPart {
         PLAYER;
 
 
-        public boolean showPlayerPart(NameInfo info) {
-            return this == PLAYER || this == DYNAMIC && !info.isEmpty();
+        public boolean showPlayerPart(@Nullable DataHolder data) {
+            if (data == null) return false;
+            return this == PLAYER || this == DYNAMIC && !data.getInfo().isEmpty() && !PlayerArmorStandModel.showArmorStandWhileDownload(data);
         }
 
-        public boolean showOriginalPart(NameInfo info) {
-            return this == ORIGINAL || this == DYNAMIC && info.isEmpty();
+        public boolean showOriginalPart(@Nullable DataHolder data) {
+            if (data == null) return true;
+            return this == ORIGINAL || this == DYNAMIC && data.getInfo().isEmpty() && PlayerArmorStandModel.showArmorStandWhileDownload(data);
         }
     }
 }

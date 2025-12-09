@@ -4,6 +4,7 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.PasRenderContext;
+import com.danrus.pas.render.armorstand.ArmorStandCapeLayer;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -11,6 +12,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +46,13 @@ public abstract class PasSpecialModelRenderer implements SpecialModelRenderer<Na
             VertexConsumer skinConsumer = bufferSource.getBuffer(skinType);
             part.render(poseStack, skinConsumer, packedLight, packedOverlay);
         }
-
+        if (state.cape) {
+            ResourceLocation capeTexture = PasManager.getInstance().getCapeWithOverlayTexture(currentInfo);
+            RenderType capeType = RenderType.entityCutout(capeTexture);
+            VertexConsumer capeConsumer = bufferSource.getBuffer(capeType);
+            ArmorStandCapeLayer.prepareCapePose(poseStack, false);
+            this.model.getCape().render(poseStack, capeConsumer, packedLight, packedOverlay);
+        }
 
     }
     //?} else {

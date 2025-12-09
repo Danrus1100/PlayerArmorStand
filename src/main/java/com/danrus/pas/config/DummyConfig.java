@@ -2,6 +2,11 @@ package com.danrus.pas.config;
 
 public class DummyConfig extends PasConfig {
     @Override
+    public boolean is3dRpSetByMod() {
+        return false;
+    }
+
+    @Override
     public boolean isEnableMod() {
         return true;
     }

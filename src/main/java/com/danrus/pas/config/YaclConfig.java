@@ -39,6 +39,10 @@ public class YaclConfig extends PasConfig {
 
     @ConfigField
     @SerialEntry
+    public boolean is3dRpSetByMod = false;
+
+    @ConfigField
+    @SerialEntry
     public int downloadThreads = 3;
 
     @ConfigField
@@ -99,6 +103,11 @@ public class YaclConfig extends PasConfig {
 
     public static void load() {
         HANDLER.load();
+    }
+
+    @Override
+    public boolean is3dRpSetByMod() {
+        return is3dRpSetByMod;
     }
 
     @Override

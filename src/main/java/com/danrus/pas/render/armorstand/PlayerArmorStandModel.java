@@ -4,6 +4,7 @@ import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.PasConfig;
+import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.item.ArmorStandSpecialRenderer;
 import com.danrus.pas.utils.ModUtils;
@@ -221,31 +222,33 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
 
     public void setupForItem(ArmorStandSpecialRenderer.ArmorStandItemState state, NameInfo info) {
 
-        this.hat.visible = state.head.mode.showPlayerPart(info);
-        this.head.visible = state.head.mode.showPlayerPart(info);
-        this.body.visible = state.body.mode.showPlayerPart(info);
-        this.jacket.visible = state.body.mode.showPlayerPart(info);
-        this.leftArm.visible = state.leftArm.mode.showPlayerPart(info) && !info.wantBeSlim();
-        this.rightArm.visible = state.rightArm.mode.showPlayerPart(info) && !info.wantBeSlim();
-        this.leftSleeve.visible = state.leftArm.mode.showPlayerPart(info) && !info.wantBeSlim();
-        this.rightSleeve.visible = state.rightArm.mode.showPlayerPart(info) && !info.wantBeSlim();
-        this.leftPants.visible = state.leftLeg.mode.showPlayerPart(info);
-        this.rightPants.visible = state.rightLeg.mode.showPlayerPart(info);
-        this.leftLeg.visible = state.leftLeg.mode.showPlayerPart(info);
-        this.rightLeg.visible = state.rightLeg.mode.showPlayerPart(info);
-        this.leftSlimArm.visible = state.leftArm.mode.showPlayerPart(info) && info.wantBeSlim();
-        this.rightSlimArm.visible = state.rightArm.mode.showPlayerPart(info) && info.wantBeSlim();
-        this.leftSlimSleeve.visible = state.leftArm.mode.showPlayerPart(info) && info.wantBeSlim();
-        this.rightSlimSleeve.visible = state.rightArm.mode.showPlayerPart(info) && info.wantBeSlim();
-        this.originalHead.visible = state.head.mode.showOriginalPart(info);
-        this.originalBody.visible = state.body.mode.showOriginalPart(info);
-        this.originalRightArm.visible = state.rightArm.mode.showOriginalPart(info);
-        this.originalLeftArm.visible = state.leftArm.mode.showOriginalPart(info);
-        this.originalRightLeg.visible = state.rightLeg.mode.showOriginalPart(info);
-        this.originalLeftLeg.visible = state.leftLeg.mode.showOriginalPart(info);
-        this.rightBodyStick.visible = state.body.mode.showOriginalPart(info);
-        this.leftBodyStick.visible = state.body.mode.showOriginalPart(info);
-        this.shoulderStick.visible = state.body.mode.showOriginalPart(info);
+        SkinData data = PasManager.getInstance().findSkinData(info);
+
+        this.hat.visible = state.head.mode.showPlayerPart(data);
+        this.head.visible = state.head.mode.showPlayerPart(data);
+        this.body.visible = state.body.mode.showPlayerPart(data);
+        this.jacket.visible = state.body.mode.showPlayerPart(data);
+        this.leftArm.visible = state.leftArm.mode.showPlayerPart(data) && !info.wantBeSlim();
+        this.rightArm.visible = state.rightArm.mode.showPlayerPart(data) && !info.wantBeSlim();
+        this.leftSleeve.visible = state.leftArm.mode.showPlayerPart(data) && !info.wantBeSlim();
+        this.rightSleeve.visible = state.rightArm.mode.showPlayerPart(data) && !info.wantBeSlim();
+        this.leftPants.visible = state.leftLeg.mode.showPlayerPart(data);
+        this.rightPants.visible = state.rightLeg.mode.showPlayerPart(data);
+        this.leftLeg.visible = state.leftLeg.mode.showPlayerPart(data);
+        this.rightLeg.visible = state.rightLeg.mode.showPlayerPart(data);
+        this.leftSlimArm.visible = state.leftArm.mode.showPlayerPart(data) && info.wantBeSlim();
+        this.rightSlimArm.visible = state.rightArm.mode.showPlayerPart(data) && info.wantBeSlim();
+        this.leftSlimSleeve.visible = state.leftArm.mode.showPlayerPart(data) && info.wantBeSlim();
+        this.rightSlimSleeve.visible = state.rightArm.mode.showPlayerPart(data) && info.wantBeSlim();
+        this.originalHead.visible = state.head.mode.showOriginalPart(data);
+        this.originalBody.visible = state.body.mode.showOriginalPart(data);
+        this.originalRightArm.visible = state.rightArm.mode.showOriginalPart(data);
+        this.originalLeftArm.visible = state.leftArm.mode.showOriginalPart(data);
+        this.originalRightLeg.visible = state.rightLeg.mode.showOriginalPart(data);
+        this.originalLeftLeg.visible = state.leftLeg.mode.showOriginalPart(data);
+        this.rightBodyStick.visible = state.body.mode.showOriginalPart(data);
+        this.leftBodyStick.visible = state.body.mode.showOriginalPart(data);
+        this.shoulderStick.visible = state.body.mode.showOriginalPart(data);
 
         this.basePlate.visible = state.baseplate;
     }
@@ -385,7 +388,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
 
         boolean isDownlading = data.getStatus() == DownloadStatus.IN_PROGRESS ||
                 data.getStatus() == DownloadStatus.FAILED || data.getStatus() == DownloadStatus.NOT_STARTED;
-        return PasConfig.getInstance().isShowArmorStandWhileDownloading()&& isDownlading;
+        return PasConfig.getInstance().isShowArmorStandWhileDownloading() && isDownlading;
     }
 
     private static void cpp(ModelPart from, ModelPart to) {

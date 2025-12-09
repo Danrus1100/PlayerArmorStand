@@ -34,7 +34,7 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
         ArmorStandRenderState renderState = state.toRenderState();
         ModUtils.setCustomName(renderState, Component.literal(info.compile()));
         renderState.showBasePlate = state.baseplate;
-        model.setupAnim(renderState, true);
+        model.setupAnim(renderState, false);
         model.setupForItem(state, info);
 
         poseStack.translate(0.5, 0.75, 0.5);
@@ -93,7 +93,8 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
                 PasItemModelPart.CODEC.optionalFieldOf("right_leg", DEFAULT_RIGHT_LEG).forGetter(state -> state.rightLeg),
                 PasItemModelPart.CODEC.optionalFieldOf("left_arm", DEFAULT_LEFT_ARM).forGetter(state -> state.leftArm),
                 PasItemModelPart.CODEC.optionalFieldOf("right_arm", DEFAULT_RIGHT_ARM).forGetter(state -> state.rightArm),
-                Codec.BOOL.optionalFieldOf("baseplate", true).forGetter(state -> state.baseplate)
+                Codec.BOOL.optionalFieldOf("baseplate", true).forGetter(state -> state.baseplate),
+                Codec.BOOL.optionalFieldOf("cape", false).forGetter(state -> state.cape)
         ).apply(instance, ArmorStandItemState::new));
 
         public PasItemModelPart head;
@@ -103,6 +104,7 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
         public PasItemModelPart leftArm;
         public PasItemModelPart rightArm;
         public boolean baseplate;
+        public boolean cape;
 
 
         public ArmorStandItemState() {
@@ -113,6 +115,7 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
             this.leftArm = DEFAULT_LEFT_ARM;
             this.rightArm = DEFAULT_RIGHT_ARM;
             this.baseplate = true;
+            this.cape = false;
         }
 
         public ArmorStandItemState(
@@ -122,7 +125,8 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
                 PasItemModelPart rightLeg,
                 PasItemModelPart leftArm,
                 PasItemModelPart rightArm,
-                boolean baseplate
+                boolean baseplate,
+                boolean cape
         ) {
             this.head = head;
             this.body = body;
@@ -131,6 +135,7 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
             this.leftArm = leftArm;
             this.rightArm = rightArm;
             this.baseplate = baseplate;
+            this.cape = cape;
         }
 
         public ArmorStandRenderState toRenderState() {
