@@ -11,16 +11,17 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
@@ -31,19 +32,53 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
 
     @Override
     public void prepareDraw(NameInfo info, ItemDisplayContext displayContext, PoseStack poseStack, PasRenderContext context, int packedLight, int packedOverlay, boolean hasFoil) {
-        ArmorStandRenderState renderState = state.toRenderState();
-        ModUtils.setCustomName(renderState, Component.literal(info.compile()));
-        renderState.showBasePlate = state.baseplate;
-        model.setupAnim(renderState, true);
-        model.setupForItem(state, info);
+        prepareModel(model, state, info);
+        preparePose(poseStack);
+    }
 
+    //? >= 1.21.8 {
+    /*@Override
+    public void getExtents(Set<Vector3f> output) {
+        // 1. Создаем новую матрицу
+        PoseStack poseStack = new PoseStack();
+
+        // 2. ПОВТОРЯЕМ трансформации из prepareDraw точь-в-точь
+        // Если тут будет отличие, иконка будет смещена или неверного размера
+        preparePose(poseStack);
+
+        // 3. Настраиваем состояние модели (как будто она стоит ровно)
+        prepareModel(model, state, null);
+
+        // 4. Собираем все части модели, которые должны учитываться в размерах
+        List<ModelPart> partsToMeasure = new ArrayList<>();
+        partsToMeasure.addAll(model.getOriginalParts());
+        partsToMeasure.addAll(model.getPlayerParts());
+
+        // 5. Проходимся по всем частям и собираем вершины
+        for (ModelPart part : partsToMeasure) {
+            if (part.visible) {
+                part.getExtentsForGui(poseStack, output);
+            }
+        }
+    }
+    *///?}
+
+    private static void preparePose(PoseStack poseStack) {
         poseStack.translate(0.5, 0.75, 0.5);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
         poseStack.scale(0.5f, 0.5f, 0.5f);
     }
 
-    public void getExtents(Set<Vector3f> output) {
-        output.add(new Vector3f(0, 0, 0));
+    private static void prepareModel(PlayerArmorStandModel model, ArmorStandItemState state, @Nullable NameInfo infoCandidate) {
+        NameInfo info = new NameInfo();
+        if (infoCandidate != null) {
+            info = infoCandidate;
+        }
+        ArmorStandRenderState renderState = state.toRenderState();
+        ModUtils.setCustomName(renderState, Component.literal(info.compile()));
+        renderState.showBasePlate = state.baseplate;
+        model.setupAnim(renderState, true);
+        model.setupForItem(state, info);
     }
 
     @Override

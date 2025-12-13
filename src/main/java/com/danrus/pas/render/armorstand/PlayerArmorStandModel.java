@@ -23,6 +23,7 @@ import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Collection;
 import java.util.List;
 
 public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape, Cloneable {
@@ -250,7 +251,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         this.basePlate.visible = state.baseplate;
     }
 
-    public Iterable<ModelPart> bodyParts()  {
+    public Collection<ModelPart> bodyParts()  {
         return List.of(
                 this.hat, this.head, this.body, this.jacket,
                 this.leftArm, this.rightArm, this.leftSleeve, this.rightSleeve,
@@ -262,19 +263,19 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         );
     }
 
-    public Iterable<ModelPart> headParts() {
+    public Collection<ModelPart> headParts() {
         return List.of(this.hat, this.head, this.originalHead, this.leftEar, this.rightEar);
     }
 
-    public Iterable<ModelPart> getPlayerHeadParts() {
+    public Collection<ModelPart> getPlayerHeadParts() {
         return List.of(this.hat, this.head);
     }
 
-    public Iterable<ModelPart> getOriginalHead() {
+    public Collection<ModelPart> getOriginalHead() {
         return List.of(this.originalHead);
     }
 
-    public Iterable<ModelPart> getBasePartsForItem() {
+    public Collection<ModelPart> getBasePartsForItem() {
         return List.of(
                 this.rightBodyStick,
                 this.leftBodyStick,
@@ -286,7 +287,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         );
     }
 
-    public Iterable<ModelPart> getOriginalParts() {
+    public Collection<ModelPart> getOriginalParts() {
         return List.of(
                 this.originalBody,
                 this.originalLeftArm,
@@ -301,7 +302,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         );
     }
 
-    public Iterable<ModelPart> getPlayerParts() {
+    public Collection<ModelPart> getPlayerParts() {
         return List.of(
                 this.body,
                 this.jacket,
