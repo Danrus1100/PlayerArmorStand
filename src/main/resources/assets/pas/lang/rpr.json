@@ -76,6 +76,11 @@
   "pas.menu.tab.overlay.display_name": "Обретаемоѣ имя",
   "pas.menu.tab.overlay.display_name.tooltip": "Имя изъ поля ниже будетъ явлено вместо имени игрока. Абы приложити имя — нажмите Enter.",
 
+  "pas.rp.3d_items_with_head": "[PAS] 3D предме́ты съ голово́й игрока́",
+  "pas.rp.3d_items_with_head.desc": "Моде́ль предме́та съ динами́ческой голово́й для мо́да Player Armor Stands",
+  "pas.rp.3d_items_player_like": "[PAS] 3D предме́тъ съ моде́лью игрока́",
+  "pas.rp.3d_items_player_like.desc": "Моде́ль предме́та со ски́номъ игрока́ для мо́да Player Armor Stands",
+
   "pas.yacl_required.1": "Абы настроити сей модъ, надлежитъ имѣти Yet Another Config Lib (YACL).",
   "pas.yacl_required.2": "Пошлите, скачайте оную съ Modrinth дабы продолжити!"
 }

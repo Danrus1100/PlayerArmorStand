@@ -76,6 +76,11 @@
   "pas.menu.tab.overlay.display_name": "表示名",
   "pas.menu.tab.overlay.display_name.tooltip": "下の欄の名前がプレイヤー名の代わりに表示されます。適用するには Enter を押してください。",
 
+  "pas.rp.3d_items_with_head": "[PAS] プレイヤーヘッド付き3Dアイテム",
+  "pas.rp.3d_items_with_head.desc": "Player Armor Stands Mod用の動的ヘッド付きアイテムモデル",
+  "pas.rp.3d_items_player_like": "[PAS] プレイヤー風3Dアイテム",
+  "pas.rp.3d_items_player_like.desc": "Player Armor Stands Mod用のプレイヤースキン付きアイテムモデル",
+
   "pas.yacl_required.1": "この Mod を設定するには Yet Another Config Lib (YACL) が必要です。",
   "pas.yacl_required.2": "続行するには Modrinth からダウンロードしてください！"
 }
