@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SpecialModelRenderers.class)
 public class SpecialModelRenderersMixin {
+    //? if !neoforge {
     @Inject(
             method = "bootstrap",
             at = @At("RETURN")
@@ -17,4 +18,5 @@ public class SpecialModelRenderersMixin {
     private static void bootstrapInject(CallbackInfo ci) {
         SpecialModelRenderers.ID_MAPPER.put(Rl.pas("armor_stand"), ArmorStandSpecialRenderer.Unbaked.MAP_CODEC);
     }
+    //?}
 }

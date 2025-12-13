@@ -6,19 +6,21 @@ import com.danrus.pas.utils.Rl;
 import net.minecraft.resources.ResourceLocation;
 
 public class SkinData extends AbstractPasHolder{
-    public static ResourceLocation DEFAULT_TEXTURE = PasConfig.getInstance().isShowArmorStandWhileDownloading()
-            ? Rl.vanilla("textures/entity/armorstand/wood.png")
-            : Rl.vanilla("textures/entity/player/wide/steve.png");
-
-    private ResourceLocation location = DEFAULT_TEXTURE;
+    public static ResourceLocation DEFAULT_TEXTURE = getDefaultTextureStatic();
 
     public SkinData(NameInfo info) {
         super(info);
     }
 
     @Override
-    public ResourceLocation getTexture(NameInfo info) {
-        return location;
+    protected ResourceLocation getDefaultTexture() {
+        return getDefaultTextureStatic();
+    }
+
+    protected static ResourceLocation getDefaultTextureStatic() {
+        return PasConfig.getInstance().isShowArmorStandWhileDownloading()
+                ? Rl.vanilla("textures/entity/armorstand/wood.png")
+                : Rl.vanilla("textures/entity/player/wide/steve.png");
     }
 
     @Override

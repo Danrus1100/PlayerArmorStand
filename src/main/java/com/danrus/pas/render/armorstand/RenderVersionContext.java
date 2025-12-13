@@ -13,13 +13,14 @@ public class RenderVersionContext implements PasRenderContext {
         this.cape = cape;
     }
 
-    public <T> void putData(T data, String type) {
+    public <T> PasRenderContext putData(T data, String type) {
         if (contextMap.size() >= 16) {
             throw new IllegalStateException("RenderVersionContext can hold up to 16 data entries.");
         }
         if (data != null) {
             contextMap.put(type, data);
         }
+        return this;
     }
 
     public <T> T getData(Class<T> clazz, String type) {

@@ -1,6 +1,8 @@
 package com.danrus.pas.render.item;
 
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.impl.holder.SkinData;
+import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.PasRenderContext;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.utils.ModUtils;
@@ -39,22 +41,15 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
     //? >= 1.21.8 {
     /*@Override
     public void getExtents(Set<Vector3f> output) {
-        // 1. Создаем новую матрицу
         PoseStack poseStack = new PoseStack();
 
-        // 2. ПОВТОРЯЕМ трансформации из prepareDraw точь-в-точь
-        // Если тут будет отличие, иконка будет смещена или неверного размера
         preparePose(poseStack);
-
-        // 3. Настраиваем состояние модели (как будто она стоит ровно)
         prepareModel(model, state, null);
 
-        // 4. Собираем все части модели, которые должны учитываться в размерах
         List<ModelPart> partsToMeasure = new ArrayList<>();
         partsToMeasure.addAll(model.getOriginalParts());
         partsToMeasure.addAll(model.getPlayerParts());
 
-        // 5. Проходимся по всем частям и собираем вершины
         for (ModelPart part : partsToMeasure) {
             if (part.visible) {
                 part.getExtentsForGui(poseStack, output);
@@ -70,20 +65,21 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
     }
 
     private static void prepareModel(PlayerArmorStandModel model, ArmorStandItemState state, @Nullable NameInfo infoCandidate) {
-        NameInfo info = new NameInfo();
-        if (infoCandidate != null) {
-            info = infoCandidate;
-        }
+        NameInfo info = infoCandidate != null ? infoCandidate : new NameInfo();
         ArmorStandRenderState renderState = state.toRenderState();
         ModUtils.setCustomName(renderState, Component.literal(info.compile()));
         renderState.showBasePlate = state.baseplate;
         model.setupAnim(renderState, true);
-        model.setupForItem(state, info);
+        model.setupVisibilityForItem(state, info);
     }
 
+
+    // Use SkinData instead NameInfo because we need update ModelIdentityElement dynamically (look SpecialModelWrapper)
+    // SkinData has DownloadStatus, so - using here:
     @Override
-    public @Nullable NameInfo extractArgument(ItemStack stack) {
-        return NameInfo.parse(stack.getCustomName());
+    public @Nullable SkinData extractArgument(ItemStack stack) {
+        NameInfo info = NameInfo.parse(stack.getCustomName());
+        return PasManager.getInstance().getSkinDataManager().getData(info);
     }
 
     public static record Unbaked(ArmorStandItemState state) implements SpecialModelRenderer.Unbaked {

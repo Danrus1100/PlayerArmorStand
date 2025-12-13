@@ -220,7 +220,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         }
     }
 
-    public void setupForItem(ArmorStandSpecialRenderer.ArmorStandItemState state, NameInfo info) {
+    public void setupVisibilityForItem(ArmorStandSpecialRenderer.ArmorStandItemState state, NameInfo info) {
 
         this.hat.visible = state.head.mode.showPlayerPart(info);
         this.head.visible = state.head.mode.showPlayerPart(info);
