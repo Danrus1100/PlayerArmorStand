@@ -50,7 +50,6 @@ public abstract class PasConfig {
         //?}
     }
 
-    public abstract boolean is3dRpSetByMod();
     public abstract boolean isEnableMod();
     public abstract int getDownloadThreads();
     public abstract DownloadStatusDisplay getDownloadStatusDisplay();

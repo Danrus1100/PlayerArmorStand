@@ -1,0 +1,17 @@
+{
+  "oversized_in_gui": true,
+  "model": {
+    "type": "pas:name_info",
+    "on_empty": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/armor_stand"
+    },
+    "on_not_empty": {
+      "type": "minecraft:special",
+      "base": "pas:item/pas_transformer",
+      "model": {
+        "type": "pas:armor_stand"
+      }
+    }
+  }
+}

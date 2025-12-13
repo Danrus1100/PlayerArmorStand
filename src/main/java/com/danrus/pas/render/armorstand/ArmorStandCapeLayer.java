@@ -48,26 +48,23 @@ public class ArmorStandCapeLayer extends ModUtils.VersionlessArmorStandCapeLayer
         }
 
         poseStack.pushPose();
-        prepareCapePose(poseStack, isBaby);
+        poseStack.mulPose(Axis.XP.rotationDegrees(10.0F));
+        poseStack.mulPose(Axis.YN.rotationDegrees(180.0F));
+        poseStack.translate(0.0F, 0.02F, -0.12F);
+        if (isBaby) {
+        //? if <= 1.21.1 {
+        
+            /*poseStack.translate(0.0F, 0.71F, 0.21F);
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+        *///?} else {
+            poseStack.translate(0.0F, -0.02F, 0.21F);
+        //?}
+        }
+
 
         context.getCape().draw(poseStack, capeTexture, context, light);
 
         poseStack.popPose();
 
-    }
-
-    public static void prepareCapePose(PoseStack poseStack, boolean isBaby) {
-        poseStack.mulPose(Axis.XP.rotationDegrees(10.0F));
-        poseStack.mulPose(Axis.YN.rotationDegrees(180.0F));
-        poseStack.translate(0.0F, 0.02F, -0.12F);
-        if (isBaby) {
-            //? if <= 1.21.1 {
-
-            /*poseStack.translate(0.0F, 0.71F, 0.21F);
-            poseStack.scale(0.5F, 0.5F, 0.5F);
-        *///?} else {
-            poseStack.translate(0.0F, -0.02F, 0.21F);
-            //?}
-        }
     }
 }
