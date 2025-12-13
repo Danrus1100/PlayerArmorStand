@@ -76,6 +76,11 @@
   "pas.menu.tab.overlay.display_name": "显示名称",
   "pas.menu.tab.overlay.display_name.tooltip": "下方填写的名称将代替玩家名称显示。按回车应用。",
 
+  "pas.rp.3d_items_with_head": "[PAS] 带玩家头颅的 3D 物品",
+  "pas.rp.3d_items_with_head.desc": "Player Armor Stands Mod 动态头颅物品模型",
+  "pas.rp.3d_items_player_like": "[PAS] 玩家外观 3D 物品",
+  "pas.rp.3d_items_player_like.desc": "Player Armor Stands Mod 玩家皮肤物品模型",
+
   "pas.yacl_required.1": "要配置此模组，需要安装 Yet Another Config Lib (YACL)。",
   "pas.yacl_required.2": "请从 Modrinth 下载后继续！"
 }

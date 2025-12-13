@@ -24,6 +24,9 @@ import java.nio.file.Path;
 import java.util.function.Function;
 
 public class ModUtils {
+    public static String YACL_MOD_ID = "yet_another_config_lib_v3";
+    public static String MOD_ID = "pas";
+
     public static Path getGameDir() {
         //? if fabric {
         return net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir();
@@ -66,6 +69,26 @@ public class ModUtils {
             }
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public static void setCustomName(Object object, Component name) {
+        try {
+            //? if <= 1.21.1 {
+            /*if (object instanceof net.minecraft.world.entity.decoration.ArmorStand armorStand) {
+                armorStand.setCustomName(name);
+            }
+            *///?} else {
+            if (object instanceof net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStandState) {
+                //? <1.21.9 {
+                armorStandState.customName = name;
+                //?} else {
+                /*((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandState).pas$setCustomName(name);
+                *///?}
+            }
+            //?}
+        } catch (Exception e) {
+            // Ignore
         }
     }
 

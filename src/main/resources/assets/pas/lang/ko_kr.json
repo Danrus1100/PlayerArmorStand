@@ -76,6 +76,11 @@
   "pas.menu.tab.overlay.display_name": "표시 이름",
   "pas.menu.tab.overlay.display_name.tooltip": "아래 칸의 이름이 플레이어 이름 대신 표시됩니다. 적용하려면 Enter를 누르세요.",
 
+  "pas.rp.3d_items_with_head": "[PAS] 플레이어 머리가 있는 3D 아이템",
+  "pas.rp.3d_items_with_head.desc": "Player Armor Stands 모드를 위한 동적 머리가 있는 아이템 모델",
+  "pas.rp.3d_items_player_like": "[PAS] 플레이어와 같은 3D 아이템",
+  "pas.rp.3d_items_player_like.desc": "Player Armor Stands 모드를 위한 플레이어 스킨이 있는 아이템 모델",
+
   "pas.yacl_required.1": "이 모드를 설정하려면 Yet Another Config Lib (YACL)이 필요합니다.",
   "pas.yacl_required.2": "계속하려면 Modrinth에서 다운로드하세요!"
 }

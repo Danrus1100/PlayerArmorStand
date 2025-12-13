@@ -6,9 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
+import java.util.function.Supplier;
 
 public abstract class PasConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger("[PAS Config]");
+    private static PasConfig instace;
 
     public void copyFields(PasConfig target) {
         Field[] fields = this.getClass().getFields();
@@ -26,16 +28,23 @@ public abstract class PasConfig {
 
     public static PasConfig getInstance() {
         //? if yacl {
-        if (ModUtils.isModLoaded("yet_another_config_lib_v3")) {
-            return YaclConfig.get();
+        if (ModUtils.isModLoaded(ModUtils.YACL_MOD_ID)) {
+            return getInstance(YaclConfig::get);
         }
         //?}
-        return new DummyConfig();
+        return getInstance(DummyConfig::new);
+    }
+
+    private static PasConfig getInstance(Supplier<PasConfig> factory) {
+        if (instace == null) {
+            instace = factory.get();
+        }
+        return instace;
     }
 
     public static void init() {
         //? if yacl {
-        if (ModUtils.isModLoaded("yet_another_config_lib_v3")) {
+        if (ModUtils.isModLoaded(ModUtils.YACL_MOD_ID)) {
             YaclConfig.initialize();
         }
         //?}

@@ -76,6 +76,11 @@
   "pas.menu.tab.overlay.display_name": "Angezeigter Name",
   "pas.menu.tab.overlay.display_name.tooltip": "Der Name unten ersetzt den Spielernamen. Zum Anwenden Enter drücken.",
 
+  "pas.rp.3d_items_with_head": "[PAS] 3D-Gegenstände mit Spielerköpfen",
+  "pas.rp.3d_items_with_head.desc": "Gegenstandsmodell mit dynamischem Kopf für den Player Armor Stands Mod",
+  "pas.rp.3d_items_player_like": "[PAS] 3D-Gegenstände spielerähnlich",
+  "pas.rp.3d_items_player_like.desc": "Gegenstandsmodell mit Spieler-Skin für den Player Armor Stands Mod",
+
   "pas.yacl_required.1": "Zum Konfigurieren dieses Mods benötigst du Yet Another Config Lib (YACL).",
   "pas.yacl_required.2": "Bitte lade es von Modrinth herunter, um fortzufahren!"
 }
