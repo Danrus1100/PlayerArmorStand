@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Rotations;
 import net.minecraft.util.ExtraCodecs;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 public class PasItemModelPart {
     public static Codec<PasItemModelPart> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -15,23 +16,38 @@ public class PasItemModelPart {
         return new PasItemModelPart(rotation, Mode.valueOf(mode.toUpperCase()));
     }));
 
-    public Vector3f rotation;
+    public
+    //? if <1.21.11
+    Vector3f
+    //? if >=1.21.11
+    /*Vector3fc*/
+            rotation;
     public Mode mode;
 
-    public PasItemModelPart(Vector3f rotation, Mode mode) {
+    public PasItemModelPart(
+            //? if <1.21.11
+            Vector3f
+            //? if >=1.21.11
+            /*Vector3fc*/
+                    rotation, Mode mode) {
         this.rotation = rotation;
         this.mode = mode;
     }
 
-    public PasItemModelPart(Vector3f rotation) {
+    public PasItemModelPart(
+            //? if <1.21.11
+            Vector3f
+            //? if >=1.21.11
+            /*Vector3fc*/
+                    rotation) {
         this(rotation, Mode.ORIGINAL);
     }
 
     public Rotations toRotations() {
         return new Rotations(
-                this.rotation.x,
-                this.rotation.y,
-                this.rotation.z
+                this.rotation.x(),
+                this.rotation.y(),
+                this.rotation.z()
         );
     }
 

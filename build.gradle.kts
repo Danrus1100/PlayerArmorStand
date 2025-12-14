@@ -260,14 +260,14 @@ publishMods {
 //        optionalLibsModrinth.forEach{optional(it)}
     }
 
-    curseforge {
-        projectId = property("publish.curseforge").toString()
-        accessToken = curseforgeToken.toString()
-        projectSlug = "player-armor-stands"
-        targets.forEach(minecraftVersions::add)
-        requiresLibs.forEach{requires(it)}
-        optionalLibs.forEach{optional(it)}
-    }
+//    curseforge {
+//        projectId = property("publish.curseforge").toString()
+//        accessToken = curseforgeToken.toString()
+//        projectSlug = "player-armor-stands"
+//        targets.forEach(minecraftVersions::add)
+//        requiresLibs.forEach{requires(it)}
+//        optionalLibs.forEach{optional(it)}
+//    }
 
     if (targets.contains("1.21.4") && loaders.contains("fabric")) {
         discord ("DR freak mods anonuncement") {

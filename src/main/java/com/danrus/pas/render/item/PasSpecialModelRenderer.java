@@ -42,41 +42,34 @@ public abstract class PasSpecialModelRenderer implements SpecialModelRenderer<Sk
     *///?}
         NameInfo currentInfo = argument != null ? argument.getInfo() : new NameInfo();
         prepareDraw(currentInfo, displayContext, poseStack, context, packedLight, packedOverlay, hasFoilType);
-        RenderType base = RenderType.entityCutout(WOOD);
         for (ModelPart part : this.model.getOriginalParts()) {
-            renderPart(poseStack, part, base, context, packedLight, packedOverlay);
+            renderPart(poseStack, part, RenderType.entityCutout(WOOD), context, packedLight, packedOverlay);
         }
         boolean showDefaultSkin = currentInfo.isEmpty() || PlayerArmorStandModel.showArmorStandWhileDownload(argument);
-        RenderType skinType = RenderType.entityTranslucent(showDefaultSkin ? STEVE : PasManager.getInstance().getSkinWithOverlayTexture(currentInfo));
         for (ModelPart part : this.model.getPlayerParts()) {
-            renderPart(poseStack, part, skinType, context, packedLight, packedOverlay);
+            renderPart(poseStack, part, RenderType.entityTranslucent(showDefaultSkin ? STEVE : PasManager.getInstance().getSkinWithOverlayTexture(currentInfo)), context, packedLight, packedOverlay);
         }
 
         if (hasFoilType) {
-            // Используем стандартный RenderType для эффекта зачарования
-            // Он имеет специальный шейдер, который игнорирует текстуру и рисует свечение.
-            RenderType glintType = RenderType.glint();
-
-            // Нам нужно нарисовать модель еще раз, чтобы glintType покрыл все части,
-            // которые должны светиться.
-
-            // Сначала рисуем glint поверх деревянных частей
             for (ModelPart part : this.model.getOriginalParts()) {
-                // Пакет освещения и наложения обычно игнорируется шейдером glint,
-                // но лучше передать их для корректной работы конвейера.
-                renderPart(poseStack, part, glintType, context, packedLight, packedOverlay);
+                renderPart(poseStack, part, RenderType.glint(), context, packedLight, packedOverlay);
             }
 
-            // Затем рисуем glint поверх частей игрока (скина)
             for (ModelPart part : this.model.getPlayerParts()) {
-                renderPart(poseStack, part, glintType, context, packedLight, packedOverlay);
+                renderPart(poseStack, part, RenderType.glint(), context, packedLight, packedOverlay);
             }
         }
     }
 
     abstract void prepareDraw(NameInfo argument, ItemDisplayContext displayContext, PoseStack poseStack, PasRenderContext context, int packedLight, int packedOverlay, boolean hasFoil);
 
-    private static void renderPart(PoseStack poseStack, ModelPart part, RenderType type, PasRenderContext context, int packedLight, int packedOverlay) {
+    private static void renderPart(PoseStack poseStack, ModelPart part,
+                                   //? if <1.21.11 {
+                                   RenderType
+                                   //?} else {
+                                   /*net.minecraft.client.renderer.rendertype.RenderType
+                                   *///?}
+                                           type, PasRenderContext context, int packedLight, int packedOverlay) {
         //? if <1.21.9 {
         MultiBufferSource bufferSource = context.getData(MultiBufferSource.class,"bufferSource");
         VertexConsumer skinConsumer = bufferSource.getBuffer(type);

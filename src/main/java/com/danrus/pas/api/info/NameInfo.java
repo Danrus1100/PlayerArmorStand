@@ -86,7 +86,7 @@ public class NameInfo {
 
     @Override
     public int hashCode() {
-        return base.hashCode() + getFeature(SkinProviderFeature.class).getProvider().hashCode();
+        return base.hashCode() + getFeature(SkinProviderFeature.class).getProvider().hashCode() + (getFeature(SlimFeature.class).isSlim() ? 1 : 2);
     }
 
     @Override
@@ -94,7 +94,8 @@ public class NameInfo {
         return obj instanceof NameInfo other &&
                 Objects.equals(this.base, other.base) &&
                 Objects.equals(this.getFeature(SkinProviderFeature.class).getProvider(),
-                        other.getFeature(SkinProviderFeature.class).getProvider());
+                        other.getFeature(SkinProviderFeature.class).getProvider()) &&
+                this.getFeature(SlimFeature.class).isSlim() == other.getFeature(SlimFeature.class).isSlim();
     }
 
 
