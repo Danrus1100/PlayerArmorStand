@@ -72,6 +72,26 @@ public class ModUtils {
         }
     }
 
+    public static void setCustomName(Object object, Component name) {
+        try {
+            //? if <= 1.21.1 {
+            /*if (object instanceof net.minecraft.world.entity.decoration.ArmorStand armorStand) {
+                armorStand.setCustomName(name);
+            }
+            *///?} else {
+            if (object instanceof net.minecraft.client.renderer.entity.state.ArmorStandRenderState armorStandState) {
+                //? <1.21.9 {
+                armorStandState.customName = name;
+                //?} else {
+                /*((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandState).pas$setCustomName(name);
+                *///?}
+            }
+            //?}
+        } catch (Exception e) {
+            // Ignore
+        }
+    }
+
     public static boolean getNoBasePlate(Object object) {
         //? if <= 1.21.1 {
         /*if (object instanceof net.minecraft.world.entity.decoration.ArmorStand armorStand) {
