@@ -54,12 +54,12 @@ public class PasManager {
 
     public ResourceLocation getSkinTexture(NameInfo info) {
         SkinData data = skinDataRepository.getData(info);
-        return data != null ? data.getTexture(info) : null;
+        return data != null ? data.getTexture() : null;
     }
 
     public ResourceLocation getCapeTexture(NameInfo info) {
         CapeData data = capeDataRepository.getData(info);
-        return data != null ? data.getTexture(info) : null;
+        return data != null ? data.getTexture() : null;
     }
 
     public SkinData findSkinData(NameInfo info) {

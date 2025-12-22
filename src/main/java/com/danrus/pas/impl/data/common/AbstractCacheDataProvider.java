@@ -14,12 +14,7 @@ public abstract class AbstractCacheDataProvider<T extends DataHolder> implements
 
     @Override
     public T get(NameInfo info) {
-        DataStoreKey key = getKey(info);
-                T value = cache.get(key);
-        if (value == null) {
-            return null;
-        }
-        return value;
+        return get(getKey(info));
     }
 
     @Override
@@ -29,7 +24,11 @@ public abstract class AbstractCacheDataProvider<T extends DataHolder> implements
 
     @Override
     public boolean delete(NameInfo info) {
-        DataStoreKey key = getKey(info);
+        return delete(getKey(info));
+    }
+
+    @Override
+    public boolean delete(DataStoreKey key) {
         if (cache.containsKey(key)) {
             cache.remove(key);
             return true;
@@ -44,12 +43,20 @@ public abstract class AbstractCacheDataProvider<T extends DataHolder> implements
 
     @Override
     public void store(NameInfo info, T data) {
-        cache.put(getKey(info), data);
+        store(getKey(info), data);
+    }
+
+    @Override
+    public void store(DataStoreKey key, T data) {
+        cache.put(key, data);
     }
 
     @Override
     public void invalidateData(NameInfo info) {
-        DataStoreKey key = getKey(info);
+        invalidateData(getKey(info), info);
+    }
+
+    private void invalidateData(DataStoreKey key, NameInfo info) {
         T data = cache.get(key);
         if (data != null) {
             data.setStatus(DownloadStatus.FAILED);

@@ -12,11 +12,6 @@ public class CapeData extends AbstractPasHolder{
     }
 
     @Override
-    public ResourceLocation getTexture(NameInfo info) {
-        return location;
-    }
-
-    @Override
     protected ResourceLocation getDefaultTexture() {
         return Rl.pas("capes/cape.png");
     }

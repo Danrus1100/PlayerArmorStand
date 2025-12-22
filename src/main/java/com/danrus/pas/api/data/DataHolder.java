@@ -5,7 +5,7 @@ import com.danrus.pas.api.info.NameInfo;
 import net.minecraft.resources.ResourceLocation;
 
 public interface DataHolder {
-    ResourceLocation getTexture(NameInfo info);
+    ResourceLocation getTexture();
     DownloadStatus getStatus();
     void setStatus(DownloadStatus status);
     void setTexture(ResourceLocation location);

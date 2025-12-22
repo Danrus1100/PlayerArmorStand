@@ -66,6 +66,13 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
+    public void store(DataStoreKey key, T data) {
+        sources.forEach(source -> {
+            source.store(key, data);
+        });
+    }
+
+    @Override
     public void invalidateData(NameInfo info) {
         sources.forEach(source -> source.invalidateData(info));
     }
@@ -96,9 +103,8 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     @Override
     public T findData(NameInfo info) {
         DataProvider<T> source = getSource("game");
-                DataProvider<T> gameCache = source;
-        if (gameCache != null) {
-            return gameCache.get(info);
+        if (source != null) {
+            return source.get(info);
         }
         return null;
     }
@@ -107,8 +113,15 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     public void delete(NameInfo info) {
         sources.forEach(source -> {
             if (source.delete(info)) {
-                                PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for string: {}", source.getName(), info);
+                PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for name info: {}", source.getName(), info);
             }
+        });
+    }
+
+    @Override
+    public void delete(DataStoreKey key) {
+        sources.forEach(source -> {
+            if (source.delete(key)) PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for key: {}", source.getName(), key);
         });
     }
 

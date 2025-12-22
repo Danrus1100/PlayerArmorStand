@@ -44,6 +44,7 @@ public interface DataRepository<T extends DataHolder> {
      * @param data Object data to be stored
      */
     void store(NameInfo info, T data);
+    void store(DataStoreKey key, T data);
 
     /**
      * Invalidates the data associated with the given name.
@@ -52,6 +53,7 @@ public interface DataRepository<T extends DataHolder> {
      * @param info the identifier for the data to invalidate
      */
     void invalidateData(NameInfo info);
+    void invalidateData(DataStoreKey key);
 
     /**
      * Retrieves a specific data source by its key.
@@ -86,6 +88,7 @@ public interface DataRepository<T extends DataHolder> {
      */
 
     T findData(NameInfo info);
+    T findData(DataStoreKey key);
 
 
     /**
@@ -95,4 +98,5 @@ public interface DataRepository<T extends DataHolder> {
      */
 
     void delete(NameInfo info);
+    void delete(DataStoreKey key);
 }
