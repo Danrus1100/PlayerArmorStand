@@ -8,8 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 public class SkinData extends AbstractPasHolder{
     public static ResourceLocation DEFAULT_TEXTURE = getDefaultTextureStatic();
 
+    public SkinData() {
+        super();
+    }
+
+    @Deprecated
     public SkinData(NameInfo info) {
-        super(info);
+        super();
     }
 
     @Override

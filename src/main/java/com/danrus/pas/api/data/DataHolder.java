@@ -9,5 +9,4 @@ public interface DataHolder {
     DownloadStatus getStatus();
     void setStatus(DownloadStatus status);
     void setTexture(ResourceLocation location);
-    NameInfo getInfo();
 }

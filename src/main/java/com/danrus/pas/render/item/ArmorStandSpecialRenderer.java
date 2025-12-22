@@ -1,5 +1,6 @@
 package com.danrus.pas.render.item;
 
+import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
@@ -14,6 +15,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.network.chat.Component;
@@ -35,8 +37,8 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
     }
 
     @Override
-    public void prepareDraw(NameInfo info, ItemDisplayContext displayContext, PoseStack poseStack, PasRenderContext context, int packedLight, int packedOverlay, boolean hasFoil) {
-        prepareModel(model, state, info);
+    public void prepareDraw(ItemRenderData data, ItemDisplayContext displayContext, PoseStack poseStack, PasRenderContext context, int packedLight, int packedOverlay, boolean hasFoil) {
+        prepareModel(model, state, data.info());
         preparePose(poseStack);
     }
 
@@ -84,9 +86,10 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
     // Use SkinData instead NameInfo because we need update ModelIdentityElement dynamically (look SpecialModelWrapper)
     // SkinData has DownloadStatus, so - using here:
     @Override
-    public @Nullable SkinData extractArgument(ItemStack stack) {
+    public @Nullable ItemRenderData extractArgument(ItemStack stack) {
         NameInfo info = NameInfo.parse(stack.getCustomName());
-        return PasManager.getInstance().getSkinDataManager().getData(info);
+        SkinData data = PasManager.getInstance().getSkinDataManager().getData(info);
+        return new ItemRenderData(data, info);
     }
 
     public static record Unbaked(ArmorStandItemState state) implements SpecialModelRenderer.Unbaked {
@@ -99,7 +102,7 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
 
 
         public @Nullable SpecialModelRenderer<?> bake(EntityModelSet modelSet) {
-            PlayerArmorStandModel pasModel = new PlayerArmorStandModel(modelSet.bakeLayer(ModelLayers.ARMOR_STAND));
+            PlayerArmorStandModel pasModel = new PlayerArmorStandModel(PlayerArmorStandModel.createBodyLayer(CubeDeformation.NONE, new CubeDeformation(-0.001f)).bakeRoot()); // to fix glitchy textures on arms
             return new ArmorStandSpecialRenderer(pasModel, state);
         }
 

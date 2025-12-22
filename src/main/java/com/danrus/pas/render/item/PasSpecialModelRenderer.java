@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class PasSpecialModelRenderer implements SpecialModelRenderer<SkinData> {
+public abstract class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderData> {
 
     private static ResourceLocation WOOD = Rl.vanilla("textures/entity/armorstand/wood.png");
     private static ResourceLocation STEVE = Rl.vanilla("textures/entity/player/wide/steve.png");
@@ -34,18 +34,18 @@ public abstract class PasSpecialModelRenderer implements SpecialModelRenderer<Sk
     }
     @Override
     //? if <1.21.9 {
-    public void render(@Nullable SkinData argument, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, boolean hasFoilType) {
+    public void render(@Nullable ItemRenderData argument, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, boolean hasFoilType) {
         PasRenderContext context = new RenderContext().putData(bufferSource, "bufferSource");
     //?} else {
-    /*public void submit(@Nullable SkinData argument, ItemDisplayContext displayContext, PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector nodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor){
+    /*public void submit(@Nullable ItemRenderData argument, ItemDisplayContext displayContext, PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector nodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor){
         PasRenderContext context = new RenderContext().putData(nodeCollector, "collector").putData(outlineColor, "outlineColor");
     *///?}
-        NameInfo currentInfo = argument != null ? argument.getInfo() : new NameInfo();
-        prepareDraw(currentInfo, displayContext, poseStack, context, packedLight, packedOverlay, hasFoilType);
+        NameInfo currentInfo = argument != null ? argument.info() : new NameInfo();
+        prepareDraw(argument, displayContext, poseStack, context, packedLight, packedOverlay, hasFoilType);
         for (ModelPart part : this.model.getOriginalParts()) {
             renderPart(poseStack, part, RenderType.entityCutout(WOOD), context, packedLight, packedOverlay);
         }
-        boolean showDefaultSkin = currentInfo.isEmpty() || PlayerArmorStandModel.showArmorStandWhileDownload(argument);
+        boolean showDefaultSkin = currentInfo.isEmpty() || PlayerArmorStandModel.showArmorStandWhileDownload(argument.dataHolder());
         for (ModelPart part : this.model.getPlayerParts()) {
             renderPart(poseStack, part, RenderType.entityTranslucent(showDefaultSkin ? STEVE : PasManager.getInstance().getSkinWithOverlayTexture(currentInfo)), context, packedLight, packedOverlay);
         }
@@ -61,7 +61,7 @@ public abstract class PasSpecialModelRenderer implements SpecialModelRenderer<Sk
         }
     }
 
-    abstract void prepareDraw(NameInfo argument, ItemDisplayContext displayContext, PoseStack poseStack, PasRenderContext context, int packedLight, int packedOverlay, boolean hasFoil);
+    abstract void prepareDraw(ItemRenderData argument, ItemDisplayContext displayContext, PoseStack poseStack, PasRenderContext context, int packedLight, int packedOverlay, boolean hasFoil);
 
     private static void renderPart(PoseStack poseStack, ModelPart part,
                                    //? if <1.21.11 {

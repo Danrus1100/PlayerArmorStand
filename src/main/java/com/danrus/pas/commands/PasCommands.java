@@ -16,16 +16,16 @@ public class PasCommands {
     public static int reloadSingeSkinCommand(CommandContext<?> context) {
         SkinData data = SkinDataArgument.getData(context, "name/skin");
         data.setStatus(DownloadStatus.IN_PROGRESS);
-        String name = data.getInfo().compile();
-        PasManager.getInstance().reloadData(name);
+//        String name = data.getInfo().compile();
+//        PasManager.getInstance().reloadData(name);
         return 1;
     }
 
     public static int reloadSingleCapeCommand(CommandContext<?> context) {
         CapeData data = CapeDataArgument.getData(context, "name/cape");
         data.setStatus(DownloadStatus.IN_PROGRESS);
-        String name = data.getInfo().compile();
-        PasManager.getInstance().reloadData(name);
+//        String name = data.getInfo().compile();
+//        PasManager.getInstance().reloadData(name);
         return 1;
     }
 

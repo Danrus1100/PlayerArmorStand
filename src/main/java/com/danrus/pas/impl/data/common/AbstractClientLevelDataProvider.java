@@ -74,9 +74,10 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
                     }
                     return data;
                 })
+                // FIXME: wrong key usage, idk how to fix without NameInfo parameter
                 .collect(
                         HashMap::new,
-                        (map, data) -> map.put( getKey(data.getInfo()) , data),
+                        (map, data) -> map.put( getKey(new NameInfo()) , data),
                         HashMap::putAll
                 );
     }

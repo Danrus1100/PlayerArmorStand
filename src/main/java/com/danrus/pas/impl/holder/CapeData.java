@@ -7,8 +7,13 @@ import net.minecraft.resources.ResourceLocation;
 public class CapeData extends AbstractPasHolder{
     public static ResourceLocation DEFAULT_TEXTURE = Rl.pas("capes/cape.png");
 
+    public CapeData() {
+        super();
+    }
+
+    @Deprecated
     public CapeData(NameInfo info) {
-        super(info);
+        super();
     }
 
     @Override
