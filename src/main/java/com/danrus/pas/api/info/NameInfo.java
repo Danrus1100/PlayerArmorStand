@@ -2,12 +2,15 @@ package com.danrus.pas.api.info;
 
 import com.danrus.pas.api.data.DataStoreKey;
 import com.danrus.pas.api.reg.FeatureRegistry;
+import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.features.OverlayFeature;
 import com.danrus.pas.impl.features.SkinProviderFeature;
 import com.danrus.pas.impl.features.SlimFeature;
 import com.danrus.pas.utils.NIParser;
+import com.danrus.pas.utils.Rl;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -15,14 +18,28 @@ import java.util.stream.Collectors;
 
 public class NameInfo {
 
+    public static Map<String, ResourceLocation> MEMES = Map.of(
+            "Данечка Разработчик", Rl.pas("textures/lol/danechka_razrabotchik.png"),
+            "Дакимакура", Rl.pas("textures/lol/dakimakura.png"),
+            "Гига Крео", Rl.pas("textures/lol/gigakreo.png"),
+            "Strange Link", Rl.pas("textures/lol/link.png"),
+            "Сисюлики", Rl.pas("textures/lol/boobs.png")
+    );
+
     private final Map<Class<? extends RenameFeature>, RenameFeature> features = new LinkedHashMap<>();
     private String base;
     public String legacyParams;
+    public ResourceLocation lolmeme = null;
 
     public NameInfo() { this(""); }
     public NameInfo(String base) {
         this.base = base == null ? "" : base;
         initializeFeatures();
+    }
+
+    public NameInfo setLolMeme(ResourceLocation texture) {
+        this.lolmeme = texture;
+        return this;
     }
 
     private void initializeFeatures() {
@@ -42,6 +59,13 @@ public class NameInfo {
     }
 
     public static NameInfo parse(String input) {
+        if (PasConfig.getInstance().isShowEasterEggs()) {
+            for (Map.Entry<String, ResourceLocation> meme : MEMES.entrySet()) {
+                if (input.contains(meme.getKey())) {
+                    return new NameInfo().setLolMeme(meme.getValue());
+                }
+            }
+        }
         return NIParser.getInstance().parse(input);
     }
 

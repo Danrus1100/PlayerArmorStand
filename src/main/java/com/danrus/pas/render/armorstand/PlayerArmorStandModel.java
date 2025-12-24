@@ -57,6 +57,8 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
     private final ModelPart leftEar;
     private final ModelPart rightEar;
 
+    private final ModelPart lol;
+
     private boolean isSlim = false;
     private boolean isOriginal = false;
 
@@ -93,6 +95,9 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         this.leftEar = this.head.getChild("left_ear");
         this.rightEar = this.head.getChild("right_ear");
 
+        // Lol
+        this.lol = root.getChild("lol");
+
         this.hat.visible = true;
         this.leftEar.visible = false;
         this.rightEar.visible = false;
@@ -107,6 +112,8 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         this.leftBodyStick.visible = false;
         this.shoulderStick.visible = false;
         this.basePlate.visible = false;
+
+        this.lol.visible = false;
     }
 
     public static LayerDefinition createBodyLayer(CubeDeformation deformation) {
@@ -157,6 +164,10 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         headDefinition.addOrReplaceChild("left_ear", earsCubeListBuilder, PartPose.offset(-6.0F, -6.0F, 0.0F));
         headDefinition.addOrReplaceChild("right_ear", earsCubeListBuilder, PartPose.offset(6.0F, -6.0F, 0.0F));
 
+        // lol meme
+
+        partdefinition.addOrReplaceChild("lol", CubeListBuilder.create().texOffs(0, 0).addBox(-32, -32, 0, 64, 64, 0), PartPose.offset(0.0f, 3.0f, 0.0f));
+
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
@@ -173,6 +184,16 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         Component customName = ModUtils.getCustomName(armorStand);
         Rotations bodyPose = ModUtils.getBodyPose(armorStand);
         NameInfo info = NameInfo.parse(customName);
+
+        if (info.lolmeme != null) {
+            getCape().visible = false;
+            getPlayerParts().forEach(part -> part.visible = false);
+            getOriginalParts().forEach(part -> part.visible = false);
+            this.lol.visible = true;
+            return;
+        } else {
+            this.lol.visible = false;
+        }
 
         cpp(leftLeg, this.leftPants);
         cpp(rightLeg, this.rightPants);

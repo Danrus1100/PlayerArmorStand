@@ -49,13 +49,22 @@ public class LivingEntityRendererMixin<T extends
             return;
         }
 
+        NameInfo info;
+
         if (ModUtils.getCustomName(entity) != null && PasConfig.getInstance().isEnableMod()) {
-            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(ModUtils.getCustomName(entity)))));
-            cir.cancel();
+            info = NameInfo.parse(ModUtils.getCustomName(entity));
         } else if (ModUtils.getCustomName(entity) == null && !PasConfig.getInstance().getDefaultSkin().isEmpty()) {
-            cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(NameInfo.parse(Component.literal(PasConfig.getInstance().getDefaultSkin())))));
-            cir.cancel();
+            info = NameInfo.parse(Component.literal(PasConfig.getInstance().getDefaultSkin()));
+        } else {
+            info = new NameInfo();
         }
+
+        if (info.lolmeme != null) {
+            cir.setReturnValue(RenderType.entitySolid(info.lolmeme));
+            return;
+        }
+
+        cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(info)));
     }
 
     @Inject(
