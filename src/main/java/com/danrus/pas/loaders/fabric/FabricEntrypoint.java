@@ -2,13 +2,11 @@
 package com.danrus.pas.loaders.fabric;
 
 import com.danrus.pas.PlayerArmorStandsClient;
-import com.danrus.pas.commands.CapeDataArgument;
-import com.danrus.pas.commands.PasCommands;
-import com.danrus.pas.commands.SkinDataArgument;
+import com.danrus.pas.commands.PasCommandsRegistrar;
 import com.danrus.pas.utils.Rl;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;

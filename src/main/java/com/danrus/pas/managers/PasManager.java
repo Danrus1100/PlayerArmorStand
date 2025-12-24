@@ -2,7 +2,9 @@ package com.danrus.pas.managers;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
+import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataRepository;
+import com.danrus.pas.api.data.DataStoreKey;
 import com.danrus.pas.api.data.TextureProvidersManager;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.holder.CapeData;
@@ -90,27 +92,55 @@ public class PasManager {
         PlayerArmorStandsClient.LOGGER.info("PasManager: Dropped all cached data");
     }
 
-    public void reloadData(String string){
-        NameInfo info = NameInfo.parse(string);
-        getSkinDataManager().delete(info);
-        getCapeDataManager().delete(info);
-        TextureUtils.clearOverlayCacheFor(string);
-
-        if (info.isEmpty()) {
-            this.LOGGER.warn("Cannot reload data for an empty name");
-            return;
+    public void reloadData(DataStoreKey key, Class<? extends DataHolder> type) {
+        NameInfo info = key.tryToNameInfo();
+        if (type == SkinData.class) {
+            SkinData data = skinDataRepository.findData(info);
+            TextureUtils.unregisterTexture(data.getTexture());
+            getSkinDataManager().delete(info);
+            TextureUtils.clearOverlayCacheFor(info.base());
+            if (skinDataRepository.getData(info) == null) {
+                this.LOGGER.warn("No data found for " + info.base() + ", reloading from skin providers");
+            }
+            getSkinProviderManager().download(info);
+        } else if (type == CapeData.class) {
+            CapeData data = capeDataRepository.findData(info);
+            TextureUtils.unregisterTexture(data.getTexture());
+            getCapeDataManager().delete(info);
+            TextureUtils.clearOverlayCacheFor(info.base());
+            if (capeDataRepository.getData(info) == null) {
+                this.LOGGER.warn("No data found for " + info.base() + ", reloading from cape providers");
+            }
+            getCapeProviderManager().download(info);
+        } else {
+            this.LOGGER.warn("Unknown data type for reload: " + type.getSimpleName());
         }
 
-        if (skinDataRepository.getData(info) == null) {
-            this.LOGGER.warn("No data found for " + info.base() + ", reloading from skin providers");
-            return;
-        }
-
-        if (capeDataRepository.getData(info) == null) {
-            this.LOGGER.warn("No data found for " + info.base() + ", reloading from cape providers");
-            return;
-        }
     }
+
+//    public void reloadData(String string){
+//        NameInfo info = NameInfo.parse(string);
+//        getSkinDataManager().delete(info);
+//        getCapeDataManager().delete(info);
+//        TextureUtils.clearOverlayCacheFor(string);
+//
+//        if (info.isEmpty()) {
+//            this.LOGGER.warn("Cannot reload data for an empty name");
+//            return;
+//        }
+//
+//        if (skinDataRepository.getData(info) == null) {
+//            this.LOGGER.warn("No data found for " + info.base() + ", reloading from skin providers");
+//            return;
+//        }
+//
+//        if (capeDataRepository.getData(info) == null) {
+//            this.LOGGER.warn("No data found for " + info.base() + ", reloading from cape providers");
+//            return;
+//        }
+//    }
+
+
 
     public void reloadFailed() {
         this.LOGGER.info("Reloading failed textures");
@@ -121,8 +151,7 @@ public class PasManager {
                 if (data.getStatus() == DownloadStatus.FAILED) {
                     this.LOGGER.info("Reloading failed skin for " + dataKey);
                     data.setStatus(DownloadStatus.NOT_STARTED);
-                    NameInfo info = dataKey.toNameInfo();
-                    skinProviderManager.download(info);
+                    skinProviderManager.download(dataKey.tryToNameInfo());
                 }
             });
         });
@@ -133,8 +162,7 @@ public class PasManager {
                 if (data.getStatus() == DownloadStatus.FAILED) {
                     this.LOGGER.info("Reloading failed cape for " + dataKey);
                     data.setStatus(DownloadStatus.NOT_STARTED);
-                    NameInfo info = dataKey.toNameInfo();
-                    capeProviderManager.download(info);
+                    capeProviderManager.download(dataKey.tryToNameInfo());
                 }
             });
         });

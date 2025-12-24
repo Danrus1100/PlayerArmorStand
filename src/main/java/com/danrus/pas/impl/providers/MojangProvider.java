@@ -70,12 +70,12 @@ public class MojangProvider implements TextureProvider {
         CompletableFuture<Void> downloadFuture = downloadProfile(info, onComplete);
 
         synchronized (activeDownloads) {
-            activeDownloads.put(info.base(), downloadFuture);
+            activeDownloads.put(info.compile(), downloadFuture);
         }
 
         downloadFuture.whenComplete((v, throwable) -> {
             synchronized (activeDownloads) {
-                activeDownloads.remove(info.base());
+                activeDownloads.remove(info.compile());
             }
         });
     }

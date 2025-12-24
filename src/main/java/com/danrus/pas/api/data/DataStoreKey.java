@@ -10,7 +10,22 @@ import java.util.Objects;
  * Immutable key for data storage.
  * Combines base name, provider, and data type to ensure uniqueness.
  */
-public record DataStoreKey(String baseName, String provider, DataType dataType) {
+public final class DataStoreKey {
+
+    private final String baseName;
+    private final String provider;
+    private final DataType dataType;
+
+    private final String nameForRestore;
+
+    public DataStoreKey(String baseName, String provider, DataType dataType, String nameForRestore) {
+        this.baseName = baseName;
+        this.provider = provider;
+        this.dataType = dataType;
+        this.nameForRestore = nameForRestore;
+    }
+
+
 
     /**
      * Creates a key for skin data
@@ -19,8 +34,20 @@ public record DataStoreKey(String baseName, String provider, DataType dataType) 
         return new DataStoreKey(
                 info.base(),
                 info.getFeature(SkinProviderFeature.class).getProvider(),
-                DataType.SKIN
+                DataType.SKIN,
+                info.compile()
         );
+    }
+
+    public static DataStoreKey parsePrototype(String input) {
+        String[] parts = input.split("-", 3);
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid DataStoreKey format: " + input);
+        }
+        String baseName = parts[0];
+        String provider = parts[1];
+        DataType dataType = DataType.valueOf(parts[2]);
+        return new DataStoreKey(baseName, provider, dataType, "");
     }
 
     /**
@@ -30,51 +57,25 @@ public record DataStoreKey(String baseName, String provider, DataType dataType) 
         return new DataStoreKey(
                 info.getFeature(CapeFeature.class).getId().isEmpty() ? info.base() : info.getFeature(CapeFeature.class).getId(),
                 info.getFeature(CapeFeature.class).getProvider(),
-                DataType.CAPE
+                DataType.CAPE,
+                info.compile()
         );
     }
 
-    /**
-     * Creates a key from string (for serialization)
-     */
-    public static DataStoreKey fromString(String key) {
-        String[] parts = key.split(":");
-        if (parts.length != 3) {
-            throw new IllegalArgumentException("Invalid key format: " + key);
-        }
-        return new DataStoreKey(parts[0], parts[1], DataType.valueOf(parts[2]));
-    }
-
-
-    // TODO: Hacky way to convert back to NameInfo
-    public NameInfo toNameInfo() {
-        NameInfo info = new NameInfo(baseName);
-
-        switch (dataType) {
-            case SKIN -> {
-                SkinProviderFeature skinFeature = info.getFeature(SkinProviderFeature.class);
-                if (skinFeature != null) {
-                    skinFeature.setProvider(provider);
-                }
-            }
-            case CAPE -> {
-                CapeFeature capeFeature = info.getFeature(CapeFeature.class);
-                if (capeFeature != null) {
-                    capeFeature.setId(baseName);
-                    info.setName(baseName);
-                    capeFeature.setEnabled(true);
-                }
-            }
-        }
-
-        return info;
+    public NameInfo tryToNameInfo() {
+        return NameInfo.parse(nameForRestore);
     }
 
     /**
      * Returns string representation for serialization
      */
     public String asString() {
-        return baseName + ":" + provider + ":" + dataType.name();
+        return baseName + "-" + provider + "-" + dataType.name();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(baseName, provider, dataType);
     }
 
     @Override
@@ -86,6 +87,7 @@ public record DataStoreKey(String baseName, String provider, DataType dataType) 
                 && Objects.equals(provider, other.provider)
                 && dataType == other.dataType;
     }
+
 
     @Override
     public String toString() {

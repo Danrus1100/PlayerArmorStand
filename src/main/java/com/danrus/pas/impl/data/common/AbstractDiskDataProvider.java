@@ -11,7 +11,6 @@ import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.utils.ModUtils;
 import com.danrus.pas.utils.TextureUtils;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -60,34 +59,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
 
     @Override
     public T get(DataStoreKey key) {
-        // Not implemented
         return null;
-    }
-
-    private T getCommon(DataStoreKey key, @Nullable NameInfo info) {
-        if (getDataManager().findData(key) != null && getDataManager().findData(key).getStatus() == DownloadStatus.IMPOSSIBLE_TO_DOWNLOAD) {
-            return null;
-        }
-
-        String fileName = InfoTranslators.getInstance()
-                .toFileName(getDataHolderClass(), info) + ".png";
-        Path filePath = cachePath.resolve(fileName);
-
-        if (!filePath.toFile().exists()) {
-            return null;
-        }
-
-        ResourceLocation texture = InfoTranslators.getInstance().toResourceLocation(getDataHolderClass(), info);
-
-        TextureUtils.registerTexture(filePath, texture, shouldProcessSkin());
-        cache.put(getCacheKey(info), texture);
-
-        T data = createDataHolder(info);
-        data.setTexture(texture);
-        data.setStatus(DownloadStatus.COMPLETED);
-
-        getDataManager().store(info, data);
-        return data;
     }
 
     @Override
@@ -109,6 +81,11 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     }
 
     @Override
+    public boolean delete(DataStoreKey key) {
+        return delete(key.tryToNameInfo());
+    }
+
+    @Override
     public HashMap<DataStoreKey, T> getAll() {
         return new HashMap<>();
     }
@@ -116,6 +93,11 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     @Override
     public void store(NameInfo info, T data) {
         // NO-OP - disk провайдер только читает из кеша
+    }
+
+    @Override
+    public void store(DataStoreKey key, T data) {
+        // NO-OP
     }
 
     @Override
