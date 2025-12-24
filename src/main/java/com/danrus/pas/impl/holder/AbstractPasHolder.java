@@ -15,7 +15,7 @@ public abstract class AbstractPasHolder implements DataHolder {
     public AbstractPasHolder() {}
 
     @Override
-    public ResourceLocation getTexture(NameInfo info) {
+    public ResourceLocation getTexture() {
         if (location != null) return location;
         return getDefaultTexture();
     }

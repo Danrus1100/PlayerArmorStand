@@ -8,10 +8,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class AbstractDataRepository<T extends DataHolder> implements DataRepository<T> {
@@ -66,8 +64,20 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
+    public void store(DataStoreKey key, T data) {
+        sources.forEach(source -> {
+            source.store(key, data);
+        });
+    }
+
+    @Override
     public void invalidateData(NameInfo info) {
         sources.forEach(source -> source.invalidateData(info));
+    }
+
+    @Override
+    public void invalidateData(DataStoreKey key) {
+        sources.forEach(source -> source.invalidateData(key.tryToNameInfo()));
     }
 
     @Override
@@ -79,36 +89,42 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
                 .orElse(null);
     }
 
+    private <R> R doWithGameData(Function<DataProvider<T>, R> function) {
+        DataProvider<T> source = getSource("game");
+        if (source != null) {
+            return function.apply(source);
+        }
+        return null;
+    }
+
     @Override
     public HashMap<DataStoreKey, T> getGameData() {
-        return sources.stream()
-                .map(source -> (DataProvider<T>) source)
-                .map(DataProvider::getAll)
-                .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (a, b) -> b,
-                        HashMap::new
-                ));
+        return doWithGameData(DataProvider::getAll);
     }
 
     @Override
     public T findData(NameInfo info) {
-        DataProvider<T> source = getSource("game");
-                DataProvider<T> gameCache = source;
-        if (gameCache != null) {
-            return gameCache.get(info);
-        }
-        return null;
+        return doWithGameData(source -> source.get(info));
+    }
+
+    @Override
+    public T findData(DataStoreKey key) {
+        return doWithGameData(source -> source.get(key));
     }
 
     @Override
     public void delete(NameInfo info) {
         sources.forEach(source -> {
             if (source.delete(info)) {
-                                PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for string: {}", source.getName(), info);
+                PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for name info: {}", source.getName(), info);
             }
+        });
+    }
+
+    @Override
+    public void delete(DataStoreKey key) {
+        sources.forEach(source -> {
+            if (source.delete(key)) PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for key: {}", source.getName(), key);
         });
     }
 

@@ -8,8 +8,10 @@ public interface DataProvider<T extends DataHolder> {
     T get(NameInfo info);
     T get(DataStoreKey key);
     boolean delete(NameInfo info);
+    boolean delete(DataStoreKey key);
     HashMap <DataStoreKey, T> getAll();
     void store(NameInfo info, T data);
+    void store(DataStoreKey key, T data);
     void invalidateData(NameInfo info);
     String getName();
     DataStoreKey.DataType getDataType();

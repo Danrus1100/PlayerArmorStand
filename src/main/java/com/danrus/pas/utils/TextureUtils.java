@@ -4,6 +4,7 @@ package com.danrus.pas.utils;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.features.OverlayFeature;
 import com.danrus.pas.impl.holder.CapeData;
@@ -37,6 +38,10 @@ public class TextureUtils {
         } else {
             return CompletableFuture.completedFuture(MissingTextureAtlasSprite.getLocation());
         }
+    }
+
+    public static void clearOverlayCacheFor(NameInfo info) {
+        clearOverlayCacheFor(info.base());
     }
 
     public static void clearOverlayCacheFor(String baseName) {
@@ -78,7 +83,15 @@ public class TextureUtils {
 
     public static void unregisterTexture(ResourceLocation identifier) {
         Minecraft.getInstance().getTextureManager().release(identifier);
-        overlayTextureCache.remove(identifier.toString());
+
+        // FIXME: stoopid method to remove from overlay cache, fuck this
+        for (String key : new ArrayList<>(overlayTextureCache.keySet())) {
+            if (key.contains(identifier.getPath())) {
+                overlayTextureCache.remove(key);
+                return;
+            }
+        }
+
     }
 
     public static NativeImage parseImageFile(Path path) {
@@ -188,23 +201,27 @@ public class TextureUtils {
 
         if (holderType == CapeData.class) {
             CapeFeature capeFeature = info.getFeature(CapeFeature.class);
-            return getOverlayTexture(info, feature.getTexture(), "capes", feature.getBlend());
+            return getOverlayTexture(info, feature.getTexture(), CapeData.class, feature.getBlend());
         } else if (holderType == SkinData.class) {
-            return getOverlayTexture(info, feature.getTexture(), "skins", feature.getBlend());
+            return getOverlayTexture(info, feature.getTexture(), SkinData.class, feature.getBlend());
         }
 
         throw new IllegalArgumentException("Unsupported holder type for overlayed texture: " + holderType);
     }
 
 
-    public static ResourceLocation getOverlayTexture(NameInfo info, String overlay, String prefix, int blendStrength) {
-        String cacheKey = info.base() + "_" + overlay + "_" + blendStrength+ "_" + prefix;
-
+    public static ResourceLocation getOverlayTexture(NameInfo info, String overlay, Class<? extends DataHolder> type, int blendStrength) {
+        ResourceLocation location = InfoTranslators.getInstance().toResourceLocation(type, info);
+        String cacheKey = location.getPath() + "_" + overlay + "_" + blendStrength;
         if (notExistingOverlays.contains(overlay)) {
-            if (prefix.equals("capes")) {
-                return PasManager.getInstance().getCapeTexture(info);
-            } else {
-                return PasManager.getInstance().getSkinTexture(info);
+            switch (type.getSimpleName()) {
+                case "CapeData" -> {
+                    return PasManager.getInstance().getCapeTexture(info);
+                }
+                case "SkinData" -> {
+                    return PasManager.getInstance().getSkinTexture(info);
+                }
+                default -> throw new IllegalArgumentException("Unsupported holder type for overlayed texture: " + type);
             }
         }
 
@@ -213,10 +230,10 @@ public class TextureUtils {
             return cachedTexture;
         }
         ResourceLocation skinId;
-        if (prefix.equals("capes")) {
-            skinId = PasManager.getInstance().getCapeTexture(info);
-        } else {
-            skinId = PasManager.getInstance().getSkinTexture(info);
+        switch (type.getSimpleName()) {
+            case "CapeData" -> skinId = PasManager.getInstance().getCapeTexture(info);
+            case "SkinData" -> skinId = PasManager.getInstance().getSkinTexture(info);
+            default -> throw new IllegalArgumentException("Unsupported holder type for overlayed texture: " + type);
         }
         AbstractTexture skinTexture = Minecraft.getInstance().getTextureManager().getTexture(skinId);
 
@@ -232,23 +249,12 @@ public class TextureUtils {
         try {
             if (skinTexture instanceof DynamicTexture skinResourceTexture && overlayTexture instanceof SimpleTexture overlayResourceTexture) {
                 NativeImage skinImage = skinResourceTexture.getPixels();
-
-                //? if <=1.21.1 {
-                /*NativeImage overlayImage = overlayResourceTexture.getTextureImage(Minecraft.getInstance().getResourceManager()).getImage();
-                *///?} else {
                 NativeImage overlayImage = overlayResourceTexture.loadContents(Minecraft.getInstance().getResourceManager()).image();
-                //?}
-
-
                 NativeImage finalImage = grayscaleSkinOverMaterial(skinImage, overlayImage, (float) blendStrength / 100f);
+                registerTexture(finalImage, location, "SkinData".equals(type.getSimpleName()));
+                overlayTextureCache.put(cacheKey, location);
 
-                ResourceLocation finalResourceLocation = Rl.pas(prefix + "/" + EncodeUtils.encodeToSha256(info.base()) + "_" + overlay + "_" + blendStrength);
-                registerTexture(finalImage, finalResourceLocation, prefix == "skins");
-
-                // Сохраняем в кэш
-                overlayTextureCache.put(cacheKey, finalResourceLocation);
-
-                return finalResourceLocation;
+                return location;
             }
         } catch (Exception e) {
             PlayerArmorStandsClient.LOGGER.warn("Failed to create overlay texture for: {} with overlay: {}", info, overlay, e);

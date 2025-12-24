@@ -44,8 +44,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
             return null;
         }
 
-        ResourceLocation texture = InfoTranslators.getInstance()
-                .toResourceLocation(getDataHolderClass(), info);
+        ResourceLocation texture = InfoTranslators.getInstance().toResourceLocation(getDataHolderClass(), info);
 
         TextureUtils.registerTexture(filePath, texture, shouldProcessSkin());
         cache.put(getCacheKey(info), texture);
@@ -60,7 +59,6 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
 
     @Override
     public T get(DataStoreKey key) {
-        // Not implemented
         return null;
     }
 
@@ -83,6 +81,11 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     }
 
     @Override
+    public boolean delete(DataStoreKey key) {
+        return delete(key.tryToNameInfo());
+    }
+
+    @Override
     public HashMap<DataStoreKey, T> getAll() {
         return new HashMap<>();
     }
@@ -90,6 +93,11 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     @Override
     public void store(NameInfo info, T data) {
         // NO-OP - disk провайдер только читает из кеша
+    }
+
+    @Override
+    public void store(DataStoreKey key, T data) {
+        // NO-OP
     }
 
     @Override

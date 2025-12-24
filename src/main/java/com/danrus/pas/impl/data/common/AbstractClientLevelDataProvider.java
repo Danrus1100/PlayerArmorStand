@@ -49,14 +49,19 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
         return null;
     }
 
-        @Override
-        public T get(DataStoreKey key) {
-            // Not implemented
-            return null;
-        }
+    @Override
+    public T get(DataStoreKey key) {
+        // Not implemented
+        return null;
+    }
 
         @Override
     public boolean delete(NameInfo info) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(DataStoreKey key) {
         return false;
     }
 
@@ -84,6 +89,11 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
 
     @Override
     public void store(NameInfo info, T data) {
+
+    }
+
+    @Override
+    public void store(DataStoreKey key, T data) {
 
     }
 

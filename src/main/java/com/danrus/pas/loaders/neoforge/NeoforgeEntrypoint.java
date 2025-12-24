@@ -3,6 +3,7 @@
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.commands.PasCommands;
+import com.danrus.pas.commands.PasCommandsRegistrar;
 import com.danrus.pas.commands.SkinDataArgument;
 import com.danrus.pas.config.YaclConfig;
 import com.danrus.pas.render.gui.DummyConfigScreen;
@@ -42,18 +43,7 @@ public class NeoforgeEntrypoint {
     @SubscribeEvent
     public static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-
-        PasCommands.COMMANDS_NAMES.forEach(s -> {
-            dispatcher.register(
-                    LiteralArgumentBuilder.<CommandSourceStack>literal(s)
-                            .executes(a -> {
-                                a.getSource().sendFailure(PasCommands.defaultCommand());
-                                return 1;
-                            })
-                            .then(LiteralArgumentBuilder.<CommandSourceStack>literal("reload_failed")
-                                    .executes(PasCommands::reloadFailedCommand))
-            );
-        });
+        new PasCommandsRegistrar<CommandSourceStack>().register(dispatcher);
     }
 }
 *///?}

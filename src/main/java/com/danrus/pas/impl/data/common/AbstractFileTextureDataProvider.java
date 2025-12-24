@@ -67,12 +67,22 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
     }
 
     @Override
+    public boolean delete(DataStoreKey key) {
+        return true;
+    }
+
+    @Override
     public HashMap<DataStoreKey, T> getAll() {
         return new HashMap<>();
     }
 
     @Override
     public void store(NameInfo info, T data) {
+
+    }
+
+    @Override
+    public void store(DataStoreKey key, T data) {
 
     }
 
