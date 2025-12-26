@@ -8,6 +8,8 @@ import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.data.DataStoreKey;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
+import com.danrus.pas.config.PasConfig;
+import com.danrus.pas.utils.FilesAges;
 import com.danrus.pas.utils.ModUtils;
 import com.danrus.pas.utils.TextureUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +21,7 @@ import java.util.List;
 public abstract class AbstractDiskDataProvider<T extends DataHolder> implements DataProvider<T> {
 
     public static final Path CACHE_PATH = ModUtils.getGameDir().resolve("cache/pas");
+    public static final FilesAges AGES = new FilesAges(CACHE_PATH.resolve("files_ages.json"));
 
     protected final Path cachePath;
     protected final HashMap<DataStoreKey, ResourceLocation> cache = new HashMap<>();
@@ -41,6 +44,12 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
         Path filePath = cachePath.resolve(fileName);
 
         if (!filePath.toFile().exists()) {
+            return null;
+        }
+
+        if (AGES.isExpired(fileName, FilesAges.millisFromSkinReloadTime(PasConfig.getInstance().getSkinReloadTime()))) {
+            filePath.toFile().delete();
+            cache.remove(getCacheKey(info));
             return null;
         }
 
@@ -75,6 +84,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
 
         if (deleted) {
             cache.remove(getCacheKey(info));
+            AGES.remove(fileName);
         }
 
         return deleted;

@@ -59,4 +59,5 @@ public abstract class PasConfig {
     public abstract boolean isShowEasterEggs();
     public abstract boolean isTryApplyFromServerPlayer();
     public abstract boolean isPossessiveShowDefaultHand();
+    public abstract SkinReloadTime getSkinReloadTime();
 }

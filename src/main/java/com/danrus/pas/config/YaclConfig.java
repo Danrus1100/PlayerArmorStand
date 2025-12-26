@@ -69,6 +69,10 @@ public class YaclConfig extends PasConfig {
     @SerialEntry
     public boolean possessiveShowDefaultHand = false;
 
+    @ConfigField
+    @SerialEntry
+    public SkinReloadTime skinReloadTime = SkinReloadTime.DAY_1;
+
     public static Screen getConfigScreen(Screen parent) {
         return YetAnotherConfigLib.createBuilder()
                 .title(Component.literal("Player Armor Stand"))
@@ -144,6 +148,11 @@ public class YaclConfig extends PasConfig {
     @Override
     public boolean isPossessiveShowDefaultHand() {
         return possessiveShowDefaultHand;
+    }
+
+    @Override
+    public SkinReloadTime getSkinReloadTime() {
+        return skinReloadTime;
     }
 }
 //?}

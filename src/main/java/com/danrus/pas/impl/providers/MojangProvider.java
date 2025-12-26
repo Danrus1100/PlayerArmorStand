@@ -3,6 +3,8 @@ package com.danrus.pas.impl.providers;
 import com.danrus.pas.ModExecutor;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.DownloadStatus;
+import com.danrus.pas.api.data.DataHolder;
+import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.data.TextureProvider;
 import com.danrus.pas.api.reg.InfoTranslators;
@@ -25,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class MojangProvider implements TextureProvider {
 
@@ -51,7 +54,7 @@ public class MojangProvider implements TextureProvider {
     @Override
     public void load(NameInfo info, Consumer<String> onComplete) {
         synchronized (activeDownloads) {
-            CompletableFuture<Void> existing = activeDownloads.get(info.base());
+            CompletableFuture<Void> existing = activeDownloads.get(info.compile());
             if (existing != null) {
                 existing.thenAccept(v -> onComplete.accept(info.base()));
                 PlayerArmorStandsClient.LOGGER.info("MojangProvider: Reusing active download for " + info.base());
@@ -142,56 +145,62 @@ public class MojangProvider implements TextureProvider {
     }
 
     private CompletableFuture<Void> processSkinTexture(TexturedProfile profile, NameInfo info) {
-        if (!info.getFeature(SkinProviderFeature.class).getProvider().equals("M")) {
-            return CompletableFuture.completedFuture(null);
-        }
-        PlayerArmorStandsClient.LOGGER.info("processSkinTexture called for {}", info);
-        if (profile.textures.SKIN == null || profile.textures.SKIN.url == null) {
-            SkinData data = new SkinData(info);
-            data.setStatus(DownloadStatus.FAILED);
-            PasManager.getInstance().getSkinDataManager().store(info, data);
-            return CompletableFuture.completedFuture(null);
-        }
-
-        ResourceLocation skinLocation = InfoTranslators.getInstance()
-                .toResourceLocation(SkinData.class, info);
-        String fileName = InfoTranslators.getInstance()
-                .toFileName(SkinData.class, info);
-        Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
-
-        return SkinDownloader.downloadAndRegister(skinLocation, filePath, profile.textures.SKIN.url, true)
-                .thenAccept(textureId -> {
-                    SkinData data = new SkinData(info);
-                    data.setTexture(textureId);
-                    data.setStatus(DownloadStatus.COMPLETED);
-                    PasManager.getInstance().getSkinDataManager().store(info, data);
-                });
+        return processTexture(
+                profile.textures.SKIN,
+                info,
+                () -> !info.getFeature(SkinProviderFeature.class).getProvider().equals("M"),
+                SkinData.class,
+                SkinData::new,
+                PasManager.getInstance().getSkinDataManager(),
+                "processSkinTexture"
+        );
     }
 
     private CompletableFuture<Void> processCapeTexture(TexturedProfile profile, NameInfo info) {
-        if (!info.getFeature(CapeFeature.class).getProvider().equals("M")) {
+        return processTexture(
+                profile.textures.CAPE,
+                info,
+                () -> !info.getFeature(CapeFeature.class).getProvider().equals("M"),
+                CapeData.class,
+                CapeData::new,
+                PasManager.getInstance().getCapeDataManager(),
+                "processCapeTexture"
+        );
+    }
+
+    private <T extends DataHolder> CompletableFuture<Void> processTexture(
+            TexturedProfile.Textures.Texture texture,
+            NameInfo info,
+            Supplier<Boolean> cancelPredicate,
+            Class<T> dataClass,
+            Supplier<T> dataFactory,
+            DataRepository<T> repository,
+            String name
+    ) {
+        if (cancelPredicate.get()) {
             return CompletableFuture.completedFuture(null);
         }
-        PlayerArmorStandsClient.LOGGER.info("processCapeTexture called for {}", info);
-        if (profile.textures.CAPE == null || profile.textures.CAPE.url == null) {
-            CapeData data = new CapeData(info);
+        PlayerArmorStandsClient.LOGGER.info(name + " called for {}", info);
+        if (texture == null || texture.url == null) {
+            T data = dataFactory.get();
             data.setStatus(DownloadStatus.COMPLETED);
-            PasManager.getInstance().getCapeDataManager().store(info, data);
+            repository.store(info, data);
             return CompletableFuture.completedFuture(null);
         }
 
         ResourceLocation capeLocation = InfoTranslators.getInstance()
-                .toResourceLocation(CapeData.class, info);
+                .toResourceLocation(dataClass, info);
         String fileName = InfoTranslators.getInstance()
-                .toFileName(CapeData.class, info);
+                .toFileName(dataClass, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
 
-        return SkinDownloader.downloadAndRegister(capeLocation, filePath, profile.textures.CAPE.url, false)
+        return SkinDownloader.downloadAndRegister(capeLocation, filePath, texture.url, false)
                 .thenAccept(textureId -> {
-                    CapeData data = new CapeData(info);
+                    T data = dataFactory.get();
                     data.setTexture(textureId);
                     data.setStatus(DownloadStatus.COMPLETED);
-                    PasManager.getInstance().getCapeDataManager().store(info, data);
+                    AbstractDiskDataProvider.AGES.touch(fileName);
+                    repository.store(info, data);
                 });
     }
 

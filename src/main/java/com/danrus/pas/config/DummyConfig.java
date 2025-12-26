@@ -45,4 +45,9 @@ public class DummyConfig extends PasConfig {
     public boolean isPossessiveShowDefaultHand() {
         return false;
     }
+
+    @Override
+    public SkinReloadTime getSkinReloadTime() {
+        return SkinReloadTime.DAY_1;
+    }
 }
