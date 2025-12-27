@@ -75,7 +75,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     public boolean delete(NameInfo info) {
         String fileName = InfoTranslators.getInstance()
                 .toFileName(getDataHolderClass(), info);
-        Path filePath = cachePath.resolve(fileName);
+        Path filePath = cachePath.resolve(fileName + ".png");
 
         boolean deleted = false;
         if (filePath.toFile().exists()) {
