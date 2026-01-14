@@ -3,6 +3,7 @@ package com.danrus.pas.config.categories;
 //? if yacl {
 import com.danrus.pas.ModExecutor;
 import com.danrus.pas.config.DownloadStatusDisplay;
+import com.danrus.pas.config.SkinReloadTime;
 import com.danrus.pas.config.YaclConfig;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
@@ -99,6 +100,16 @@ public class MainCategory {
                                         newVal -> YaclConfig.get().showArmorStandWhileDownloading = newVal
                                 )
                                 .controller(TickBoxControllerBuilder::create)
+                                .build())
+
+                        .option(Option.<SkinReloadTime>createBuilder()
+                                .name(Component.translatable("pas.config.reload_time"))
+                                .binding(
+                                        SkinReloadTime.DAY_1,
+                                        () -> YaclConfig.get().skinReloadTime, // a getter to getData the current value from
+                                        newVal -> YaclConfig.get().skinReloadTime = newVal
+                                )
+                                .controller(opt -> EnumControllerBuilder.create(opt).enumClass(SkinReloadTime.class).formatValue((v) -> Component.translatable("pas.config.reload_time." + v.name().toLowerCase())))
                                 .build())
 
                         .build())

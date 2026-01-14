@@ -23,7 +23,9 @@ public class NameInfo {
             "Дакимакура", Rl.pas("textures/lol/dakimakura.png"),
             "Гига Крео", Rl.pas("textures/lol/gigakreo.png"),
             "Strange Link", Rl.pas("textures/lol/link.png"),
-            "Сисюлики", Rl.pas("textures/lol/boobs.png")
+            "Странная ссылка", Rl.pas("textures/lol/link.png"),
+            "Сисюлики", Rl.pas("textures/lol/boobs.png"),
+            "Джастик", Rl.pas("textures/lol/justik.png")
     );
 
     private final Map<Class<? extends RenameFeature>, RenameFeature> features = new LinkedHashMap<>();
@@ -61,7 +63,7 @@ public class NameInfo {
     public static NameInfo parse(String input) {
         if (PasConfig.getInstance().isShowEasterEggs()) {
             for (Map.Entry<String, ResourceLocation> meme : MEMES.entrySet()) {
-                if (input.contains(meme.getKey())) {
+                if (input.toLowerCase().contains(meme.getKey().toLowerCase())) {
                     return new NameInfo().setLolMeme(meme.getValue());
                 }
             }

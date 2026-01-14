@@ -55,19 +55,25 @@ public abstract class ArmorStandRendererMixin<S extends LivingEntityRenderState>
         this.model = new PlayerArmorStandModel(context.bakeLayer(ModelLayers.ARMOR_STAND));
         ((LivingEntityRendererAccessor) this).invokeAddLayer(new ArmorStandCapeLayer(this));
         ((LivingEntityRendererAccessor) this).setModel(model);
-        //? if >= 1.21.4 {
         this.bigModel = model;
         this.smallModel = new PlayerArmorStandModel(context.bakeLayer(ModelLayers.ARMOR_STAND_SMALL));
-        //?}
     }
 
+    //? if < 1.21.10 {
     @WrapOperation(
             method = "render(Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V")
     )
     private void pas$renderLol(ArmorStandRenderer instance, S state, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, Operation<Void> original) {
+    //?} else {
+    /*@WrapOperation(
+            method = "submit(Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V")
+    )
+    private void pas$renderLol(ArmorStandRenderer instance, S state, PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector, net.minecraft.client.renderer.state.CameraRenderState cameraRenderState, Operation<Void> original) {
+    *///?}
         // 1. Получаем кастомное имя из состояния рендера
-        NameInfo info = NameInfo.parse(state.customName != null ? state.customName.getString() : "");
+        NameInfo info = NameInfo.parse(ModUtils.getCustomName(state) != null ? ModUtils.getCustomName(state).getString() : "");
 
         if (info.lolmeme != null) {
             // 2. Получаем диспетчер рендера для доступа к камере
@@ -79,7 +85,8 @@ public abstract class ArmorStandRendererMixin<S extends LivingEntityRenderState>
 
             // 3. Вычисляем поворот камеры (billboarding)
             // В Minecraft 1.21+ используется JOML Quaternionf
-            Quaternionf rotation = new Quaternionf(dispatcher.cameraOrientation());
+//            Quaternionf rotation = new Quaternionf(dispatcher.cameraOrientation());
+            Quaternionf rotation = new Quaternionf(dispatcher.camera.rotation());
 
             rotation = calculateOrientation(dispatcher, rotation);
 
@@ -96,11 +103,19 @@ public abstract class ArmorStandRendererMixin<S extends LivingEntityRenderState>
             // poseStack.mulPose(Axis.YP.rotationDegrees(-dispatcher.camera.getYRot()));
 
             // Вызываем рендер модели
-            original.call(instance, state, poseStack, multiBufferSource, i);
+            original.call
+                    //? if < 1.21.10
+                    (instance, state, poseStack, multiBufferSource, i);
+                    //? if >= 1.21.10
+                    /*(instance, state, poseStack, submitNodeCollector, cameraRenderState);*/
 
             poseStack.popPose(); // Восстанавливаем состояние
         } else {
-            original.call(instance, state, poseStack, multiBufferSource, i);
+            original.call
+                    //? if < 1.21.10
+                    (instance, state, poseStack, multiBufferSource, i);
+                    //? if >= 1.21.10
+                    /*(instance, state, poseStack, submitNodeCollector, cameraRenderState);*/
         }
     }
 
@@ -110,11 +125,17 @@ public abstract class ArmorStandRendererMixin<S extends LivingEntityRenderState>
     }
 
     private static float cameraYrot(Camera camera) {
+        //? if < 1.21.11
         return camera.getYRot() - 180.0F;
+        //? if >= 1.21.11
+        /*return camera.yRot() - 180.0F;*/
     }
 
     private static float cameraXRot(Camera camera) {
+        //? if < 1.21.11
         return -camera.getXRot();
+        //? if >= 1.21.11
+        /*return -camera.xRot();*/
     }
 
 
