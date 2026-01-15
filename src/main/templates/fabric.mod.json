@@ -23,7 +23,7 @@
     "issues": "${mod_issue_tracker}"
   },
   "depends": {
-    "fabricloader": ">=0.16.0",
+    "fabricloader": ">=0.18.0",
     "minecraft": "${minecraft_versions}",
     "fabric-api": "*"
   }

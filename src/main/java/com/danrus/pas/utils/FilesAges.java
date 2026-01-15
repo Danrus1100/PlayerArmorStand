@@ -45,7 +45,7 @@ public class FilesAges {
     public static int millisFromSkinReloadTime(SkinReloadTime time){
         return switch (time) {
             case NEVER -> Integer.MAX_VALUE;
-            case HOUR_12 -> millisFromHours(1);
+            case HOUR_12 -> millisFromHours(12);
             case DAY_1 -> millisFromDays(1);
             case DAY_3 -> millisFromDays(3);
             case DAY_7 -> millisFromDays(7);

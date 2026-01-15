@@ -5,7 +5,7 @@
   "commands.pas.reload_failed_error": "Чтобы перезагрузить скин, необходимо указать имя игрока",
   "commands.pas.skin_not_found": "Не удалось найти данные для указанного скина",
 
-  "pas.buttons.configurator": "Конфиугратор Скина",
+  "pas.buttons.configurator": "Конфигуратор Скина",
   "pas.buttons.configurator.tooltip": "Открыть конфигуратор Player Armor Stand для управления скином и его параметрами",
 
   "pas.downloading": "Загрузка скина для %s...",
@@ -30,6 +30,13 @@
   "pas.config.download_status_display.none": "Не показывать",
   "pas.config.download_status_display.above_hotbar": "Над хотбаром",
   "pas.config.download_status_display.chat": "В чате",
+
+  "pas.config.reload_time": "Время Автоматической Перезагрузки",
+  "pas.config.reload_time.never": "Никогда",
+  "pas.config.reload_time.hour_12": "Каждые 12 Часов",
+  "pas.config.reload_time.day_1": "Каждые 24 Часа",
+  "pas.config.reload_time.day_3": "Каждые 3 Дня",
+  "pas.config.reload_time.day_7": "Каждую Неделю",
 
   "pas.config.show_easter_eggs": "Показать пасхалки",
 

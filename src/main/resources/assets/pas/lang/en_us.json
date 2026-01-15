@@ -31,6 +31,13 @@
   "pas.config.download_status_display.above_hotbar": "Above the Hotbar",
   "pas.config.download_status_display.chat": "In Chat",
 
+  "pas.config.reload_time": "Auto Reload Time",
+  "pas.config.reload_time.never": "Never",
+  "pas.config.reload_time.hour_12": "Every 12 Hours",
+  "pas.config.reload_time.day_1": "Every 24 Hours",
+  "pas.config.reload_time.day_3": "Every 3 Days",
+  "pas.config.reload_time.day_7": "Every Week",
+
   "pas.config.show_easter_eggs": "Show Easter Eggs",
 
   "pas.config.possessive_show_default_hand": "Show Stick Hand only",

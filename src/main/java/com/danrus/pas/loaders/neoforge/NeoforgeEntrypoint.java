@@ -4,7 +4,6 @@
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.commands.PasCommands;
 import com.danrus.pas.commands.PasCommandsRegistrar;
-import com.danrus.pas.commands.SkinDataArgument;
 import com.danrus.pas.config.YaclConfig;
 import com.danrus.pas.render.gui.DummyConfigScreen;
 import com.danrus.pas.utils.ModUtils;
