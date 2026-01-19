@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 public abstract class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderData> {
 
-    private static ResourceLocation WOOD = Rl.vanilla("textures/entity/armorstand/wood.png");
+    private static ResourceLocation WOOD = ArmorStandRenderer.DEFAULT_SKIN_LOCATION;
     private static ResourceLocation STEVE = Rl.vanilla("textures/entity/player/wide/steve.png");
 
     protected final PlayerArmorStandModel model;

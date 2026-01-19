@@ -34,8 +34,8 @@ modstitch {
 
     // Alternatively use stonecutter.eval if you have a lot of versions to target.
     // https://stonecutter.kikugie.dev/stonecutter/guide/setup#checking-versions
-    val j21: Boolean = stonecutter.eval(minecraft, ">=1.20.6")
-    javaVersion = if (j21) 21 else 17
+    val j25: Boolean = stonecutter.eval(minecraft, ">1.21.11")
+    javaVersion = if (j25) 25 else 21
 
     // If parchment doesn't exist for a version, yet you can safely
     // omit the "deps.parchment" property from your versioned gradle.properties

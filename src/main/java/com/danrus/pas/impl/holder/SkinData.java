@@ -3,6 +3,7 @@ package com.danrus.pas.impl.holder;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.utils.Rl;
+import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class SkinData extends AbstractPasHolder{
@@ -24,7 +25,7 @@ public class SkinData extends AbstractPasHolder{
 
     protected static ResourceLocation getDefaultTextureStatic() {
         return PasConfig.getInstance().isShowArmorStandWhileDownloading()
-                ? Rl.vanilla("textures/entity/armorstand/wood.png")
+                ? ArmorStandRenderer.DEFAULT_SKIN_LOCATION
                 : Rl.vanilla("textures/entity/player/wide/steve.png");
     }
 
