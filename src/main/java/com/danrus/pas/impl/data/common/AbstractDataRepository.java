@@ -8,6 +8,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractDataRepository<T extends DataHolder> implements DataRepository<T> {
 
     private final List<DataProvider<T>> sources = new CopyOnWriteArrayList<>();
+    private final Map<NameInfo, T> runtimeCache = new ConcurrentHashMap<>();
 
     public AbstractDataRepository(){
         prepareSources();
@@ -39,25 +42,44 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     public T getData(NameInfo info) {
+        // 1. Сначала проверяем быстрый кеш. Если объект там есть (даже если он IN_PROGRESS),
+        // мы возвращаем его сразу. Это ОСТАНАВЛИВАЕТ бесконечный цикл.
+        if (runtimeCache.containsKey(info)) {
+            return runtimeCache.get(info);
+        }
+
         T data = createData(info);
-        boolean needDownload = true;
+        boolean foundInSource = false;
+
         for (DataProvider<T> source : sources) {
-            T dataFromSource = needDownload ? source.get(info) : null;
+            T dataFromSource = source.get(info);
             if (dataFromSource != null) {
-                needDownload = false;
                 data = dataFromSource;
+                foundInSource = true;
+                break;
             }
         }
+
+        if (foundInSource) {
+            runtimeCache.put(info, data);
+        }
+
         if (data.getStatus() == DownloadStatus.NOT_STARTED) {
             data.setStatus(DownloadStatus.IN_PROGRESS);
-            store(info, data);
+
+            runtimeCache.put(info, data);
+
+            store(info, data); // Сохраняем в источники
             getTextureProvidersManager().download(info);
         }
+
         return data;
     }
 
     @Override
     public void store(NameInfo info, T data) {
+        runtimeCache.put(info, data);
+
         sources.forEach(source -> {
             source.store(info, data);
         });
@@ -65,6 +87,10 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     public void store(DataStoreKey key, T data) {
+        NameInfo info = key.tryToNameInfo();
+        if (info != null) {
+            runtimeCache.put(info, data);
+        }
         sources.forEach(source -> {
             source.store(key, data);
         });
@@ -72,6 +98,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     public void invalidateData(NameInfo info) {
+        runtimeCache.remove(info);
         sources.forEach(source -> source.invalidateData(info));
     }
 
@@ -104,6 +131,9 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     public T findData(NameInfo info) {
+        if (runtimeCache.containsKey(info)) {
+            return runtimeCache.get(info);
+        }
         return doWithGameData(source -> source.get(info));
     }
 
@@ -114,6 +144,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     public void delete(NameInfo info) {
+        runtimeCache.remove(info);
         sources.forEach(source -> {
             if (source.delete(info)) {
                 PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for name info: {}", source.getName(), info);
@@ -123,6 +154,9 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     public void delete(DataStoreKey key) {
+        NameInfo info = key.tryToNameInfo();
+        if (info != null) runtimeCache.remove(info);
+
         sources.forEach(source -> {
             if (source.delete(key)) PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for key: {}", source.getName(), key);
         });

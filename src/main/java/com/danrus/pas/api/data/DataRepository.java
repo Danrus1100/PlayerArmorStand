@@ -15,7 +15,7 @@ public interface DataRepository<T extends DataHolder> {
 
     /**
      * Adds a source of data to the manager.
-     * The source must implement DataCache interface.
+     * The source must implement DataProvider interface.
      *
      * @param source the data source to add
      */

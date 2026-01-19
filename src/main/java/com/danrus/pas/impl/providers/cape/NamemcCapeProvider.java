@@ -29,7 +29,7 @@ public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
         String fileName = InfoTranslators.getInstance()
                 .toFileName(CapeData.class, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
-
+        AbstractDiskDataProvider.AGES.touch(fileName + ".png");
         return SkinDownloader.downloadAndRegister(
                 capeLocation,
                 filePath,
@@ -43,22 +43,13 @@ public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
         return PasManager.getInstance().getCapeDataManager();
     }
 
-    @Override
-    protected CapeData createDataHolder(NameInfo info) {
-        return new CapeData(info);
-    }
 
     @Override
     protected void updateSkinData(NameInfo info, ResourceLocation texture) {
-        CapeData data = this.getOrCreateDataHolder(info);
+        CapeData data = getDataManager().findData(info);
         data.setTexture(texture);
         data.setStatus(DownloadStatus.COMPLETED);
         getDataManager().store(info, data);
-    }
-
-    @Override
-    protected CapeData getDataFromNamemcRepository(NameInfo info) {
-        return PasManager.getInstance().getCapeDataManager().getSource("namemc_cape").get(info);
     }
 
     @Override

@@ -1,13 +1,21 @@
 package com.danrus.pas;
 
 import com.danrus.pas.config.PasConfig;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.*;
 import java.util.concurrent.*;
 
 public class ModExecutor {
-    public static ExecutorService MAIN_EXECUTOR = Executors.newFixedThreadPool(PasConfig.getInstance().getDownloadThreads());
-    public static ExecutorService DOWNLOAD_EXECUTOR = Executors.newFixedThreadPool(PasConfig.getInstance().getDownloadThreads());
+    public static ExecutorService MAIN_EXECUTOR = Executors.newFixedThreadPool(
+            PasConfig.getInstance().getDownloadThreads(),
+            new ThreadFactoryBuilder().setNameFormat("Pas-Main-%d").build()
+    );
+
+    public static ExecutorService DOWNLOAD_EXECUTOR = Executors.newFixedThreadPool(
+            PasConfig.getInstance().getDownloadThreads(),
+            new ThreadFactoryBuilder().setNameFormat("Pas-Download-%d").build()
+    );
 
     public static void reload() {
         int threadsCount = PasConfig.getInstance().getDownloadThreads();

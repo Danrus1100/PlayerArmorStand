@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractTextureProviderManager<T extends DataHolder> implements TextureProvidersManager {
 
@@ -16,16 +17,16 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
     private PasManager pasManager;
 
     private final Map<String, List<PrioritizedProvider>> providers = new HashMap<>();
-    private final List<String> pendingList = new ArrayList<>();
+    private final Set<String> pendingSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     public void initialize(PasManager manager) {
         if (!initialized) {
             this.pasManager = manager;
             initialized = true;
-
             this.prepareProviders();
         }
     }
+
     @Override
     public void addProvider(TextureProvider provider) {
         addProvider(provider, 0);
@@ -47,46 +48,55 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
 
     @Override
     public void download(NameInfo info) {
-        if (pendingList.contains(info.base())) {
+        String id = getOutputString(info);
+
+        if (!pendingSet.add(id)) {
             return;
         }
 
-        if (info.base().isEmpty()) {
-            LOGGER.warn(getClass().getSimpleName() +
-                    ": Invalid input " + info.base());
-            return;
-        }
+        boolean taskScheduled = false;
 
-        boolean loaded = false;
+        try {
+            if (info.base().isEmpty()) {
+                LOGGER.warn("{}: Invalid input {}", getClass().getSimpleName(), info.base());
+                return;
+            }
 
-        for (char c : getExcludeLiterals().toCharArray()) {
-            String literal = String.valueOf(c);
-            if (getProvider(info).equals(literal)) {
-                if (tryLoadFromProviders(literal, info)) {
-                    loaded = true;
-                    break;
+            for (char c : getExcludeLiterals().toCharArray()) {
+                String literal = String.valueOf(c);
+                if (getProvider(info).equals(literal)) {
+                    if (tryLoadFromProviders(literal, info)) {
+                        taskScheduled = true;
+                        break;
+                    }
                 }
             }
-        }
 
-        if (!loaded && !getExcludeLiterals().contains(getProvider(info))) {
-            String literal = getProvider(info);
-            if (tryLoadFromProviders(literal, info)) {
-                loaded = true;
+            if (!taskScheduled && !getExcludeLiterals().contains(getProvider(info))) {
+                String literal = getProvider(info);
+                if (tryLoadFromProviders(literal, info)) {
+                    taskScheduled = true;
+                }
             }
-        }
 
-        if (!loaded) {
-            if (tryLoadFromProviders(getDefaultLiteral(), info)) {
-                loaded = true;
+            if (!taskScheduled) {
+                if (tryLoadFromProviders(getDefaultLiteral(), info)) {
+                    taskScheduled = true;
+                }
             }
-        }
 
-        if (!loaded) {
-            LOGGER.error(getClass().getSimpleName() +
-                    ": No provider could load " + info.base() + " with NameInfo: " + info);
-            if (pasManager != null) {
-                this.getDataManager().invalidateData(info);
+            if (!taskScheduled) {
+                LOGGER.error("{}: No provider could load {} with NameInfo: {}",
+                        getClass().getSimpleName(), info.base(), info);
+
+                if (pasManager != null) {
+                    this.getDataManager().invalidateData(info);
+                }
+            }
+
+        } finally {
+            if (!taskScheduled) {
+                pendingSet.remove(id);
             }
         }
     }
@@ -101,12 +111,14 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
         for (PrioritizedProvider prioritized : providerList) {
             try {
                 LOGGER.info("Trying to download from {}", prioritized.provider.getClass().getSimpleName());
-                pendingList.add(getOutputString(info));
-                prioritized.provider().load(info, pendingList::remove);
+                prioritized.provider().load(info, (result) -> {
+                    pendingSet.remove(getOutputString(info));
+                });
+
                 return true;
             } catch (Exception e) {
                 LOGGER.error(
-                        "Provider {} failed to load {}: {}",
+                        "Provider {} failed to start load {}: {}",
                         prioritized.provider().getClass().getSimpleName(), getOutputString(info), e.getMessage()
                 );
             }

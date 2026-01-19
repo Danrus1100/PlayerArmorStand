@@ -72,7 +72,7 @@ modstitch {
 
     // Fabric Loom (Fabric)
     loom {
-        fabricLoaderVersion = "0.17.3"
+        fabricLoaderVersion = "0.18.4"
 
         // Configure loom like normal in this block.
         configureLoom {

@@ -1,5 +1,6 @@
 package com.danrus.pas.impl.providers.skin;
 
+import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
@@ -21,6 +22,7 @@ public class NamemcSkinProvider extends AbstractNamemcProvider<SkinData> {
         String fileName = InfoTranslators.getInstance()
                 .toFileName(SkinData.class, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
+        AbstractDiskDataProvider.AGES.touch(fileName + ".png");
         return SkinDownloader.downloadAndRegister(
                 location,
                 filePath,
@@ -30,25 +32,16 @@ public class NamemcSkinProvider extends AbstractNamemcProvider<SkinData> {
     }
 
     @Override
-    protected DataRepository getDataManager() {
+    protected DataRepository<SkinData> getDataManager() {
         return PasManager.getInstance().getSkinDataManager();
     }
 
-    @Override
-    protected SkinData createDataHolder(NameInfo info) {
-        return new SkinData(info);
-    }
 
     @Override
     protected void updateSkinData(NameInfo info, ResourceLocation texture) {
-        SkinData data = this.getOrCreateDataHolder(info);
+        SkinData data = getDataManager().findData(info);
         data.setTexture(texture);
         getDataManager().store(info, data);
-    }
-
-    @Override
-    protected SkinData getDataFromNamemcRepository(NameInfo info) {
-        return PasManager.getInstance().getSkinDataManager().getSource("namemc").get(info);
     }
 
     @Override

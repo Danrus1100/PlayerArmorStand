@@ -1,4 +1,3 @@
- - Fixed Fabric classTweaker crushes
- - Fixed missing translations
- - Fixed 12 hours auto reload time
- - now for fabric required loader >= 0.18.0
+ - Fixed infinite NameMC skin downloading
+ - Fixed NameMC skin reloading after every game restart
+ - Fixed Legacy skins 64x32

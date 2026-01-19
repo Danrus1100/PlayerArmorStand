@@ -88,13 +88,13 @@ public class MojangProvider implements TextureProvider {
         OverlayMessageManger.getInstance().showDownloadMessage(info.base());
 
         if (info.getFeature(SkinProviderFeature.class).getProvider().equals(getLiteral())) {
-            SkinData skinData = new SkinData(info);
+            SkinData skinData = new SkinData();
             skinData.setStatus(DownloadStatus.IN_PROGRESS);
             PasManager.getInstance().getSkinDataManager().store(info, skinData);
         }
 
         if (info.getFeature(CapeFeature.class).getProvider().equals(getLiteral())) {
-            CapeData capeData = new CapeData(info);
+            CapeData capeData = new CapeData();
             capeData.setStatus(DownloadStatus.IN_PROGRESS);
             PasManager.getInstance().getCapeDataManager().store(info, capeData);
         }
@@ -152,7 +152,8 @@ public class MojangProvider implements TextureProvider {
                 SkinData.class,
                 SkinData::new,
                 PasManager.getInstance().getSkinDataManager(),
-                "processSkinTexture"
+                "processSkinTexture",
+                true
         );
     }
 
@@ -164,7 +165,8 @@ public class MojangProvider implements TextureProvider {
                 CapeData.class,
                 CapeData::new,
                 PasManager.getInstance().getCapeDataManager(),
-                "processCapeTexture"
+                "processCapeTexture",
+                false
         );
     }
 
@@ -175,7 +177,8 @@ public class MojangProvider implements TextureProvider {
             Class<T> dataClass,
             Supplier<T> dataFactory,
             DataRepository<T> repository,
-            String name
+            String name,
+            boolean remapTexture
     ) {
         if (cancelPredicate.get()) {
             return CompletableFuture.completedFuture(null);
@@ -194,7 +197,7 @@ public class MojangProvider implements TextureProvider {
                 .toFileName(dataClass, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
 
-        return SkinDownloader.downloadAndRegister(capeLocation, filePath, texture.url, false)
+        return SkinDownloader.downloadAndRegister(capeLocation, filePath, texture.url, remapTexture)
                 .thenAccept(textureId -> {
                     T data = dataFactory.get();
                     data.setTexture(textureId);
