@@ -291,7 +291,7 @@ public class ModUtils {
             ArmorStandArmorModel>
     {
         //? >= 1.21.9
-        /*private final com.danrus.pas.render.armorstand.PasCapeModel capeModel;*/
+        //private final com.danrus.pas.render.armorstand.PasCapeModel capeModel;
 
         public VersionlessArmorStandCapeLayer(RenderLayerParent<
                 //? if <= 1.21.1 {
@@ -302,7 +302,7 @@ public class ModUtils {
                 ArmorStandArmorModel> renderer) {
             super(renderer);
             //? >= 1.21.9
-            /*capeModel = new com.danrus.pas.render.armorstand.PasCapeModel();*/
+            //capeModel = new com.danrus.pas.render.armorstand.PasCapeModel();
         }
 
         //? <1.21.9 {
@@ -348,7 +348,7 @@ public class ModUtils {
                     //? <1.21.9
                     model
                     //? >=1.21.9
-                    /*capeModel*/
+                    //capeModel
             );
 
             //? <1.21.9 {

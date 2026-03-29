@@ -20,8 +20,15 @@ public class TextWidget extends AbstractWidget {
         super(x, y, width, height, message);
     }
 
+
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void
+    //? <26.1
+    renderWidget
+    //? >=26.1
+    //extractWidgetRenderState
+    //~ screen_render
+    (GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, this.getMessage(), this.getX() + this.getWidth() / 2 - (hasTooltip ? 4 : 0), this.getY() + (this.getHeight() - Minecraft.getInstance().font.lineHeight) / 2, 16777215 | (int) (this.alpha * 255) << 24);
         if (hasTooltip) {
             guiGraphics.blitSprite(/*? >= 1.21.4 {*/ModUtils.getGuiRender(),/*?}*/ QUESTION_MARK_ICON, this.getX() + Minecraft.getInstance().font.width(getMessage()) / 3 + this.getWidth() / 2 + 13, this.getY() + (this.getHeight() - Minecraft.getInstance().font.lineHeight) / 2 - 1, 9, 9);

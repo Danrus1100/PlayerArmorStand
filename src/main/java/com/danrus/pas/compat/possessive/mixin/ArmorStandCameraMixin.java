@@ -127,7 +127,7 @@ public class ArmorStandCameraMixin {
             //? <1.21.10
             armorStandArm.render(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(skinTexture)), i, OverlayTexture.NO_OVERLAY);
             //? >=1.21.10
-            /*submitNodeCollector.submitModelPart(armorStandArm, poseStack, RenderType.entityTranslucent(skinTexture), i, OverlayTexture.NO_OVERLAY, null);*/
+            //submitNodeCollector.submitModelPart(armorStandArm, poseStack, RenderType.entityTranslucent(skinTexture), i, OverlayTexture.NO_OVERLAY, null);
         });
 
 

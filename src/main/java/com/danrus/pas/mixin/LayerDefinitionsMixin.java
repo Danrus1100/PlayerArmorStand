@@ -17,7 +17,7 @@ public class LayerDefinitionsMixin {
                     //? <1.21.11
                     "Lnet/minecraft/client/model/ArmorStandModel;createBodyLayer()Lnet/minecraft/client/model/geom/builders/LayerDefinition;"
                     //? >=1.21.11
-                    /*"Lnet/minecraft/client/model/object/armorstand/ArmorStandModel;createBodyLayer()Lnet/minecraft/client/model/geom/builders/LayerDefinition;"*/
+                    //"Lnet/minecraft/client/model/object/armorstand/ArmorStandModel;createBodyLayer()Lnet/minecraft/client/model/geom/builders/LayerDefinition;"
             )
     )
     private static LayerDefinition pas$redirectArmorStandModelCreateBodyLayer() {

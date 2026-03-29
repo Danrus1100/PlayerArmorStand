@@ -37,7 +37,7 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
     }
 
     @Override
-    public void prepareDraw(ItemRenderData data, ItemDisplayContext displayContext, PoseStack poseStack, PasRenderContext context, int packedLight, int packedOverlay, boolean hasFoil) {
+    public void prepareDraw(ItemRenderData data, PoseStack poseStack, PasRenderContext context, int packedLight, int packedOverlay, boolean hasFoil) {
         prepareModel(model, state, data.info());
         preparePose(poseStack);
     }
@@ -48,7 +48,7 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
             //? if <1.21.11
             Set<Vector3f> output
             //? if >=1.21.11
-            /^Consumer<Vector3fc> output^/
+            //Consumer<Vector3fc> output
     ) {
         PoseStack poseStack = new PoseStack();
 
@@ -92,7 +92,10 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
         return new ItemRenderData(data, info);
     }
 
-    public static record Unbaked(ArmorStandItemState state) implements SpecialModelRenderer.Unbaked {
+    public static record Unbaked(ArmorStandItemState state) implements SpecialModelRenderer.Unbaked
+            //? >= 26.1
+            //<ItemRenderData>
+    {
 
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec((instance) ->
                 instance.group(
@@ -106,15 +109,27 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
             return new ArmorStandSpecialRenderer(pasModel, state);
         }
 
-        //? if >=1.21.9 {
+        //? if >=1.21.9 && <26.1 {
         /*@Override
         public @Nullable SpecialModelRenderer<?> bake(BakingContext context) {
             return bake(context.entityModelSet());
         }
+        *///?} else if >=26.1 {
+        /*@Override
+        @SuppressWarnings("unchecked")
+        public @Nullable SpecialModelRenderer<ItemRenderData> bake(BakingContext context) {
+            return (SpecialModelRenderer<ItemRenderData>) bake(context.entityModelSet());
+        }
         *///?}
 
         @Override
-        public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
+        public MapCodec
+                //? <26.1 {
+                <? extends SpecialModelRenderer.Unbaked>
+                //?} else {
+                /*<Unbaked>
+                *///?}
+        type() {
             return MAP_CODEC;
         }
     }

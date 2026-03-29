@@ -11,8 +11,11 @@ fun prop(name: String, consumer: (prop: String) -> Unit) {
         ?.let(consumer)
 }
 
-val gitBranchName = "git rev-parse --abbrev-ref HEAD"
-    .run { Runtime.getRuntime().exec(this).inputStream.bufferedReader().readText().trim() }
+val gitBranchName = ProcessBuilder("git", "rev-parse", "--abbrev-ref", "HEAD")
+    .start()
+    .inputStream
+    .bufferedReader()
+    .use { it.readText().trim() }
 val minecraft = property("deps.minecraft") as String
 val loader: String = name.split("-")[1]
 val loaderInitials: String = when (loader) {
@@ -34,8 +37,8 @@ modstitch {
 
     // Alternatively use stonecutter.eval if you have a lot of versions to target.
     // https://stonecutter.kikugie.dev/stonecutter/guide/setup#checking-versions
-    val j21: Boolean = stonecutter.eval(minecraft, ">=1.20.6")
-    javaVersion = if (j21) 21 else 17
+//    val j25: Boolean = stonecutter.eval(minecraft, ">=26.1")
+//    javaVersion = if (j25) 25 else 21
 
     // If parchment doesn't exist for a version, yet you can safely
     // omit the "deps.parchment" property from your versioned gradle.properties
@@ -45,7 +48,7 @@ modstitch {
 
     var versionName = "${property("mod.version")}-${loaderInitials}-${minecraft}"
     if (!gitBranchName.equals("main")) {
-        versionName += "-$gitBranchName".replace('/', '-')
+//        versionName += "-$gitBranchName".replace('/', '-')
     }
     // This metadata is used to fill out the information inside
     // the metadata files found in the templates folder.
@@ -72,7 +75,7 @@ modstitch {
 
     // Fabric Loom (Fabric)
     loom {
-        fabricLoaderVersion = "0.17.3"
+        fabricLoaderVersion = "0.18.4"
 
         // Configure loom like normal in this block.
         configureLoom {
@@ -135,43 +138,44 @@ modstitch {
 // See https://stonecutter.kikugie.dev/stonecutter/guide/comments#condition-constants
 var constraint: String = name.split("-")[1]
 stonecutter {
-    consts(
-        "fabric" to constraint.equals("fabric"),
-        "neoforge" to constraint.equals("neoforge"),
-        "forge" to constraint.equals("forge"),
-        "vanilla" to constraint.equals("vanilla"),
-        "possessive" to isPossessive,
-        "armorposer" to isArmorposer,
-        "easyanvils" to isEasyAnvils,
-        "modmenu" to hasModMenu,
-        "yacl" to hasYacl
-    )
+    constants.apply {
+        put("fabric", constraint == "fabric")
+        put("neoforge", constraint == "neoforge")
+        put("forge", constraint == "forge")
+        put("vanilla", constraint == "vanilla")
+        put("possessive", isPossessive)
+        put("armorposer", isArmorposer)
+        put("easyanvils", isEasyAnvils)
+        put("modmenu", hasModMenu)
+        put("yacl", hasYacl)
+    }
 
     replacements {
+        string(current.parsed >= "26.1", "screen_render") {
+            replace("render(", "extractRenderState(")
+            replace("drawCenteredString(", "centeredText(")
+            replace("renderBackground(", "extractBackground(")
+            replace("submitEntityRenderState(", "entity(")
+        }
+        string {
+            direction = eval(current.version, ">=26.1")
+            replace("net/minecraft/client/renderer/state/CameraRenderState", "net/minecraft/client/renderer/state/level/CameraRenderState")
+            replace(".addMessage(", ".addClientSystemMessage(")
+            replace("net.minecraft.client.renderer.state.CameraRenderState", "net.minecraft.client.renderer.state.level.CameraRenderState")
+            replace("GuiGraphics", "GuiGraphicsExtractor")
+        }
         string {
             direction = eval(current.version, ">=1.21.11")
             replace("ResourceLocation", "Identifier")
-        }
-        string {
-            direction = eval(current.version, ">=1.21.11")
             replace("import net.minecraft.Util;", "import net.minecraft.util.Util;")
-        }
-        string {
-            direction = eval(current.version, ">=1.21.11")
             replace(
                 "import net.minecraft.client.model.ArmorStandArmorModel;",
                 "import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;"
             )
-        }
-        string {
-            direction = eval(current.version, ">=1.21.11")
             replace(
                 "import net.minecraft.client.renderer.RenderType;",
                 "import net.minecraft.client.renderer.rendertype.RenderTypes;"
             )
-        }
-        string {
-            direction = eval(current.version, ">=1.21.11")
             replace(
                 "RenderType.",
                 "RenderTypes."
@@ -226,6 +230,7 @@ publishMods {
     val discordWebhookDry = findProperty("discord-webhook-dry")
 
     dryRun = gitBranchName != "main"
+//    dryRun = false
 
     file = modstitch.finalJarTask.flatMap { it.archiveFile }
 

@@ -7,7 +7,7 @@ import com.danrus.pas.utils.ModUtils;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.RenderType;
 //? >=1.21.11
-/*import net.minecraft.client.renderer.rendertype.RenderType;*/
+//import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;

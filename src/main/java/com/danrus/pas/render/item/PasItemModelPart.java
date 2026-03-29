@@ -20,7 +20,7 @@ public class PasItemModelPart {
     //? if <1.21.11
     Vector3f
     //? if >=1.21.11
-    /*Vector3fc*/
+    //Vector3fc
             rotation;
     public Mode mode;
 
@@ -28,7 +28,7 @@ public class PasItemModelPart {
             //? if <1.21.11
             Vector3f
             //? if >=1.21.11
-            /*Vector3fc*/
+            //Vector3fc
                     rotation, Mode mode) {
         this.rotation = rotation;
         this.mode = mode;
@@ -38,7 +38,7 @@ public class PasItemModelPart {
             //? if <1.21.11
             Vector3f
             //? if >=1.21.11
-            /*Vector3fc*/
+            //Vector3fc
                     rotation) {
         this(rotation, Mode.ORIGINAL);
     }

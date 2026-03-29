@@ -18,6 +18,7 @@ public class DummyConfigScreen extends Screen {
     }
 
     @Override
+    //~ screen_render
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         Font font = Minecraft.getInstance().font;

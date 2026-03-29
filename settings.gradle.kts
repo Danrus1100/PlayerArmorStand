@@ -34,11 +34,17 @@ pluginManagement {
         // Modrinth (SkinShuffle)
         maven ("https://api.modrinth.com/maven")
 
+        // Placeholder API
+        maven("https://maven.nucleoid.xyz/")
+
+        // Forge Config API port
+        maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/")
+
     }
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.7.11"
+    id("dev.kikugie.stonecutter") version "0.9"
 }
 
 //includeBuild("../modstitch")
@@ -53,9 +59,10 @@ stonecutter {
          * @param loaders A list of loaders to target, supports "fabric" (1.14+), "neoforge"(1.20.6+), "vanilla"(any) or "forge"(<=1.20.1)
          */
         fun mc(mcVersion: String, name: String = mcVersion, loaders: Iterable<String>) =
-            loaders.forEach { vers("$name-$it", mcVersion) }
+            loaders.forEach { version("$name-$it", mcVersion) }
 
         // Configure your targets here!
+        mc("26.1", loaders = listOf("fabric"))
         mc("1.21.11", loaders = listOf("fabric"))
         mc("1.21.10", loaders = listOf("fabric", "neoforge"))
         mc("1.21.8", loaders = listOf("fabric", "neoforge"))

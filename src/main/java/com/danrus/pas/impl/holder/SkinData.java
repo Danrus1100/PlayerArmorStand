@@ -24,7 +24,12 @@ public class SkinData extends AbstractPasHolder{
 
     protected static ResourceLocation getDefaultTextureStatic() {
         return PasConfig.getInstance().isShowArmorStandWhileDownloading()
-                ? Rl.vanilla("textures/entity/armorstand/wood.png")
+                ? Rl.vanilla(
+                        //? <26.1
+                        "textures/entity/armorstand/wood.png"
+                        //? >=26.1
+                        //"textures/entity/armorstand/armorstand.png"
+                )
                 : Rl.vanilla("textures/entity/player/wide/steve.png");
     }
 

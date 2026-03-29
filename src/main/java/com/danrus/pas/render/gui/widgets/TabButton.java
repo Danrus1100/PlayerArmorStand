@@ -28,7 +28,7 @@ public class TabButton extends Button {
     //? <1.21.9
     public void onPress() {
     //? >=1.21.9
-    /*public void onPress(net.minecraft.client.input.InputWithModifiers inputWithModifiers) {*/
+    //public void onPress(net.minecraft.client.input.InputWithModifiers inputWithModifiers) {
         if (this.tabOnPress != null) {
             this.tabOnPress.onPress(this);
         }
@@ -38,8 +38,10 @@ public class TabButton extends Button {
     protected void
     //? <1.21.11
     renderWidget
-    //? >=1.21.11
-    /*renderContents*/
+    //? >=1.21.11 && <26.1
+    //renderContents
+    //? >=26.1
+    //extractContents
     (GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         //? >= 1.21.1 {
@@ -49,10 +51,11 @@ public class TabButton extends Button {
         guiGraphics.blit(TAB_LOCATION, this.getX(), this.getY(), 0, 0, 80, 15, 80, 15);
         *///?}
 
-        //? <1.21.11 {
+        //? <1.21.11
         this.renderString(guiGraphics, minecraft.font, 16777215 | Mth.ceil(this.alpha * 255.0F) << 24);
-        //?} else {
-        /*this.renderScrollingStringOverContents(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE), this.getMessage(), 2);
-        *///?}
+        //? =1.21.11
+        //this.renderScrollingStringOverContents(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE), this.getMessage(), 2);
+        //? >=26.1
+        //this.extractScrollingStringOverContents(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE), this.getMessage(), 2);
     }
 }
