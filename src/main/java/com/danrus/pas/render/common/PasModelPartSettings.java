@@ -1,4 +1,4 @@
-package com.danrus.pas.render.item;
+package com.danrus.pas.render.common;
 
 import com.danrus.pas.api.info.NameInfo;
 import com.mojang.serialization.Codec;
@@ -6,14 +6,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Rotations;
 import net.minecraft.util.ExtraCodecs;
 import org.joml.Vector3f;
-import org.joml.Vector3fc;
 
-public class PasItemModelPart {
-    public static Codec<PasItemModelPart> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+public class PasModelPartSettings {
+    public static Codec<PasModelPartSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ExtraCodecs.VECTOR3F.optionalFieldOf("rotation", new Vector3f()).forGetter(part -> part.rotation),
             Codec.STRING.optionalFieldOf("mode", "original").forGetter(part -> part.mode.name())
     ).apply(instance, (rotation, mode) -> {
-        return new PasItemModelPart(rotation, Mode.valueOf(mode.toUpperCase()));
+        return new PasModelPartSettings(rotation, Mode.valueOf(mode.toUpperCase()));
     }));
 
     public
@@ -24,7 +23,7 @@ public class PasItemModelPart {
             rotation;
     public Mode mode;
 
-    public PasItemModelPart(
+    public PasModelPartSettings(
             //? if <1.21.11
             Vector3f
             //? if >=1.21.11
@@ -34,7 +33,7 @@ public class PasItemModelPart {
         this.mode = mode;
     }
 
-    public PasItemModelPart(
+    public PasModelPartSettings(
             //? if <1.21.11
             Vector3f
             //? if >=1.21.11

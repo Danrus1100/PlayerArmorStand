@@ -5,7 +5,7 @@ import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.render.item.ArmorStandSpecialRenderer;
+import com.danrus.pas.render.common.PasModelPoseSettings;
 import com.danrus.pas.utils.ModUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;
@@ -246,7 +246,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         }
     }
 
-    public void setupVisibilityForItem(ArmorStandSpecialRenderer.ArmorStandItemState state, NameInfo info) {
+    public void setupVisibilityForItem(PasModelPoseSettings state, NameInfo info) {
 
         this.hat.visible = state.head.mode.showPlayerPart(info);
         this.head.visible = state.head.mode.showPlayerPart(info);

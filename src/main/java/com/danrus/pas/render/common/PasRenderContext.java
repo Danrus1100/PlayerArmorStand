@@ -1,15 +1,13 @@
-package com.danrus.pas.render.armorstand;
+package com.danrus.pas.render.common;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RenderVersionContext implements PasRenderContext {
-    private final Map<String, Object> contextMap = new HashMap<>(16);
-    private final Cape cape;
+public class PasRenderContext {
 
-    public RenderVersionContext(Cape cape) {
-        this.cape = cape;
-    }
+    public PasRenderContext() {}
+
+    private final Map<String, Object> contextMap = new HashMap<>(16);
 
     public <T> PasRenderContext putData(T data, String type) {
         if (contextMap.size() >= 16) {
@@ -30,9 +28,5 @@ public class RenderVersionContext implements PasRenderContext {
             throw new IllegalArgumentException("Error retrieving data for class: " + clazz.getName(), e);
         }
         return clazz.cast(contextMap.get(type));
-    }
-
-    public Cape getCape() {
-        return cape;
     }
 }
