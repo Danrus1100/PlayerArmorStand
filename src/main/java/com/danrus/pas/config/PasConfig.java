@@ -36,10 +36,7 @@ public abstract class PasConfig {
     }
 
     private static PasConfig getInstance(Supplier<PasConfig> factory) {
-        if (instace == null) {
-            instace = factory.get();
-        }
-        return instace;
+        return factory.get();
     }
 
     public static void init() {

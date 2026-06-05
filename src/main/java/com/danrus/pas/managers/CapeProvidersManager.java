@@ -15,7 +15,7 @@ public class CapeProvidersManager extends AbstractTextureProviderManager<CapeDat
     private static final String EXCLUDE_LITERALS = "FI";
 
     @Override
-    protected String getOutputString(NameInfo info) {
+    protected String getPendingKey(NameInfo info) {
         return info.getFeature(CapeFeature.class).compile();
     }
 

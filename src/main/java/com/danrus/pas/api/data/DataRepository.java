@@ -3,6 +3,7 @@ package com.danrus.pas.api.data;
 import com.danrus.pas.api.info.NameInfo;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -35,7 +36,7 @@ public interface DataRepository<T extends DataHolder> {
      * @param info the NameInfo of the player
      * @return SkinData associated with the identifier, or null if not found
      */
-    T getData(NameInfo info);
+    Optional<T> getData(NameInfo info);
 
     /**
      * Retrieves all data available in the manager.
@@ -84,7 +85,7 @@ public interface DataRepository<T extends DataHolder> {
      * @return SkinData associated with the identifier, or null if not found
      */
 
-    T findData(NameInfo info);
+    Optional<T> findData(NameInfo info);
 
 
     /**

@@ -20,12 +20,7 @@ public abstract class AbstractSimpleTranslator implements InfoTranslator {
                 return false;
             }
 
-            boolean result = getLiteral().equals(provider);
-
-            PlayerArmorStandsClient.LOGGER.info("isApplicable: {} - provider='{}' literal='{}' = {}",
-                    this.getClass().getSimpleName(), provider, getLiteral(), result);
-
-            return result;
+            return getLiteral().equals(provider);
 
         } catch (Exception e) {
             PlayerArmorStandsClient.LOGGER.error("Error checking applicability for {}", info, e);

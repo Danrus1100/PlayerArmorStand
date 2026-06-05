@@ -1,5 +1,6 @@
 package com.danrus.pas.managers;
 
+import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.config.PasConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;

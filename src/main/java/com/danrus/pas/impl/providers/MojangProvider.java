@@ -21,6 +21,8 @@ import com.danrus.pas.utils.SkinDownloader;
 import com.danrus.pas.utils.EncodeUtils;
 import com.google.gson.Gson;
 import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -34,6 +36,7 @@ public class MojangProvider implements TextureProvider {
     private static final MojangProvider INSTANCE = new MojangProvider();
 
     private static final String SESSION_SERVER_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
+    private static final Logger log = LoggerFactory.getLogger(MojangProvider.class);
 
 
     private final Map<String, CompletableFuture<Void>> activeDownloads = new ConcurrentHashMap<>();
@@ -64,6 +67,7 @@ public class MojangProvider implements TextureProvider {
 
         if (!MojangUtils.isNicknameValid(info.base())) {
             OverlayMessageManger.getInstance().showInvalidNameMessage(info.base());
+            log.error("Invalid nickname: {}", info.base());
             ModExecutor.execute(() -> invalidateAllData(info));
             onComplete.accept(info.base());
             return;
@@ -88,13 +92,13 @@ public class MojangProvider implements TextureProvider {
         OverlayMessageManger.getInstance().showDownloadMessage(info.base());
 
         if (info.getFeature(SkinProviderFeature.class).getProvider().equals(getLiteral())) {
-            SkinData skinData = new SkinData(info);
+            SkinData skinData = new SkinData();
             skinData.setStatus(DownloadStatus.IN_PROGRESS);
             PasManager.getInstance().getSkinDataManager().store(info, skinData);
         }
 
         if (info.getFeature(CapeFeature.class).getProvider().equals(getLiteral())) {
-            CapeData capeData = new CapeData(info);
+            CapeData capeData = new CapeData();
             capeData.setStatus(DownloadStatus.IN_PROGRESS);
             PasManager.getInstance().getCapeDataManager().store(info, capeData);
         }
@@ -219,11 +223,11 @@ public class MojangProvider implements TextureProvider {
     private void doFail(NameInfo info) {
         OverlayMessageManger.getInstance().showFailMessage(info.base());
 
-        SkinData skinData = new SkinData(info);
+        SkinData skinData = new SkinData();
         skinData.setStatus(DownloadStatus.FAILED);
         PasManager.getInstance().getSkinDataManager().store(info, skinData);
 
-        CapeData capeData = new CapeData(info);
+        CapeData capeData = new CapeData();
         capeData.setStatus(DownloadStatus.FAILED);
         PasManager.getInstance().getCapeDataManager().store(info, capeData);
     }

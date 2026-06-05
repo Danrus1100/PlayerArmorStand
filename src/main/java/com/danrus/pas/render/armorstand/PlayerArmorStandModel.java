@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape, Cloneable {
     // WIDE
@@ -404,14 +405,14 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
     }
 
 
-    public static boolean showArmorStandWhileDownload(DataHolder data) {
+    public static boolean showArmorStandWhileDownload(Optional<? extends DataHolder> data) {
 
-        if (data == null) {
+        if (data.isEmpty()) {
             return true;
         }
 
-        boolean isDownlading = data.getStatus() == DownloadStatus.IN_PROGRESS ||
-                data.getStatus() == DownloadStatus.FAILED || data.getStatus() == DownloadStatus.NOT_STARTED;
+        boolean isDownlading = data.get().getStatus() == DownloadStatus.IN_PROGRESS ||
+                data.get().getStatus() == DownloadStatus.FAILED || data.get().getStatus() == DownloadStatus.NOT_STARTED;
         return PasConfig.getInstance().isShowArmorStandWhileDownloading()&& isDownlading;
     }
 

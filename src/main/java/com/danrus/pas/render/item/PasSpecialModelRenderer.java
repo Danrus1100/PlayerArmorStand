@@ -37,7 +37,7 @@ public abstract class PasSpecialModelRenderer implements SpecialModelRenderer<It
     /*public void submit(@Nullable ItemRenderData argument, PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor) {
         PasRenderContext context = new RenderContext().putData(submitNodeCollector, "collector").putData(outlineColor, "outlineColor");
     *///?}
-        prepareDraw(argument, poseStack, );
+//        prepareDraw(argument, poseStack, );
     }
 
     abstract void prepareDraw(ItemRenderData argument, PoseStack poseStack, PasRenderContext context, int packedLight, int packedOverlay, boolean hasFoil);

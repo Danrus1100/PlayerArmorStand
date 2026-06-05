@@ -16,24 +16,27 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class AbstractFileTextureDataProvider<T extends DataHolder> implements DataProvider<T> {
 
     private final Map<DataStoreKey, T> cache = new HashMap<>();
 
+    protected final T DEFAULT = createDataHolder(defaultTexture());
+
     @Override
-    public T get(NameInfo info) {
+    public Optional<T> get(NameInfo info) {
         DataStoreKey key = getKey(info);
         if (cache.containsKey(key)){
-            return cache.get(key);
+            return Optional.of(cache.get(key));
         }
 
         if (!info.getDesiredProvider().equals(getProviderCode())) {
-            return null;
+            return Optional.empty();
         }
 
         if (!isValidName(info.base())) {
-            return null;
+            return Optional.empty();
         }
 
         Path filePath = getFilePath(info);
@@ -42,23 +45,23 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
         if (filePath.toFile().exists()) {
             Minecraft.getInstance().execute(() -> {
                 TextureUtils.registerTexture(filePath, textureLocation, true);
-                getDataManager().store(info, createDataHolder(info, textureLocation));
+                getDataManager().store(info, createDataHolder(textureLocation));
             });
         }
 
-        T data = createDataHolder(info, textureLocation);
+        T data = createDataHolder(textureLocation);
         data.setStatus(DownloadStatus.COMPLETED);
         getDataManager().store(info, data);
-        return data;
+        return Optional.of(data);
     }
 
     @Override
-    public T find(NameInfo info) {
+    public Optional<T> find(NameInfo info) {
         T data = cache.get(getKey(info));
         if (data == null) {
             return get(info);
         }
-        return data;
+        return Optional.of(data);
     }
 
     private boolean isValidName(String name) {
@@ -92,7 +95,7 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
 
     @Override
     public void invalidateData(NameInfo info) {
-        cache.remove(info.base());
+        cache.put(getKey(info), DEFAULT);
     }
 
     private List<Path> getCacheFiles() {
@@ -109,9 +112,10 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
 
     protected abstract Path getFilePath(NameInfo info);
     protected abstract Path getCachePath();
-    protected abstract T createDataHolder(NameInfo info, ResourceLocation texture);
+    protected abstract T createDataHolder(ResourceLocation texture);
     protected abstract DataRepository<T> getDataManager();
     protected abstract String getProviderCode();
     protected abstract Class<? extends DataHolder> getDataHolderClass();
     protected abstract DataStoreKey getKey(NameInfo info);
+    protected abstract ResourceLocation defaultTexture();
 }

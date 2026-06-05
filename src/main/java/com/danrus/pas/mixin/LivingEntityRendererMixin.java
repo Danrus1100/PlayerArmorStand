@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.RenderType;
 //? >=1.21.11
 //import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -18,34 +20,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntityRenderer.class)
-public class LivingEntityRendererMixin<T extends
-        //? if <= 1.21.1 {
-        /*LivingEntity
-        *///?} else {
-        net.minecraft.client.renderer.entity.state.LivingEntityRenderState
-        //?}
-        , M extends EntityModel<T>> {
+public class LivingEntityRendererMixin<T extends LivingEntityRenderState, M extends EntityModel<T>> {
 
     @Inject(
             method = "getRenderType",
             at = @At(value = "HEAD"),
             cancellable = true
     )
-    private void pas$renderType(
-            //? if <= 1.21.1 {
-            /*LivingEntity
-            *///?} else {
-            net.minecraft.client.renderer.entity.state.LivingEntityRenderState
-            //?}
-                    entity, boolean b1, boolean b2, boolean b3, CallbackInfoReturnable<RenderType> cir
-    ){
-        if (!(entity instanceof
-                //? if <= 1.21.1 {
-                /*ArmorStand
-                *///?} else {
-                net.minecraft.client.renderer.entity.state.ArmorStandRenderState
-                //?}
-        && PasConfig.getInstance().isEnableMod()) || ModUtils.isInvisible(entity)) {
+    private void pas$renderType(LivingEntityRenderState entity, boolean b1, boolean b2, boolean b3, CallbackInfoReturnable<RenderType> cir){
+        if (!(entity instanceof ArmorStandRenderState && PasConfig.getInstance().isEnableMod()) || ModUtils.isInvisible(entity)) {
             return;
         }
 

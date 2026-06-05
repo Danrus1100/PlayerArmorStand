@@ -288,7 +288,7 @@ public class PasConfiguratorScreen extends Screen {
                 }
         );
         TextWidget displayNameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.overlay.display_name")).setTooltip(Component.translatable("pas.menu.tab.overlay.display_name.tooltip"));
-        EnterEditBox displayNameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 120, 20, Component.literal("Display Name"), editBox -> {
+        EnterEditBox displayNameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Display Name"), editBox -> {
             DisplayNameFeature feature = info.getFeature(DisplayNameFeature.class);
             if (feature != null) {
                 feature.setEnabled(!editBox.getValue().isEmpty());
@@ -296,6 +296,17 @@ public class PasConfiguratorScreen extends Screen {
                 setEntityName(info.compile());
             }
         });
+        ImageButton acceptDisplayNameButton = new ImageButton(0, 0, 20, 20,
+                new WidgetSprites(
+                        Rl.pas("accept"),
+                        Rl.pas("accept_disabled"),
+                        Rl.pas("accept_highlighted")
+                ),
+                button -> {
+                    info.getFeature(DisplayNameFeature.class).setName(displayNameBox.getValue());
+                    setEntityName(info.compile());
+                }
+        );
         blockTextureNameBox.setValue(info.overlay());
         DisplayNameFeature displayNameFeature = info.getFeature(DisplayNameFeature.class);
         if (displayNameFeature != null && displayNameFeature.isEnabled()) {
@@ -311,6 +322,7 @@ public class PasConfiguratorScreen extends Screen {
             overlayBlendSlider.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f - 30));
             displayNameLabel.setPosition(Math.round(width / 2f + 2), Math.round(height / 2f - 10));
             displayNameBox.setPosition(Math.round(width / 2f - 8), Math.round(height / 2f + 10));
+            acceptDisplayNameButton.setPosition(Math.round(width / 2f + 92), Math.round(height / 2f + 10));
         });
 
         overlayTab.addWidget(blockTextureNameLabel);

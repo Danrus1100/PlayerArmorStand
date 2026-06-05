@@ -15,6 +15,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public class PasRenderer {
 
     public static ResourceLocation WOOD = Rl.vanilla(
@@ -36,7 +38,7 @@ public class PasRenderer {
         this.settings = settings;
     }
 
-    public void draw(SkinData skinData, @Nullable CapeData capeData, NameInfo info, PasRenderContext context, PoseStack poseStack, int packedLight, int packedOverlay) {
+    public void draw(Optional<SkinData> skinData, @Nullable CapeData capeData, NameInfo info, PasRenderContext context, PoseStack poseStack, int packedLight, int packedOverlay) {
         setupAnim(model, settings);
         for (ModelPart part : this.model.getOriginalParts()) {
             renderPart(poseStack, part, RenderType.entityCutout(WOOD), context, packedLight, packedOverlay);

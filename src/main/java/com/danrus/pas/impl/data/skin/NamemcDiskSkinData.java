@@ -11,8 +11,8 @@ import com.danrus.pas.managers.PasManager;
 public class NamemcDiskSkinData extends AbstractDiskDataProvider<SkinData> {
 
     @Override
-    protected SkinData createDataHolder(NameInfo info) {
-        return new SkinData(info);
+    protected SkinData createDataHolder() {
+        return new SkinData();
     }
 
     @Override

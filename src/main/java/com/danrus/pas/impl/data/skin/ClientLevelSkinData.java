@@ -19,8 +19,8 @@ public class ClientLevelSkinData extends AbstractClientLevelDataProvider<SkinDat
     }
 
     @Override
-    protected SkinData createDataHolder(NameInfo info) {
-        return new SkinData(info);
+    protected SkinData createDataHolder() {
+        return new SkinData();
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.managers.OverlayMessageManger;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -40,6 +41,7 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
                 })
                 .exceptionally((throwable -> {
                     doFail(info);
+                    onComplete.accept(output);
                     PlayerArmorStandsClient.LOGGER.error("NamemcProvider: Failed to download skin for " + info, throwable);
                     return null;
                 })));
@@ -47,7 +49,7 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
 
     private void initializeDownload(NameInfo info) {
         PlayerArmorStandsClient.LOGGER.info("NamemcProvider: Downloading for " + info);
-        T data = createDataHolder(info);
+        T data = createDataHolder();
         OverlayMessageManger.getInstance().showDownloadMessage(info.base());
         data.setStatus(DownloadStatus.IN_PROGRESS);
         getDataManager().store(info, data);
@@ -60,24 +62,18 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
     }
 
     private void doFail(NameInfo info) {
-        T data = getDataManager().getData(info);
-        if (data == null) {
-            data = createDataHolder(info);
-        }
         OverlayMessageManger.getInstance().showFailMessage(info.base());
-        data.setStatus(DownloadStatus.FAILED);
-        getDataManager().store(info, data);
+        getDataManager().invalidateData(info);
     }
 
     protected T getOrCreateDataHolder(NameInfo info) {
-        T data = getDataFromNamemcRepository(info);
-        return data != null ? data : createDataHolder(info);
+        return getDataFromNamemcRepository(info).orElseGet(this::createDataHolder);
     }
 
     protected abstract CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info);
     protected abstract DataRepository<T> getDataManager();
-    protected abstract T createDataHolder(NameInfo info);
+    protected abstract T createDataHolder();
     protected abstract void updateSkinData(NameInfo info, ResourceLocation texture);
-    protected abstract T getDataFromNamemcRepository(NameInfo info);
+    protected abstract Optional<T> getDataFromNamemcRepository(NameInfo info);
     protected abstract String getOutputString(NameInfo info);
 }

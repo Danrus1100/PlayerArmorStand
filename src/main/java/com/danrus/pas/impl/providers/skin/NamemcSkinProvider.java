@@ -11,6 +11,7 @@ import com.danrus.pas.utils.SkinDownloader;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class NamemcSkinProvider extends AbstractNamemcProvider<SkinData> {
@@ -30,13 +31,13 @@ public class NamemcSkinProvider extends AbstractNamemcProvider<SkinData> {
     }
 
     @Override
-    protected DataRepository getDataManager() {
+    protected DataRepository<SkinData> getDataManager() {
         return PasManager.getInstance().getSkinDataManager();
     }
 
     @Override
-    protected SkinData createDataHolder(NameInfo info) {
-        return new SkinData(info);
+    protected SkinData createDataHolder() {
+        return new SkinData();
     }
 
     @Override
@@ -47,7 +48,7 @@ public class NamemcSkinProvider extends AbstractNamemcProvider<SkinData> {
     }
 
     @Override
-    protected SkinData getDataFromNamemcRepository(NameInfo info) {
+    protected Optional<SkinData> getDataFromNamemcRepository(NameInfo info) {
         return PasManager.getInstance().getSkinDataManager().getSource("namemc").get(info);
     }
 

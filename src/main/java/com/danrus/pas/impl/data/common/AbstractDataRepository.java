@@ -19,7 +19,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     public AbstractDataRepository(){
         prepareSources();
-        DEFAULT = createData(new NameInfo());
+        DEFAULT = createData();
     }
 
     @Override
@@ -40,40 +40,36 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
-    public T getData(NameInfo info) {
-        if (info.isEmpty()) return DEFAULT;
+    public Optional<T> getData(NameInfo info) {
+        if (info.isEmpty()) return Optional.of(DEFAULT);
         if (cached.get(getCacheKey(info)) != null) {
-            return cached.get(getCacheKey(info));
+            return Optional.of(cached.get(getCacheKey(info)));
         }
-        T data = findData(info);
-        if (data == null && !info.isEmpty()) {
-            data = createData(info);
-            data.setStatus(DownloadStatus.IN_PROGRESS);
-            store(info, data);
-            getTextureProvidersManager().download(info);
-            return data;
-        }
-        return data;
+        Optional<T> data = findData(info);
+
+        if (data.isPresent()) return data;
+
+        var dataToReturn = createData();
+        dataToReturn.setStatus(DownloadStatus.IN_PROGRESS);
+        store(info, dataToReturn);
+        getTextureProvidersManager().download(info);
+        return Optional.of(dataToReturn);
     }
 
     @Override
-    public T findData(NameInfo info) {
-        return getFrom(info, tDataProvider -> tDataProvider.find(info));
+    public Optional<T> findData(NameInfo info) {
+        return getFrom(dataProvider -> dataProvider.find(info));
     }
 
 
-    @Nullable
-    private T getFrom(NameInfo info, Function<DataProvider<T>, T> getter) {
-        T data = createData(info);
-        boolean needDownload = true;
+    private Optional<T> getFrom(Function<DataProvider<T>, Optional<T>> getter) {
         for (DataProvider<T> source : sources) {
-            T dataFromSource = needDownload ? getter.apply(source) : null;
-            if (dataFromSource != null) {
-                needDownload = false;
-                data = dataFromSource;
+            Optional<T> dataFromSource = getter.apply(source);
+            if (dataFromSource.isPresent()) {
+                return dataFromSource;
             }
         }
-        return needDownload ? null : data;
+        return Optional.empty();
     }
 
     @Override
@@ -92,7 +88,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     public void invalidateData(NameInfo info) {
-        cached.remove(getCacheKey(info));
+        cached.put(getCacheKey(info), DEFAULT);
         sources.forEach(source -> source.invalidateData(info));
     }
 
@@ -136,7 +132,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     protected abstract void prepareSources();
-    protected abstract T createData(NameInfo info);
+    protected abstract T createData();
     protected abstract TextureProvidersManager getTextureProvidersManager();
     protected abstract DataStoreKey getCacheKey(NameInfo info);
 }

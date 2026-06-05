@@ -9,6 +9,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Optional;
+
 public class ArmorStandCapeLayer extends ModUtils.VersionlessArmorStandCapeLayer {
     public ArmorStandCapeLayer(ModUtils.VersionlessArmorStandCape parent) {
         super(parent);
@@ -27,12 +29,12 @@ public class ArmorStandCapeLayer extends ModUtils.VersionlessArmorStandCapeLayer
         }
 
 
-        CapeData capeData = PasManager.getInstance().getCapeDataManager().findData(info);
+        Optional<CapeData> capeData = PasManager.getInstance().getCapeDataManager().findData(info);
 
-        if (capeData == null) {
+        if (capeData.isEmpty()) {
             capeData = PasManager.getInstance().getCapeDataManager().getData(info);
 
-            if (capeData != null && capeData.getStatus() == DownloadStatus.IN_PROGRESS) {
+            if (capeData.isPresent() && capeData.get().getStatus() == DownloadStatus.IN_PROGRESS) {
                 return;
             }
         }

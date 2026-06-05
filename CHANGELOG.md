@@ -1,2 +1,1 @@
- - Fixed commands autocomplete
- - Optimisation
+ - console spam fixes

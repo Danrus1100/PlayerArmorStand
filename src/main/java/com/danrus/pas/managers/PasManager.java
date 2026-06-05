@@ -7,6 +7,7 @@ import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.data.DataStoreKey;
 import com.danrus.pas.api.data.TextureProvidersManager;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.impl.holder.AbstractPasHolder;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.utils.TextureUtils;
@@ -15,8 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class PasManager {
 
@@ -58,25 +59,25 @@ public class PasManager {
     }
 
     public ResourceLocation getSkinTexture(NameInfo info) {
-        SkinData data = skinDataRepository.getData(info);
-        return data != null ? data.getTexture() : null;
+        Optional<SkinData> data = skinDataRepository.getData(info);
+        return data.map(AbstractPasHolder::getTexture).orElse(SkinData.DEFAULT_TEXTURE);
     }
 
     public ResourceLocation getCapeTexture(NameInfo info) {
-        CapeData data = capeDataRepository.getData(info);
-        return data != null ? data.getTexture() : null;
+        Optional<CapeData> data = capeDataRepository.getData(info);
+        return data.map(AbstractPasHolder::getTexture).orElse(CapeData.DEFAULT_TEXTURE);
     }
 
-    public SkinData findSkinData(NameInfo info) {
+    public Optional<SkinData> findSkinData(NameInfo info) {
         if (info.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         return getSkinDataManager().findData(info);
     }
 
-    public CapeData findCapeData(NameInfo info) {
+    public Optional<CapeData> findCapeData(NameInfo info) {
         if (info.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         return getCapeDataManager().findData(info);
     }
@@ -98,20 +99,22 @@ public class PasManager {
     public void reloadData(DataStoreKey key, Class<? extends DataHolder> type) {
         NameInfo info = key.tryToNameInfo();
         if (type == SkinData.class) {
-            SkinData data = skinDataRepository.findData(info);
-            TextureUtils.unregisterTexture(data.getTexture());
+            Optional<SkinData> data = skinDataRepository.findData(info);
+            if (data.isEmpty()) return;
+            TextureUtils.unregisterTexture(data.get().getTexture());
             getSkinDataManager().delete(info);
             TextureUtils.clearOverlayCacheFor(info.base());
-            if (skinDataRepository.getData(info) == null) {
+            if (skinDataRepository.getData(info).isEmpty()) {
                 this.LOGGER.warn("No data found for " + info.base() + ", reloading from skin providers");
             }
             getSkinProviderManager().download(info);
         } else if (type == CapeData.class) {
-            CapeData data = capeDataRepository.findData(info);
-            TextureUtils.unregisterTexture(data.getTexture());
+            Optional<CapeData> data = capeDataRepository.findData(info);
+            if (data.isEmpty()) return;
+            TextureUtils.unregisterTexture(data.get().getTexture());
             getCapeDataManager().delete(info);
             TextureUtils.clearOverlayCacheFor(info.base());
-            if (capeDataRepository.getData(info) == null) {
+            if (capeDataRepository.getData(info).isEmpty()) {
                 this.LOGGER.warn("No data found for " + info.base() + ", reloading from cape providers");
             }
             getCapeProviderManager().download(info);

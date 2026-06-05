@@ -47,7 +47,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
 
     @Override
     public void download(NameInfo info) {
-        if (pendingList.contains(info.base())) {
+        if (isAlreadyPending(info)) {
             return;
         }
 
@@ -100,21 +100,25 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
 
         for (PrioritizedProvider prioritized : providerList) {
             try {
-                LOGGER.info("Trying to download from {}", prioritized.provider.getClass().getSimpleName());
-                pendingList.add(getOutputString(info));
+                LOGGER.info("Trying to download {} from {}", getPendingKey(info), prioritized.provider.getClass().getSimpleName());
+                pendingList.add(getPendingKey(info));
                 prioritized.provider().load(info, pendingList::remove);
                 return true;
             } catch (Exception e) {
                 LOGGER.error(
                         "Provider {} failed to load {}: {}",
-                        prioritized.provider().getClass().getSimpleName(), getOutputString(info), e.getMessage()
+                        prioritized.provider().getClass().getSimpleName(), getPendingKey(info), e.getMessage()
                 );
             }
         }
         return false;
     }
 
-    protected abstract String getOutputString(NameInfo info);
+    private boolean isAlreadyPending(NameInfo info) {
+        return pendingList.contains(getPendingKey(info));
+    }
+
+    protected abstract String getPendingKey(NameInfo info);
 
     protected abstract void prepareProviders();
     protected abstract String getProvider(NameInfo info);

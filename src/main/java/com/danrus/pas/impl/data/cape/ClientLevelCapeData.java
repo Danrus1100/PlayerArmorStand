@@ -19,8 +19,8 @@ public class ClientLevelCapeData extends AbstractClientLevelDataProvider<CapeDat
     }
 
     @Override
-    protected CapeData createDataHolder(NameInfo info) {
-        return new CapeData(info);
+    protected CapeData createDataHolder() {
+        return new CapeData();
     }
 
     @Override

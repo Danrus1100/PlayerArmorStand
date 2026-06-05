@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 public class NameInfo {
 
     public static Map<String, ResourceLocation> MEMES = Map.of(
-            "Данечка Разработчик", Rl.pas("textures/lol/danechka_razrabotchik.png"),
-            "Дакимакура", Rl.pas("textures/lol/dakimakura.png"),
-            "Гига Крео", Rl.pas("textures/lol/gigakreo.png"),
-            "Strange Link", Rl.pas("textures/lol/link.png"),
-            "Странная ссылка", Rl.pas("textures/lol/link.png"),
-            "Сисюлики", Rl.pas("textures/lol/boobs.png"),
-            "Джастик", Rl.pas("textures/lol/justik.png")
+            "данечка разработчик", Rl.pas("textures/lol/danechka_razrabotchik.png"),
+            "дакимакура", Rl.pas("textures/lol/dakimakura.png"),
+            "гига крео", Rl.pas("textures/lol/gigakreo.png"),
+            "strange link", Rl.pas("textures/lol/link.png"),
+            "странная ссылка", Rl.pas("textures/lol/link.png"),
+            "сисюлики", Rl.pas("textures/lol/boobs.png"),
+            "джастик", Rl.pas("textures/lol/justik.png")
     );
 
     private final Map<Class<? extends RenameFeature>, RenameFeature> features = new LinkedHashMap<>();

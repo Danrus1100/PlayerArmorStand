@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class AbstractDiskDataProvider<T extends DataHolder> implements DataProvider<T> {
 
@@ -25,6 +26,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
 
     protected final Path cachePath;
     protected final HashMap<DataStoreKey, T> cache = new HashMap<>();
+    protected final T DEFAULT = createDataHolder();
 
     public AbstractDiskDataProvider() {
         this.cachePath = CACHE_PATH;
@@ -34,24 +36,24 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     }
 
     @Override
-    public T get(NameInfo info) {
+    public Optional<T> get(NameInfo info) {
         String fileName = InfoTranslators.getInstance()
                 .toFileName(getDataHolderClass(), info) + ".png";
         Path filePath = cachePath.resolve(fileName);
 
         if (!filePath.toFile().exists()) {
-            return null;
+            return Optional.empty();
         }
 
         if (AGES.isExpired(fileName, FilesAges.millisFromSkinReloadTime(PasConfig.getInstance().getSkinReloadTime()))) {
             filePath.toFile().delete();
             cache.remove(getCacheKey(info));
-            return null;
+            return Optional.empty();
         }
 
         ResourceLocation texture = InfoTranslators.getInstance().toResourceLocation(getDataHolderClass(), info);
 
-        T data = createDataHolder(info);
+        T data = createDataHolder();
 
         TextureUtils.registerTexture(filePath, texture, shouldProcessSkin());
 
@@ -61,16 +63,16 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
         cache.put(getCacheKey(info), data);
 
         getDataManager().store(info, data);
-        return data;
+        return Optional.of(data);
     }
 
     @Override
-    public T find(NameInfo info) {
+    public Optional<T> find(NameInfo info) {
         T data = cache.get(getCacheKey(info));
         if (data == null) {
             return get(info);
         };
-        return data;
+        return Optional.of(data);
     }
 
     @Override
@@ -121,7 +123,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
         if (filePath.toFile().exists()) {
             filePath.toFile().delete();
         }
-        cache.remove(getCacheKey(info));
+        cache.put(getCacheKey(info), DEFAULT);
     }
 
     private List<Path> getCacheFiles() {
@@ -136,7 +138,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
         }
     }
 
-    protected abstract T createDataHolder(NameInfo info);
+    protected abstract T createDataHolder();
     protected abstract DataRepository<T> getDataManager();
     protected abstract Class<? extends DataHolder> getDataHolderClass();
     protected abstract boolean shouldProcessSkin();

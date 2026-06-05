@@ -27,8 +27,8 @@ public class FileTextureSkinData extends AbstractFileTextureDataProvider<SkinDat
     }
 
     @Override
-    protected SkinData createDataHolder(NameInfo info, ResourceLocation texture) {
-        SkinData newData = new SkinData(info);
+    protected SkinData createDataHolder(ResourceLocation texture) {
+        SkinData newData = new SkinData();
         newData.setTexture(texture);
         return newData;
     }
@@ -51,6 +51,11 @@ public class FileTextureSkinData extends AbstractFileTextureDataProvider<SkinDat
     @Override
     protected DataStoreKey getKey(NameInfo info) {
         return DataStoreKey.forSkin(info);
+    }
+
+    @Override
+    protected ResourceLocation defaultTexture() {
+        return SkinData.DEFAULT_TEXTURE;
     }
 
     @Override

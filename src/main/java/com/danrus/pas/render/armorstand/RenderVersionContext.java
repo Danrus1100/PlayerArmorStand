@@ -3,7 +3,7 @@ package com.danrus.pas.render.armorstand;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RenderVersionContext implements PasRenderContext {
+public class RenderVersionContext {
     private final Map<String, Object> contextMap = new HashMap<>(16);
     private final Cape cape;
 
@@ -11,7 +11,7 @@ public class RenderVersionContext implements PasRenderContext {
         this.cape = cape;
     }
 
-    public <T> PasRenderContext putData(T data, String type) {
+    public <T> RenderVersionContext putData(T data, String type) {
         if (contextMap.size() >= 16) {
             throw new IllegalStateException("RenderVersionContext can hold up to 16 data entries.");
         }

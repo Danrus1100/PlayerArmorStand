@@ -14,7 +14,7 @@ public class SkinProvidersManager extends AbstractTextureProviderManager<SkinDat
     private static final String EXCLUDE_LITERALS = "NF";
 
     @Override
-    protected String getOutputString(NameInfo info) {
+    protected String getPendingKey(NameInfo info) {
         return info.base();
     }
 

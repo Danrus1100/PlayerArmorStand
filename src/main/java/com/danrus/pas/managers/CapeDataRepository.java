@@ -18,8 +18,8 @@ public class CapeDataRepository extends AbstractDataRepository<CapeData> {
     }
 
     @Override
-    protected CapeData createData(NameInfo info) {
-        return new CapeData(info);
+    protected CapeData createData() {
+        return new CapeData();
     }
 
     @Override

@@ -9,19 +9,21 @@ import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.managers.PasManager;
 
+import java.util.Optional;
+
 public class MojangDiskCapeData extends AbstractDiskDataProvider<CapeData> {
 
     @Override
-    public CapeData get(NameInfo info) {
+    public Optional<CapeData> get(NameInfo info) {
         if ("M".equals(info.getFeature(CapeFeature.class).getProvider())) {
             return super.get(info);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    protected CapeData createDataHolder(NameInfo info) {
-        return new CapeData(info);
+    protected CapeData createDataHolder() {
+        return new CapeData();
     }
 
     @Override

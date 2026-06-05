@@ -17,8 +17,8 @@ public class SkinDataRepository extends AbstractDataRepository<SkinData> {
     }
 
     @Override
-    protected SkinData createData(NameInfo info) {
-        return new SkinData(info);
+    protected SkinData createData() {
+        return new SkinData();
     }
 
     @Override

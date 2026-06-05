@@ -13,6 +13,7 @@ import com.danrus.pas.utils.SkinDownloader;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
@@ -44,8 +45,8 @@ public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
     }
 
     @Override
-    protected CapeData createDataHolder(NameInfo info) {
-        return new CapeData(info);
+    protected CapeData createDataHolder() {
+        return new CapeData();
     }
 
     @Override
@@ -57,7 +58,7 @@ public class NamemcCapeProvider extends AbstractNamemcProvider<CapeData> {
     }
 
     @Override
-    protected CapeData getDataFromNamemcRepository(NameInfo info) {
+    protected Optional<CapeData> getDataFromNamemcRepository(NameInfo info) {
         return PasManager.getInstance().getCapeDataManager().getSource("namemc_cape").get(info);
     }
 

@@ -13,18 +13,19 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public abstract class AbstractClientLevelDataProvider<T extends DataHolder> implements DataProvider<T> {
 
     @Override
-    public T get(NameInfo info) {
+    public Optional<T> get(NameInfo info) {
         if (Minecraft.getInstance().level == null) {
-            return null;
+            return Optional.empty();
         }
         if (!PasConfig.getInstance().isTryApplyFromServerPlayer()) {
-            return null;
+            return Optional.empty();
         }
-        T holder = createDataHolder(info);
+        T holder = createDataHolder();
         if (Minecraft.getInstance().level != null) {
             Minecraft.getInstance().level.players().stream()
                     .filter(player -> player.getName().getString().equals(info.base()))
@@ -43,14 +44,14 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
 
         if (holder.getStatus() == DownloadStatus.COMPLETED) {
             getDataManager().store(info, holder);
-            return holder;
+            return Optional.of(holder);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public T find(NameInfo info) {
+    public Optional<T> find(NameInfo info) {
         return get(info);
     }
 
@@ -71,7 +72,7 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
         }
         return Minecraft.getInstance().level.players().stream()
                 .map(player -> {
-                    T data = createDataHolder(NameInfo.parse(player.getName().getString()));
+                    T data = createDataHolder();
                     if (getTexture(player) != null) {
                         data.setStatus(DownloadStatus.COMPLETED);
                         data.setTexture(getTexture(player));
@@ -108,7 +109,7 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
 
     @Nullable
     protected abstract ResourceLocation getTexture(AbstractClientPlayer player);
-    protected abstract T createDataHolder(NameInfo info);
+    protected abstract T createDataHolder();
     protected abstract DataRepository<T> getDataManager();
     protected abstract DataStoreKey getKey(NameInfo info);
 }

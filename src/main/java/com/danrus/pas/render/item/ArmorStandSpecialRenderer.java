@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.Optional;
 
 public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
 
@@ -30,7 +31,7 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
 
     @Override
     public void prepareDraw(ItemRenderData data, PoseStack poseStack, PasRenderContext context, int packedLight, int packedOverlay, boolean hasFoil) {
-        prepareModel(state, data.info());
+//        prepareModel(state, data.info());
         preparePose(poseStack);
     }
 
@@ -67,11 +68,11 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
 
     private void prepareModel(PasModelSettings state, @Nullable NameInfo infoCandidate) {
         NameInfo info = infoCandidate != null ? infoCandidate : new NameInfo();
-        ArmorStandRenderState renderState = state.toRenderState();
-        ModUtils.setCustomName(renderState, Component.literal(info.compile()));
-        renderState.showBasePlate = state.baseplate;
-        model.setupAnim(renderState, true);
-        model.setupVisibilityForItem(state, info);
+//        ArmorStandRenderState renderState = state.toRenderState();
+//        ModUtils.setCustomName(renderState, Component.literal(info.compile()));
+//        renderState.showBasePlate = state.baseplate;
+//        model.setupAnim(renderState, true);
+//        model.setupVisibilityForItem(state, info);
     }
 
 
@@ -80,8 +81,8 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
     @Override
     public @Nullable ItemRenderData extractArgument(ItemStack stack) {
         NameInfo info = NameInfo.parse(stack.getCustomName());
-        SkinData data = PasManager.getInstance().getSkinDataManager().getData(info);
-        return new ItemRenderData(data, info);
+        Optional<SkinData> data = PasManager.getInstance().getSkinDataManager().getData(info);
+        return new ItemRenderData(data.orElse(new SkinData()), info);
     }
 
     public static record Unbaked(PasModelPoseSettings state) implements SpecialModelRenderer.Unbaked

@@ -11,8 +11,8 @@ import com.danrus.pas.managers.PasManager;
 public class NamemcDiskCapeData extends AbstractDiskDataProvider<CapeData> {
 
     @Override
-    protected CapeData createDataHolder(NameInfo info) {
-        return new CapeData(info);
+    protected CapeData createDataHolder() {
+        return new CapeData();
     }
 
     @Override
