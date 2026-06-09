@@ -29,14 +29,17 @@ public abstract class PasConfig {
     public static PasConfig getInstance() {
         //? if yacl {
         if (ModUtils.isModLoaded(ModUtils.YACL_MOD_ID)) {
-            return getInstance(YaclConfig::get);
+            return YaclConfig.get();
         }
         //?}
         return getInstance(DummyConfig::new);
     }
 
     private static PasConfig getInstance(Supplier<PasConfig> factory) {
-        return factory.get();
+        if (instace == null) {
+            instace = factory.get();
+        }
+        return instace;
     }
 
     public static void init() {

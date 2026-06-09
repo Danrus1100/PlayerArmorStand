@@ -206,7 +206,6 @@ public class MojangProvider implements TextureProvider {
                     T data = dataFactory.get();
                     data.setTexture(textureId);
                     data.setStatus(DownloadStatus.COMPLETED);
-                    AbstractDiskDataProvider.AGES.touch(fileName + ".png");
                     repository.store(info, data);
                 });
     }

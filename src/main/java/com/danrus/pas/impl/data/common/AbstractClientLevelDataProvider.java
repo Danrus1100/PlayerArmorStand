@@ -4,7 +4,6 @@ import com.danrus.pas.api.*;
 import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataProvider;
 import com.danrus.pas.api.data.DataRepository;
-import com.danrus.pas.api.data.DataStoreKey;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.PasConfig;
 import net.minecraft.client.Minecraft;
@@ -13,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class AbstractClientLevelDataProvider<T extends DataHolder> implements DataProvider<T> {
@@ -40,8 +40,6 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
                     );
         }
 
-
-
         if (holder.getStatus() == DownloadStatus.COMPLETED) {
             getDataManager().store(info, holder);
             return Optional.of(holder);
@@ -61,45 +59,29 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
     }
 
     @Override
-    public boolean delete(DataStoreKey key) {
-        return false;
-    }
-
-    @Override
-    public HashMap<DataStoreKey, T> getAll() {
+    public Map<NameInfo, T> getAll() {
         if (Minecraft.getInstance().level == null) {
             return new HashMap<>();
         }
-        return Minecraft.getInstance().level.players().stream()
-                .map(player -> {
-                    T data = createDataHolder();
-                    if (getTexture(player) != null) {
-                        data.setStatus(DownloadStatus.COMPLETED);
-                        data.setTexture(getTexture(player));
-                    }
-                    return data;
-                })
-                // FIXME: wrong key usage, idk how to fix without NameInfo parameter
-                .collect(
-                        HashMap::new,
-                        (map, data) -> map.put( getKey(new NameInfo()) , data),
-                        HashMap::putAll
-                );
+        Map<NameInfo, T> result = new HashMap<>();
+        Minecraft.getInstance().level.players().forEach(player -> {
+            T data = createDataHolder();
+            ResourceLocation texture = getTexture(player);
+            if (texture != null) {
+                data.setStatus(DownloadStatus.COMPLETED);
+                data.setTexture(texture);
+            }
+            result.put(new NameInfo(player.getName().getString()), data);
+        });
+        return result;
     }
 
     @Override
     public void store(NameInfo info, T data) {
-
-    }
-
-    @Override
-    public void store(DataStoreKey key, T data) {
-
     }
 
     @Override
     public void invalidateData(NameInfo info) {
-
     }
 
     @Override
@@ -111,5 +93,4 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
     protected abstract ResourceLocation getTexture(AbstractClientPlayer player);
     protected abstract T createDataHolder();
     protected abstract DataRepository<T> getDataManager();
-    protected abstract DataStoreKey getKey(NameInfo info);
 }

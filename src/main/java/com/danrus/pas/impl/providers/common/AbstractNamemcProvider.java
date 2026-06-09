@@ -7,18 +7,21 @@ import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.data.TextureProvider;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.reg.InfoTranslators;
+import com.danrus.pas.impl.data.common.AbstractDataRepository;
+import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
 import com.danrus.pas.managers.OverlayMessageManger;
+import com.danrus.pas.utils.SkinDownloader;
 import net.minecraft.resources.ResourceLocation;
 
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public abstract class AbstractNamemcProvider<T extends DataHolder> implements TextureProvider {
 
-    private String literal = "N";
-    private Consumer<String> onComplete;
-    private String output;
+    private final String literal = "N";
 
     @Override
     public String getLiteral() {
@@ -28,8 +31,7 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
 
     @Override
     public void load(NameInfo info, Consumer<String> onComplete) {
-        this.onComplete = onComplete;
-        this.output = getOutputString(info);
+        final String output = getOutputString(info);
         initializeDownload(info);
         ModExecutor.execute(() -> getDownloadTask(info)
                 .thenApply(identifier -> {
@@ -70,7 +72,16 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
         return getDataFromNamemcRepository(info).orElseGet(this::createDataHolder);
     }
 
-    protected abstract CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info);
+    protected CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info) {
+        ResourceLocation location = InfoTranslators.getInstance().toResourceLocation(getDataHolderClass(), info);
+        String fileName = InfoTranslators.getInstance().toFileName(getDataHolderClass(), info);
+        Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
+        return SkinDownloader.downloadAndRegister(location, filePath, "https://s.namemc.com/i/" + getNamemcId(info) + ".png", shouldRemap());
+    }
+
+    protected abstract Class<? extends DataHolder> getDataHolderClass();
+    protected abstract String getNamemcId(NameInfo info);
+    protected abstract boolean shouldRemap();
     protected abstract DataRepository<T> getDataManager();
     protected abstract T createDataHolder();
     protected abstract void updateSkinData(NameInfo info, ResourceLocation texture);

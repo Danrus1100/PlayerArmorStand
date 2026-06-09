@@ -1,9 +1,7 @@
 package com.danrus.pas.commands;
 
-import com.danrus.pas.managers.PasManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.minecraft.client.Minecraft;
@@ -19,10 +17,10 @@ public class PasCommandsRegistrar<S> {
                             .then(literal("reload_failed").executes(PasCommands::reloadFailedCommand))
                             .then(literal("reload")
                                     .then(literal("skin")
-                                            .then(argument("name/skin", DataStoreKeyArgumentType.forSkin()).executes(PasCommands::reloadSingeSkinCommand)))
+                                            .then(argument("name/skin", NameInfoArgumentType.forSkin()).executes(PasCommands::reloadSingeSkinCommand)))
 
                                     .then(literal("cape")
-                                            .then(argument("name/cape", DataStoreKeyArgumentType.forCape()).executes(PasCommands::reloadSingleCapeCommand)))
+                                            .then(argument("name/cape", NameInfoArgumentType.forCape()).executes(PasCommands::reloadSingleCapeCommand)))
                             )
                             .then(literal("debug")
                                     .then(literal("drop_cache").executes(PasCommands::dropCacheCommand))

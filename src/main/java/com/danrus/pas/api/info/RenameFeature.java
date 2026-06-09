@@ -6,9 +6,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.regex.Pattern;
 
 public interface RenameFeature {
-    boolean parse(@NotNull String input);
+    @Nullable RenameFeature parseFrom(@NotNull String input); // NEW instance if present, else null
     @NotNull String compile();
-    default int getPriority() { return 100; } // Bigger number = later parsing
+    default int getPriority() { return 100; }
     @Nullable default Pattern getCleanupPattern() { return null; }
-    void reset();
 }

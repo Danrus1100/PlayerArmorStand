@@ -1,6 +1,8 @@
 package com.danrus.pas.utils;
 
 import com.danrus.pas.ModExecutor;
+import com.danrus.pas.PlayerArmorStandsClient;
+import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -68,8 +70,9 @@ public class SkinDownloader {
                     // Пытаемся сохранить в кэш
                     try {
                         Files.write(path, data);
+                        AbstractDiskDataProvider.AGES.touch(path.getFileName().toString());
                     } catch (IOException e) {
-                        // Игнорируем ошибки кэширования
+                        PlayerArmorStandsClient.LOGGER.error("Failed to save file dowloaded file {}", path, e);
                     }
 
                     return NativeImage.read(data);

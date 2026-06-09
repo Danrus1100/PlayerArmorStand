@@ -6,8 +6,8 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class ModExecutor {
-    public static ExecutorService MAIN_EXECUTOR = Executors.newFixedThreadPool(PasConfig.getInstance().getDownloadThreads());
-    public static ExecutorService DOWNLOAD_EXECUTOR = Executors.newFixedThreadPool(PasConfig.getInstance().getDownloadThreads());
+    public static volatile ExecutorService MAIN_EXECUTOR = Executors.newFixedThreadPool(PasConfig.getInstance().getDownloadThreads());
+    public static volatile ExecutorService DOWNLOAD_EXECUTOR = Executors.newFixedThreadPool(PasConfig.getInstance().getDownloadThreads());
 
     public static void reload() {
         int threadsCount = PasConfig.getInstance().getDownloadThreads();

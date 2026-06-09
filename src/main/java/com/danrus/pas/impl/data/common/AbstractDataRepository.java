@@ -7,6 +7,7 @@ import com.danrus.pas.api.info.NameInfo;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -14,12 +15,17 @@ import java.util.stream.Collectors;
 public abstract class AbstractDataRepository<T extends DataHolder> implements DataRepository<T> {
 
     private final List<DataProvider<T>> sources = new CopyOnWriteArrayList<>();
-    private final Map<DataStoreKey, T> cached = new WeakHashMap<>();
+    private final Map<NameInfo, T> cached = new ConcurrentHashMap<>();
     protected final T DEFAULT;
 
     public AbstractDataRepository(){
         prepareSources();
         DEFAULT = createData();
+    }
+
+    public void clear() {
+        cached.clear();
+        sources.forEach(DataProvider::clearCache);
     }
 
     @Override
@@ -28,7 +34,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
-        public void addSource(DataProvider<T> source, int priority) {
+    public void addSource(DataProvider<T> source, int priority) {
         if (priority < 0) {
             throw new IllegalArgumentException("Priority cannot be negative");
         }
@@ -42,25 +48,32 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     @Override
     public Optional<T> getData(NameInfo info) {
         if (info.isEmpty()) return Optional.of(DEFAULT);
-        if (cached.get(getCacheKey(info)) != null) {
-            return Optional.of(cached.get(getCacheKey(info)));
-        }
+        T cachedData = cached.get(info);
+        if (cachedData != null) return Optional.of(cachedData);
         Optional<T> data = findData(info);
-
         if (data.isPresent()) return data;
-
-        var dataToReturn = createData();
-        dataToReturn.setStatus(DownloadStatus.IN_PROGRESS);
-        store(info, dataToReturn);
-        getTextureProvidersManager().download(info);
-        return Optional.of(dataToReturn);
+        boolean[] created = { false };
+        T placeholder = cached.computeIfAbsent(info, k -> {
+            created[0] = true;
+            T d = createData();
+            d.setStatus(DownloadStatus.IN_PROGRESS);
+            return d;
+        });
+        if (created[0]) {
+            sources.forEach(source -> source.store(info, placeholder));
+            getTextureProvidersManager().download(info);
+        }
+        return Optional.of(placeholder);
     }
 
     @Override
     public Optional<T> findData(NameInfo info) {
+        T cachedData = cached.get(info);
+        if (cachedData != null) {
+            return Optional.of(cachedData);
+        }
         return getFrom(dataProvider -> dataProvider.find(info));
     }
-
 
     private Optional<T> getFrom(Function<DataProvider<T>, Optional<T>> getter) {
         for (DataProvider<T> source : sources) {
@@ -74,28 +87,20 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     public void store(NameInfo info, T data) {
-        sources.forEach(source -> {
-            source.store(info, data);
-        });
-    }
-
-    @Override
-    public void store(DataStoreKey key, T data) {
-        sources.forEach(source -> {
-            source.store(key, data);
-        });
+        cached.put(info, data);
+        sources.forEach(source -> source.store(info, data));
     }
 
     @Override
     public void invalidateData(NameInfo info) {
-        cached.put(getCacheKey(info), DEFAULT);
+        cached.put(info, createFailed());
         sources.forEach(source -> source.invalidateData(info));
     }
 
     @Override
     @Nullable
     public DataProvider<T> getSource(String key) {
-                return sources.stream()
+        return sources.stream()
                 .filter(source -> source.getName().equals(key))
                 .findFirst()
                 .orElse(null);
@@ -103,7 +108,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
 
     @Override
     public void delete(NameInfo info) {
-        cached.remove(getCacheKey(info));
+        cached.remove(info);
         sources.forEach(source -> {
             if (source.delete(info)) {
                 PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for name info: {}", source.getName(), info);
@@ -123,16 +128,19 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
-    public Set<DataStoreKey> keySet() {
-        Set<DataStoreKey> storeKeys = new HashSet<>();
-        getSources().values().forEach(prvd -> {
-            storeKeys.addAll(prvd.getAll().keySet());
-        });
-        return storeKeys;
+    public Set<NameInfo> keySet() {
+        Set<NameInfo> keys = new HashSet<>();
+        getSources().values().forEach(prvd -> keys.addAll(prvd.getAll().keySet()));
+        return keys;
+    }
+
+    private T createFailed() {
+        T data = createData();
+        data.setStatus(DownloadStatus.FAILED);
+        return data;
     }
 
     protected abstract void prepareSources();
     protected abstract T createData();
     protected abstract TextureProvidersManager getTextureProvidersManager();
-    protected abstract DataStoreKey getCacheKey(NameInfo info);
 }

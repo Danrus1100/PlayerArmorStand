@@ -22,14 +22,16 @@ import net.minecraft.resources.ResourceLocation;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TextureUtils {
-    private static final HashMap<String, ResourceLocation> overlayTextureCache = new HashMap<>();
-    private static final List<String> notExistingOverlays = new ArrayList<>();
+    private static final Map<String, ResourceLocation> overlayTextureCache = new ConcurrentHashMap<>();
+    private static final Set<String> notExistingOverlays = ConcurrentHashMap.newKeySet();
 
     public static CompletableFuture<ResourceLocation> registerTexture(Path path, ResourceLocation identifier, boolean remap){
         NativeImage image = parseImageFile(path);
@@ -82,16 +84,8 @@ public class TextureUtils {
     }
 
     public static void unregisterTexture(ResourceLocation identifier) {
-        Minecraft.getInstance().getTextureManager().release(identifier);
-
-        // FIXME: stoopid method to remove from overlay cache, fuck this
-        for (String key : new ArrayList<>(overlayTextureCache.keySet())) {
-            if (key.contains(identifier.getPath())) {
-                overlayTextureCache.remove(key);
-                return;
-            }
-        }
-
+        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().release(identifier));
+        overlayTextureCache.keySet().removeIf(key -> key.startsWith(identifier.getPath() + "_"));
     }
 
     public static NativeImage parseImageFile(Path path) {
@@ -225,44 +219,44 @@ public class TextureUtils {
             }
         }
 
-        ResourceLocation cachedTexture = overlayTextureCache.get(cacheKey);
-        if (cachedTexture != null) {
-            return cachedTexture;
-        }
         ResourceLocation skinId;
         switch (type.getSimpleName()) {
             case "CapeData" -> skinId = PasManager.getInstance().getCapeTexture(info);
             case "SkinData" -> skinId = PasManager.getInstance().getSkinTexture(info);
             default -> throw new IllegalArgumentException("Unsupported holder type for overlayed texture: " + type);
         }
-        AbstractTexture skinTexture = Minecraft.getInstance().getTextureManager().getTexture(skinId);
 
         ResourceLocation overlayId = Rl.vanilla("textures/block/" + overlay + ".png");
         AbstractTexture overlayTexture = Minecraft.getInstance().getTextureManager().getTexture(overlayId);
-
         if (overlayTexture == null) {
             OverlayMessageManger.getInstance().showOverlayNotFoundMessage(overlay);
             notExistingOverlays.add(overlay);
             return skinId;
         }
+        AbstractTexture skinTexture = Minecraft.getInstance().getTextureManager().getTexture(skinId);
 
-        try {
-            if (skinTexture instanceof DynamicTexture skinResourceTexture && overlayTexture instanceof SimpleTexture overlayResourceTexture) {
-                NativeImage skinImage = skinResourceTexture.getPixels();
-                NativeImage overlayImage = overlayResourceTexture.loadContents(Minecraft.getInstance().getResourceManager()).image();
-                NativeImage finalImage = grayscaleSkinOverMaterial(skinImage, overlayImage, (float) blendStrength / 100f);
-                registerTexture(finalImage, location, "SkinData".equals(type.getSimpleName()));
-                overlayTextureCache.put(cacheKey, location);
-
-                return location;
+        final boolean isSkin = "SkinData".equals(type.getSimpleName());
+        final AbstractTexture fSkinTexture = skinTexture;
+        final AbstractTexture fOverlayTexture = overlayTexture;
+        // Atomic: compute+register the overlay exactly once per cacheKey.
+        // Returning null from the mapping leaves the key uncached and falls back to skinId.
+        ResourceLocation result = overlayTextureCache.computeIfAbsent(cacheKey, k -> {
+            try {
+                if (fSkinTexture instanceof DynamicTexture skinResourceTexture && fOverlayTexture instanceof SimpleTexture overlayResourceTexture) {
+                    NativeImage skinImage = skinResourceTexture.getPixels();
+                    NativeImage overlayImage = overlayResourceTexture.loadContents(Minecraft.getInstance().getResourceManager()).image();
+                    NativeImage finalImage = grayscaleSkinOverMaterial(skinImage, overlayImage, (float) blendStrength / 100f);
+                    registerTexture(finalImage, location, isSkin);
+                    return location;
+                }
+            } catch (Exception e) {
+                PlayerArmorStandsClient.LOGGER.warn("Failed to create overlay texture for: {} with overlay: {}", info, overlay, e);
+                OverlayMessageManger.getInstance().showOverlayNotFoundMessage(overlay);
+                notExistingOverlays.add(overlay);
             }
-        } catch (Exception e) {
-            PlayerArmorStandsClient.LOGGER.warn("Failed to create overlay texture for: {} with overlay: {}", info, overlay, e);
-            OverlayMessageManger.getInstance().showOverlayNotFoundMessage(overlay);
-            notExistingOverlays.add(overlay);
-        }
-
-        return skinId;
+            return null;
+        });
+        return result != null ? result : skinId;
     }
 
     public static NativeImage grayscaleSkinOverMaterial(NativeImage skin, NativeImage material, float blendStrength) {

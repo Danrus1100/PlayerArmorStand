@@ -80,7 +80,7 @@ public abstract class ArmorStandRendererMixin<S extends LivingEntityRenderState>
     *///?}
         NameInfo info = NameInfo.parse(ModUtils.getCustomName(state) != null ? ModUtils.getCustomName(state).getString() : "");
 
-        if (info.lolmeme != null) {
+        if (info.lolmeme() != null) {
 
             state.bodyRot = 0;
             state.yRot = 0;

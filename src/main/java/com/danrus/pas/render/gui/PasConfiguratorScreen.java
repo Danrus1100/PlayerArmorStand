@@ -82,7 +82,7 @@ public class PasConfiguratorScreen extends Screen {
     private final ButtonWithIcon capeAciveButton;
     private final ButtonWithIcon capeProviderButton;
 
-    private NameInfo info;
+    private NameInfo.Builder info;
 
     private final TabManager tabManager;
 
@@ -90,7 +90,7 @@ public class PasConfiguratorScreen extends Screen {
         super(Component.literal("Player Armor Stand Configurator"));
         this.parent = parent;
         this.entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
-        this.info = NameInfo.parse(parent.getNameInputValue());
+        this.info = NameInfo.parse(parent.getNameInputValue()).toBuilder();
         setEntityName(this.info.compile());
 
         this.acceptButton = Button.builder(Component.translatable("pas.menu.accept").withStyle(ChatFormatting.GREEN), b -> acceptName()).bounds(width, height/2 - 110, 100, 20).build();
@@ -129,18 +129,17 @@ public class PasConfiguratorScreen extends Screen {
                 MOJANG_LOGO,
                 Component.translatable("pas.menu.tab.cape.provider." + info.getFeature(CapeFeature.class).getProvider().toLowerCase()),
                 button -> {
-                    CapeFeature capeFeature = info.getFeature(CapeFeature.class);
-                    switch (capeFeature.getProvider()) {
+                    switch (info.getFeature(CapeFeature.class).getProvider()) {
                         case "M" -> {
-                            capeFeature.setProvider("A");
+                            info.setCapeProvider("A");
                             button.setMessage(Component.translatable("pas.menu.tab.cape.provider.a"));
                         }
                         case "A" -> {
-                            capeFeature.setProvider("I");
+                            info.setCapeProvider("I");
                             button.setMessage(Component.translatable("pas.menu.tab.cape.provider.i"));
                         }
                         case "I" ->{
-                            capeFeature.setProvider("M");
+                            info.setCapeProvider("M");
                             button.setMessage(Component.translatable("pas.menu.tab.cape.provider.m"));
                         }
                     }
@@ -151,7 +150,7 @@ public class PasConfiguratorScreen extends Screen {
                 info.wantCape() ? YES_LOGO : NO_LOGO,
                 info.wantCape() ? Component.translatable("pas.menu.tab.cape.yes") : Component.translatable("pas.menu.tab.cape.no"),
                 button -> {
-                    info.setCape(!info.wantCape());
+                    info.setCapeEnabled(!info.wantCape());
                     ((ButtonWithIcon) button).icon = info.wantCape() ? YES_LOGO : NO_LOGO;
                     button.setMessage(Component.translatable("pas.menu.tab.cape." + (info.wantCape() ? "yes" : "no")));
                     setEntityName(info.compile());
@@ -171,7 +170,7 @@ public class PasConfiguratorScreen extends Screen {
     private void setupTabs() {
         // --- Skin Tab ---
         EnterEditBox nameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Name"), editBox -> {
-            info.setName(editBox.getValue());
+            info.setBase(editBox.getValue());
             setEntityName(info.compile());
         });
         nameBox.setValue(info.base());
@@ -183,7 +182,7 @@ public class PasConfiguratorScreen extends Screen {
                         Rl.pas("accept_highlighted")
                 ),
                 button -> {
-                    info.setName(nameBox.getValue());
+                    info.setBase(nameBox.getValue());
                     setEntityName(info.compile());
                 }
         );
@@ -223,8 +222,7 @@ public class PasConfiguratorScreen extends Screen {
         TextWidget armTypeLabel2 = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.arm_type"));
 
         EnterEditBox capeNameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Cape Name"), editBox -> {
-            CapeFeature capeFeature = info.getFeature(CapeFeature.class);
-            capeFeature.setId(editBox.getValue());
+            info.setCapeId(editBox.getValue());
             setEntityName(info.compile());
         });
 
@@ -237,7 +235,7 @@ public class PasConfiguratorScreen extends Screen {
                         Rl.pas("accept_highlighted")
                 ),
                 button -> {
-                    info.getFeature(CapeFeature.class).setId(capeNameBox.getValue());
+                    info.setCapeId(capeNameBox.getValue());
                     setEntityName(info.compile());
                 }
         );
@@ -289,12 +287,8 @@ public class PasConfiguratorScreen extends Screen {
         );
         TextWidget displayNameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.overlay.display_name")).setTooltip(Component.translatable("pas.menu.tab.overlay.display_name.tooltip"));
         EnterEditBox displayNameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Display Name"), editBox -> {
-            DisplayNameFeature feature = info.getFeature(DisplayNameFeature.class);
-            if (feature != null) {
-                feature.setEnabled(!editBox.getValue().isEmpty());
-                feature.setName(editBox.getValue());
-                setEntityName(info.compile());
-            }
+            info.setDisplayName(editBox.getValue());
+            setEntityName(info.compile());
         });
         ImageButton acceptDisplayNameButton = new ImageButton(0, 0, 20, 20,
                 new WidgetSprites(
@@ -303,7 +297,7 @@ public class PasConfiguratorScreen extends Screen {
                         Rl.pas("accept_highlighted")
                 ),
                 button -> {
-                    info.getFeature(DisplayNameFeature.class).setName(displayNameBox.getValue());
+                    info.setDisplayName(displayNameBox.getValue());
                     setEntityName(info.compile());
                 }
         );
@@ -525,15 +519,15 @@ public class PasConfiguratorScreen extends Screen {
     private void changeSkinProvider(String literal, Button button) {
         switch (literal) {
             case "M" -> {
-                info.setProvider("N");
+                info.setSkinProvider("N");
                 button.setMessage(Component.translatable("pas.menu.tab.skin.provider.n"));
             }
             case "N" -> {
-                info.setProvider("F");
+                info.setSkinProvider("F");
                 button.setMessage(Component.translatable("pas.menu.tab.skin.provider.f"));
             }
             case "F" -> {
-                info.setProvider("M");
+                info.setSkinProvider("M");
                 button.setMessage(Component.translatable("pas.menu.tab.skin.provider.m"));
             }
         }

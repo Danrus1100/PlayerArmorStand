@@ -2,7 +2,7 @@ package com.danrus.pas.commands;
 
 import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataRepository;
-import com.danrus.pas.api.data.DataStoreKey;
+import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
@@ -15,14 +15,14 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import java.util.concurrent.CompletableFuture;
 
-public abstract class DataStoreKeyArgumentType<T extends DataHolder> implements ArgumentType<DataStoreKey> {
+public abstract class NameInfoArgumentType<T extends DataHolder> implements ArgumentType<NameInfo> {
 
-    public static DataStoreKey getDataStoreKey(CommandContext<?> context, String name) {
-        return context.getArgument(name, DataStoreKey.class);
+    public static NameInfo getNameInfo(CommandContext<?> ctx, String name) {
+        return ctx.getArgument(name, NameInfo.class);
     }
 
-    public static DataStoreKeyArgumentType<SkinData> forSkin() {
-        return new DataStoreKeyArgumentType<>() {
+    public static NameInfoArgumentType<SkinData> forSkin() {
+        return new NameInfoArgumentType<>() {
             @Override
             DataRepository<SkinData> getDataRepository() {
                 return PasManager.getInstance().getSkinDataManager();
@@ -30,8 +30,8 @@ public abstract class DataStoreKeyArgumentType<T extends DataHolder> implements 
         };
     }
 
-    public static DataStoreKeyArgumentType<CapeData> forCape() {
-        return new DataStoreKeyArgumentType<>() {
+    public static NameInfoArgumentType<CapeData> forCape() {
+        return new NameInfoArgumentType<>() {
             @Override
             DataRepository<CapeData> getDataRepository() {
                 return PasManager.getInstance().getCapeDataManager();
@@ -40,20 +40,18 @@ public abstract class DataStoreKeyArgumentType<T extends DataHolder> implements 
     }
 
     @Override
-    public DataStoreKey parse(StringReader reader) throws CommandSyntaxException {
-        DataStoreKey prototype = DataStoreKey.parsePrototype(reader.readString());
-        for (DataStoreKey key : getDataRepository().keySet()) {
-            if (key.equals(prototype)) {
-                return key;
-            }
-        }
-        return prototype;
+    public NameInfo parse(StringReader reader) throws CommandSyntaxException {
+        // Read the entire remaining input as the name (greedy final argument) so that
+        // parameterized names containing '|', ':' or '%' round-trip from the suggestions.
+        String remaining = reader.getRemaining();
+        reader.setCursor(reader.getTotalLength());
+        return NameInfo.parse(remaining);
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        for (DataStoreKey key : getDataRepository().keySet()) {
-            builder.suggest(key.asString());
+        for (NameInfo info : getDataRepository().keySet()) {
+            builder.suggest(info.compile());
         }
         return builder.buildFuture();
     }

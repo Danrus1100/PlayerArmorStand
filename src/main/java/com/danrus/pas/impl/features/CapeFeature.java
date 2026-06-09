@@ -7,41 +7,34 @@ import org.jetbrains.annotations.Nullable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CapeFeature implements RenameFeature {
+public record CapeFeature(boolean enabled, String provider, String id) implements RenameFeature {
 
     private static final Pattern PARSE_PATTERN = Pattern.compile("C(?::([^%|]+)(?:%([^%|]+)%)?)?");
     private static final Pattern CLEANUP_PATTERN = Pattern.compile("C(?::[^%|]+(?:%[^%|]+%)?)?");
 
-    private boolean enabled = false;
-    private String provider = "M";
-    private String id = "";
-
     @Override
-    public boolean parse(@NotNull String input) {
+    public @Nullable RenameFeature parseFrom(@NotNull String input) {
         Matcher matcher = PARSE_PATTERN.matcher(input);
-
         if (matcher.find()) {
-            this.enabled = true;
-
             String prov = matcher.group(1);
             String capeId = matcher.group(2);
-
+            String resolvedProv;
+            String resolvedId;
             if (prov != null || capeId != null) {
-                this.provider = prov == null ? "M" : prov.trim();
-                this.id = capeId == null ? "" : capeId.trim();
+                resolvedProv = prov == null ? "M" : prov.trim();
+                resolvedId = capeId == null ? "" : capeId.trim();
             } else {
-                this.provider = "M";
-                this.id = "";
+                resolvedProv = "M";
+                resolvedId = "";
             }
-            return true;
+            return new CapeFeature(true, resolvedProv, resolvedId);
         }
-        return false;
+        return null;
     }
 
     @Override
     public @NotNull String compile() {
         if (!enabled) return "";
-
         StringBuilder sb = new StringBuilder("C");
         if (!provider.isEmpty() && !provider.equals("M")) {
             sb.append(":").append(provider);
@@ -57,29 +50,14 @@ public class CapeFeature implements RenameFeature {
         return 1;
     }
 
-    @Override
-    public void reset() {
-        this.enabled = false;
-        this.provider = "M";
-        this.id = "";
-    }
-
     @Nullable
     @Override
     public Pattern getCleanupPattern() {
         return CLEANUP_PATTERN;
     }
 
+    // Explicit getters (in addition to record accessors)
     public boolean isEnabled() { return enabled; }
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
-
     public String getProvider() { return provider; }
-    public void setProvider(String provider) {
-        this.provider = provider == null ? "" : provider;
-    }
-
     public String getId() { return id; }
-    public void setId(String id) {
-        this.id = id == null ? "" : id;
-    }
 }

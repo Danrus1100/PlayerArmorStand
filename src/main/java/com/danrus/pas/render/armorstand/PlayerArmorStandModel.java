@@ -186,7 +186,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         Rotations bodyPose = ModUtils.getBodyPose(armorStand);
         NameInfo info = NameInfo.parse(customName);
 
-        if (info.lolmeme != null) {
+        if (info.lolmeme() != null) {
             getCape().visible = false;
             getPlayerParts().forEach(part -> part.visible = false);
             getOriginalParts().forEach(part -> part.visible = false);

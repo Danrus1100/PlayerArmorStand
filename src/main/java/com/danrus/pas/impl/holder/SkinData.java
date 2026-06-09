@@ -12,17 +12,12 @@ public class SkinData extends AbstractPasHolder{
         super();
     }
 
-    @Deprecated
-    public SkinData(NameInfo info) {
-        super();
-    }
-
     @Override
     protected ResourceLocation getDefaultTexture() {
         return getDefaultTextureStatic();
     }
 
-    protected static ResourceLocation getDefaultTextureStatic() {
+    public static ResourceLocation getDefaultTextureStatic() {
         return PasConfig.getInstance().isShowArmorStandWhileDownloading()
                 ? Rl.vanilla(
                         //? <26.1
@@ -31,10 +26,5 @@ public class SkinData extends AbstractPasHolder{
                         //"textures/entity/armorstand/armorstand.png"
                 )
                 : Rl.vanilla("textures/entity/player/wide/steve.png");
-    }
-
-    @Override
-    public void setTexture(ResourceLocation location) {
-        this.location = location;
     }
 }

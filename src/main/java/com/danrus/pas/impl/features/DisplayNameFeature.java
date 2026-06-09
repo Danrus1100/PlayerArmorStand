@@ -6,22 +6,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
 
-public class DisplayNameFeature implements RenameFeature {
+public record DisplayNameFeature(boolean enabled, String name) implements RenameFeature {
 
     private static final String FLAG = "D:";
     private static final Pattern CLEANUP_PATTERN = Pattern.compile("D:[^|]+");
 
-    boolean enabled = false;
-    String name = "";
-
     @Override
-    public boolean parse(@NotNull String input) {
+    public @Nullable RenameFeature parseFrom(@NotNull String input) {
         if (input.contains(FLAG)) {
-            this.enabled = true;
-            this.name = input.substring(input.indexOf(FLAG) + 2);
-            return true;
+            return new DisplayNameFeature(true, input.substring(input.indexOf(FLAG) + 2));
         }
-        return false;
+        return null;
     }
 
     @Override
@@ -35,14 +30,7 @@ public class DisplayNameFeature implements RenameFeature {
         return CLEANUP_PATTERN;
     }
 
-    @Override
-    public void reset() {
-        this.enabled = false;
-        this.name = "";
-    }
-
+    // Explicit getters (in addition to record accessors)
     public boolean isEnabled() { return enabled; }
     public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
 }

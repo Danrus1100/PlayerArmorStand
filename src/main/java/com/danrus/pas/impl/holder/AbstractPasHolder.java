@@ -2,15 +2,12 @@ package com.danrus.pas.impl.holder;
 
 import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.DownloadStatus;
-import com.danrus.pas.api.info.NameInfo;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.Objects;
 
 public abstract class AbstractPasHolder implements DataHolder {
 
-    private DownloadStatus status = DownloadStatus.NOT_STARTED;
-    protected ResourceLocation location;
+    private volatile DownloadStatus status = DownloadStatus.NOT_STARTED;
+    protected volatile ResourceLocation location;
 
     public AbstractPasHolder() {}
 
@@ -18,6 +15,11 @@ public abstract class AbstractPasHolder implements DataHolder {
     public ResourceLocation getTexture() {
         if (location != null) return location;
         return getDefaultTexture();
+    }
+
+    @Override
+    public void setTexture(ResourceLocation location) {
+        this.location = location;
     }
 
     protected abstract ResourceLocation getDefaultTexture();
@@ -28,21 +30,15 @@ public abstract class AbstractPasHolder implements DataHolder {
     }
 
     @Override
-    public void setStatus(DownloadStatus status) {
+    public synchronized void setStatus(DownloadStatus status) {
         this.status = status;
     }
 
     @Override
-    public int hashCode() {
-         return Objects.hash(this.getStatus());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof SkinData other) {
-            boolean statusEqual = this.getStatus() == other.getStatus();
-
-            return statusEqual;
+    public synchronized boolean compareAndSetStatus(DownloadStatus expected, DownloadStatus update) {
+        if (this.status == expected) {
+            this.status = update;
+            return true;
         }
         return false;
     }

@@ -60,7 +60,7 @@ public class MinecraftCapesTextureProvider implements TextureProvider{
         }
         PlayerArmorStandsClient.LOGGER.info("processCapeTexture called for {}", info);
         if (profile.cape_url.isEmpty()) {
-            CapeData data = new CapeData(info);
+            CapeData data = new CapeData();
             data.setStatus(DownloadStatus.COMPLETED);
             PasManager.getInstance().getCapeDataManager().store(info, data);
             return CompletableFuture.completedFuture(null);
@@ -74,7 +74,7 @@ public class MinecraftCapesTextureProvider implements TextureProvider{
 
         return SkinDownloader.downloadAndRegister(capeLocation, filePath, profile.cape_url, false)
                 .thenAccept(textureId -> {
-                    CapeData data = new CapeData(info);
+                    CapeData data = new CapeData();
                     data.setTexture(textureId);
                     data.setStatus(DownloadStatus.COMPLETED);
                     PasManager.getInstance().getCapeDataManager().store(info, data);
@@ -94,7 +94,7 @@ public class MinecraftCapesTextureProvider implements TextureProvider{
     private void doFail(NameInfo info) {
         OverlayMessageManger.getInstance().showFailMessage(info.base());
 
-        CapeData capeData = new CapeData(info);
+        CapeData capeData = new CapeData();
         capeData.setStatus(DownloadStatus.FAILED);
         PasManager.getInstance().getCapeDataManager().store(info, capeData);
     }

@@ -39,13 +39,12 @@ public interface DataRepository<T extends DataHolder> {
     Optional<T> getData(NameInfo info);
 
     /**
-     * Retrieves all data available in the manager.
+     * Stores data associated with the given NameInfo.
      *
      * @param info the NameInfo of the player
      * @param data Object data to be stored
      */
     void store(NameInfo info, T data);
-    void store(DataStoreKey key, T data);
 
     /**
      * Invalidates the data associated with the given name.
@@ -61,22 +60,13 @@ public interface DataRepository<T extends DataHolder> {
      * @param key the key of the data source
      * @return the DataCache associated with the key, or null if not found
      */
-
     DataProvider<T> getSource(String key);
 
     /**
      * Retrieves all data sources managed by this DataManager.
      * @return a HashMap containing all data sources, where the key is the source key and the value is the DataCache
      */
-
     HashMap<String, DataProvider<T>> getSources();
-
-
-    /**
-     * Retrieves all data stored in {@link CacheSkinData}
-     *
-     * @return a HashMap containing all game data, where the key is the player name and the value is SkinData
-     */
 
     /**
      * Finds SkinData by a given string without download.
@@ -84,17 +74,14 @@ public interface DataRepository<T extends DataHolder> {
      * @param info the NameInfo for the skin data
      * @return SkinData associated with the identifier, or null if not found
      */
-
     Optional<T> findData(NameInfo info);
-
 
     /**
      * Deletes the data associated with the given string.
      *
      * @param info the NameInfo for the data to delete
      */
-
     void delete(NameInfo info);
 
-    Set<DataStoreKey> keySet();
+    Set<NameInfo> keySet();
 }

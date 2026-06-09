@@ -1,7 +1,7 @@
 package com.danrus.pas.impl.data.cape;
 
 import com.danrus.pas.api.data.DataRepository;
-import com.danrus.pas.api.data.DataStoreKey;
+import com.danrus.pas.api.data.DataType;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.data.common.AbstractClientLevelDataProvider;
 import com.danrus.pas.impl.holder.CapeData;
@@ -29,12 +29,7 @@ public class ClientLevelCapeData extends AbstractClientLevelDataProvider<CapeDat
     }
 
     @Override
-    protected DataStoreKey getKey(NameInfo info) {
-        return DataStoreKey.forCape(info);
-    }
-
-    @Override
-    public DataStoreKey.DataType getDataType() {
-        return DataStoreKey.DataType.CAPE;
+    public DataType getDataType() {
+        return DataType.CAPE;
     }
 }

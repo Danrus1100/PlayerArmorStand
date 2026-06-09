@@ -5,5 +5,5 @@ public enum DownloadStatus {
     IN_PROGRESS,
     COMPLETED,
     FAILED,
-    IMPOSSIBLE_TO_DOWNLOAD;
+    INVALID;
 }

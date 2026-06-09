@@ -42,8 +42,8 @@ public class LivingEntityRendererMixin<T extends LivingEntityRenderState, M exte
             info = new NameInfo();
         }
 
-        if (info.lolmeme != null) {
-            cir.setReturnValue(RenderType.entitySolid(info.lolmeme));
+        if (info.lolmeme() != null) {
+            cir.setReturnValue(RenderType.entitySolid(info.lolmeme()));
             return;
         }
 

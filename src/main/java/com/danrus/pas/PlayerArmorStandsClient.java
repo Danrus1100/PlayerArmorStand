@@ -28,11 +28,11 @@ public class PlayerArmorStandsClient {
     public static void initialize() {
         PasManager.getInstance();
         FeatureRegistry features = FeatureRegistry.getInstance();
-        features.register(OverlayFeature.class);
-        features.register(CapeFeature.class);
-        features.register(SkinProviderFeature.class);
-        features.register(SlimFeature.class);
-        features.register(DisplayNameFeature.class);
+        features.register(new OverlayFeature("", 100));
+        features.register(new CapeFeature(false, "M", ""));
+        features.register(new SkinProviderFeature("M"));
+        features.register(new SlimFeature(false));
+        features.register(new DisplayNameFeature(false, ""));
 
         InfoTranslators translator = InfoTranslators.getInstance();
         translator.register(SkinData.class, new NamemcSkinTranslator());

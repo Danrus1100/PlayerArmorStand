@@ -5,7 +5,6 @@ import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataProvider;
 import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.DownloadStatus;
-import com.danrus.pas.api.data.DataStoreKey;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.utils.TextureUtils;
@@ -17,18 +16,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractFileTextureDataProvider<T extends DataHolder> implements DataProvider<T> {
 
-    private final Map<DataStoreKey, T> cache = new HashMap<>();
+    private final Map<NameInfo, T> cache = new ConcurrentHashMap<>();
 
     protected final T DEFAULT = createDataHolder(defaultTexture());
 
     @Override
+    public void clearCache() { cache.clear(); }
+
+    @Override
     public Optional<T> get(NameInfo info) {
-        DataStoreKey key = getKey(info);
-        if (cache.containsKey(key)){
-            return Optional.of(cache.get(key));
+        if (cache.containsKey(info)) {
+            return Optional.of(cache.get(info));
         }
 
         if (!info.getDesiredProvider().equals(getProviderCode())) {
@@ -57,7 +59,7 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
 
     @Override
     public Optional<T> find(NameInfo info) {
-        T data = cache.get(getKey(info));
+        T data = cache.get(info);
         if (data == null) {
             return get(info);
         }
@@ -74,28 +76,23 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
     }
 
     @Override
-    public boolean delete(DataStoreKey key) {
-        return true;
-    }
-
-    @Override
-    public HashMap<DataStoreKey, T> getAll() {
+    public Map<NameInfo, T> getAll() {
         return new HashMap<>();
     }
 
     @Override
     public void store(NameInfo info, T data) {
-
-    }
-
-    @Override
-    public void store(DataStoreKey key, T data) {
-
     }
 
     @Override
     public void invalidateData(NameInfo info) {
-        cache.put(getKey(info), DEFAULT);
+        cache.put(info, DEFAULT);
+    }
+
+    private T createFailed() {
+        T data = createDataHolder(defaultTexture());
+        data.setStatus(DownloadStatus.FAILED);
+        return data;
     }
 
     private List<Path> getCacheFiles() {
@@ -116,6 +113,5 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
     protected abstract DataRepository<T> getDataManager();
     protected abstract String getProviderCode();
     protected abstract Class<? extends DataHolder> getDataHolderClass();
-    protected abstract DataStoreKey getKey(NameInfo info);
     protected abstract ResourceLocation defaultTexture();
 }

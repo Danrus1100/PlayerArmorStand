@@ -1,6 +1,7 @@
 package com.danrus.pas.managers;
 
 import com.danrus.pas.PlayerArmorStandsClient;
+import com.danrus.pas.config.DownloadStatusDisplay;
 import com.danrus.pas.config.PasConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -32,18 +33,16 @@ public class OverlayMessageManger {
     }
 
     private void showMessage(String key, String name, ChatFormatting color) {
-        if (name.isEmpty()) {
-            return;
-        }
-        switch (PasConfig.getInstance().getDownloadStatusDisplay()) {
-            case NONE:
-                return;
-            case ABOVE_HOTBAR:
-                Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(key, name).withStyle(color), false);
-                return;
-            case CHAT:
-                Minecraft.getInstance().gui.getChat().addMessage(Component.translatable(key, name).withStyle(color));
-        }
+        if (name.isEmpty()) { return; }
+        DownloadStatusDisplay display = PasConfig.getInstance().getDownloadStatusDisplay();
+        if (display == DownloadStatusDisplay.NONE) { return; }
+        Minecraft.getInstance().execute(() -> {
+            switch (display) {
+                case ABOVE_HOTBAR -> Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(key, name).withStyle(color), false);
+                case CHAT -> Minecraft.getInstance().gui.getChat().addMessage(Component.translatable(key, name).withStyle(color));
+                default -> {}
+            }
+        });
     }
 
     public static OverlayMessageManger getInstance() {

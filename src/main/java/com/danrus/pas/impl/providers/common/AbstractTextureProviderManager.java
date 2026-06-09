@@ -7,22 +7,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractTextureProviderManager<T extends DataHolder> implements TextureProvidersManager {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getName());
 
-    private boolean initialized = false;
+    private final AtomicBoolean initialized = new AtomicBoolean(false);
     private PasManager pasManager;
 
-    private final Map<String, List<PrioritizedProvider>> providers = new HashMap<>();
-    private final List<String> pendingList = new ArrayList<>();
+    private final Map<String, List<PrioritizedProvider>> providers = new ConcurrentHashMap<>();
+    private final Set<String> pendingList = ConcurrentHashMap.newKeySet();
+
+    public void clearPending() { pendingList.clear(); }
 
     public void initialize(PasManager manager) {
-        if (!initialized) {
+        if (initialized.compareAndSet(false, true)) {
             this.pasManager = manager;
-            initialized = true;
-
             this.prepareProviders();
         }
     }
@@ -47,13 +49,14 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
 
     @Override
     public void download(NameInfo info) {
-        if (isAlreadyPending(info)) {
-            return;
-        }
-
         if (info.base().isEmpty()) {
             LOGGER.warn(getClass().getSimpleName() +
                     ": Invalid input " + info.base());
+            return;
+        }
+
+        final String pendingKey = getPendingKey(info);
+        if (!pendingList.add(pendingKey)) {
             return;
         }
 
@@ -62,7 +65,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
         for (char c : getExcludeLiterals().toCharArray()) {
             String literal = String.valueOf(c);
             if (getProvider(info).equals(literal)) {
-                if (tryLoadFromProviders(literal, info)) {
+                if (tryLoadFromProviders(literal, info, pendingKey)) {
                     loaded = true;
                     break;
                 }
@@ -71,18 +74,19 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
 
         if (!loaded && !getExcludeLiterals().contains(getProvider(info))) {
             String literal = getProvider(info);
-            if (tryLoadFromProviders(literal, info)) {
+            if (tryLoadFromProviders(literal, info, pendingKey)) {
                 loaded = true;
             }
         }
 
         if (!loaded) {
-            if (tryLoadFromProviders(getDefaultLiteral(), info)) {
+            if (tryLoadFromProviders(getDefaultLiteral(), info, pendingKey)) {
                 loaded = true;
             }
         }
 
         if (!loaded) {
+            pendingList.remove(pendingKey);
             LOGGER.error(getClass().getSimpleName() +
                     ": No provider could load " + info.base() + " with NameInfo: " + info);
             if (pasManager != null) {
@@ -91,31 +95,26 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
         }
     }
 
-    private boolean tryLoadFromProviders(String literal, NameInfo info) {
-        return tryLoad(providers.get(literal), info);
+    private boolean tryLoadFromProviders(String literal, NameInfo info, String pendingKey) {
+        return tryLoad(providers.get(literal), info, pendingKey);
     }
 
-    private boolean tryLoad(List<PrioritizedProvider> providerList, NameInfo info) {
+    private boolean tryLoad(List<PrioritizedProvider> providerList, NameInfo info, String pendingKey) {
         if (providerList == null || providerList.isEmpty()) return false;
 
         for (PrioritizedProvider prioritized : providerList) {
             try {
-                LOGGER.info("Trying to download {} from {}", getPendingKey(info), prioritized.provider.getClass().getSimpleName());
-                pendingList.add(getPendingKey(info));
-                prioritized.provider().load(info, pendingList::remove);
+                LOGGER.info("Trying to download {} from {}", pendingKey, prioritized.provider.getClass().getSimpleName());
+                prioritized.provider().load(info, ignored -> pendingList.remove(pendingKey));
                 return true;
             } catch (Exception e) {
                 LOGGER.error(
                         "Provider {} failed to load {}: {}",
-                        prioritized.provider().getClass().getSimpleName(), getPendingKey(info), e.getMessage()
+                        prioritized.provider().getClass().getSimpleName(), pendingKey, e.getMessage()
                 );
             }
         }
         return false;
-    }
-
-    private boolean isAlreadyPending(NameInfo info) {
-        return pendingList.contains(getPendingKey(info));
     }
 
     protected abstract String getPendingKey(NameInfo info);

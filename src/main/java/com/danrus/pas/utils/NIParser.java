@@ -4,6 +4,7 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.info.RenameFeature;
 import com.danrus.pas.api.reg.FeatureRegistry;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.regex.Pattern;
@@ -21,22 +22,31 @@ public class NIParser {
 
         if (name.matches(".*[<>:\"/\\\\?*].*")) return new NameInfo();
 
-        NameInfo info = new NameInfo(name);
+        // Build default feature map
+        Map<Class<? extends RenameFeature>, RenameFeature> featureMap = new LinkedHashMap<>();
+        for (RenameFeature def : FeatureRegistry.getInstance().getOrderedDefaults()) {
+            featureMap.put(def.getClass(), def);
+        }
 
+        String legacy = "";
         if (divided.length > 1) {
             String params = divided[1].trim();
 
-            for (Class<? extends RenameFeature> featureClass : FeatureRegistry.getInstance().getOrderedFeatures()) {
-                RenameFeature feature = info.getFeature(featureClass);
-                if (feature != null && feature.parse(params)) {
-                    String compiled = feature.compile();
-                    params = params.replace(compiled, "").trim();
+            for (RenameFeature def : FeatureRegistry.getInstance().getOrderedDefaults()) {
+                RenameFeature parsed = def.parseFrom(params);
+                if (parsed != null) {
+                    featureMap.put(parsed.getClass(), parsed);
+                    String compiled = parsed.compile();
+                    if (!compiled.isEmpty()) {
+                        params = params.replace(compiled, "").trim();
+                    }
                 }
             }
 
-            info.legacyParams = normalizeParams(params);
+            legacy = normalizeParams(params);
         }
 
+        NameInfo info = new NameInfo(name, featureMap, legacy, null);
         cached.put(input, info);
         return info;
     }
@@ -45,13 +55,10 @@ public class NIParser {
         if (raw == null || raw.isEmpty()) return "";
         String p = raw.replaceAll("\\s+", "").toUpperCase();
 
-        for (Class<? extends RenameFeature> featureClass : FeatureRegistry.getInstance().getOrderedFeatures()) {
-            RenameFeature feature = FeatureRegistry.getInstance().createFeature(featureClass);
-            if (feature != null) {
-                Pattern pattern = feature.getCleanupPattern();
-                if (pattern != null) {
-                    p = pattern.matcher(p).replaceAll("");
-                }
+        for (RenameFeature def : FeatureRegistry.getInstance().getOrderedDefaults()) {
+            Pattern pattern = def.getCleanupPattern();
+            if (pattern != null) {
+                p = pattern.matcher(p).replaceAll("");
             }
         }
 

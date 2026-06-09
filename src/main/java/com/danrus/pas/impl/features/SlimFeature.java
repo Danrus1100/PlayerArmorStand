@@ -2,19 +2,15 @@ package com.danrus.pas.impl.features;
 
 import com.danrus.pas.api.info.RenameFeature;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class SlimFeature implements RenameFeature {
+public record SlimFeature(boolean slim) implements RenameFeature {
 
     private static final String FLAG = "S";
-    private boolean slim = false;
 
     @Override
-    public boolean parse(@NotNull String input) {
-        if (input.contains(FLAG)) {
-            this.slim = true;
-            return true;
-        }
-        return false;
+    public @Nullable RenameFeature parseFrom(@NotNull String input) {
+        return input.contains(FLAG) ? new SlimFeature(true) : null;
     }
 
     @Override
@@ -27,11 +23,6 @@ public class SlimFeature implements RenameFeature {
         return 10;
     }
 
-    @Override
-    public void reset() {
-        this.slim = false;
-    }
-
+    // Explicit getter (in addition to record accessor)
     public boolean isSlim() { return slim; }
-    public void setSlim(boolean slim) { this.slim = slim; }
 }

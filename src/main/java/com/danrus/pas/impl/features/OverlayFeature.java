@@ -7,24 +7,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OverlayFeature implements RenameFeature {
+public record OverlayFeature(String texture, int blend) implements RenameFeature {
 
     private static final Pattern PARSE_PATTERN = Pattern.compile("T:([^%|]+)%?(\\d*)");
     private static final Pattern CLEANUP_PATTERN = Pattern.compile("T:[^|]+");
 
-    private String texture = "";
-    private int blend = 100;
-
     @Override
-    public boolean parse(@NotNull String input) {
+    public @Nullable RenameFeature parseFrom(@NotNull String input) {
         Matcher matcher = PARSE_PATTERN.matcher(input);
         if (matcher.find()) {
-            this.texture = matcher.group(1).trim();
+            String tex = matcher.group(1).trim();
             String blendStr = matcher.group(2);
-            this.blend = blendStr.isEmpty() ? 100 : clamp(Integer.parseInt(blendStr), 0, 100);
-            return true;
+            int resolvedBlend = blendStr.isEmpty() ? 100 : clamp(Integer.parseInt(blendStr), 0, 100);
+            return new OverlayFeature(tex, resolvedBlend);
         }
-        return false;
+        return null;
     }
 
     @Override
@@ -38,31 +35,16 @@ public class OverlayFeature implements RenameFeature {
         return 50;
     }
 
-    @Override
-    public void reset() {
-        this.texture = "";
-        this.blend = 100;
-    }
-
     @Nullable
     @Override
     public Pattern getCleanupPattern() {
-        return CLEANUP_PATTERN; // Удаляем из legacy params
+        return CLEANUP_PATTERN;
     }
 
+    // Explicit getters (in addition to record accessors)
     public String getTexture() { return texture; }
-    public void setTexture(String texture) {
-        this.texture = texture == null ? "" : texture;
-    }
-
     public int getBlend() { return blend; }
-    public void setBlend(int blend) {
-        this.blend = clamp(blend, 0, 100);
-    }
-
-    public boolean isEnabled() {
-        return !texture.isEmpty();
-    }
+    public boolean isEnabled() { return texture != null && !texture.isEmpty(); }
 
     private static int clamp(int v, int lo, int hi) {
         return Math.max(lo, Math.min(hi, v));

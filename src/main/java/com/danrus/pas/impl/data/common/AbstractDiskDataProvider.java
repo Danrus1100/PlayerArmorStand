@@ -5,7 +5,6 @@ import com.danrus.pas.api.*;
 import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataProvider;
 import com.danrus.pas.api.data.DataRepository;
-import com.danrus.pas.api.data.DataStoreKey;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.config.PasConfig;
@@ -17,7 +16,9 @@ import net.minecraft.resources.ResourceLocation;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractDiskDataProvider<T extends DataHolder> implements DataProvider<T> {
 
@@ -25,8 +26,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     public static final FilesAges AGES = new FilesAges(CACHE_PATH.resolve("files_ages.json"));
 
     protected final Path cachePath;
-    protected final HashMap<DataStoreKey, T> cache = new HashMap<>();
-    protected final T DEFAULT = createDataHolder();
+    protected final Map<NameInfo, T> cache = new ConcurrentHashMap<>();
 
     public AbstractDiskDataProvider() {
         this.cachePath = CACHE_PATH;
@@ -34,6 +34,9 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
             cachePath.toFile().mkdirs();
         }
     }
+
+    @Override
+    public void clearCache() { cache.clear(); }
 
     @Override
     public Optional<T> get(NameInfo info) {
@@ -47,20 +50,19 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
 
         if (AGES.isExpired(fileName, FilesAges.millisFromSkinReloadTime(PasConfig.getInstance().getSkinReloadTime()))) {
             filePath.toFile().delete();
-            cache.remove(getCacheKey(info));
+            cache.remove(info);
             return Optional.empty();
         }
 
         ResourceLocation texture = InfoTranslators.getInstance().toResourceLocation(getDataHolderClass(), info);
 
-        T data = createDataHolder();
-
         TextureUtils.registerTexture(filePath, texture, shouldProcessSkin());
 
+        T data = createDataHolder();
         data.setTexture(texture);
         data.setStatus(DownloadStatus.COMPLETED);
 
-        cache.put(getCacheKey(info), data);
+        cache.put(info, data);
 
         getDataManager().store(info, data);
         return Optional.of(data);
@@ -68,10 +70,10 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
 
     @Override
     public Optional<T> find(NameInfo info) {
-        T data = cache.get(getCacheKey(info));
+        T data = cache.get(info);
         if (data == null) {
             return get(info);
-        };
+        }
         return Optional.of(data);
     }
 
@@ -87,7 +89,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
         }
 
         if (deleted) {
-            cache.remove(getCacheKey(info));
+            cache.remove(info);
             AGES.remove(fileName);
         }
 
@@ -95,23 +97,13 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     }
 
     @Override
-    public boolean delete(DataStoreKey key) {
-        return delete(key.tryToNameInfo());
-    }
-
-    @Override
-    public HashMap<DataStoreKey, T> getAll() {
-        return cache;
+    public Map<NameInfo, T> getAll() {
+        return new HashMap<>(cache);
     }
 
     @Override
     public void store(NameInfo info, T data) {
-        // NO-OP - disk провайдер только читает из кеша
-    }
-
-    @Override
-    public void store(DataStoreKey key, T data) {
-        // NO-OP
+        // NO-OP - disk provider only reads from cache
     }
 
     @Override
@@ -123,7 +115,13 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
         if (filePath.toFile().exists()) {
             filePath.toFile().delete();
         }
-        cache.put(getCacheKey(info), DEFAULT);
+        cache.put(info, createInvalid());
+    }
+
+    private T createInvalid() {
+        T data = createDataHolder();
+        data.setStatus(DownloadStatus.INVALID);
+        return data;
     }
 
     private List<Path> getCacheFiles() {
@@ -142,5 +140,4 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     protected abstract DataRepository<T> getDataManager();
     protected abstract Class<? extends DataHolder> getDataHolderClass();
     protected abstract boolean shouldProcessSkin();
-    protected abstract DataStoreKey getCacheKey(NameInfo info);
 }
