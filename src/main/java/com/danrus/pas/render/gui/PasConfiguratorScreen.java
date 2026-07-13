@@ -10,14 +10,11 @@ import com.danrus.pas.render.gui.widgets.ButtonWithIcon;
 import com.danrus.pas.render.gui.widgets.EnterEditBox;
 import com.danrus.pas.render.gui.widgets.PasSliderButtonImpl;
 import com.danrus.pas.render.gui.widgets.TextWidget;
-import com.danrus.pas.utils.Rl;
-import com.danrus.pas.utils.ModUtils;
+import com.danrus.pas.utils.Id;
 
 import com.danrus.pas.impl.data.skin.FileTextureSkinData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -28,26 +25,24 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class PasConfiguratorScreen extends Screen {
 
-    public static final ResourceLocation BACKGROUND_TEXTURE = Rl.pas("pas_gui");
+    public static final ResourceLocation BACKGROUND_TEXTURE = Id.pas("pas_gui");
 
-    public static final ResourceLocation MOJANG_LOGO = Rl.pas("mojang");
-    public static final ResourceLocation NAMEMC_LOGO = Rl.pas("namemc");
-    public static final ResourceLocation MCCAPES_LOGO = Rl.pas("minecraftcapes");
-    public static final ResourceLocation FILE_LOGO = Rl.pas("file");
-    public static final ResourceLocation WIDE_ARM_LOGO = Rl.pas("wide");
-    public static final ResourceLocation SLIM_ARM_LOGO = Rl.pas("slim");
+    public static final ResourceLocation MOJANG_LOGO = Id.pas("mojang");
+    public static final ResourceLocation NAMEMC_LOGO = Id.pas("namemc");
+    public static final ResourceLocation MCCAPES_LOGO = Id.pas("minecraftcapes");
+    public static final ResourceLocation FILE_LOGO = Id.pas("file");
+    public static final ResourceLocation WIDE_ARM_LOGO = Id.pas("wide");
+    public static final ResourceLocation SLIM_ARM_LOGO = Id.pas("slim");
 
-    public static final ResourceLocation YES_LOGO = Rl.pas("yes");
-    public static final ResourceLocation NO_LOGO = Rl.pas("no");
+    public static final ResourceLocation YES_LOGO = Id.pas("yes");
+    public static final ResourceLocation NO_LOGO = Id.pas("no");
 
     private static final float ANIMATION_SPEED = 0.5f;
 
@@ -106,22 +101,22 @@ public class PasConfiguratorScreen extends Screen {
                 );
 
         armTypeButton = new ButtonWithIcon(0, 0, 120, 20,
-                info.wantBeSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO,
-                Component.translatable("pas.menu.tab.skin.arm_type." + (info.wantBeSlim() ? "slim" : "wide")),
+                info.isSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO,
+                Component.translatable("pas.menu.tab.skin.arm_type." + (info.isSlim() ? "slim" : "wide")),
                 button -> {
-                    info.setSlim(!info.wantBeSlim());
-                    ((ButtonWithIcon) button).icon = info.wantBeSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO;
-                    button.setMessage(Component.translatable("pas.menu.tab.skin.arm_type." + (info.wantBeSlim() ? "slim" : "wide")));
+                    info.setSlim(!info.isSlim());
+                    ((ButtonWithIcon) button).icon = info.isSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO;
+                    button.setMessage(Component.translatable("pas.menu.tab.skin.arm_type." + (info.isSlim() ? "slim" : "wide")));
                     setEntityName(info.compile());
                 });
 
         armTypeButton2 = new ButtonWithIcon(0, 0, 120, 20,
-                info.wantBeSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO,
-                Component.translatable("pas.menu.tab.skin.arm_type." + (info.wantBeSlim() ? "slim" : "wide")),
+                info.isSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO,
+                Component.translatable("pas.menu.tab.skin.arm_type." + (info.isSlim() ? "slim" : "wide")),
                 button -> {
-                    info.setSlim(!info.wantBeSlim());
-                    ((ButtonWithIcon) button).icon = info.wantBeSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO;
-                    button.setMessage(Component.translatable("pas.menu.tab.skin.arm_type." + (info.wantBeSlim() ? "slim" : "wide")));
+                    info.setSlim(!info.isSlim());
+                    ((ButtonWithIcon) button).icon = info.isSlim() ? SLIM_ARM_LOGO : WIDE_ARM_LOGO;
+                    button.setMessage(Component.translatable("pas.menu.tab.skin.arm_type." + (info.isSlim() ? "slim" : "wide")));
                     setEntityName(info.compile());
                 });
 
@@ -147,12 +142,12 @@ public class PasConfiguratorScreen extends Screen {
                 });
 
         capeAciveButton = new ButtonWithIcon(0, 0, 120, 20,
-                info.wantCape() ? YES_LOGO : NO_LOGO,
-                info.wantCape() ? Component.translatable("pas.menu.tab.cape.yes") : Component.translatable("pas.menu.tab.cape.no"),
+                info.hasCape() ? YES_LOGO : NO_LOGO,
+                info.hasCape() ? Component.translatable("pas.menu.tab.cape.yes") : Component.translatable("pas.menu.tab.cape.no"),
                 button -> {
-                    info.setCapeEnabled(!info.wantCape());
-                    ((ButtonWithIcon) button).icon = info.wantCape() ? YES_LOGO : NO_LOGO;
-                    button.setMessage(Component.translatable("pas.menu.tab.cape." + (info.wantCape() ? "yes" : "no")));
+                    info.setCapeEnabled(!info.hasCape());
+                    ((ButtonWithIcon) button).icon = info.hasCape() ? YES_LOGO : NO_LOGO;
+                    button.setMessage(Component.translatable("pas.menu.tab.cape." + (info.hasCape() ? "yes" : "no")));
                     setEntityName(info.compile());
                 });
 
@@ -177,9 +172,9 @@ public class PasConfiguratorScreen extends Screen {
         TextWidget nameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.skin.name")).setTooltip(Component.translatable("pas.menu.tab.skin.name.tooltip"));
         ImageButton acceptNameButton = new ImageButton(0, 0, 20, 20,
                 new WidgetSprites(
-                        Rl.pas("accept"),
-                        Rl.pas("accept_disabled"),
-                        Rl.pas("accept_highlighted")
+                        Id.pas("accept"),
+                        Id.pas("accept_disabled"),
+                        Id.pas("accept_highlighted")
                 ),
                 button -> {
                     info.setBase(nameBox.getValue());
@@ -230,9 +225,9 @@ public class PasConfiguratorScreen extends Screen {
 
         ImageButton acceptCapeButton = new ImageButton(0, 0, 20, 20,
                 new WidgetSprites(
-                        Rl.pas("accept"),
-                        Rl.pas("accept_disabled"),
-                        Rl.pas("accept_highlighted")
+                        Id.pas("accept"),
+                        Id.pas("accept_disabled"),
+                        Id.pas("accept_highlighted")
                 ),
                 button -> {
                     info.setCapeId(capeNameBox.getValue());
@@ -269,19 +264,19 @@ public class PasConfiguratorScreen extends Screen {
         TextWidget blockTextureNameLabel = new TextWidget(0, 0, 100, 20, Component.translatable("pas.menu.tab.overlay.name")).setTooltip(Component.translatable("pas.menu.tab.overlay.name.tooltip"));
         EnterEditBox blockTextureNameBox = new EnterEditBox(Minecraft.getInstance().font, 0, 0, 100, 20, Component.literal("Overlay Name"), editBox -> {
             info.setOverlay(editBox.getValue());
-            info.setBlend(Math.max(0, Math.min(100, info.blend()))); // Ensure blend is between 0 and 100
+            info.setBlend(Math.max(0, Math.min(100, info.overlayBlend()))); // Ensure blend is between 0 and 100
             setEntityName(info.compile());
         });
-        PasSliderButtonImpl overlayBlendSlider = new PasSliderButtonImpl(0, 0, 120, 20, Component.literal(info.blend() + "%"), info.blend(), (i) -> info.setBlend(i));
+        PasSliderButtonImpl overlayBlendSlider = new PasSliderButtonImpl(0, 0, 120, 20, Component.literal(info.overlayBlend() + "%"), info.overlayBlend(), (i) -> info.setBlend(i));
         ImageButton acceptOverlayNameButton = new ImageButton(0, 0, 20, 20,
                 new WidgetSprites(
-                        Rl.pas("accept"),
-                        Rl.pas("accept_disabled"),
-                        Rl.pas("accept_highlighted")
+                        Id.pas("accept"),
+                        Id.pas("accept_disabled"),
+                        Id.pas("accept_highlighted")
                 ),
                 button -> {
                     info.setOverlay(blockTextureNameBox.getValue());
-                    info.setBlend(Math.max(0, Math.min(100, info.blend()))); // Ensure blend is between 0 and 100
+                    info.setBlend(Math.max(0, Math.min(100, info.overlayBlend()))); // Ensure blend is between 0 and 100
                     setEntityName(info.compile());
                 }
         );
@@ -292,16 +287,16 @@ public class PasConfiguratorScreen extends Screen {
         });
         ImageButton acceptDisplayNameButton = new ImageButton(0, 0, 20, 20,
                 new WidgetSprites(
-                        Rl.pas("accept"),
-                        Rl.pas("accept_disabled"),
-                        Rl.pas("accept_highlighted")
+                        Id.pas("accept"),
+                        Id.pas("accept_disabled"),
+                        Id.pas("accept_highlighted")
                 ),
                 button -> {
                     info.setDisplayName(displayNameBox.getValue());
                     setEntityName(info.compile());
                 }
         );
-        blockTextureNameBox.setValue(info.overlay());
+        blockTextureNameBox.setValue(info.overlayTexture());
         DisplayNameFeature displayNameFeature = info.getFeature(DisplayNameFeature.class);
         if (displayNameFeature != null && displayNameFeature.isEnabled()) {
             displayNameBox.setValue(displayNameFeature.getName());
@@ -381,7 +376,7 @@ public class PasConfiguratorScreen extends Screen {
     //~ screen_render
     public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(g, mouseX, mouseY, partialTick);
-        g.blitSprite(/*? >= 1.21.4 {*/ModUtils.getGuiRender(),/*?}*/ BACKGROUND_TEXTURE, this.width / 2 - 128, this.height / 2 - 128 + 18, 256, 256);
+        g.blitSprite(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.width / 2 - 128, this.height / 2 - 128 + 18, 256, 256);
     }
 
     @Override
@@ -440,7 +435,7 @@ public class PasConfiguratorScreen extends Screen {
                 .rotateY((float) Math.toRadians(currentRotation + 30F));
 
         //? if <= 1.21.5 {
-        InventoryScreen.renderEntityInInventory(
+        /*InventoryScreen.renderEntityInInventory(
                 g, (int) (this.width / 2f - 68), (int) (this.height / 2f + 80), 70,
                 //? >= 1.21.1
                 new Vector3f(0, 0, 0),
@@ -448,8 +443,8 @@ public class PasConfiguratorScreen extends Screen {
                 null,
                 entity
         );
-        //?} else {
-        /*int left = this.width / 2 - 130; // Approx. left boundary
+        *///?} else {
+        int left = this.width / 2 - 130; // Approx. left boundary
         int top = this.height / 2 - 70;  // Approx. top boundary
         int right = this.width / 2 - 18; // Approx. right boundary
         int bottom = this.height / 2 + 120; // Approx. bottom boundary
@@ -471,7 +466,7 @@ public class PasConfiguratorScreen extends Screen {
                 null,
                 entity
         );
-        *///?}
+        //?}
     }
 
     private float lerp(float start, float end, float speed, float partialTick) {

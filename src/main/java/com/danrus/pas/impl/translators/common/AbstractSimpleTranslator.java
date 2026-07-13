@@ -3,7 +3,7 @@ package com.danrus.pas.impl.translators.common;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.info.InfoTranslator;
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.utils.Rl;
+import com.danrus.pas.utils.Id;
 import com.danrus.pas.utils.EncodeUtils;
 import net.minecraft.resources.ResourceLocation;
 
@@ -31,7 +31,7 @@ public abstract class AbstractSimpleTranslator implements InfoTranslator {
 
     @Override
     public ResourceLocation toResourceLocation(NameInfo info) {
-        return Rl.pas(getPrefix() + "/" + (shouldEncode() ? EncodeUtils.encodeToSha256(getName(info)) : getName(info)));
+        return Id.pas(getPrefix() + "/" + (shouldEncode() ? EncodeUtils.encodeToSha256(getName(info)) : getName(info)));
     }
 
     @Override

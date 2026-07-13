@@ -36,9 +36,9 @@ public class ButtonWithIcon extends Button {
     //extractContents
     (GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        guiGraphics.blitSprite(/*? >= 1.21.4 {*/ModUtils.getGuiRender(),/*?}*/ this.active ? SPRITES.enabled() : SPRITES.disabled(), this.getX(), this.getY(), this.getWidth(), this.getHeight()/*? >= 1.21.4 {*/, ModUtils.getARGBwhite(this.alpha)/*?}*/);
+        guiGraphics.blitSprite(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, this.active ? SPRITES.enabled() : SPRITES.disabled(), this.getX(), this.getY(), this.getWidth(), this.getHeight()/*? >= 1.21.4 {*/, ModUtils.getARGBwhite(this.alpha)/*?}*/);
         int i = this.active ? 16777215 : 10526880;
-        guiGraphics.blitSprite(/*? >= 1.21.4 {*/ModUtils.getGuiRender(),/*?}*/ this.icon, this.getX() + 1, this.getY() + 1, 18, 18);
+        guiGraphics.blitSprite(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, this.icon, this.getX() + 1, this.getY() + 1, 18, 18);
         //? <1.21.11
         AbstractButton.renderScrollingString(guiGraphics, minecraft.font, this.getMessage(), this.getX() + 20, this.getY(), this.getX() + this.getWidth() - 2, this.getY() + this.getHeight(), i | Mth.ceil(this.alpha * 255.0F) << 24);
         //? =1.21.11

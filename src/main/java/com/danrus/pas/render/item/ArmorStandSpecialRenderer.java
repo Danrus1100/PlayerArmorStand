@@ -36,7 +36,7 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
     }
 
     //? >= 1.21.8 {
-    /*@Override
+    @Override
     public void getExtents(
             //? if <1.21.11
             Set<Vector3f> output
@@ -58,7 +58,7 @@ public class ArmorStandSpecialRenderer extends PasSpecialModelRenderer {
             }
         }
     }
-    *///?}
+    //?}
 
     private static void preparePose(PoseStack poseStack) {
         poseStack.translate(0.5, 0.75, 0.5);

@@ -23,34 +23,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class LivingEntityRendererMixin<T extends LivingEntityRenderState, M extends EntityModel<T>> {
 
     @Inject(
-            method = "getRenderType",
-            at = @At(value = "HEAD"),
-            cancellable = true
-    )
-    private void pas$renderType(LivingEntityRenderState entity, boolean b1, boolean b2, boolean b3, CallbackInfoReturnable<RenderType> cir){
-        if (!(entity instanceof ArmorStandRenderState && PasConfig.getInstance().isEnableMod()) || ModUtils.isInvisible(entity)) {
-            return;
-        }
-
-        NameInfo info;
-
-        if (ModUtils.getCustomName(entity) != null && PasConfig.getInstance().isEnableMod()) {
-            info = NameInfo.parse(ModUtils.getCustomName(entity));
-        } else if (ModUtils.getCustomName(entity) == null && !PasConfig.getInstance().getDefaultSkin().isEmpty()) {
-            info = NameInfo.parse(Component.literal(PasConfig.getInstance().getDefaultSkin()));
-        } else {
-            info = new NameInfo();
-        }
-
-        if (info.lolmeme() != null) {
-            cir.setReturnValue(RenderType.entitySolid(info.lolmeme()));
-            return;
-        }
-
-        cir.setReturnValue(RenderType.entityTranslucent(PasManager.getInstance().getSkinWithOverlayTexture(info)));
-    }
-
-    @Inject(
             method = "isEntityUpsideDown",
             at = @At("HEAD"),
             cancellable = true

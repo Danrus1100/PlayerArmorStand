@@ -3,7 +3,7 @@ package com.danrus.pas.loaders.fabric;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.commands.PasCommandsRegistrar;
-import com.danrus.pas.utils.Rl;
+import com.danrus.pas.utils.Id;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -21,7 +21,7 @@ public class FabricEntrypoint implements ModInitializer {
         FabricLoader.getInstance().getModContainer("pas").ifPresent(container -> {
             for (String packName : PlayerArmorStandsClient.RPS) {
                 ResourceManagerHelper.registerBuiltinResourcePack(
-                        Rl.pas(packName),
+                        Id.pas(packName),
                         container,
                         Component.translatable("pas.rp." + packName),
                         packName.equals(PlayerArmorStandsClient.DEFAULT_RP)

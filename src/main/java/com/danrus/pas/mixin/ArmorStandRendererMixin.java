@@ -4,7 +4,6 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.mixin.accessors.LivingEntityRendererAccessor;
-import com.danrus.pas.render.armorstand.ArmorStandCapeLayer;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.utils.ModUtils;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -21,17 +20,12 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.player.Player;
 import org.joml.Quaternionf;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.awt.*;
 
 @Mixin(ArmorStandRenderer.class)
 public abstract class ArmorStandRendererMixin<S extends LivingEntityRenderState> implements ModUtils.VersionlessArmorStandCape {
@@ -198,6 +192,7 @@ public abstract class ArmorStandRendererMixin<S extends LivingEntityRenderState>
 
     *///?}
 
+    //TODO: rewrite to fabric renderstate api
     //? >=1.21.9 {
     /*@Inject(
             method = "extractRenderState(Lnet/minecraft/world/entity/decoration/ArmorStand;Lnet/minecraft/client/renderer/entity/state/ArmorStandRenderState;F)V",

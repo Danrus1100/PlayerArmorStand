@@ -1,12 +1,11 @@
 package com.danrus.pas.render.common;
 
-import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
-import com.danrus.pas.utils.Rl;
+import com.danrus.pas.utils.Id;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
@@ -19,31 +18,26 @@ import java.util.Optional;
 
 public class PasRenderer {
 
-    public static ResourceLocation WOOD = Rl.vanilla(
+    public static ResourceLocation WOOD = Id.vanilla(
             //? <26.1
             "textures/entity/armorstand/wood.png"
             //? >=26.1
             //"textures/entity/armorstand/armorstand.png"
     );
-    public static ResourceLocation STEVE = Rl.vanilla("textures/entity/player/wide/steve.png");
+    public static ResourceLocation STEVE = Id.vanilla("textures/entity/player/wide/steve.png");
 
     private final PlayerArmorStandModel model;
-    private PasModelSettings settings = PasModelSettings.DEFAULT;
 
     public PasRenderer(PlayerArmorStandModel model) {
         this.model = model;
     }
 
-    public void applySetting(PasModelSettings settings) {
-        this.settings = settings;
-    }
-
-    public void draw(Optional<SkinData> skinData, @Nullable CapeData capeData, NameInfo info, PasRenderContext context, PoseStack poseStack, int packedLight, int packedOverlay) {
+    public void draw(SkinData skinData, @Nullable CapeData capeData, NameInfo info, PasRenderContext context, PasModelSettings settings, PoseStack poseStack, int packedLight, int packedOverlay) {
         setupAnim(model, settings);
         for (ModelPart part : this.model.getOriginalParts()) {
             renderPart(poseStack, part, RenderType.entityCutout(WOOD), context, packedLight, packedOverlay);
         }
-        boolean showDefaultSkin = info.isEmpty() || PlayerArmorStandModel.showArmorStandWhileDownload(skinData);
+        boolean showDefaultSkin = info.isEmpty() || PlayerArmorStandModel.showArmorStandWhileDownload(Optional.of(skinData));
         ResourceLocation location = showDefaultSkin ? STEVE : PasManager.getInstance().getSkinWithOverlayTexture(info);
         for (ModelPart part : this.model.getPlayerParts()) {
             renderPart(poseStack, part, RenderType.entityTranslucent(location), context, packedLight, packedOverlay);
@@ -59,7 +53,7 @@ public class PasRenderer {
             }
         }
 
-        if (capeData != null && capeData.getTexture() != SkinData.DEFAULT_TEXTURE) {
+        if (capeData != null && !capeData.getTexture().equals(CapeData.DEFAULT_TEXTURE)) {
             renderPart(poseStack, model.getCape(), RenderType.entityTranslucent(capeData.getTexture()), context, packedLight, packedOverlay);
 
             if (settings.foil()) {

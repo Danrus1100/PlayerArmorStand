@@ -4,7 +4,7 @@ import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.info.InfoTranslator;
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.utils.Rl;
+import com.danrus.pas.utils.Id;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class InfoTranslators {
             }
         }
 
-        return Rl.vanilla("textures/entity/player/wide/steve.png");
+        return Id.vanilla("textures/entity/player/wide/steve.png");
     }
 
 

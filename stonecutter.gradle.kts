@@ -10,7 +10,7 @@ plugins {
 
     id("me.modmuss50.mod-publish-plugin") version "0.8.4" apply false
 }
-stonecutter active "1.21.4-fabric"
+stonecutter active "1.21.8-fabric"
 
 //stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) {
 //    group = "project"

@@ -7,7 +7,6 @@ import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
-import com.danrus.pas.utils.Rl;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.just_s.camera.ArmorStandCamera;
 import net.minecraft.client.Minecraft;
@@ -19,11 +18,9 @@ import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.spongepowered.asm.mixin.*;
-import net.minecraft.client.player.AbstractClientPlayer;
 
 import java.util.List;
 
@@ -41,7 +38,7 @@ public class ArmorStandCameraMixin {
                 return PossessiveRenderHand.RIGHT_ORIGINAL;
             }
 
-            if (info.wantBeSlim()) {
+            if (info.isSlim()) {
                 return PossessiveRenderHand.RIGHT_SLIM;
             } else if (!info.isEmpty()) {
                 return PossessiveRenderHand.RIGHT_WIDE;
@@ -53,7 +50,7 @@ public class ArmorStandCameraMixin {
                 return PossessiveRenderHand.LEFT_ORIGINAL;
             }
 
-            if (info.wantBeSlim()) {
+            if (info.isSlim()) {
                 return PossessiveRenderHand.LEFT_SLIM;
             } else if (!info.isEmpty()) {
                 return PossessiveRenderHand.LEFT_WIDE;

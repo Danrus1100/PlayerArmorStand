@@ -1,8 +1,7 @@
 package com.danrus.pas.impl.holder;
 
-import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.PasConfig;
-import com.danrus.pas.utils.Rl;
+import com.danrus.pas.utils.Id;
 import net.minecraft.resources.ResourceLocation;
 
 public class SkinData extends AbstractPasHolder{
@@ -19,12 +18,12 @@ public class SkinData extends AbstractPasHolder{
 
     public static ResourceLocation getDefaultTextureStatic() {
         return PasConfig.getInstance().isShowArmorStandWhileDownloading()
-                ? Rl.vanilla(
+                ? Id.vanilla(
                         //? <26.1
                         "textures/entity/armorstand/wood.png"
                         //? >=26.1
                         //"textures/entity/armorstand/armorstand.png"
                 )
-                : Rl.vanilla("textures/entity/player/wide/steve.png");
+                : Id.vanilla("textures/entity/player/wide/steve.png");
     }
 }

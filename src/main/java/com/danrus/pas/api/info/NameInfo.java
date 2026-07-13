@@ -8,7 +8,7 @@ import com.danrus.pas.impl.features.SkinProviderFeature;
 import com.danrus.pas.impl.features.SlimFeature;
 import com.danrus.pas.impl.features.DisplayNameFeature;
 import com.danrus.pas.utils.NIParser;
-import com.danrus.pas.utils.Rl;
+import com.danrus.pas.utils.Id;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -23,14 +23,15 @@ public record NameInfo(
         String legacyParams,
         @Nullable ResourceLocation lolmeme
 ) {
+    public static final NameInfo EMPTY = new NameInfo();
     public static Map<String, NameInfo> MEMES = Map.of(
-            "данечка разработчик", meme(Rl.pas("textures/lol/danechka_razrabotchik.png")),
-            "дакимакура", meme(Rl.pas("textures/lol/dakimakura.png")),
-            "гига крео", meme(Rl.pas("textures/lol/gigakreo.png")),
-            "strange link", meme(Rl.pas("textures/lol/link.png")),
-            "странная ссылка", meme(Rl.pas("textures/lol/link.png")),
-            "сисюлики", meme(Rl.pas("textures/lol/boobs.png")),
-            "джастик", meme(Rl.pas("textures/lol/justik.png"))
+            "данечка разработчик", meme(Id.pas("textures/lol/danechka_razrabotchik.png")),
+            "дакимакура", meme(Id.pas("textures/lol/dakimakura.png")),
+            "гига крео", meme(Id.pas("textures/lol/gigakreo.png")),
+            "strange link", meme(Id.pas("textures/lol/link.png")),
+            "странная ссылка", meme(Id.pas("textures/lol/link.png")),
+            "сисюлики", meme(Id.pas("textures/lol/boobs.png")),
+            "джастик", meme(Id.pas("textures/lol/justik.png"))
     );
 
     private static NameInfo meme(ResourceLocation texture) {
@@ -143,22 +144,22 @@ public record NameInfo(
         return feature != null ? feature.getProvider() : "M";
     }
 
-    public boolean wantBeSlim() {
+    public boolean isSlim() {
         SlimFeature feature = getFeature(SlimFeature.class);
         return feature != null && feature.isSlim();
     }
 
-    public boolean wantCape() {
+    public boolean hasCape() {
         CapeFeature feature = getFeature(CapeFeature.class);
         return feature != null && feature.isEnabled();
     }
 
-    public int blend() {
+    public int overlayBlend() {
         OverlayFeature feature = getFeature(OverlayFeature.class);
         return feature != null ? feature.getBlend() : 100;
     }
 
-    public String overlay() {
+    public String overlayTexture() {
         OverlayFeature feature = getFeature(OverlayFeature.class);
         return feature != null ? feature.getTexture() : "";
     }
@@ -194,22 +195,22 @@ public record NameInfo(
             return f != null ? f.getProvider() : "M";
         }
 
-        public boolean wantBeSlim() {
+        public boolean isSlim() {
             SlimFeature f = getFeature(SlimFeature.class);
             return f != null && f.isSlim();
         }
 
-        public boolean wantCape() {
+        public boolean hasCape() {
             CapeFeature f = getFeature(CapeFeature.class);
             return f != null && f.isEnabled();
         }
 
-        public int blend() {
+        public int overlayBlend() {
             OverlayFeature f = getFeature(OverlayFeature.class);
             return f != null ? f.getBlend() : 100;
         }
 
-        public String overlay() {
+        public String overlayTexture() {
             OverlayFeature f = getFeature(OverlayFeature.class);
             return f != null ? f.getTexture() : "";
         }
@@ -231,38 +232,38 @@ public record NameInfo(
             return this;
         }
 
-        public Builder setSkinProvider(String p) {
-            features.put(SkinProviderFeature.class, new SkinProviderFeature(p == null ? "M" : p));
+        public Builder addFeature(RenameFeature feature) {
+            features.put(feature.getClass(), feature);
             return this;
         }
 
+        public Builder setSkinProvider(String p) {
+            return addFeature(new SkinProviderFeature(p == null ? "M" : p));
+        }
+
         public Builder setSlim(boolean s) {
-            features.put(SlimFeature.class, new SlimFeature(s));
-            return this;
+            return addFeature(new SlimFeature(s));
         }
 
         public Builder setCapeEnabled(boolean e) {
             CapeFeature cur = getFeature(CapeFeature.class);
             String prov = cur != null ? cur.getProvider() : "M";
             String id = cur != null ? cur.getId() : "";
-            features.put(CapeFeature.class, new CapeFeature(e, prov, id));
-            return this;
+            return addFeature(new CapeFeature(e, prov, id));
         }
 
         public Builder setCapeProvider(String p) {
             CapeFeature cur = getFeature(CapeFeature.class);
             boolean en = cur != null && cur.isEnabled();
             String id = cur != null ? cur.getId() : "";
-            features.put(CapeFeature.class, new CapeFeature(en, p == null ? "M" : p, id));
-            return this;
+            return addFeature(new CapeFeature(en, p == null ? "M" : p, id));
         }
 
         public Builder setCapeId(String id) {
             CapeFeature cur = getFeature(CapeFeature.class);
             boolean en = cur != null && cur.isEnabled();
             String prov = cur != null ? cur.getProvider() : "M";
-            features.put(CapeFeature.class, new CapeFeature(en, prov, id == null ? "" : id));
-            return this;
+            return addFeature(new CapeFeature(en, prov, id == null ? "" : id));
         }
 
         public Builder setOverlay(String tex) {

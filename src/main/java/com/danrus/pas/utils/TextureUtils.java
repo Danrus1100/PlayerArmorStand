@@ -22,8 +22,6 @@ import net.minecraft.resources.ResourceLocation;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -62,10 +60,10 @@ public class TextureUtils {
             Minecraft.getInstance().execute(() -> {
                 try {
                     //? if <=1.21.4 {
-                    DynamicTexture texture = new DynamicTexture(finalImage);
-                    //?} else {
-                    /*DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
-                    *///?}
+                    /*DynamicTexture texture = new DynamicTexture(finalImage);
+                    *///?} else {
+                    DynamicTexture texture = new DynamicTexture(identifier::toString, finalImage);
+                    //?}
                     Minecraft.getInstance().getTextureManager().register(identifier, texture);
 
                     future.complete(identifier);
@@ -226,7 +224,7 @@ public class TextureUtils {
             default -> throw new IllegalArgumentException("Unsupported holder type for overlayed texture: " + type);
         }
 
-        ResourceLocation overlayId = Rl.vanilla("textures/block/" + overlay + ".png");
+        ResourceLocation overlayId = Id.vanilla("textures/block/" + overlay + ".png");
         AbstractTexture overlayTexture = Minecraft.getInstance().getTextureManager().getTexture(overlayId);
         if (overlayTexture == null) {
             OverlayMessageManger.getInstance().showOverlayNotFoundMessage(overlay);
@@ -270,11 +268,11 @@ public class TextureUtils {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                int skinArgb = ModUtils.getPixel(skin, x, y);
+                int skinArgb = skin.getPixel(x, y);
                 int sa = (skinArgb >> 24) & 0xFF;
 
                 if (sa < 10) {
-                    ModUtils.setPixel(result, x, y, 0);
+                    result.setPixel(x, y, 0);
                     continue;
                 }
 
@@ -286,7 +284,7 @@ public class TextureUtils {
 
                 int mx = x % matWidth;
                 int my = y % matHeight;
-                int matArgb = ModUtils.getPixel(material, mx, my);
+                int matArgb = material.getPixel(mx, my);
 
                 int mr = (matArgb >> 16) & 0xFF;
                 int mg = (matArgb >> 8) & 0xFF;
@@ -297,7 +295,7 @@ public class TextureUtils {
                 int b = (int)(mb * brightness * blendStrength + sb * (1 - blendStrength));
 
                 int resultArgb = (sa << 24) | (r << 16) | (g << 8) | b;
-                ModUtils.setPixel(result, x, y, resultArgb);
+                result.setPixel(x, y, resultArgb);
             }
         }
 
@@ -308,7 +306,7 @@ public class TextureUtils {
     private static void stripColor(NativeImage image, int x1, int y1, int x2, int y2) {
         for(int i = x1; i < x2; ++i) {
             for(int j = y1; j < y2; ++j) {
-                int k = ModUtils.getPixel(image, i, j);
+                int k = image.getPixel(i, j);
                 if ((k >> 24 & 255) < 128) {
                     return;
                 }
@@ -317,15 +315,14 @@ public class TextureUtils {
 
         for(int i = x1; i < x2; ++i) {
             for(int j = y1; j < y2; ++j) {
-                ModUtils.setPixel(image, i, j, ModUtils.getPixel(image, i, j) & 16777215);
+                image.setPixel(i, j, image.getPixel(i, j) & 16777215);
             }
         }
     }
     private static void stripAlpha(NativeImage image, int x1, int y1, int x2, int y2) {
         for(int i = x1; i < x2; ++i) {
             for(int j = y1; j < y2; ++j) {
-                ModUtils.setPixel(image, i, j, ModUtils.getPixel(image, i, j) | -16777216);
-
+                image.setPixel(i, j, image.getPixel(i, j) | -16777216);
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.danrus.pas.render.gui.widgets;
 
 import com.danrus.pas.utils.ModUtils;
-import com.danrus.pas.utils.Rl;
+import com.danrus.pas.utils.Id;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -12,9 +12,9 @@ import net.minecraft.util.Mth;
 public class TabButton extends Button {
 
     private static final WidgetSprites TAB_BUTTON_SPRITES = new net.minecraft.client.gui.components.WidgetSprites(
-            Rl.pas("tab"),
-            Rl.pas("tab_selected"),
-            Rl.pas("tab_highlighted")
+            Id.pas("tab"),
+            Id.pas("tab_selected"),
+            Id.pas("tab_highlighted")
     );
 
     public OnPress tabOnPress;
@@ -44,12 +44,7 @@ public class TabButton extends Button {
     //extractContents
     (GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        //? >= 1.21.1 {
-        guiGraphics.blitSprite(/*? >= 1.21.4 {*/ModUtils.getGuiRender(),/*?}*/ TAB_BUTTON_SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight() /*? >= 1.21.4 {*/, ModUtils.getARGBwhite(this.alpha)/*?}*/);
-        //?} else {
-        /*guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(TAB_LOCATION, this.getX(), this.getY(), 0, 0, 80, 15, 80, 15);
-        *///?}
+        guiGraphics.blitSprite(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, TAB_BUTTON_SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight() /*? >= 1.21.4 {*/, ModUtils.getARGBwhite(this.alpha)/*?}*/);
 
         //? <1.21.11
         this.renderString(guiGraphics, minecraft.font, 16777215 | Mth.ceil(this.alpha * 255.0F) << 24);

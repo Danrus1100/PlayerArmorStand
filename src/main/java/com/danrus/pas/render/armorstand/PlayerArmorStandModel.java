@@ -7,27 +7,22 @@ import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.common.PasModelPoseSettings;
 import com.danrus.pas.utils.ModUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.model.ArmorStandArmorModel;
 //? if < 1.21.9 {
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 //?}
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape, Cloneable {
+public class PlayerArmorStandModel extends ArmorStandArmorModel {
     // WIDE
     public final ModelPart leftSleeve;
     public final ModelPart rightSleeve;
@@ -180,10 +175,10 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
 
     public void setupAnim(ArmorStandRenderState armorStand, boolean setupVisibility) {
         super.setupAnim(armorStand);
-        boolean showBase = !ModUtils.getNoBasePlate(armorStand);
-        boolean showArms = ModUtils.getIsShowArms(armorStand);
+        boolean showBase = armorStand.showBasePlate;
+        boolean showArms = armorStand.showArms;
         Component customName = ModUtils.getCustomName(armorStand);
-        Rotations bodyPose = ModUtils.getBodyPose(armorStand);
+        Rotations bodyPose = armorStand.bodyPose;
         NameInfo info = NameInfo.parse(customName);
 
         if (info.lolmeme() != null) {
@@ -217,7 +212,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         cpp(body, this.jacket);
 
 
-        this.basePlate.yRot = ((float)Math.PI / 180F) * -ModUtils.getYRot(armorStand);
+        this.basePlate.yRot = ((float)Math.PI / 180F) * -armorStand.yRot;
 
         if (!PasConfig.getInstance().isEnableMod()) {
             setOriginalAngles(showBase, showArms, bodyPose);
@@ -239,7 +234,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         this.rightEar.visible = isEarsVisible;
 
         if (setupVisibility) {
-            this.setModelVisibility(!showArmorStandWhileDownload(PasManager.getInstance().findSkinData(info)), info.wantBeSlim(), showBase);
+            this.setModelVisibility(!showArmorStandWhileDownload(PasManager.getInstance().findSkinData(info)), info.isSlim(), showBase);
         }
 
         if (customNameString.isEmpty() && PasConfig.getInstance().getDefaultSkin().isEmpty()) {
@@ -253,18 +248,18 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         this.head.visible = state.head.mode.showPlayerPart(info);
         this.body.visible = state.body.mode.showPlayerPart(info);
         this.jacket.visible = state.body.mode.showPlayerPart(info);
-        this.leftArm.visible = state.leftArm.mode.showPlayerPart(info) && !info.wantBeSlim();
-        this.rightArm.visible = state.rightArm.mode.showPlayerPart(info) && !info.wantBeSlim();
-        this.leftSleeve.visible = state.leftArm.mode.showPlayerPart(info) && !info.wantBeSlim();
-        this.rightSleeve.visible = state.rightArm.mode.showPlayerPart(info) && !info.wantBeSlim();
+        this.leftArm.visible = state.leftArm.mode.showPlayerPart(info) && !info.isSlim();
+        this.rightArm.visible = state.rightArm.mode.showPlayerPart(info) && !info.isSlim();
+        this.leftSleeve.visible = state.leftArm.mode.showPlayerPart(info) && !info.isSlim();
+        this.rightSleeve.visible = state.rightArm.mode.showPlayerPart(info) && !info.isSlim();
         this.leftPants.visible = state.leftLeg.mode.showPlayerPart(info);
         this.rightPants.visible = state.rightLeg.mode.showPlayerPart(info);
         this.leftLeg.visible = state.leftLeg.mode.showPlayerPart(info);
         this.rightLeg.visible = state.rightLeg.mode.showPlayerPart(info);
-        this.leftSlimArm.visible = state.leftArm.mode.showPlayerPart(info) && info.wantBeSlim();
-        this.rightSlimArm.visible = state.rightArm.mode.showPlayerPart(info) && info.wantBeSlim();
-        this.leftSlimSleeve.visible = state.leftArm.mode.showPlayerPart(info) && info.wantBeSlim();
-        this.rightSlimSleeve.visible = state.rightArm.mode.showPlayerPart(info) && info.wantBeSlim();
+        this.leftSlimArm.visible = state.leftArm.mode.showPlayerPart(info) && info.isSlim();
+        this.rightSlimArm.visible = state.rightArm.mode.showPlayerPart(info) && info.isSlim();
+        this.leftSlimSleeve.visible = state.leftArm.mode.showPlayerPart(info) && info.isSlim();
+        this.rightSlimSleeve.visible = state.rightArm.mode.showPlayerPart(info) && info.isSlim();
         this.originalHead.visible = state.head.mode.showOriginalPart(info);
         this.originalBody.visible = state.body.mode.showOriginalPart(info);
         this.originalRightArm.visible = state.rightArm.mode.showOriginalPart(info);
@@ -389,15 +384,15 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
         this.setModelVisibility(false, false, showBase);
         this.originalLeftArm.visible = showArms;
         this.originalRightArm.visible = showArms;
-        this.rightBodyStick.xRot = ((float)Math.PI / 180F) * ModUtils.getXRot(bodyPose);
-        this.rightBodyStick.yRot = ((float)Math.PI / 180F) * ModUtils.getYRot(bodyPose);
-        this.rightBodyStick.zRot = ((float)Math.PI / 180F) * ModUtils.getZRot(bodyPose);
-        this.leftBodyStick.xRot = ((float)Math.PI / 180F) * ModUtils.getXRot(bodyPose);
-        this.leftBodyStick.yRot = ((float)Math.PI / 180F) * ModUtils.getYRot(bodyPose);
-        this.leftBodyStick.zRot = ((float)Math.PI / 180F) * ModUtils.getZRot(bodyPose);
-        this.shoulderStick.xRot = ((float)Math.PI / 180F) * ModUtils.getXRot(bodyPose);
-        this.shoulderStick.yRot = ((float)Math.PI / 180F) * ModUtils.getYRot(bodyPose);
-        this.shoulderStick.zRot = ((float)Math.PI / 180F) * ModUtils.getZRot(bodyPose);
+        this.rightBodyStick.xRot = ((float)Math.PI / 180F) * bodyPose.x();
+        this.rightBodyStick.yRot = ((float)Math.PI / 180F) * bodyPose.y();
+        this.rightBodyStick.zRot = ((float)Math.PI / 180F) * bodyPose.z();
+        this.leftBodyStick.xRot = ((float)Math.PI / 180F) * bodyPose.x();
+        this.leftBodyStick.yRot = ((float)Math.PI / 180F) * bodyPose.y();
+        this.leftBodyStick.zRot = ((float)Math.PI / 180F) * bodyPose.z();
+        this.shoulderStick.xRot = ((float)Math.PI / 180F) * bodyPose.x();
+        this.shoulderStick.yRot = ((float)Math.PI / 180F) * bodyPose.y();
+        this.shoulderStick.zRot = ((float)Math.PI / 180F) * bodyPose.z();
     }
 
     public ModelPart getCape() {
@@ -418,24 +413,5 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel implements Cape,
 
     private static void cpp(ModelPart from, ModelPart to) {
         ModUtils.copyPartPose(from, to);
-    }
-
-    @Override
-    public void draw(PoseStack stack, ResourceLocation textureLocation, RenderVersionContext context, int i) {
-        //? <1.21.9 {
-        getCape().visible = true;
-        com.mojang.blaze3d.vertex.VertexConsumer vertexConsumer = context.getData(MultiBufferSource.class, "multiBufferSource").getBuffer(RenderType.entitySolid(textureLocation));
-        getCape().render(stack, vertexConsumer, i, OverlayTexture.NO_OVERLAY);
-        //?}
-    }
-
-    @Override
-    public PlayerArmorStandModel clone() {
-        try {
-            PlayerArmorStandModel clone = (PlayerArmorStandModel) super.clone();
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
     }
 }

@@ -2,7 +2,7 @@ package com.danrus.pas.utils;
 
 import net.minecraft.resources.ResourceLocation;
 
-public class Rl {
+public class Id {
     public static ResourceLocation of(String namespace, String path) {
         return ResourceLocation.fromNamespaceAndPath(namespace, path);
     }

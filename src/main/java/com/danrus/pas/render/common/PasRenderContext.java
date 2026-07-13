@@ -1,5 +1,7 @@
 package com.danrus.pas.render.common;
 
+import net.minecraft.client.renderer.MultiBufferSource;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,4 +31,14 @@ public class PasRenderContext {
         }
         return clazz.cast(contextMap.get(type));
     }
+
+    public static PasRenderContext create(MultiBufferSource source) {
+        return new PasRenderContext().putData(source, "bufferSource");
+    }
+
+    //? >= 1.21.9 {
+    /*public static PasRenderContext create(net.minecraft.client.renderer.SubmitNodeCollector collector) {
+        return new PasRenderContext().putData(collector, "collector");
+    }
+    *///?}
 }

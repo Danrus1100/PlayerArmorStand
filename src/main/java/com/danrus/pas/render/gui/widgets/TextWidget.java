@@ -1,7 +1,6 @@
 package com.danrus.pas.render.gui.widgets;
 
-import com.danrus.pas.utils.ModUtils;
-import com.danrus.pas.utils.Rl;
+import com.danrus.pas.utils.Id;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -13,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class TextWidget extends AbstractWidget {
 
-    public static ResourceLocation QUESTION_MARK_ICON = Rl.pas("question");
+    public static ResourceLocation QUESTION_MARK_ICON = Id.pas("question");
 
     private boolean hasTooltip = false;
     public TextWidget(int x, int y, int width, int height, Component message) {
@@ -31,7 +30,7 @@ public class TextWidget extends AbstractWidget {
     (GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, this.getMessage(), this.getX() + this.getWidth() / 2 - (hasTooltip ? 4 : 0), this.getY() + (this.getHeight() - Minecraft.getInstance().font.lineHeight) / 2, 16777215 | (int) (this.alpha * 255) << 24);
         if (hasTooltip) {
-            guiGraphics.blitSprite(/*? >= 1.21.4 {*/ModUtils.getGuiRender(),/*?}*/ QUESTION_MARK_ICON, this.getX() + Minecraft.getInstance().font.width(getMessage()) / 3 + this.getWidth() / 2 + 13, this.getY() + (this.getHeight() - Minecraft.getInstance().font.lineHeight) / 2 - 1, 9, 9);
+            guiGraphics.blitSprite(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, QUESTION_MARK_ICON, this.getX() + Minecraft.getInstance().font.width(getMessage()) / 3 + this.getWidth() / 2 + 13, this.getY() + (this.getHeight() - Minecraft.getInstance().font.lineHeight) / 2 - 1, 9, 9);
         }
     }
 

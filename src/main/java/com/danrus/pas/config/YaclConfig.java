@@ -4,7 +4,7 @@ package com.danrus.pas.config;
 import com.danrus.pas.config.categories.MainCategory;
 import com.danrus.pas.config.categories.PossessiveCategory;
 import com.danrus.pas.impl.holder.SkinData;
-import com.danrus.pas.utils.Rl;
+import com.danrus.pas.utils.Id;
 import com.danrus.pas.utils.ModUtils;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -97,13 +97,13 @@ public class YaclConfig extends PasConfig {
     public static void save() {
         HANDLER.save();
         SkinData.DEFAULT_TEXTURE = HANDLER.instance().showArmorStandWhileDownloading
-            ? Rl.vanilla(
+            ? Id.vanilla(
                 //? <26.1
                 "textures/entity/armorstand/wood.png"
                 //? >=26.1
                 //"textures/entity/armorstand/armorstand.png"
             )
-            : Rl.vanilla("textures/entity/player/wide/steve.png");
+            : Id.vanilla("textures/entity/player/wide/steve.png");
     }
 
     public static void load() {
