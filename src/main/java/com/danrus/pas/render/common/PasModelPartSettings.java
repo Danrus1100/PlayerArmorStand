@@ -42,6 +42,25 @@ public class PasModelPartSettings {
         this(rotation, Mode.ORIGINAL);
     }
 
+    public PasModelPartSettings(
+            Rotations rotations, Mode mode
+    ) {
+        this(createRotationsVector(rotations), mode);
+    }
+
+    public PasModelPartSettings(Rotations rotations) {
+        this(createRotationsVector(rotations));
+    }
+
+    private static
+    //? if <1.21.11
+    Vector3f
+    //? if >=1.21.11
+    //Vector3fc
+    createRotationsVector(Rotations rotations) {
+        return new Vector3f(rotations.x(), rotations.y(), rotations.z());
+    }
+
     public Rotations toRotations() {
         return new Rotations(
                 this.rotation.x(),

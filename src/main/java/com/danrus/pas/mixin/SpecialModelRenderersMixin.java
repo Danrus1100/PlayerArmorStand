@@ -1,6 +1,6 @@
 package com.danrus.pas.mixin;
 
-import com.danrus.pas.render.item.ArmorStandSpecialRenderer;
+import com.danrus.pas.render.item.PasSpecialModelRenderer;
 import com.danrus.pas.utils.Id;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,6 +21,6 @@ public class SpecialModelRenderersMixin {
     private static void bootstrapInject(CallbackInfo ci) {
         //? if fabric
         SpecialModelRenderers.
-                ID_MAPPER.put(Id.pas("armor_stand"), ArmorStandSpecialRenderer.Unbaked.MAP_CODEC);
+                ID_MAPPER.put(Id.pas("armor_stand"), PasSpecialModelRenderer.Unbaked.MAP_CODEC);
     }
 }

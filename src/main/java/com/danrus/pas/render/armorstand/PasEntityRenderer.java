@@ -9,14 +9,18 @@ import com.danrus.pas.render.common.PasModelSettings;
 import com.danrus.pas.render.common.PasRenderContext;
 import com.danrus.pas.render.common.PasRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
 
 import java.util.Optional;
 
@@ -44,18 +48,61 @@ public class PasEntityRenderer extends EntityRenderer<ArmorStand, PasEntityRende
             armorStandRenderer.render(state, poseStack, multiBufferSource, i);
             return;
         }
+        if (state.info.lolmeme() != null) {
+            state.bodyRot = 0;
+            state.yRot = 0;
+
+            Quaternionf rotation = new Quaternionf(entityRenderDispatcher.camera.rotation());
+
+            rotation = calculateOrientation(rotation);
+
+            poseStack.pushPose();
+
+            poseStack.mulPose(rotation);
+
+            poseStack.translate(0, 1, 0);
+
+            executeDraw(data.get(), state, multiBufferSource, poseStack, i);
+
+            poseStack.popPose();
+        } else {
+            executeDraw(data.get(), state, multiBufferSource, poseStack, i);
+        }
+
+
+        super.render(state, poseStack, multiBufferSource, i);
+    }
+
+    private void executeDraw(SkinData data, PasEntityRenderState state, MultiBufferSource multiBufferSource, PoseStack poseStack, int i) {
         renderer.draw(
-                data.get(),
+                data,
                 PasManager.getInstance().getCapeDataManager().getData(state.info).orElse(null),
                 state.info,
                 PasRenderContext.create(multiBufferSource),
-                new PasModelSettings(new PasModelPoseSettings(), false),
+                new PasModelSettings(new PasModelPoseSettings(state), false),
                 poseStack,
                 i,
                 OverlayTexture.NO_OVERLAY
         );
+    }
 
-        super.render(state, poseStack, multiBufferSource, i);
+    private Quaternionf calculateOrientation(Quaternionf quaternion) {
+        Camera camera = entityRenderDispatcher.camera;
+        return quaternion.rotationYXZ(-0.017453292F * cameraYrot(camera), ((float)Math.PI / 180F) * cameraXRot(camera), 0.0F);
+    }
+
+    private static float cameraYrot(Camera camera) {
+        //? if < 1.21.11
+        return camera.getYRot() - 180.0F;
+        //? if >= 1.21.11
+        //return camera.yRot() - 180.0F;
+    }
+
+    private static float cameraXRot(Camera camera) {
+        //? if < 1.21.11
+        return -camera.getXRot();
+        //? if >= 1.21.11
+        //return -camera.xRot();
     }
 
     @Override

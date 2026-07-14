@@ -82,4 +82,8 @@ public class PasRenderer {
         nodeCollector.submitModelPart(part, poseStack, type, packedLight, packedOverlay, null);
         *///?}
     }
+
+    public PlayerArmorStandModel getModel() {
+        return model;
+    }
 }

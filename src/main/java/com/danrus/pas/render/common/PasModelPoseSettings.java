@@ -12,6 +12,7 @@ public class PasModelPoseSettings {
     public static PasModelPartSettings DEFAULT_RIGHT_LEG = new PasModelPartSettings(new Vector3f(1, 0, 1));
     public static PasModelPartSettings DEFAULT_LEFT_ARM = new PasModelPartSettings(new Vector3f(-10, 0, -10), PasModelPartSettings.Mode.INVISIBLE);
     public static PasModelPartSettings DEFAULT_RIGHT_ARM = new PasModelPartSettings(new Vector3f(-15, 0, 10), PasModelPartSettings.Mode.INVISIBLE);
+    public static PasModelPartSettings DEFAULT_CLOAK = new PasModelPartSettings(new Vector3f(0, 0, -15), PasModelPartSettings.Mode.DYNAMIC);
 
     public static Codec<PasModelPoseSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             PasModelPartSettings.CODEC.optionalFieldOf("head", DEFAULT_HEAD).forGetter(state -> state.head),
@@ -20,6 +21,7 @@ public class PasModelPoseSettings {
             PasModelPartSettings.CODEC.optionalFieldOf("right_leg", DEFAULT_RIGHT_LEG).forGetter(state -> state.rightLeg),
             PasModelPartSettings.CODEC.optionalFieldOf("left_arm", DEFAULT_LEFT_ARM).forGetter(state -> state.leftArm),
             PasModelPartSettings.CODEC.optionalFieldOf("right_arm", DEFAULT_RIGHT_ARM).forGetter(state -> state.rightArm),
+            PasModelPartSettings.CODEC.optionalFieldOf("cape", DEFAULT_CLOAK).forGetter(state -> state.cloak),
             Codec.BOOL.optionalFieldOf("baseplate", true).forGetter(state -> state.baseplate)
     ).apply(instance, PasModelPoseSettings::new));
 
@@ -29,6 +31,7 @@ public class PasModelPoseSettings {
     public PasModelPartSettings rightLeg;
     public PasModelPartSettings leftArm;
     public PasModelPartSettings rightArm;
+    public PasModelPartSettings cloak;
     public boolean baseplate;
 
 
@@ -39,6 +42,7 @@ public class PasModelPoseSettings {
         this.rightLeg = DEFAULT_RIGHT_LEG;
         this.leftArm = DEFAULT_LEFT_ARM;
         this.rightArm = DEFAULT_RIGHT_ARM;
+        this.cloak = DEFAULT_CLOAK;
         this.baseplate = true;
     }
 
@@ -49,6 +53,7 @@ public class PasModelPoseSettings {
             PasModelPartSettings rightLeg,
             PasModelPartSettings leftArm,
             PasModelPartSettings rightArm,
+            PasModelPartSettings cloak,
             boolean baseplate
     ) {
         this.head = head;
@@ -57,7 +62,19 @@ public class PasModelPoseSettings {
         this.rightLeg = rightLeg;
         this.leftArm = leftArm;
         this.rightArm = rightArm;
+        this.cloak = cloak;
         this.baseplate = baseplate;
+    }
+
+    public PasModelPoseSettings(ArmorStandRenderState original) {
+        this.head = new PasModelPartSettings(original.headPose);
+        this.body = new PasModelPartSettings(original.bodyPose);
+        this.leftLeg = new PasModelPartSettings(original.leftLegPose);
+        this.rightLeg = new PasModelPartSettings(original.rightLegPose);
+        this.leftArm = new PasModelPartSettings(original.leftArmPose);
+        this.rightArm = new PasModelPartSettings(original.rightArmPose);
+        this.cloak = DEFAULT_CLOAK;
+        this.baseplate = original.showBasePlate;
     }
 
     public ArmorStandRenderState toRenderState() {
