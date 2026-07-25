@@ -2,7 +2,7 @@ package com.danrus.pas.config;
 
 //? if modmenu {
 import com.danrus.pas.render.gui.DummyConfigScreen;
-import com.danrus.pas.utils.ModUtils;
+import com.danrus.pas.utils.mc.ModUtils;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 

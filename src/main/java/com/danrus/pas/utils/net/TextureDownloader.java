@@ -1,8 +1,9 @@
-package com.danrus.pas.utils;
+package com.danrus.pas.utils.net;
 
 import com.danrus.pas.ModExecutor;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
+import com.danrus.pas.utils.texture.TextureUtils;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -17,8 +18,8 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-public class SkinDownloader {
-    public static CompletableFuture<ResourceLocation> downloadAndRegister(ResourceLocation texture, Path path, String uri, boolean remap) {
+public class TextureDownloader {
+    public static CompletableFuture<ResourceLocation> downloadAndRegister(ResourceLocation id, Path path, String uri, boolean remap) {
     return CompletableFuture.supplyAsync(() -> {
         NativeImage nativeImage;
         try {
@@ -27,15 +28,10 @@ public class SkinDownloader {
             throw new UncheckedIOException(iOException);
         }
         return nativeImage;
-    }, ModExecutor.DOWNLOAD_EXECUTOR).thenCompose(image -> TextureUtils.registerTexture(image, texture, remap));
+    }, ModExecutor.DOWNLOAD_EXECUTOR).thenCompose(image -> TextureUtils.registerTexture(image, id, remap));
 }
 
     private static NativeImage download(Path path, String uri) throws IOException {
-        if (Files.isRegularFile(path, new LinkOption[0])) {
-            try (InputStream inputStream = Files.newInputStream(path)) {
-                return NativeImage.read(inputStream);
-            }
-        }
         int maxRetries = 3;
         int currentTry = 0;
         IOException lastException = null;
@@ -79,7 +75,7 @@ public class SkinDownloader {
                 }
 
                 currentTry++;
-                Thread.sleep(1000); // Пауза между попытками
+                Thread.sleep(1000);
 
             } catch (IOException e) {
                 lastException = e;

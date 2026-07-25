@@ -6,7 +6,7 @@ import com.danrus.pas.commands.PasCommands;
 import com.danrus.pas.commands.PasCommandsRegistrar;
 import com.danrus.pas.config.YaclConfig;
 import com.danrus.pas.render.gui.DummyConfigScreen;
-import com.danrus.pas.utils.ModUtils;
+import com.danrus.pas.utils.mc.ModUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;

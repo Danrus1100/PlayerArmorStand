@@ -3,8 +3,8 @@ package com.danrus.pas.impl.translators.common;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.info.InfoTranslator;
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.utils.Id;
-import com.danrus.pas.utils.EncodeUtils;
+import com.danrus.pas.utils.mc.Id;
+import com.danrus.pas.utils.files.EncodeUtils;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class AbstractSimpleTranslator implements InfoTranslator {

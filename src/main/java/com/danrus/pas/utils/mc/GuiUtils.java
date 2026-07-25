@@ -1,4 +1,4 @@
-package com.danrus.pas.utils;
+package com.danrus.pas.utils.mc;
 
 import com.danrus.pas.mixin.accessors.ScreenAccessor;
 import com.danrus.pas.render.gui.PasConfiguratorScreen;

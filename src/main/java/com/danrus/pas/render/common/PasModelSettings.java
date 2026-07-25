@@ -5,7 +5,8 @@ import com.danrus.pas.impl.holder.SkinData;
 
 public record PasModelSettings(
         PasModelPoseSettings poseSettings,
-        boolean foil
+        boolean foil,
+        boolean isSmall
 ) {
-    public static final PasModelSettings DEFAULT = new PasModelSettings(new PasModelPoseSettings(), false);
+    public static final PasModelSettings DEFAULT = new PasModelSettings(new PasModelPoseSettings(), false, false);
 }

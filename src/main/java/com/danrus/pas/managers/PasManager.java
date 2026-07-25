@@ -6,15 +6,17 @@ import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.data.TextureProvidersManager;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.info.NameInfoLike;
 import com.danrus.pas.impl.holder.AbstractPasHolder;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
-import com.danrus.pas.utils.TextureUtils;
+import com.danrus.pas.utils.texture.TextureUtils;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -63,21 +65,16 @@ public class PasManager {
         return data.map(AbstractPasHolder::getTexture).orElse(CapeData.DEFAULT_TEXTURE);
     }
 
-    public Optional<SkinData> findSkinData(NameInfo info) {
-        if (info.isEmpty()) {
-            return Optional.empty();
-        }
-        return getSkinDataManager().findData(info);
+    public Optional<SkinData> findSkinData(NameInfoLike info) {
+        return getSkinDataManager().findFirst(info);
     }
 
-    public Optional<CapeData> findCapeData(NameInfo info) {
-        if (info.isEmpty()) {
-            return Optional.empty();
-        }
-        return getCapeDataManager().findData(info);
+    public Optional<CapeData> findCapeData(NameInfoLike info) {
+        return getCapeDataManager().findFirst(info);
     }
 
     public void dropCache() {
+        TextureUtils.clearOverlayCache();
         skinDataRepository.clear();
         capeDataRepository.clear();
         skinProviderManager.clearPending();
@@ -85,26 +82,27 @@ public class PasManager {
         PlayerArmorStandsClient.LOGGER.info("PasManager: Dropped all cached data");
     }
 
-    public void reloadData(NameInfo info, Class<? extends DataHolder> type) {
+    public void reloadDataLike(NameInfoLike info, Class<? extends DataHolder> type) {
         if (type == SkinData.class) {
-            reloadData(info, skinDataRepository, getSkinProviderManager(), "skin");
+            reloadDataLike(info, skinDataRepository, getSkinProviderManager(), "skin");
         } else if (type == CapeData.class) {
-            reloadData(info, capeDataRepository, getCapeProviderManager(), "cape");
+            reloadDataLike(info, capeDataRepository, getCapeProviderManager(), "cape");
         } else {
             this.LOGGER.warn("Unknown data type for reload: " + type.getSimpleName());
         }
     }
 
-    private <T extends DataHolder> void reloadData(NameInfo info, DataRepository<T> repository, TextureProvidersManager provider, String type) {
-        Optional<T> data = repository.findData(info);
-        if (data.isEmpty()) return;
-        TextureUtils.unregisterTexture(data.get().getTexture());
-        repository.delete(info);
-        TextureUtils.clearOverlayCacheFor(info);
-        if (repository.getData(info).isEmpty()) {
-            this.LOGGER.warn("No data found for " + info.base() + ", reloading from " + type + " providers");
-        }
-        provider.download(info);
+    private <T extends DataHolder> void reloadDataLike(NameInfoLike infoLike, DataRepository<T> repository, TextureProvidersManager provider, String type) {
+        Map<NameInfo, T> dataCollection = repository.findAll(infoLike);
+        repository.deleteAllOf(infoLike);
+        dataCollection.forEach((info, data) -> {
+            TextureUtils.unregisterTexture(data.getTexture());
+            TextureUtils.clearOverlayCacheFor(info);
+            if (repository.getData(info).isEmpty()) {
+                this.LOGGER.warn("No data found for " + info.base() + ", reloading from " + type + " providers");
+            }
+            provider.download(info);
+        });
     }
 
     public void reloadFailed() {

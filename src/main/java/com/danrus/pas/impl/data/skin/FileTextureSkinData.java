@@ -7,7 +7,7 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.data.common.AbstractFileTextureDataProvider;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.utils.ModUtils;
+import com.danrus.pas.utils.mc.ModUtils;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;

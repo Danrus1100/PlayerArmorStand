@@ -1,7 +1,7 @@
 package com.danrus.pas.mixin;
 
 import com.danrus.pas.render.item.PasSpecialModelRenderer;
-import com.danrus.pas.utils.Id;
+import com.danrus.pas.utils.mc.Id;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

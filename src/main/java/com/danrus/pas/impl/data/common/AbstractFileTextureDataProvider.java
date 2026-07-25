@@ -6,21 +6,20 @@ import com.danrus.pas.api.data.DataProvider;
 import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.info.NameInfoLike;
 import com.danrus.pas.api.reg.InfoTranslators;
-import com.danrus.pas.utils.TextureUtils;
+import com.danrus.pas.utils.info.NameInfoMap;
+import com.danrus.pas.utils.texture.TextureUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractFileTextureDataProvider<T extends DataHolder> implements DataProvider<T> {
 
-    private final Map<NameInfo, T> cache = new ConcurrentHashMap<>();
+    private final NameInfoMap<T> cache = new NameInfoMap<>(new ConcurrentHashMap<>());
 
     protected final T DEFAULT = createDataHolder(defaultTexture());
 
@@ -58,12 +57,17 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
     }
 
     @Override
-    public Optional<T> find(NameInfo info) {
-        T data = cache.get(info);
-        if (data == null) {
+    public Optional<T> findFirst(NameInfoLike infoLike) {
+        var entry = cache.findFirst(infoLike);
+        if (entry.isEmpty() && infoLike instanceof NameInfo info) {
             return get(info);
         }
-        return Optional.of(data);
+        return entry.map(Map.Entry::getValue);
+    }
+
+    @Override
+    public Collection<T> findAll(NameInfoLike infoLike) {
+        return cache.findAll(infoLike).values();
     }
 
     private boolean isValidName(String name) {
@@ -71,13 +75,13 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
     }
 
     @Override
-    public boolean delete(NameInfo info) {
-        return true;
+    public boolean deleteAllOf(NameInfoLike info) {
+        return false;
     }
 
     @Override
-    public Map<NameInfo, T> getAll() {
-        return new HashMap<>();
+    public NameInfoMap< T> getAll() {
+        return cache;
     }
 
     @Override
@@ -85,8 +89,10 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
     }
 
     @Override
-    public void invalidateData(NameInfo info) {
-        cache.put(info, DEFAULT);
+    public void invalidateData(NameInfoLike infoLike) {
+        for (NameInfo info : cache.findAll(infoLike).keySet()) {
+            cache.put(info, DEFAULT);
+        }
     }
 
     private T createFailed() {

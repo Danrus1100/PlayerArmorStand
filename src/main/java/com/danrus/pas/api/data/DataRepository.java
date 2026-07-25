@@ -1,8 +1,9 @@
 package com.danrus.pas.api.data;
 
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.info.NameInfoLike;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,7 +53,7 @@ public interface DataRepository<T extends DataHolder> {
      *
      * @param info the identifier for the data to invalidate
      */
-    void invalidateData(NameInfo info);
+    void invalidateData(NameInfoLike info);
 
     /**
      * Retrieves a specific data source by its key.
@@ -66,22 +67,25 @@ public interface DataRepository<T extends DataHolder> {
      * Retrieves all data sources managed by this DataManager.
      * @return a HashMap containing all data sources, where the key is the source key and the value is the DataCache
      */
-    HashMap<String, DataProvider<T>> getSources();
+    Map<String, DataProvider<T>> getSources();
 
     /**
      * Finds SkinData by a given string without download.
      *
-     * @param info the NameInfo for the skin data
-     * @return SkinData associated with the identifier, or null if not found
+     * @param infoLike the NameInfoLike for the skin data
+     * @return DataHolder associated with the identifier, or null if not found
      */
-    Optional<T> findData(NameInfo info);
+    Optional<T> findFirst(NameInfoLike infoLike);
+
+
+    Map<NameInfo, T> findAll(NameInfoLike infoLike);
 
     /**
      * Deletes the data associated with the given string.
      *
      * @param info the NameInfo for the data to delete
      */
-    void delete(NameInfo info);
+    void deleteAllOf(NameInfoLike info);
 
-    Set<NameInfo> keySet();
+    Set<NameInfo> allNames();
 }

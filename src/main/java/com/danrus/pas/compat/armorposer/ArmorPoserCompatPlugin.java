@@ -1,7 +1,7 @@
 package com.danrus.pas.compat.armorposer;
 
 import com.danrus.pas.compat.PasCompatPlugin;
-import com.danrus.pas.utils.ModUtils;
+import com.danrus.pas.utils.mc.ModUtils;
 
 public class ArmorPoserCompatPlugin extends PasCompatPlugin {
     @Override

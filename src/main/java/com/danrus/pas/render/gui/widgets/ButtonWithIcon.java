@@ -1,6 +1,6 @@
 package com.danrus.pas.render.gui.widgets;
 
-import com.danrus.pas.utils.ModUtils;
+import com.danrus.pas.utils.mc.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;

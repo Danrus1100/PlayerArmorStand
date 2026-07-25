@@ -4,6 +4,8 @@ import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
 import com.danrus.pas.api.data.*;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.info.NameInfoLike;
+import com.danrus.pas.utils.info.NameInfoMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -15,7 +17,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractDataRepository<T extends DataHolder> implements DataRepository<T> {
 
     private final List<DataProvider<T>> sources = new CopyOnWriteArrayList<>();
-    private final Map<NameInfo, T> cached = new ConcurrentHashMap<>();
+    private final NameInfoMap<T> cached = new NameInfoMap<>(new ConcurrentHashMap<>());
     protected final T DEFAULT;
 
     public AbstractDataRepository(){
@@ -50,7 +52,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
         if (info.isEmpty()) return Optional.of(DEFAULT);
         T cachedData = cached.get(info);
         if (cachedData != null) return Optional.of(cachedData);
-        Optional<T> data = findData(info);
+        Optional<T> data = findFirst(info);
         if (data.isPresent()) return data;
         boolean[] created = { false };
         T placeholder = cached.computeIfAbsent(info, k -> {
@@ -67,12 +69,16 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
-    public Optional<T> findData(NameInfo info) {
-        T cachedData = cached.get(info);
-        if (cachedData != null) {
-            return Optional.of(cachedData);
-        }
-        return getFrom(dataProvider -> dataProvider.find(info));
+    public Optional<T> findFirst(NameInfoLike info) {
+        var entry = cached.findFirst(info);
+        return entry
+                .map(Map.Entry::getValue)
+                .or(() -> getFrom(dataProvider -> dataProvider.findFirst(info)));
+    }
+
+    @Override
+    public Map<NameInfo, T> findAll(NameInfoLike infoLike) {
+        return cached.findAll(infoLike);
     }
 
     private Optional<T> getFrom(Function<DataProvider<T>, Optional<T>> getter) {
@@ -92,9 +98,11 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
-    public void invalidateData(NameInfo info) {
-        cached.put(info, createFailed());
-        sources.forEach(source -> source.invalidateData(info));
+    public void invalidateData(NameInfoLike infoLike) {
+        cached.findAll(infoLike).keySet().forEach(info -> {
+            cached.put(info, createFailed());
+            sources.forEach(source -> source.invalidateData(info));
+        });
     }
 
     @Override
@@ -107,17 +115,17 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
-    public void delete(NameInfo info) {
-        cached.remove(info);
+    public void deleteAllOf(NameInfoLike info) {
+        cached.deleteAll(info);
         sources.forEach(source -> {
-            if (source.delete(info)) {
+            if (source.deleteAllOf(info)) {
                 PlayerArmorStandsClient.LOGGER.info("Deleted data from source: {} for name info: {}", source.getName(), info);
             }
         });
     }
 
     @Override
-    public HashMap<String, DataProvider<T>> getSources() {
+    public Map<String, DataProvider<T>> getSources() {
         return sources.stream()
                 .collect(Collectors.toMap(
                         DataProvider::getName,
@@ -128,7 +136,7 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
     }
 
     @Override
-    public Set<NameInfo> keySet() {
+    public Set<NameInfo> allNames() {
         Set<NameInfo> keys = new HashSet<>();
         getSources().values().forEach(prvd -> keys.addAll(prvd.getAll().keySet()));
         return keys;

@@ -17,10 +17,10 @@ public class PasCommandsRegistrar<S> {
                             .then(literal("reload_failed").executes(PasCommands::reloadFailedCommand))
                             .then(literal("reload")
                                     .then(literal("skin")
-                                            .then(argument("name/skin", NameInfoArgumentType.forSkin()).executes(PasCommands::reloadSingeSkinCommand)))
+                                            .then(argument("name/skin", NameInfoPatternArgumentType.forSkin()).executes(PasCommands::reloadSingeSkinCommand)))
 
                                     .then(literal("cape")
-                                            .then(argument("name/cape", NameInfoArgumentType.forCape()).executes(PasCommands::reloadSingleCapeCommand)))
+                                            .then(argument("name/cape", NameInfoPatternArgumentType.forCape()).executes(PasCommands::reloadSingleCapeCommand)))
                             )
                             .then(literal("debug")
                                     .then(literal("drop_cache").executes(PasCommands::dropCacheCommand))

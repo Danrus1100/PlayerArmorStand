@@ -7,8 +7,8 @@ import com.danrus.pas.impl.features.OverlayFeature;
 import com.danrus.pas.impl.features.SkinProviderFeature;
 import com.danrus.pas.impl.features.SlimFeature;
 import com.danrus.pas.impl.features.DisplayNameFeature;
-import com.danrus.pas.utils.NIParser;
-import com.danrus.pas.utils.Id;
+import com.danrus.pas.utils.info.NIParser;
+import com.danrus.pas.utils.mc.Id;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -20,9 +20,8 @@ import java.util.stream.Collectors;
 public record NameInfo(
         String base,
         Map<Class<? extends RenameFeature>, RenameFeature> features,
-        String legacyParams,
         @Nullable ResourceLocation lolmeme
-) {
+) implements NameInfoLike {
     public static final NameInfo EMPTY = new NameInfo();
     public static Map<String, NameInfo> MEMES = Map.of(
             "данечка разработчик", meme(Id.pas("textures/lol/danechka_razrabotchik.png")),
@@ -35,21 +34,20 @@ public record NameInfo(
     );
 
     private static NameInfo meme(ResourceLocation texture) {
-        return new NameInfo("", defaultFeatures(), "", texture);
+        return new NameInfo("", defaultFeatures(), texture);
     }
 
     public NameInfo {
         base = base == null ? "" : base;
         features = features == null ? Map.of() : Map.copyOf(features);
-        legacyParams = legacyParams == null ? "" : legacyParams;
     }
 
     public NameInfo() {
-        this("", defaultFeatures(), "", null);
+        this("", defaultFeatures(), null);
     }
 
     public NameInfo(String base) {
-        this(base, defaultFeatures(), "", null);
+        this(base, defaultFeatures(), null);
     }
 
     static Map<Class<? extends RenameFeature>, RenameFeature> defaultFeatures() {
@@ -82,6 +80,11 @@ public record NameInfo(
 
     // --- Compile ---
 
+    //TODO i guess
+    public String compileFast() {
+        return compile();
+    }
+
     public String compile() {
         StringBuilder out = new StringBuilder();
         out.append(base == null ? "" : base);
@@ -94,10 +97,6 @@ public record NameInfo(
                 })
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
-
-        if (legacyParams != null && !legacyParams.isEmpty()) {
-            featureParts.add(0, legacyParams);
-        }
 
         if (!featureParts.isEmpty()) {
             out.append("|").append(String.join("", featureParts));
@@ -120,8 +119,17 @@ public record NameInfo(
     }
 
     @Override
+    public @NotNull NameInfoPattern toPattern() {
+        return NameInfoPattern.exact(this);
+    }
+
+    public NameInfoPattern toBaseNamePattern() {
+        return NameInfoPattern.any().withBaseName(base);
+    }
+
+    @Override
     public @NotNull String toString() {
-        return "NameInfo[" + this.compile() + "(" + this.hashCode() + ")]";
+        return this.compile();
     }
 
     // Custom equals/hashCode: base + features only (exclude legacyParams and lolmeme)
@@ -174,13 +182,11 @@ public record NameInfo(
     public static class Builder {
         private String base;
         private final LinkedHashMap<Class<? extends RenameFeature>, RenameFeature> features;
-        private String legacyParams;
         private ResourceLocation lolmeme;
 
         public Builder(NameInfo src) {
             this.base = src.base();
             this.features = new LinkedHashMap<>(src.features());
-            this.legacyParams = src.legacyParams();
             this.lolmeme = src.lolmeme();
         }
 
@@ -287,7 +293,7 @@ public record NameInfo(
         }
 
         public NameInfo build() {
-            return new NameInfo(base, new LinkedHashMap<>(features), legacyParams, lolmeme);
+            return new NameInfo(base, new LinkedHashMap<>(features), lolmeme);
         }
     }
 }

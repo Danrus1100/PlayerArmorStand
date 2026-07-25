@@ -1,7 +1,7 @@
 package com.danrus.pas.config;
 
 
-import com.danrus.pas.utils.ModUtils;
+import com.danrus.pas.utils.mc.ModUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

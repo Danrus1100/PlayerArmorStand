@@ -3,7 +3,7 @@ package com.danrus.pas.compat.easyanvils.mixin;
 //? if easyanvils {
 import com.danrus.pas.impl.namer.AnvilArmorStandNamer;
 import com.danrus.pas.render.gui.PasConfiguratorScreen;
-import com.danrus.pas.utils.GuiUtils;
+import com.danrus.pas.utils.mc.GuiUtils;
 import fuzs.easyanvils.client.gui.screens.inventory.ModAnvilScreen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;

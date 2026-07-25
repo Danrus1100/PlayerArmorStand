@@ -5,15 +5,13 @@ import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.data.TextureProvider;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
-import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
 import com.danrus.pas.impl.features.CapeFeature;
 import com.danrus.pas.impl.holder.CapeData;
-import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.OverlayMessageManger;
 import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.utils.MojangUtils;
-import com.danrus.pas.utils.RestHelper;
-import com.danrus.pas.utils.SkinDownloader;
+import com.danrus.pas.utils.net.MojangUtils;
+import com.danrus.pas.utils.net.RestHelper;
+import com.danrus.pas.utils.net.TextureDownloader;
 import com.google.gson.Gson;
 import net.minecraft.resources.ResourceLocation;
 
@@ -72,7 +70,7 @@ public class MinecraftCapesTextureProvider implements TextureProvider{
                 .toFileName(CapeData.class, info);
         Path filePath = CACHE_PATH.resolve(fileName + ".png");
 
-        return SkinDownloader.downloadAndRegister(capeLocation, filePath, profile.cape_url, false)
+        return TextureDownloader.downloadAndRegister(capeLocation, filePath, profile.cape_url, false)
                 .thenAccept(textureId -> {
                     CapeData data = new CapeData();
                     data.setTexture(textureId);

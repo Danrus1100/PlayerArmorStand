@@ -1,6 +1,6 @@
 package com.danrus.pas.commands;
 
-import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.info.NameInfoPattern;
 import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
@@ -14,14 +14,14 @@ public class PasCommands {
     public static final List<String> COMMANDS_NAMES = List.of("player-armor-stands", "pas");
 
     public static int reloadSingeSkinCommand(CommandContext<?> context) {
-        NameInfo info = NameInfoArgumentType.getNameInfo(context, "name/skin");
-        PasManager.getInstance().reloadData(info, SkinData.class);
+        NameInfoPattern info = NameInfoPatternArgumentType.getPattern(context, "name/skin");
+        PasManager.getInstance().reloadDataLike(info, SkinData.class);
         return 1;
     }
 
     public static int reloadSingleCapeCommand(CommandContext<?> context) {
-        NameInfo info = NameInfoArgumentType.getNameInfo(context, "name/cape");
-        PasManager.getInstance().reloadData(info, CapeData.class);
+        NameInfoPattern info = NameInfoPatternArgumentType.getPattern(context, "name/cape");
+        PasManager.getInstance().reloadDataLike(info, CapeData.class);
         return 1;
     }
 

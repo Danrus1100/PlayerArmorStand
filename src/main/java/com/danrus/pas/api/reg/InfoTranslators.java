@@ -4,7 +4,7 @@ import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.info.InfoTranslator;
 import com.danrus.pas.api.info.NameInfo;
-import com.danrus.pas.utils.Id;
+import com.danrus.pas.utils.mc.Id;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;

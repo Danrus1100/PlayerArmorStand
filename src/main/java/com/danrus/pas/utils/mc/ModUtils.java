@@ -1,4 +1,4 @@
-package com.danrus.pas.utils;
+package com.danrus.pas.utils.mc;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -57,7 +57,7 @@ public class ModUtils {
     }
 
     public static ResourceLocation getPlayerSkinTexture(AbstractClientPlayer player){
-        //?} if >1.20.1 && <1.21.9 {
+        //? >1.20.1 && <1.21.9 {
         return player.getSkin().texture();
         //?} else {
         /*return player.getSkin().body().texturePath();
@@ -65,7 +65,7 @@ public class ModUtils {
     }
 
     public static ResourceLocation getPlayerCapeTexture(AbstractClientPlayer player){
-        //?} else if >1.20.1 && <1.21.9 {
+        //? >1.20.1 && <1.21.9 {
         return player.getSkin().capeTexture();
         //?} else {
         /*try {

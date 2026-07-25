@@ -15,10 +15,10 @@ import com.danrus.pas.impl.holder.CapeData;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.OverlayMessageManger;
 import com.danrus.pas.managers.PasManager;
-import com.danrus.pas.utils.MojangUtils;
-import com.danrus.pas.utils.RestHelper;
-import com.danrus.pas.utils.SkinDownloader;
-import com.danrus.pas.utils.EncodeUtils;
+import com.danrus.pas.utils.net.MojangUtils;
+import com.danrus.pas.utils.net.RestHelper;
+import com.danrus.pas.utils.net.TextureDownloader;
+import com.danrus.pas.utils.files.EncodeUtils;
 import com.google.gson.Gson;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
@@ -201,7 +201,7 @@ public class MojangProvider implements TextureProvider {
                 .toFileName(dataClass, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
 
-        return SkinDownloader.downloadAndRegister(capeLocation, filePath, texture.url, remap)
+        return TextureDownloader.downloadAndRegister(capeLocation, filePath, texture.url, remap)
                 .thenAccept(textureId -> {
                     T data = dataFactory.get();
                     data.setTexture(textureId);

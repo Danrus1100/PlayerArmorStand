@@ -1,6 +1,6 @@
 package com.danrus.pas.render.gui.widgets;
 
-import com.danrus.pas.utils.Id;
+import com.danrus.pas.utils.mc.Id;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;

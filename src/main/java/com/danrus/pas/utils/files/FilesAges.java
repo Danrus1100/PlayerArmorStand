@@ -1,4 +1,4 @@
-package com.danrus.pas.utils;
+package com.danrus.pas.utils.files;
 
 import com.danrus.pas.config.SkinReloadTime;
 import com.google.gson.Gson;

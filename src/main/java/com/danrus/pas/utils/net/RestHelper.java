@@ -1,4 +1,4 @@
-package com.danrus.pas.utils;
+package com.danrus.pas.utils.net;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 

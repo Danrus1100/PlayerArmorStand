@@ -1,4 +1,4 @@
-package com.danrus.pas.utils;
+package com.danrus.pas.utils.mc;
 
 import net.minecraft.resources.ResourceLocation;
 

@@ -6,19 +6,20 @@ import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataProvider;
 import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.info.NameInfoLike;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.config.PasConfig;
-import com.danrus.pas.utils.FilesAges;
-import com.danrus.pas.utils.ModUtils;
-import com.danrus.pas.utils.TextureUtils;
+import com.danrus.pas.utils.files.FilesAges;
+import com.danrus.pas.utils.info.NameInfoMap;
+import com.danrus.pas.utils.mc.ModUtils;
+import com.danrus.pas.utils.texture.TextureUtils;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class AbstractDiskDataProvider<T extends DataHolder> implements DataProvider<T> {
 
@@ -26,7 +27,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     public static final FilesAges AGES = new FilesAges(CACHE_PATH.resolve("files_ages.json"));
 
     protected final Path cachePath;
-    protected final Map<NameInfo, T> cache = new ConcurrentHashMap<>();
+    protected final NameInfoMap<T> cache = new NameInfoMap<>(new ConcurrentHashMap<>());
 
     public AbstractDiskDataProvider() {
         this.cachePath = CACHE_PATH;
@@ -69,36 +70,42 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     }
 
     @Override
-    public Optional<T> find(NameInfo info) {
-        T data = cache.get(info);
-        if (data == null) {
+    public Optional<T> findFirst(NameInfoLike infoLike) {
+        var entry = cache.findFirst(infoLike);
+        if (entry.isEmpty() && infoLike instanceof NameInfo info) {
             return get(info);
         }
-        return Optional.of(data);
+        return entry.map(Map.Entry::getValue);
     }
 
     @Override
-    public boolean delete(NameInfo info) {
-        String fileName = InfoTranslators.getInstance()
-                .toFileName(getDataHolderClass(), info);
-        Path filePath = cachePath.resolve(fileName + ".png");
-
-        boolean deleted = false;
-        if (filePath.toFile().exists()) {
-            deleted = filePath.toFile().delete();
-        }
-
-        if (deleted) {
-            cache.remove(info);
-            AGES.remove(fileName);
-        }
-
-        return deleted;
+    public Collection<T> findAll(NameInfoLike infoLike) {
+        return cache.findAll(infoLike).values();
     }
 
     @Override
-    public Map<NameInfo, T> getAll() {
-        return new HashMap<>(cache);
+    public boolean deleteAllOf(NameInfoLike infoLike) {
+        forEachLike(infoLike, info -> {
+            String fileName = InfoTranslators.getInstance()
+                    .toFileName(getDataHolderClass(), info);
+            Path filePath = cachePath.resolve(fileName + ".png");
+
+            boolean deleted = false;
+            if (filePath.toFile().exists()) {
+                deleted = filePath.toFile().delete();
+            }
+
+            if (deleted) {
+                cache.remove(info);
+                AGES.remove(fileName);
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public NameInfoMap<T> getAll() {
+        return new NameInfoMap<>(cache);
     }
 
     @Override
@@ -107,15 +114,23 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     }
 
     @Override
-    public void invalidateData(NameInfo info) {
-        String fileName = InfoTranslators.getInstance()
-                .toFileName(getDataHolderClass(), info);
-        Path filePath = cachePath.resolve(fileName);
+    public void invalidateData(NameInfoLike infoLike) {
+        forEachLike(infoLike, info -> {
+            String fileName = InfoTranslators.getInstance()
+                    .toFileName(getDataHolderClass(), info);
+            Path filePath = cachePath.resolve(fileName);
 
-        if (filePath.toFile().exists()) {
-            filePath.toFile().delete();
+            if (filePath.toFile().exists()) {
+                filePath.toFile().delete();
+            }
+            cache.put(info, createInvalid());
+        });
+    }
+
+    private void forEachLike(NameInfoLike infoLike, Consumer<NameInfo> consumer) {
+        for (NameInfo info : cache.findAll(infoLike).keySet()) {
+            consumer.accept(info);
         }
-        cache.put(info, createInvalid());
     }
 
     private T createInvalid() {

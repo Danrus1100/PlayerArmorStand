@@ -1,8 +1,11 @@
 package com.danrus.pas.render.common;
 
+import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.render.armorstand.PasEntityRenderState;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
+import net.minecraft.network.chat.Component;
 import org.joml.Vector3f;
 
 public class PasModelPoseSettings {
@@ -66,7 +69,7 @@ public class PasModelPoseSettings {
         this.baseplate = baseplate;
     }
 
-    public PasModelPoseSettings(ArmorStandRenderState original) {
+    public PasModelPoseSettings(PasEntityRenderState original) {
         this.head = new PasModelPartSettings(original.headPose);
         this.body = new PasModelPartSettings(original.bodyPose);
         this.leftLeg = new PasModelPartSettings(original.leftLegPose);
@@ -77,8 +80,8 @@ public class PasModelPoseSettings {
         this.baseplate = original.showBasePlate;
     }
 
-    public ArmorStandRenderState toRenderState() {
-        ArmorStandRenderState state = new ArmorStandRenderState();
+    public PasEntityRenderState toRenderState(NameInfo info) {
+        PasEntityRenderState state = new PasEntityRenderState();
         state.leftArmPose = this.leftArm.toRotations();
         state.rightArmPose = this.rightArm.toRotations();
         state.leftLegPose = this.leftLeg.toRotations();
@@ -86,6 +89,9 @@ public class PasModelPoseSettings {
         state.bodyPose = this.body.toRotations();
         state.headPose = this.head.toRotations();
         state.showBasePlate = this.baseplate;
+        state.info = info;
+        //TODO: its happen every frame, make cached:
+//        state.customName = Component.literal(info.compile());
         return state;
     }
 }

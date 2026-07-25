@@ -6,7 +6,7 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.common.PasModelPoseSettings;
-import com.danrus.pas.utils.ModUtils;
+import com.danrus.pas.utils.mc.ModUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -16,7 +16,6 @@ import net.minecraft.client.model.ArmorStandArmorModel;
 //?}
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.core.Rotations;
-import net.minecraft.network.chat.Component;
 
 import java.util.Collection;
 import java.util.List;
@@ -119,7 +118,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
     public static LayerDefinition createBodyLayer(CubeDeformation deformation, CubeDeformation armDeformation) {
         MeshDefinition meshdefinition = HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F);
         PartDefinition partdefinition = meshdefinition.getRoot();
-        partdefinition.addOrReplaceChild("cloak", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, 0.0F, -1.0F, 10.0F, 16.0F, 1.0F, deformation, 1.0F, 0.5F), PartPose.offset(0.0F, 0.0F, 0.0F));
+        partdefinition.addOrReplaceChild("cloak", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, 0.0F, -1.0F, 10.0F, 16.0F, 1.0F, deformation, 1.0F, 0.5F), PartPose.offset(0.0F, -0.02F, 0.21F));
 
 
         partdefinition.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(32, 48).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, armDeformation), PartPose.offset(5.0F, 2.0F, 0.0F));
@@ -169,17 +168,19 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
 
     @Override
     public void setupAnim(ArmorStandRenderState armorStand){
-        this.setupAnim(armorStand, true);
-
+        this.setupAnim(armorStand, NameInfo.parse(ModUtils.getCustomName(armorStand)), true);
     }
 
-    public void setupAnim(ArmorStandRenderState armorStand, boolean setupVisibility) {
+    public void setupAnim(ArmorStandRenderState armorStand, NameInfo info) {
+        setupAnim(armorStand, info, true);
+    }
+
+    public void setupAnim(ArmorStandRenderState armorStand, NameInfo info, boolean setupVisibility) {
         super.setupAnim(armorStand);
         boolean showBase = armorStand.showBasePlate;
         boolean showArms = armorStand.showArms;
-        Component customName = ModUtils.getCustomName(armorStand);
+//        Component customName = ModUtils.getCustomName(armorStand);
         Rotations bodyPose = armorStand.bodyPose;
-        NameInfo info = NameInfo.parse(customName);
 
         if (info.lolmeme() != null) {
             getCape().visible = false;
@@ -211,6 +212,11 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
 
         cpp(body, this.jacket);
 
+        this.cloak.xRot = (float) Math.toRadians(-10);
+        this.cloak.yRot = (float) Math.toRadians(180);
+        this.cloak.y += 0.02f;
+        this.cloak.z += 1.1f;
+
 
         this.basePlate.yRot = ((float)Math.PI / 180F) * -armorStand.yRot;
 
@@ -220,24 +226,24 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
         }
 
 
-        String customNameString;
-        if (!PasConfig.getInstance().getDefaultSkin().isEmpty() && customName == null) {
-            customNameString = PasConfig.getInstance().getDefaultSkin();
-        } else if (customName != null) {
-            customNameString = customName.getString();
-        } else {
-            customNameString = "";
-        }
+//        String customNameString;
+//        if (!PasConfig.getInstance().getDefaultSkin().isEmpty() && customName == null) {
+//            customNameString = PasConfig.getInstance().getDefaultSkin();
+//        } else if (customName != null) {
+//            customNameString = customName.getString();
+//        } else {
+//            customNameString = "";
+//        }
 
         boolean isEarsVisible = "deadmau5".equalsIgnoreCase(info.base()) && PasConfig.getInstance().isShowEasterEggs();
         this.leftEar.visible = isEarsVisible;
         this.rightEar.visible = isEarsVisible;
 
         if (setupVisibility) {
-            this.setModelVisibility(!showArmorStandWhileDownload(PasManager.getInstance().findSkinData(info)), info.isSlim(), showBase);
+            this.setModelVisibility(!showArmorStandWhileDownload(PasManager.getInstance().findSkinData(info)), info.isSlim(), showBase, info.hasCape());
         }
 
-        if (customNameString.isEmpty() && PasConfig.getInstance().getDefaultSkin().isEmpty()) {
+        if (info.isEmpty() && PasConfig.getInstance().getDefaultSkin().isEmpty()) {
             setOriginalAngles(showBase, showArms, bodyPose);
         }
     }
@@ -340,12 +346,11 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
                 this.rightSlimArm,
                 this.leftSlimSleeve,
                 this.rightSlimSleeve,
-                this.hat,
                 this.head
         );
     }
 
-    public void setModelVisibility(boolean player, boolean slim, boolean showBase) {
+    public void setModelVisibility(boolean player, boolean slim, boolean showBase, boolean showCape) {
 
         this.hat.visible = player;
         this.head.visible = player;
@@ -377,11 +382,11 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
         this.shoulderStick.visible = !player;
         this.basePlate.visible = showBase && !player;
 
-        this.cloak.visible = false;
+        this.cloak.visible = showBase;
     }
 
     private void setOriginalAngles(boolean showBase, boolean showArms, Rotations bodyPose) {
-        this.setModelVisibility(false, false, showBase);
+        this.setModelVisibility(false, false, showBase, false);
         this.originalLeftArm.visible = showArms;
         this.originalRightArm.visible = showArms;
         this.rightBodyStick.xRot = ((float)Math.PI / 180F) * bodyPose.x();

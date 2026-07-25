@@ -3,7 +3,7 @@ package com.danrus.pas.loaders.fabric;
 
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.commands.PasCommandsRegistrar;
-import com.danrus.pas.utils.Id;
+import com.danrus.pas.utils.mc.Id;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;

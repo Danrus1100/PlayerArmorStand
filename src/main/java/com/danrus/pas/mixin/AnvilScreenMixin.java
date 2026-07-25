@@ -1,13 +1,9 @@
 package com.danrus.pas.mixin;
 
-import com.danrus.pas.mixin.accessors.ScreenAccessor;
 import com.danrus.pas.render.gui.PasConfiguratorScreen;
 import com.danrus.pas.impl.namer.AnvilArmorStandNamer;
-import com.danrus.pas.utils.GuiUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import com.danrus.pas.utils.mc.GuiUtils;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

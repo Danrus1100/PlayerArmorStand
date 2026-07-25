@@ -4,8 +4,8 @@ package com.danrus.pas.config;
 import com.danrus.pas.config.categories.MainCategory;
 import com.danrus.pas.config.categories.PossessiveCategory;
 import com.danrus.pas.impl.holder.SkinData;
-import com.danrus.pas.utils.Id;
-import com.danrus.pas.utils.ModUtils;
+import com.danrus.pas.utils.mc.Id;
+import com.danrus.pas.utils.mc.ModUtils;
 import net.minecraft.client.gui.screens.Screen;
 
 import com.google.gson.GsonBuilder;

@@ -10,7 +10,7 @@ import com.danrus.pas.render.gui.widgets.ButtonWithIcon;
 import com.danrus.pas.render.gui.widgets.EnterEditBox;
 import com.danrus.pas.render.gui.widgets.PasSliderButtonImpl;
 import com.danrus.pas.render.gui.widgets.TextWidget;
-import com.danrus.pas.utils.Id;
+import com.danrus.pas.utils.mc.Id;
 
 import com.danrus.pas.impl.data.skin.FileTextureSkinData;
 import net.minecraft.ChatFormatting;

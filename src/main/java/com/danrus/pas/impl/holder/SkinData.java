@@ -1,7 +1,7 @@
 package com.danrus.pas.impl.holder;
 
 import com.danrus.pas.config.PasConfig;
-import com.danrus.pas.utils.Id;
+import com.danrus.pas.utils.mc.Id;
 import net.minecraft.resources.ResourceLocation;
 
 public class SkinData extends AbstractPasHolder{

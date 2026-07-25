@@ -5,15 +5,16 @@ import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataProvider;
 import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.info.NameInfoLike;
+import com.danrus.pas.api.info.NameInfoPattern;
 import com.danrus.pas.config.PasConfig;
+import com.danrus.pas.utils.info.NameInfoMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class AbstractClientLevelDataProvider<T extends DataHolder> implements DataProvider<T> {
 
@@ -49,21 +50,29 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
     }
 
     @Override
-    public Optional<T> find(NameInfo info) {
-        return get(info);
+    public Optional<T> findFirst(NameInfoLike infoLike) {
+        return switch (infoLike) {
+            case NameInfo info -> get(info);
+            case NameInfoPattern pattern -> getAll().findFirst(pattern).map(Map.Entry::getValue);
+        };
     }
 
     @Override
-    public boolean delete(NameInfo info) {
+    public Collection<T> findAll(NameInfoLike infoLike) {
+        return getAll().findAll(infoLike).values();
+    }
+
+    @Override
+    public boolean deleteAllOf(NameInfoLike info) {
         return false;
     }
 
     @Override
-    public Map<NameInfo, T> getAll() {
+    public NameInfoMap<T> getAll() {
         if (Minecraft.getInstance().level == null) {
-            return new HashMap<>();
+            return new NameInfoMap<>();
         }
-        Map<NameInfo, T> result = new HashMap<>();
+        NameInfoMap<T> result = new NameInfoMap<>();
         Minecraft.getInstance().level.players().forEach(player -> {
             T data = createDataHolder();
             ResourceLocation texture = getTexture(player);
@@ -81,7 +90,7 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
     }
 
     @Override
-    public void invalidateData(NameInfo info) {
+    public void invalidateData(NameInfoLike info) {
     }
 
     @Override

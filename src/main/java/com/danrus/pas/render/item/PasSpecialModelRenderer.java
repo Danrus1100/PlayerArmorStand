@@ -9,7 +9,7 @@ import com.danrus.pas.render.common.PasModelPoseSettings;
 import com.danrus.pas.render.common.PasModelSettings;
 import com.danrus.pas.render.common.PasRenderContext;
 import com.danrus.pas.render.common.PasRenderer;
-import com.danrus.pas.utils.ModUtils;
+import com.danrus.pas.utils.mc.ModUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
@@ -66,7 +66,7 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
 
         preparePose(poseStack);
         prepareModel(info);
-        renderer.draw(skin, cape, info, context, new PasModelSettings(state, hasFoilType), poseStack, packedLight, packedOverlay);
+        renderer.draw(skin, cape, info, context, new PasModelSettings(state, hasFoilType, false), poseStack, packedLight, packedOverlay);
     }
 
     //? >= 1.21.8 {
@@ -83,8 +83,8 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
         prepareModel(null);
 
         List<ModelPart> partsToMeasure = new ArrayList<>();
-        partsToMeasure.addAll(renderer.getModel().getOriginalParts());
-        partsToMeasure.addAll(renderer.getModel().getPlayerParts());
+        partsToMeasure.addAll(renderer.getModel(false).getOriginalParts());
+        partsToMeasure.addAll(renderer.getModel(false).getPlayerParts());
 
         for (ModelPart part : partsToMeasure) {
             if (part.visible) {
@@ -102,11 +102,11 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
 
     private void prepareModel(@Nullable NameInfo infoCandidate) {
         NameInfo info = infoCandidate != null ? infoCandidate : new NameInfo();
-        var model = renderer.getModel();
-        ArmorStandRenderState renderState = state.toRenderState();
+        var model = renderer.getModel(false);
+        ArmorStandRenderState renderState = state.toRenderState(info);
         ModUtils.setCustomName(renderState, Component.literal(info.compile()));
         renderState.showBasePlate = state.baseplate;
-        model.setupAnim(renderState, true);
+        model.setupAnim(renderState, info, true);
         model.setupVisibilityForItem(state, info);
     }
 

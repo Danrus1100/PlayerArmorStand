@@ -1,4 +1,4 @@
-package com.danrus.pas.utils;
+package com.danrus.pas.utils.info;
 
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.info.RenameFeature;
@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 public class NIParser {
 
     private final Map<String, NameInfo> cached = new WeakHashMap<>();
+//    private final Map<NameInfo, String> cachedKeys = new WeakHashMap<>();
 
     public NameInfo parse(String input) {
         if (cached.containsKey(input)) return cached.get(input);
@@ -42,36 +43,12 @@ public class NIParser {
                     }
                 }
             }
-
-            legacy = normalizeParams(params);
         }
 
-        NameInfo info = new NameInfo(name, featureMap, legacy, null);
-        cached.put(input, info);
+        NameInfo info = new NameInfo(name, featureMap, null);
+        cache(input, info);
         return info;
-    }
 
-    private static String normalizeParams(String raw) {
-        if (raw == null || raw.isEmpty()) return "";
-        String p = raw.replaceAll("\\s+", "").toUpperCase();
-
-        for (RenameFeature def : FeatureRegistry.getInstance().getOrderedDefaults()) {
-            Pattern pattern = def.getCleanupPattern();
-            if (pattern != null) {
-                p = pattern.matcher(p).replaceAll("");
-            }
-        }
-
-        StringBuilder sb = new StringBuilder();
-        boolean[] seen = new boolean[256];
-        for (int i = 0; i < p.length(); i++) {
-            char ch = p.charAt(i);
-            if (ch < 256 && !seen[ch]) {
-                seen[ch] = true;
-                sb.append(ch);
-            }
-        }
-        return sb.toString();
     }
 
     private static final NIParser instance = new NIParser();
@@ -79,4 +56,17 @@ public class NIParser {
     public static NIParser getInstance() {
         return instance;
     }
+
+    private void cache(String key, NameInfo value) {
+        cached.put(key, value);
+//        cachedKeys.put(value, key);
+    }
+
+//    public boolean hasCached(NameInfo info) {
+//        return cached.containsValue(info);
+//    }
+//
+//    public String getCachedKey(NameInfo info) {
+//        return cachedKeys.get(info);
+//    }
 }

@@ -8,10 +8,9 @@ import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.data.TextureProvider;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
-import com.danrus.pas.impl.data.common.AbstractDataRepository;
 import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
 import com.danrus.pas.managers.OverlayMessageManger;
-import com.danrus.pas.utils.SkinDownloader;
+import com.danrus.pas.utils.net.TextureDownloader;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
@@ -76,7 +75,7 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
         ResourceLocation location = InfoTranslators.getInstance().toResourceLocation(getDataHolderClass(), info);
         String fileName = InfoTranslators.getInstance().toFileName(getDataHolderClass(), info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
-        return SkinDownloader.downloadAndRegister(location, filePath, "https://s.namemc.com/i/" + getNamemcId(info) + ".png", shouldRemap());
+        return TextureDownloader.downloadAndRegister(location, filePath, "https://s.namemc.com/i/" + getNamemcId(info) + ".png", shouldRemap());
     }
 
     protected abstract Class<? extends DataHolder> getDataHolderClass();
