@@ -19,10 +19,6 @@ public class NameInfoMap<T> implements Map<NameInfo, T> {
         this.map = backend;
     }
 
-    public NameInfoMap(int initialCapacity) {
-        this.map = new HashMap<>(initialCapacity);
-    }
-
     public NameInfoMap(NameInfoMap<T> copy) {
         this.map = Map.copyOf(copy);
     }

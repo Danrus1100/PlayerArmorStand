@@ -1,6 +1,5 @@
 package com.danrus.pas.impl.providers;
 
-import com.danrus.pas.ModExecutor;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.data.DataHolder;
@@ -28,7 +27,6 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class MojangProvider implements TextureProvider {
@@ -55,36 +53,41 @@ public class MojangProvider implements TextureProvider {
     }
 
     @Override
-    public void load(NameInfo info, Consumer<String> onComplete) {
-        synchronized (activeDownloads) {
-            CompletableFuture<Void> existing = activeDownloads.get(info.compile());
-            if (existing != null) {
-                existing.thenAccept(v -> onComplete.accept(info.base()));
-                PlayerArmorStandsClient.LOGGER.info("MojangProvider: Reusing active download for " + info.base());
-                return;
-            }
+    public CompletableFuture<Void> load(NameInfo info) {
+        String downloadKey = info.compile();
+        CompletableFuture<Void> created = new CompletableFuture<>();
+        CompletableFuture<Void> existing = activeDownloads.putIfAbsent(downloadKey, created);
+        if (existing != null) {
+            PlayerArmorStandsClient.LOGGER.info("MojangProvider: Reusing active download for " + info.base());
+            return existing;
         }
 
         if (!MojangUtils.isNicknameValid(info.base())) {
             OverlayMessageManger.getInstance().showInvalidNameMessage(info.base());
             log.error("Invalid nickname: {}", info.base());
-            ModExecutor.execute(() -> invalidateAllData(info));
-            onComplete.accept(info.base());
-            return;
+            invalidateAllData(info);
+            created.completeExceptionally(
+                    new IllegalArgumentException("Invalid nickname: " + info.base()));
+            activeDownloads.remove(downloadKey, created);
+            return created;
         }
 
-        initializeDownload(info);
-        CompletableFuture<Void> downloadFuture = downloadProfile(info, onComplete);
-
-        synchronized (activeDownloads) {
-            activeDownloads.put(info.compile(), downloadFuture);
+        try {
+            initializeDownload(info);
+            downloadProfile(info).whenComplete((ignored, throwable) -> {
+                if (throwable == null) {
+                    created.complete(null);
+                } else {
+                    created.completeExceptionally(throwable);
+                }
+            });
+        } catch (Exception exception) {
+            created.completeExceptionally(exception);
         }
 
-        downloadFuture.whenComplete((v, throwable) -> {
-            synchronized (activeDownloads) {
-                activeDownloads.remove(info.compile());
-            }
-        });
+        created.whenComplete((ignored, throwable) ->
+                activeDownloads.remove(downloadKey, created));
+        return created;
     }
 
     private void initializeDownload(NameInfo info) {
@@ -104,14 +107,17 @@ public class MojangProvider implements TextureProvider {
         }
     }
 
-    private CompletableFuture<Void> downloadProfile(NameInfo info, Consumer<String> onComplete) {
+    private CompletableFuture<Void> downloadProfile(NameInfo info) {
         return MojangUtils.getUUID(info)
                 .thenCompose(this::downloadTexturedProfile)
-                .thenCompose(texturedProfile -> processTexturedProfile(texturedProfile, info, onComplete))
-                .exceptionally(throwable -> {
-                    doFail(info);
-                    PlayerArmorStandsClient.LOGGER.error("MojangProvider: Failed to download for " + info, throwable);
-                    return null;
+                .thenCompose(texturedProfile -> processTexturedProfile(texturedProfile, info))
+                .whenComplete((ignored, throwable) -> {
+                    if (throwable != null) {
+                        doFail(info);
+                        PlayerArmorStandsClient.LOGGER.error(
+                                "MojangProvider: Failed to download for " + info,
+                                throwable);
+                    }
                 });
     }
 
@@ -136,7 +142,7 @@ public class MojangProvider implements TextureProvider {
                 });
     }
 
-    private CompletableFuture<Void> processTexturedProfile(TexturedProfile profile, NameInfo info, Consumer<String> onComplete) {
+    private CompletableFuture<Void> processTexturedProfile(TexturedProfile profile, NameInfo info) {
         CompletableFuture<Void> skinFuture = processSkinTexture(profile, info);
         CompletableFuture<Void> capeFuture = processCapeTexture(profile, info);
 
@@ -144,7 +150,6 @@ public class MojangProvider implements TextureProvider {
                 .thenRun(() -> {
                     OverlayMessageManger.getInstance().showSuccessMessage(info.base());
                     PlayerArmorStandsClient.LOGGER.info("MojangProvider: Successfully downloaded textures for " + info);
-                    onComplete.accept(info.base());
                 });
     }
 

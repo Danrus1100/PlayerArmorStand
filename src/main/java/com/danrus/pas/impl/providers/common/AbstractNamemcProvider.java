@@ -1,6 +1,5 @@
 package com.danrus.pas.impl.providers.common;
 
-import com.danrus.pas.ModExecutor;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.*;
 import com.danrus.pas.api.data.DataHolder;
@@ -14,9 +13,7 @@ import com.danrus.pas.utils.net.TextureDownloader;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public abstract class AbstractNamemcProvider<T extends DataHolder> implements TextureProvider {
 
@@ -29,23 +26,24 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
 
 
     @Override
-    public void load(NameInfo info, Consumer<String> onComplete) {
-        final String output = getOutputString(info);
+    public CompletableFuture<Void> load(NameInfo info) {
         initializeDownload(info);
-        ModExecutor.execute(() -> getDownloadTask(info)
-                .thenApply(identifier -> {
-                    updateStatus(info, DownloadStatus.COMPLETED);
-                    updateSkinData(info, identifier);
-                    onComplete.accept(output);
+        return getDownloadTask(info)
+                .thenAccept(identifier -> {
+                    T data = createDataHolder();
+                    data.setTexture(identifier);
+                    data.setStatus(DownloadStatus.COMPLETED);
+                    getDataManager().store(info, data);
                     OverlayMessageManger.getInstance().showSuccessMessage(info.base());
-                    return null;
                 })
-                .exceptionally((throwable -> {
-                    doFail(info);
-                    onComplete.accept(output);
-                    PlayerArmorStandsClient.LOGGER.error("NamemcProvider: Failed to download skin for " + info, throwable);
-                    return null;
-                })));
+                .whenComplete((ignored, throwable) -> {
+                    if (throwable != null) {
+                        doFail(info);
+                        PlayerArmorStandsClient.LOGGER.error(
+                                "NamemcProvider: Failed to download texture for " + info,
+                                throwable);
+                    }
+                });
     }
 
     private void initializeDownload(NameInfo info) {
@@ -56,19 +54,9 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
         getDataManager().store(info, data);
     }
 
-    private void updateStatus(NameInfo info, DownloadStatus status) {
-        T data = getOrCreateDataHolder(info);
-        data.setStatus(status);
-        getDataManager().store(info, data);
-    }
-
     private void doFail(NameInfo info) {
         OverlayMessageManger.getInstance().showFailMessage(info.base());
         getDataManager().invalidateData(info);
-    }
-
-    protected T getOrCreateDataHolder(NameInfo info) {
-        return getDataFromNamemcRepository(info).orElseGet(this::createDataHolder);
     }
 
     protected CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info) {
@@ -83,7 +71,4 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
     protected abstract boolean shouldRemap();
     protected abstract DataRepository<T> getDataManager();
     protected abstract T createDataHolder();
-    protected abstract void updateSkinData(NameInfo info, ResourceLocation texture);
-    protected abstract Optional<T> getDataFromNamemcRepository(NameInfo info);
-    protected abstract String getOutputString(NameInfo info);
 }

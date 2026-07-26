@@ -2,9 +2,9 @@ package com.danrus.pas.api.data;
 
 import com.danrus.pas.api.info.NameInfo;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 public interface TextureProvider {
-    void load(NameInfo info, Consumer<String> onComplete);
+    CompletableFuture<Void> load(NameInfo info);
     String getLiteral();
 }

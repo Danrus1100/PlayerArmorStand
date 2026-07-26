@@ -1,5 +1,6 @@
 package com.danrus.pas.managers;
 
+import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.features.SkinProviderFeature;
@@ -12,11 +13,6 @@ public class SkinProvidersManager extends AbstractTextureProviderManager<SkinDat
 
     private static final String DEFAULT_LITERAL = "M";
     private static final String EXCLUDE_LITERALS = "NF";
-
-    @Override
-    protected String getPendingKey(NameInfo info) {
-        return info.base();
-    }
 
     @Override
     protected void prepareProviders() {
@@ -52,5 +48,10 @@ public class SkinProvidersManager extends AbstractTextureProviderManager<SkinDat
     @Override
     protected boolean registerAsExistingProvider() {
         return true;
+    }
+
+    @Override
+    protected Class<? extends DataHolder> getType() {
+        return SkinData.class;
     }
 }

@@ -59,6 +59,10 @@ public class PasRenderer {
             for (ModelPart part : modelToRender.getPlayerParts()) {
                 drawPart(poseStack, part, RenderType.glint(), context, packedLight, packedOverlay);
             }
+
+            if (settings.poseSettings().baseplate) {
+                drawPart(poseStack, modelToRender.basePlatePart(), RenderType.glint(), context, packedLight, packedOverlay);
+            }
         }
 
         if (info.hasCape() && capeData != null && !capeData.getTexture().equals(CapeData.DEFAULT_TEXTURE)) {

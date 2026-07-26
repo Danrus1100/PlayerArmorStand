@@ -81,6 +81,19 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
         return cached.findAll(infoLike);
     }
 
+    @Override
+    public Optional<T> peek(NameInfo info) {
+        Optional<T> cachedVal = cached.findFirst(info).map(Map.Entry::getValue);
+        if (cachedVal.isPresent()) return cachedVal;
+
+        for (var source : sources) {
+            Optional<T> peeked = source.peek(info);
+            if (peeked.isPresent()) return peeked;
+        }
+
+        return Optional.empty();
+    }
+
     private Optional<T> getFrom(Function<DataProvider<T>, Optional<T>> getter) {
         for (DataProvider<T> source : sources) {
             Optional<T> dataFromSource = getter.apply(source);

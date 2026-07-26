@@ -26,20 +26,8 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
         if (!PasConfig.getInstance().isTryApplyFromServerPlayer()) {
             return Optional.empty();
         }
-        T holder = createDataHolder();
-        if (Minecraft.getInstance().level != null) {
-            Minecraft.getInstance().level.players().stream()
-                    .filter(player -> player.getName().getString().equals(info.base()))
-                    .findFirst()
-                    .ifPresent(
-                            player -> {
-                                if (getTexture(player) != null) {
-                                    holder.setStatus(DownloadStatus.COMPLETED);
-                                    holder.setTexture(getTexture(player));
-                                }
-                            }
-                    );
-        }
+
+        T holder = findInClientLevel(info);
 
         if (holder.getStatus() == DownloadStatus.COMPLETED) {
             getDataManager().store(info, holder);
@@ -60,6 +48,32 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
     @Override
     public Collection<T> findAll(NameInfoLike infoLike) {
         return getAll().findAll(infoLike).values();
+    }
+
+    @Override
+    public Optional<T> peek(NameInfo info) {
+        T holder = findInClientLevel(info);
+        return holder.getStatus() == DownloadStatus.COMPLETED
+                ? Optional.of(holder)
+                : Optional.empty();
+    }
+
+    private T findInClientLevel(NameInfo info) {
+        T holder = createDataHolder();
+        if (Minecraft.getInstance().level != null) {
+            Minecraft.getInstance().level.players().stream()
+                    .filter(player -> player.getName().getString().equals(info.base()))
+                    .findFirst()
+                    .ifPresent(
+                            player -> {
+                                if (getTexture(player) != null) {
+                                    holder.setStatus(DownloadStatus.COMPLETED);
+                                    holder.setTexture(getTexture(player));
+                                }
+                            }
+                    );
+        }
+        return holder;
     }
 
     @Override

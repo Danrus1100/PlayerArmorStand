@@ -70,6 +70,11 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
         return cache.findAll(infoLike).values();
     }
 
+    @Override
+    public Optional<T> peek(NameInfo info) {
+        return cache.findFirst(info).map(Map.Entry::getValue);
+    }
+
     private boolean isValidName(String name) {
         return name != null && !name.isEmpty() && name.length() <= 16 && name.matches("[a-zA-Z0-9_]+");
     }

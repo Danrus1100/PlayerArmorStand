@@ -1,5 +1,6 @@
 package com.danrus.pas.utils.texture;
 
+import com.danrus.pas.ModExecutor;
 import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.info.NameInfo;
@@ -88,6 +89,7 @@ public final class TextureUtils {
                 texture = new DynamicTexture(identifier::toString, image);
                 //?}
                 Minecraft.getInstance().getTextureManager().register(identifier, texture);
+                clearOverlayCacheFor(identifier);
                 future.complete(identifier);
             } catch (Exception e) {
                 if (texture != null) {
@@ -216,7 +218,6 @@ public final class TextureUtils {
             return source;
         }
         if (result.isCompletedExceptionally()) {
-            OVERLAY_TEXTURE_CACHE.remove(key, result);
             return source;
         }
         return result.getNow(source);
@@ -233,6 +234,33 @@ public final class TextureUtils {
             );
         }
 
+        try {
+            return CompletableFuture.supplyAsync(
+                            () -> processOverlayImage(key, materialResource, sourceImage),
+                            ModExecutor.MAIN_EXECUTOR
+                    )
+                    .thenCompose(result -> registerTexture(result, overlayLocation(key)))
+                    .whenComplete((identifier, throwable) -> {
+                        if (throwable != null) {
+                            PlayerArmorStandsClient.LOGGER.warn(
+                                    "Failed to create overlay texture {} over {}",
+                                    key.material(),
+                                    key.source(),
+                                    throwable
+                            );
+                        }
+                    });
+        } catch (RuntimeException exception) {
+            sourceImage.close();
+            return CompletableFuture.failedFuture(exception);
+        }
+    }
+
+    private static NativeImage processOverlayImage(
+            OverlayKey key,
+            Resource materialResource,
+            NativeImage sourceImage
+    ) {
         try (sourceImage; InputStream input = materialResource.open();
              NativeImage materialImage = NativeImage.read(input)) {
             NativeImage result = TextureProcessor.applyMaterial(
@@ -244,32 +272,17 @@ public final class TextureUtils {
             if (key.target() == OverlayTarget.SKIN) {
                 result = TextureProcessor.remapLegacySkin(result);
                 if (result == null) {
-                    return CompletableFuture.failedFuture(
-                            new IllegalArgumentException("Overlay source is not a valid player skin")
-                    );
+                    throw new IllegalArgumentException(
+                            "Overlay source is not a valid player skin");
                 }
             }
 
-            ResourceLocation output = overlayLocation(key);
-            return registerTexture(result, output).whenComplete((identifier, throwable) -> {
-                if (throwable != null) {
-                    OVERLAY_TEXTURE_CACHE.remove(key);
-                    PlayerArmorStandsClient.LOGGER.warn(
-                            "Failed to create overlay texture {} over {}",
-                            key.material(),
-                            key.source(),
-                            throwable
-                    );
-                }
-            });
-        } catch (Exception e) {
-            PlayerArmorStandsClient.LOGGER.warn(
-                    "Failed to process overlay texture {} over {}",
-                    key.material(),
-                    key.source(),
-                    e
-            );
-            return CompletableFuture.failedFuture(e);
+            return result;
+        } catch (Exception exception) {
+            throw new RuntimeException(
+                    "Failed to process overlay texture "
+                            + key.material() + " over " + key.source(),
+                    exception);
         }
     }
 

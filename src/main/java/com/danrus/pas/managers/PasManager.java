@@ -96,11 +96,10 @@ public class PasManager {
         Map<NameInfo, T> dataCollection = repository.findAll(infoLike);
         repository.deleteAllOf(infoLike);
         dataCollection.forEach((info, data) -> {
+            data.setStatus(DownloadStatus.IN_PROGRESS);
+            repository.store(info, data);
             TextureUtils.unregisterTexture(data.getTexture());
             TextureUtils.clearOverlayCacheFor(info);
-            if (repository.getData(info).isEmpty()) {
-                this.LOGGER.warn("No data found for " + info.base() + ", reloading from " + type + " providers");
-            }
             provider.download(info);
         });
     }

@@ -84,6 +84,11 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
     }
 
     @Override
+    public Optional<T> peek(NameInfo info) {
+        return cache.findFirst(info).map(Map.Entry::getValue);
+    }
+
+    @Override
     public boolean deleteAllOf(NameInfoLike infoLike) {
         forEachLike(infoLike, info -> {
             String fileName = InfoTranslators.getInstance()

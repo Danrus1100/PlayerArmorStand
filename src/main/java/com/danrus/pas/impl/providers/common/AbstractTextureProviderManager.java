@@ -1,12 +1,16 @@
 package com.danrus.pas.impl.providers.common;
 
+import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.data.*;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.managers.PasManager;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -18,9 +22,9 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
     private PasManager pasManager;
 
     private final Map<String, List<PrioritizedProvider>> providers = new ConcurrentHashMap<>();
-    private final Set<String> pendingList = ConcurrentHashMap.newKeySet();
+    private final Map<ResourceLocation, CompletableFuture<T>> pendingDownloads = new ConcurrentHashMap<>();
 
-    public void clearPending() { pendingList.clear(); }
+    public void clearPending() { pendingDownloads.clear(); }
 
     public void initialize(PasManager manager) {
         if (initialized.compareAndSet(false, true)) {
@@ -50,63 +54,113 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
     @Override
     public void download(NameInfo info) {
         if (info.base().isEmpty()) {
-            LOGGER.warn(getClass().getSimpleName() +
-                    ": Invalid input " + info.base());
+            LOGGER.warn("{}: Invalid input {}", getClass().getSimpleName(), info.base());
             return;
         }
 
-        final String pendingKey = getPendingKey(info);
-        if (!pendingList.add(pendingKey)) {
-            return;
+        final ResourceLocation pendingKey = InfoTranslators.getInstance().toResourceLocation(getType(), info);
+        CompletableFuture<T> created = new CompletableFuture<>();
+        CompletableFuture<T> shared = pendingDownloads.putIfAbsent(pendingKey, created);
+
+        if (shared == null) {
+            shared = created;
+            created.whenComplete((data, throwable) ->
+                    pendingDownloads.remove(pendingKey, created));
+            try {
+                startDownload(info, pendingKey, created);
+            } catch (Exception exception) {
+                created.completeExceptionally(exception);
+            }
         }
 
-        boolean loaded = false;
+        subscribe(info, shared);
+    }
+
+    private void startDownload(
+            NameInfo info,
+            ResourceLocation pendingKey,
+            CompletableFuture<T> result
+    ) {
+        CompletableFuture<Void> providerFuture = null;
 
         for (char c : getExcludeLiterals().toCharArray()) {
             String literal = String.valueOf(c);
             if (getProvider(info).equals(literal)) {
-                if (tryLoadFromProviders(literal, info, pendingKey)) {
-                    loaded = true;
+                providerFuture = tryLoadFromProviders(literal, info, pendingKey);
+                if (providerFuture != null) {
                     break;
                 }
             }
         }
 
-        if (!loaded && !getExcludeLiterals().contains(getProvider(info))) {
+        if (providerFuture == null && !getExcludeLiterals().contains(getProvider(info))) {
             String literal = getProvider(info);
-            if (tryLoadFromProviders(literal, info, pendingKey)) {
-                loaded = true;
-            }
+            providerFuture = tryLoadFromProviders(literal, info, pendingKey);
         }
 
-        if (!loaded) {
-            if (tryLoadFromProviders(getDefaultLiteral(), info, pendingKey)) {
-                loaded = true;
-            }
+        if (providerFuture == null) {
+            providerFuture = tryLoadFromProviders(getDefaultLiteral(), info, pendingKey);
         }
 
-        if (!loaded) {
-            pendingList.remove(pendingKey);
-            LOGGER.error(getClass().getSimpleName() +
-                    ": No provider could load " + info.base() + " with NameInfo: " + info);
+        if (providerFuture == null) {
+            IllegalStateException exception = new IllegalStateException(
+                    "No provider could load " + info.base() + " with NameInfo: " + info);
+            LOGGER.error("{}: {}", getClass().getSimpleName(), exception.getMessage());
             if (pasManager != null) {
                 this.getDataManager().invalidateData(info);
             }
+            result.completeExceptionally(exception);
+            return;
         }
+
+        CompletableFuture<Void> selectedFuture = providerFuture;
+        selectedFuture.whenComplete((ignored, throwable) -> {
+            if (throwable != null) {
+                result.completeExceptionally(throwable);
+                return;
+            }
+
+            Optional<T> data = getDataManager().peek(info);
+            if (data.isEmpty() || data.get().getStatus() != DownloadStatus.COMPLETED) {
+                result.completeExceptionally(new IllegalStateException(
+                        "Provider completed without valid data for " + info));
+                return;
+            }
+
+            result.complete(data.get());
+        });
     }
 
-    private boolean tryLoadFromProviders(String literal, NameInfo info, String pendingKey) {
+    private void subscribe(NameInfo info, CompletableFuture<T> download) {
+        download.whenComplete((data, throwable) -> {
+            if (throwable == null) {
+                getDataManager().store(info, data);
+            } else {
+                LOGGER.error("Failed to download texture for {}", info, throwable);
+                getDataManager().invalidateData(info);
+            }
+        });
+    }
+
+    private CompletableFuture<Void> tryLoadFromProviders(
+            String literal,
+            NameInfo info,
+            ResourceLocation pendingKey
+    ) {
         return tryLoad(providers.get(literal), info, pendingKey);
     }
 
-    private boolean tryLoad(List<PrioritizedProvider> providerList, NameInfo info, String pendingKey) {
-        if (providerList == null || providerList.isEmpty()) return false;
+    private CompletableFuture<Void> tryLoad(
+            List<PrioritizedProvider> providerList,
+            NameInfo info,
+            ResourceLocation pendingKey
+    ) {
+        if (providerList == null || providerList.isEmpty()) return null;
 
         for (PrioritizedProvider prioritized : providerList) {
             try {
                 LOGGER.info("Trying to download {} from {}", pendingKey, prioritized.provider.getClass().getSimpleName());
-                prioritized.provider().load(info, ignored -> pendingList.remove(pendingKey));
-                return true;
+                return prioritized.provider().load(info);
             } catch (Exception e) {
                 LOGGER.error(
                         "Provider {} failed to load {}: {}",
@@ -114,11 +168,10 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
                 );
             }
         }
-        return false;
+        return null;
     }
 
-    protected abstract String getPendingKey(NameInfo info);
-
+    protected abstract Class<? extends DataHolder> getType();
     protected abstract void prepareProviders();
     protected abstract String getProvider(NameInfo info);
     protected abstract String getName();

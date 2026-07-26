@@ -2,6 +2,7 @@ package com.danrus.pas.render.armorstand;
 
 import com.danrus.pas.api.DownloadStatus;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.duck.DrawSwapper;
 import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
@@ -56,7 +57,7 @@ public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntit
     @Override
     public void render(PasEntityRenderState state, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
         Optional<SkinData> data = PasManager.getInstance().getSkinDataManager().getData(state.info);
-        if (data.isEmpty() || data.get().getStatus() != DownloadStatus.COMPLETED && state.info.lolmeme() == null) {
+        if ((data.isEmpty() || data.get().getStatus() != DownloadStatus.COMPLETED && state.info.lolmeme() == null) || !PasConfig.getInstance().isEnableMod()) {
             this.model = DummyEntityModel.INSTANTS;
             armorStandRenderer.render(state, poseStack, multiBufferSource, i);
             return;

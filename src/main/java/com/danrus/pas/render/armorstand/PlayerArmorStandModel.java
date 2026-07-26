@@ -295,6 +295,10 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
         return List.of(this.hat, this.head, this.originalHead, this.leftEar, this.rightEar);
     }
 
+    public ModelPart basePlatePart() {
+        return basePlate;
+    }
+
     public Collection<ModelPart> getPlayerHeadParts() {
         return List.of(this.hat, this.head);
     }
@@ -380,9 +384,9 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
         this.rightBodyStick.visible = !player;
         this.leftBodyStick.visible = !player;
         this.shoulderStick.visible = !player;
-        this.basePlate.visible = showBase && !player;
+        this.basePlate.visible = showBase;
 
-        this.cloak.visible = showBase;
+        this.cloak.visible = showCape;
     }
 
     private void setOriginalAngles(boolean showBase, boolean showArms, Rotations bodyPose) {

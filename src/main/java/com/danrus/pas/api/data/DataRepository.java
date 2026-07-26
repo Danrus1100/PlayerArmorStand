@@ -70,15 +70,29 @@ public interface DataRepository<T extends DataHolder> {
     Map<String, DataProvider<T>> getSources();
 
     /**
-     * Finds SkinData by a given string without download.
+     * Finds first DataHolder by a given string without download.
      *
      * @param infoLike the NameInfoLike for the skin data
-     * @return DataHolder associated with the identifier, or null if not found
+     * @return DataHolder associated with the identifier
      */
     Optional<T> findFirst(NameInfoLike infoLike);
 
+    /**
+     * Finds all DataHolder by a given string without download.
+     *
+     * @param infoLike the NameInfoLike for the skin data
+     * @return DataHolder associated with the identifier
+     */
 
     Map<NameInfo, T> findAll(NameInfoLike infoLike);
+
+    /**
+     * Checks for value in cache, without any state change
+     * @param info target
+     * @return first founded value
+     */
+
+    Optional<T> peek(NameInfo info);
 
     /**
      * Deletes the data associated with the given string.

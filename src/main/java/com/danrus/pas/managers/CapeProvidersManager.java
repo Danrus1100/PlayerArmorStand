@@ -1,5 +1,6 @@
 package com.danrus.pas.managers;
 
+import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.data.DataRepository;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.impl.features.CapeFeature;
@@ -13,11 +14,6 @@ public class CapeProvidersManager extends AbstractTextureProviderManager<CapeDat
 
     private static final String DEFAULT_LITERAL = "M";
     private static final String EXCLUDE_LITERALS = "FI";
-
-    @Override
-    protected String getPendingKey(NameInfo info) {
-        return info.getFeature(CapeFeature.class).compile();
-    }
 
     @Override
     protected void prepareProviders() {
@@ -54,5 +50,10 @@ public class CapeProvidersManager extends AbstractTextureProviderManager<CapeDat
     @Override
     protected boolean registerAsExistingProvider() {
         return false;
+    }
+
+    @Override
+    protected Class<? extends DataHolder> getType() {
+        return CapeData.class;
     }
 }

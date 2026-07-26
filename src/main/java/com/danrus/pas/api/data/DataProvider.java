@@ -11,6 +11,7 @@ public interface DataProvider<T extends DataHolder> {
     Optional<T> get(NameInfo info);
     Optional<T> findFirst(NameInfoLike infoLike);
     Collection<T> findAll(NameInfoLike infoLike);
+    Optional<T> peek(NameInfo info);
     boolean deleteAllOf(NameInfoLike info);
     NameInfoMap<T> getAll();
     void store(NameInfo info, T data);

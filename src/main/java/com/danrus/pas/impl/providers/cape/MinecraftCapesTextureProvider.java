@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 import static com.danrus.pas.impl.data.common.AbstractDiskDataProvider.CACHE_PATH;
 
@@ -27,15 +26,17 @@ public class MinecraftCapesTextureProvider implements TextureProvider{
     private final Gson gson = new Gson();
 
     @Override
-    public void load(NameInfo info, Consumer<String> onComplete) {
-        MojangUtils.getUUID(info)
+    public CompletableFuture<Void> load(NameInfo info) {
+        return MojangUtils.getUUID(info)
                 .thenCompose(this::downloadProfile)
-                .thenCompose(profile -> processProfile(profile, info, onComplete))
-                .exceptionally(throwable -> {
-                    doFail(info);
-                    onComplete.accept(getOutputString(info));
-                    PlayerArmorStandsClient.LOGGER.error("MojangProvider: Failed to download for " + info, throwable);
-                    return null;
+                .thenCompose(profile -> processProfile(profile, info))
+                .whenComplete((ignored, throwable) -> {
+                    if (throwable != null) {
+                        doFail(info);
+                        PlayerArmorStandsClient.LOGGER.error(
+                                "MinecraftCapes provider failed to download for " + info,
+                                throwable);
+                    }
                 });
     }
 
@@ -52,7 +53,7 @@ public class MinecraftCapesTextureProvider implements TextureProvider{
                 });
     }
 
-    private CompletableFuture<Void> processProfile(Profile profile, NameInfo info, Consumer<String> onComplete) {
+    private CompletableFuture<Void> processProfile(Profile profile, NameInfo info) {
         if (!info.getFeature(CapeFeature.class).getProvider().equals("I")) {
             return CompletableFuture.completedFuture(null);
         }
@@ -76,17 +77,12 @@ public class MinecraftCapesTextureProvider implements TextureProvider{
                     data.setTexture(textureId);
                     data.setStatus(DownloadStatus.COMPLETED);
                     PasManager.getInstance().getCapeDataManager().store(info, data);
-                    onComplete.accept(getOutputString(info));
                 });
     }
 
     @Override
     public String getLiteral() {
         return "I";
-    }
-
-    protected String getOutputString(NameInfo info) {
-        return info.getFeature(CapeFeature.class).compile();
     }
 
     private void doFail(NameInfo info) {
