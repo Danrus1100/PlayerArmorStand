@@ -1,5 +1,6 @@
 package com.danrus.pas.api.info;
 
+import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.reg.FeatureRegistry;
 import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.impl.features.CapeFeature;
@@ -10,7 +11,8 @@ import com.danrus.pas.impl.features.DisplayNameFeature;
 import com.danrus.pas.utils.info.NIParser;
 import com.danrus.pas.utils.mc.Id;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,21 +22,23 @@ import java.util.stream.Collectors;
 public record NameInfo(
         String base,
         Map<Class<? extends RenameFeature>, RenameFeature> features,
-        @Nullable ResourceLocation lolmeme
+        @Nullable Identifier lolmeme,
+        int version
 ) implements NameInfoLike {
     public static final NameInfo EMPTY = new NameInfo();
+    private static final Map<NameInfo, String> COMPILED_CACHE =
+            Collections.synchronizedMap(new WeakHashMap<>());
     public static Map<String, NameInfo> MEMES = Map.of(
             "данечка разработчик", meme(Id.pas("textures/lol/danechka_razrabotchik.png")),
             "дакимакура", meme(Id.pas("textures/lol/dakimakura.png")),
             "гига крео", meme(Id.pas("textures/lol/gigakreo.png")),
             "strange link", meme(Id.pas("textures/lol/link.png")),
             "странная ссылка", meme(Id.pas("textures/lol/link.png")),
-            "сисюлики", meme(Id.pas("textures/lol/boobs.png")),
-            "джастик", meme(Id.pas("textures/lol/justik.png"))
+            "сисюлики", meme(Id.pas("textures/lol/boobs.png"))
     );
 
-    private static NameInfo meme(ResourceLocation texture) {
-        return new NameInfo("", defaultFeatures(), texture);
+    private static NameInfo meme(Identifier texture) {
+        return new NameInfo("", defaultFeatures(), texture, 2);
     }
 
     public NameInfo {
@@ -43,11 +47,11 @@ public record NameInfo(
     }
 
     public NameInfo() {
-        this("", defaultFeatures(), null);
+        this("", defaultFeatures(), null, 2);
     }
 
     public NameInfo(String base) {
-        this(base, defaultFeatures(), null);
+        this(base, defaultFeatures(), null, 2);
     }
 
     static Map<Class<? extends RenameFeature>, RenameFeature> defaultFeatures() {
@@ -64,7 +68,7 @@ public record NameInfo(
         if (input != null) {
             return parse(input.getString());
         }
-        return new NameInfo();
+        return NameInfo.EMPTY;
     }
 
     public static NameInfo parse(String input) {
@@ -80,9 +84,8 @@ public record NameInfo(
 
     // --- Compile ---
 
-    //TODO i guess
     public String compileFast() {
-        return compile();
+        return COMPILED_CACHE.computeIfAbsent(this, NameInfo::compile);
     }
 
     public String compile() {
@@ -99,7 +102,11 @@ public record NameInfo(
                 .collect(Collectors.toList());
 
         if (!featureParts.isEmpty()) {
-            out.append("|").append(String.join("", featureParts));
+            if (version == 1) {
+                out.append("|").append(String.join("", featureParts));
+            } else {
+                out.append("||").append(String.join(";", featureParts));
+            }
         }
 
         return out.toString();
@@ -132,17 +139,23 @@ public record NameInfo(
         return this.compile();
     }
 
-    // Custom equals/hashCode: base + features only (exclude legacyParams and lolmeme)
+    // Custom equals/hashCode: texture identity plus the name format version.
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof NameInfo other)) return false;
-        return Objects.equals(this.base, other.base) && this.features.equals(other.features);
+        if (lolmeme != null || other.lolmeme != null) {
+            return version == other.version && Objects.equals(lolmeme, other.lolmeme);
+        }
+        return version == other.version
+                && Objects.equals(base, other.base)
+                && features.equals(other.features);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(base, features);
+        if (lolmeme != null) return Objects.hash(lolmeme, version);
+        return Objects.hash(base, features, version);
     }
 
     // --- Read-only convenience getters (used by translators/rendering) ---
@@ -182,7 +195,8 @@ public record NameInfo(
     public static class Builder {
         private String base;
         private final LinkedHashMap<Class<? extends RenameFeature>, RenameFeature> features;
-        private ResourceLocation lolmeme;
+        private Identifier lolmeme;
+        private int version = 2;
 
         public Builder(NameInfo src) {
             this.base = src.base();
@@ -292,8 +306,14 @@ public record NameInfo(
             return this;
         }
 
+        public Builder setVersion(int version) {
+            if (version <= 0) throw new IllegalArgumentException("NameInfo version must be greater than 0");
+            this.version = version;
+            return this;
+        }
+
         public NameInfo build() {
-            return new NameInfo(base, new LinkedHashMap<>(features), lolmeme);
+            return new NameInfo(base, new LinkedHashMap<>(features), lolmeme, version);
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.danrus.pas.render.armorstand;
 
-import net.minecraft.client.model.ArmorStandArmorModel;
+import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;

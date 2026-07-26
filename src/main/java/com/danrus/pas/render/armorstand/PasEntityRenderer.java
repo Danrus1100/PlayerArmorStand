@@ -12,18 +12,19 @@ import com.danrus.pas.render.common.PasRenderContext;
 import com.danrus.pas.render.common.PasRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
-import net.minecraft.client.model.ArmorStandArmorModel;
+import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.layers.WingsLayer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
@@ -43,10 +44,10 @@ public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntit
                 new PlayerArmorStandModel(PlayerArmorStandModel.createBodyLayer(CubeDeformation.NONE).apply(HumanoidModel.BABY_TRANSFORMER).bakeRoot())
         );
 
-        this.addLayer(new HumanoidArmorLayer(this, new ArmorStandArmorModel(context.bakeLayer(ModelLayers.ARMOR_STAND_INNER_ARMOR)), new ArmorStandArmorModel(context.bakeLayer(ModelLayers.ARMOR_STAND_OUTER_ARMOR)), new ArmorStandArmorModel(context.bakeLayer(ModelLayers.ARMOR_STAND_SMALL_INNER_ARMOR)), new ArmorStandArmorModel(context.bakeLayer(ModelLayers.ARMOR_STAND_SMALL_OUTER_ARMOR)), context.getEquipmentRenderer()));
+        this.addLayer(new HumanoidArmorLayer(this, ArmorModelSet.bake(ModelLayers.ARMOR_STAND_ARMOR, context.getModelSet(), ArmorStandArmorModel::new), ArmorModelSet.bake(ModelLayers.ARMOR_STAND_SMALL_ARMOR, context.getModelSet(), ArmorStandArmorModel::new), context.getEquipmentRenderer()));
         this.addLayer(new ItemInHandLayer(this));
         this.addLayer(new WingsLayer(this, context.getModelSet(), context.getEquipmentRenderer()));
-        this.addLayer(new CustomHeadLayer(this, context.getModelSet()));
+        this.addLayer(new CustomHeadLayer(this, context.getModelSet(), context.getPlayerSkinRenderCache()));
     }
 
     @Override
@@ -55,41 +56,40 @@ public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntit
     }
 
     @Override
-    public void render(PasEntityRenderState state, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
+    public void submit(PasEntityRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
         Optional<SkinData> data = PasManager.getInstance().getSkinDataManager().getData(state.info);
         if ((data.isEmpty() || data.get().getStatus() != DownloadStatus.COMPLETED && state.info.lolmeme() == null) || !PasConfig.getInstance().isEnableMod()) {
             this.model = DummyEntityModel.INSTANTS;
-            armorStandRenderer.render(state, poseStack, multiBufferSource, i);
+            armorStandRenderer.submit(state, poseStack, submitNodeCollector, cameraRenderState);
             return;
         }
         if (state.info.lolmeme() != null) {
+            state.bodyRot = 0;
+            state.yRot = 0;
             swapVanillaDraw(() -> {
-                state.bodyRot = 0;
-                state.yRot = 0;
-
                 Quaternionf rotation = new Quaternionf(entityRenderDispatcher.camera.rotation());
 
                 rotation = calculateOrientation(rotation);
 
                 poseStack.pushPose();
                 poseStack.mulPose(rotation);
-                poseStack.translate(0, 1, 0);
+                poseStack.translate(0, -1, 0);
 
-                executeDraw(data.get(), state, multiBufferSource, poseStack, i);
+                executeDraw(data.get(), state, PasRenderContext.create(submitNodeCollector), poseStack, state.lightCoords);
 
                 poseStack.popPose();
             });
 
         } else {
-            swapVanillaDraw(() -> executeDraw(data.get(), state, multiBufferSource, poseStack, i));
+            swapVanillaDraw(() -> executeDraw(data.get(), state, PasRenderContext.create(submitNodeCollector), poseStack, state.lightCoords));
         }
 
         this.model = pasRenderer.getModel(state.isSmall);
-        super.render(state, poseStack, multiBufferSource, i);
+        super.submit(state, poseStack, submitNodeCollector, cameraRenderState);
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(PasEntityRenderState renderState) {
+    public @NotNull Identifier getTextureLocation(PasEntityRenderState renderState) {
         return armorStandRenderer.getTextureLocation(renderState);
     }
 
@@ -97,61 +97,43 @@ public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntit
         ((DrawSwapper) this).pas$swapDrawer(draw);
     }
 
-    private void executeDraw(SkinData data, PasEntityRenderState state, MultiBufferSource multiBufferSource, PoseStack poseStack, int i) {
-//        poseStack.pushPose();
-//        if (state.hasPose(Pose.SLEEPING)) {
-//            Direction direction = state.bedOrientation;
-//            if (direction != null) {
-//                float f = state.eyeHeight - 0.1F;
-//                poseStack.translate((float)(-direction.getStepX()) * f, 0.0F, (float)(-direction.getStepZ()) * f);
-//            }
-//        }
-//
-//        float g = state.scale;
-//        poseStack.scale(g, g, g);
-//        setupRotations(state, poseStack, state.bodyRot, g);
-//        poseStack.scale(-1.0F, -1.0F, 1.0F);
-//        scale(poseStack);
-//        poseStack.translate(0.0F, -1.501F, 0.0F);
-//        renderer.getModel().setupAnim(state);
-
+    private void executeDraw(SkinData data, PasEntityRenderState state, PasRenderContext context, PoseStack poseStack, int packedLight) {
         if (!state.isInvisible && !state.isInvisibleToPlayer) {
             pasRenderer.draw(
                     data,
                     PasManager.getInstance().getCapeDataManager().getData(state.info).orElse(null),
                     state.info,
-                    PasRenderContext.create(multiBufferSource),
+                    context,
                     new PasModelSettings(new PasModelPoseSettings(state), false, state.isBaby),
                     poseStack,
-                    i,
+                    packedLight,
                     OverlayTexture.NO_OVERLAY
             );
         }
-//        poseStack.popPose();
     }
     private Quaternionf calculateOrientation(Quaternionf quaternion) {
         Camera camera = entityRenderDispatcher.camera;
-        return quaternion.rotationYXZ(-0.017453292F * cameraYrot(camera), ((float)Math.PI / 180F) * cameraXRot(camera), 0.0F);
+        return quaternion.rotationYXZ(-0.017453292F * -cameraYrot(camera), ((float)Math.PI / 180F) * cameraXRot(camera), 0.0F);
     }
 
     private static float cameraYrot(Camera camera) {
         //? if < 1.21.11
-        return camera.getYRot() - 180.0F;
+        //return camera.getYRot() - 90.0F;
         //? if >= 1.21.11
-        //return camera.yRot() - 180.0F;
+        return camera.yRot() - 180.0F;
     }
 
     private static float cameraXRot(Camera camera) {
         //? if < 1.21.11
-        return -camera.getXRot();
+        //return -camera.getXRot();
         //? if >= 1.21.11
-        //return -camera.xRot();
+        return -camera.xRot();
     }
 
     @Override
     public void extractRenderState(ArmorStand livingEntity, PasEntityRenderState state, float partialTick) {
         armorStandRenderer.extractRenderState(livingEntity, state, partialTick);
         state.info = NameInfo.parse(livingEntity.getCustomName());
-        state.isBaby = livingEntity.isSmall();
+        state.customName = livingEntity.getCustomName();
     }
 }

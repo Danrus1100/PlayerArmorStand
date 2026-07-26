@@ -11,7 +11,11 @@ public class PasCommandsRegistrar<S> {
         PasCommands.COMMANDS_NAMES.forEach(s -> {
             dispatcher.register(
                     literal(s).executes((a) -> {
-                                Minecraft.getInstance().gui.getChat().addMessage(PasCommands.defaultCommand());
+                                Minecraft.getInstance()
+                                        //? <=26.1
+                                        .gui.getChat().addClientSystemMessage(PasCommands.defaultCommand());
+                                        //? >=26.2
+                                        //.gui.chatListener().handleSystemMessage(PasCommands.defaultCommand(), false);
                                 return 1;
                             })
                             .then(literal("reload_failed").executes(PasCommands::reloadFailedCommand))

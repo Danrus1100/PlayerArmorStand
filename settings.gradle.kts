@@ -62,14 +62,12 @@ stonecutter {
             loaders.forEach { version("$name-$it", mcVersion) }
 
         // Configure your targets here!
+        mc("26.2", loaders = listOf("fabric"))
         mc("26.1", loaders = listOf("fabric"))
-        mc("1.21.11", loaders = listOf("fabric"))
-        mc("1.21.10", loaders = listOf("fabric", "neoforge"))
-        mc("1.21.8", loaders = listOf("fabric", "neoforge"))
 
         // This is the default target.
         // https://stonecutter.kikugie.dev/stonecutter/guide/setup#settings-settings-gradle-kts
-        vcsVersion = "1.21.8-fabric"
+        vcsVersion = "26.1-fabric"
     }
 }
 

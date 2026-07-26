@@ -23,6 +23,13 @@ public record SkinProviderFeature(String provider) implements RenameFeature {
     }
 
     @Override
+    public @Nullable RenameFeature parseToken(@NotNull String token) {
+        return PasManager.getInstance().getExistingProviders().contains(token)
+                ? new SkinProviderFeature(token)
+                : null;
+    }
+
+    @Override
     public @NotNull String compile() {
         return provider != null && !provider.equals(DEFAULT_PROVIDER) ? provider : "";
     }

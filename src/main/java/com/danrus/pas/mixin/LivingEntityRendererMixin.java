@@ -9,9 +9,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 //? >=1.21.11
-//import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
@@ -57,12 +61,12 @@ public class LivingEntityRendererMixin<T extends LivingEntityRenderState, M exte
     }
 
     @WrapOperation(
-            method = "render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V")
+            method = "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V")
     )
-    private void pas$wrapRender(M instance, PoseStack poseStack, VertexConsumer vertexConsumer, int i, int j, int l, Operation<Void> original) {
+    private void pas$wrapRender(SubmitNodeCollector instance, Model model, Object object, PoseStack poseStack, RenderType renderType, int i, int d, int k, TextureAtlasSprite textureAtlasSprite, int h, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay, Operation<Void> original) {
         if (pas$drawer == null) {
-            original.call(instance, poseStack, vertexConsumer, i, j ,l);
+            original.call(instance, model, object, poseStack, renderType, i, d, k, textureAtlasSprite, h, crumblingOverlay);
             return;
         }
 

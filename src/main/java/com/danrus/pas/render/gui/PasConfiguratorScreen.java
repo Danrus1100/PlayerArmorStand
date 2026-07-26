@@ -14,35 +14,38 @@ import com.danrus.pas.utils.mc.Id;
 
 import com.danrus.pas.impl.data.skin.FileTextureSkinData;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.Util;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class PasConfiguratorScreen extends Screen {
 
-    public static final ResourceLocation BACKGROUND_TEXTURE = Id.pas("pas_gui");
+    public static final Identifier BACKGROUND_TEXTURE = Id.pas("pas_gui");
 
-    public static final ResourceLocation MOJANG_LOGO = Id.pas("mojang");
-    public static final ResourceLocation NAMEMC_LOGO = Id.pas("namemc");
-    public static final ResourceLocation MCCAPES_LOGO = Id.pas("minecraftcapes");
-    public static final ResourceLocation FILE_LOGO = Id.pas("file");
-    public static final ResourceLocation WIDE_ARM_LOGO = Id.pas("wide");
-    public static final ResourceLocation SLIM_ARM_LOGO = Id.pas("slim");
+    public static final Identifier MOJANG_LOGO = Id.pas("mojang");
+    public static final Identifier NAMEMC_LOGO = Id.pas("namemc");
+    public static final Identifier MCCAPES_LOGO = Id.pas("minecraftcapes");
+    public static final Identifier FILE_LOGO = Id.pas("file");
+    public static final Identifier WIDE_ARM_LOGO = Id.pas("wide");
+    public static final Identifier SLIM_ARM_LOGO = Id.pas("slim");
 
-    public static final ResourceLocation YES_LOGO = Id.pas("yes");
-    public static final ResourceLocation NO_LOGO = Id.pas("no");
+    public static final Identifier YES_LOGO = Id.pas("yes");
+    public static final Identifier NO_LOGO = Id.pas("no");
 
     private static final float ANIMATION_SPEED = 0.5f;
 
@@ -85,6 +88,8 @@ public class PasConfiguratorScreen extends Screen {
         super(Component.literal("Player Armor Stand Configurator"));
         this.parent = parent;
         this.entity = new ArmorStand(Minecraft.getInstance().level, 0, 0, 0);
+        //? >=26.2
+        //this.entity.setId(-1);
         this.info = NameInfo.parse(parent.getNameInputValue()).toBuilder();
         setEntityName(this.info.compile());
 
@@ -351,19 +356,11 @@ public class PasConfiguratorScreen extends Screen {
         tabManager.reposition(width, height);
     }
 
-    //? <=1.21.10 {
     @Override
-    public void resize(Minecraft minecraft, int width, int height) {
-        super.resize(minecraft, width, height);
-        repositionElements(width, height);
-    }
-    //?} else {
-    /*@Override
     public void resize(int width, int height) {
         super.resize(width, height);
         repositionElements(width, height);
     }
-    *///?}
 
 
     @Override
@@ -374,8 +371,8 @@ public class PasConfiguratorScreen extends Screen {
 
     @Override
     //~ screen_render
-    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(g, mouseX, mouseY, partialTick);
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(g, mouseX, mouseY, partialTick);
         g.blitSprite(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.width / 2 - 128, this.height / 2 - 128 + 18, 256, 256);
     }
 
@@ -398,9 +395,9 @@ public class PasConfiguratorScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
 
-        super.render(g, mouseX, mouseY, partialTick);
+        super.extractRenderState(g, mouseX, mouseY, partialTick);
 
         if (isAnimating) {
             currentRotation = lerp(currentRotation, targetRotation, ANIMATION_SPEED, partialTick);
@@ -428,22 +425,12 @@ public class PasConfiguratorScreen extends Screen {
         } else if (info.getFeature(CapeFeature.class).getProvider().equals("I")) {
             capeProviderButton.icon = MCCAPES_LOGO;
         }
-        g.drawCenteredString(Minecraft.getInstance().font, Component.translatable("pas.menu.name"), this.width / 2, 15, 0xFFFFFF);
+        g.centeredText(Minecraft.getInstance().font, Component.translatable("pas.menu.name"), this.width / 2, 15, 0xFFFFFF);
         entity.setHeadPose(new Rotations(currentHeadX, currentHeadY, currentHeadZ));
 
         Quaternionf rotation = new Quaternionf().rotateX((float) Math.PI * 1.1F)
                 .rotateY((float) Math.toRadians(currentRotation + 30F));
 
-        //? if <= 1.21.5 {
-        /*InventoryScreen.renderEntityInInventory(
-                g, (int) (this.width / 2f - 68), (int) (this.height / 2f + 80), 70,
-                //? >= 1.21.1
-                new Vector3f(0, 0, 0),
-                rotation,
-                null,
-                entity
-        );
-        *///?} else {
         int left = this.width / 2 - 130; // Approx. left boundary
         int top = this.height / 2 - 70;  // Approx. top boundary
         int right = this.width / 2 - 18; // Approx. right boundary
@@ -451,10 +438,7 @@ public class PasConfiguratorScreen extends Screen {
         float scale = 70.0F; // Adjust scale as needed
         Vector3f translation = new Vector3f(0.1f, 0.75f, 0); // Use default translation
 
-        //? <=1.21.10
-        InventoryScreen.renderEntityInInventory(
-        //? >=1.21.11
-        //renderEntityInInventory12111(
+        renderEntityInInventory12111(
                 g,
                 left,
                 top,
@@ -466,7 +450,6 @@ public class PasConfiguratorScreen extends Screen {
                 null,
                 entity
         );
-        //?}
     }
 
     private float lerp(float start, float end, float speed, float partialTick) {
@@ -533,16 +516,13 @@ public class PasConfiguratorScreen extends Screen {
         CAPE,
     }
 
-    //? >=1.21.10 {
-    /*public static void renderEntityInInventory12111(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, float scale, Vector3f translation, Quaternionf rotation, @Nullable Quaternionf overrideCameraAngle, LivingEntity entity) {
+    public static void renderEntityInInventory12111(GuiGraphicsExtractor guiGraphics, int x1, int y1, int x2, int y2, float scale, Vector3f translation, Quaternionf rotation, @Nullable Quaternionf overrideCameraAngle, LivingEntity entity) {
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         EntityRenderer<? super LivingEntity, ?> entityRenderer = entityRenderDispatcher.getRenderer(entity);
         net.minecraft.client.renderer.entity.state.EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1.0F);
         entityRenderState.lightCoords = 15728880;
-        //        entityRenderState.hitboxesRenderState = null;
         entityRenderState.shadowPieces.clear();
         entityRenderState.outlineColor = 0;
-        guiGraphics.submitEntityRenderState(entityRenderState, scale, translation, rotation, overrideCameraAngle, x1, y1, x2, y2);
+        guiGraphics.entity(entityRenderState, scale, translation, rotation, overrideCameraAngle, x1, y1, x2, y2);
     }
-    *///?}
 }

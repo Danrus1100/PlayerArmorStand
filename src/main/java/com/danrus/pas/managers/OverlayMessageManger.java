@@ -36,13 +36,13 @@ public class OverlayMessageManger {
         if (name.isEmpty()) { return; }
         DownloadStatusDisplay display = PasConfig.getInstance().getDownloadStatusDisplay();
         if (display == DownloadStatusDisplay.NONE) { return; }
-        Minecraft.getInstance().execute(() -> {
-            switch (display) {
-                case ABOVE_HOTBAR -> Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(key, name).withStyle(color), false);
-                case CHAT -> Minecraft.getInstance().gui.getChat().addMessage(Component.translatable(key, name).withStyle(color));
-                default -> {}
-            }
-        });
+//        Minecraft.getInstance().execute(() -> {
+//            switch (display) {
+//                case ABOVE_HOTBAR -> Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(key, name).withStyle(color), false);
+//                case CHAT -> Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.translatable(key, name).withStyle(color));
+//                default -> {}
+//            }
+//        });
     }
 
     public static OverlayMessageManger getInstance() {

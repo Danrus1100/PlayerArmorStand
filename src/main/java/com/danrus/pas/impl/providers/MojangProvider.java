@@ -19,7 +19,7 @@ import com.danrus.pas.utils.net.RestHelper;
 import com.danrus.pas.utils.net.TextureDownloader;
 import com.danrus.pas.utils.files.EncodeUtils;
 import com.google.gson.Gson;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -200,8 +200,8 @@ public class MojangProvider implements TextureProvider {
             return CompletableFuture.completedFuture(null);
         }
 
-        ResourceLocation capeLocation = InfoTranslators.getInstance()
-                .toResourceLocation(dataClass, info);
+        Identifier capeLocation = InfoTranslators.getInstance()
+                .toIdentifier(dataClass, info);
         String fileName = InfoTranslators.getInstance()
                 .toFileName(dataClass, info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");

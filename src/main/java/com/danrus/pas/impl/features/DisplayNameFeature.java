@@ -20,6 +20,13 @@ public record DisplayNameFeature(boolean enabled, String name) implements Rename
     }
 
     @Override
+    public @Nullable RenameFeature parseToken(@NotNull String token) {
+        return token.startsWith(FLAG)
+                ? new DisplayNameFeature(true, token.substring(FLAG.length()))
+                : null;
+    }
+
+    @Override
     public @NotNull String compile() {
         if (!enabled) return "";
         return FLAG + name;

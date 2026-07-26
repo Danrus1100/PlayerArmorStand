@@ -14,6 +14,11 @@ public record SlimFeature(boolean slim) implements RenameFeature {
     }
 
     @Override
+    public @Nullable RenameFeature parseToken(@NotNull String token) {
+        return token.equals(FLAG) ? new SlimFeature(true) : null;
+    }
+
+    @Override
     public @NotNull String compile() {
         return slim ? FLAG : "";
     }

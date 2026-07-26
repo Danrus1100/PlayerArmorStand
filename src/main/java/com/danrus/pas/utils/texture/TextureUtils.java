@@ -18,7 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,15 +32,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public final class TextureUtils {
-    private static final Map<OverlayKey, CompletableFuture<ResourceLocation>> OVERLAY_TEXTURE_CACHE =
+    private static final Map<OverlayKey, CompletableFuture<Identifier>> OVERLAY_TEXTURE_CACHE =
             new ConcurrentHashMap<>();
-    private static final Set<ResourceLocation> MISSING_OVERLAYS = ConcurrentHashMap.newKeySet();
+    private static final Set<Identifier> MISSING_OVERLAYS = ConcurrentHashMap.newKeySet();
 
     private TextureUtils() {}
 
-    public static CompletableFuture<ResourceLocation> registerTexture(
+    public static CompletableFuture<Identifier> registerTexture(
             Path path,
-            ResourceLocation identifier,
+            Identifier identifier,
             boolean remap
     ) {
         NativeImage image = ImageIO.read(path);
@@ -52,9 +52,9 @@ public final class TextureUtils {
         return registerTexture(image, identifier, remap);
     }
 
-    public static CompletableFuture<ResourceLocation> registerTexture(
+    public static CompletableFuture<Identifier> registerTexture(
             NativeImage image,
-            ResourceLocation identifier,
+            Identifier identifier,
             boolean remap
     ) {
         NativeImage processedImage = image;
@@ -69,9 +69,9 @@ public final class TextureUtils {
         return registerTexture(processedImage, identifier);
     }
 
-    public static CompletableFuture<ResourceLocation> registerTexture(
+    public static CompletableFuture<Identifier> registerTexture(
             NativeImage image,
-            ResourceLocation identifier
+            Identifier identifier
     ) {
         if (image == null) {
             return CompletableFuture.failedFuture(
@@ -79,7 +79,7 @@ public final class TextureUtils {
             );
         }
 
-        CompletableFuture<ResourceLocation> future = new CompletableFuture<>();
+        CompletableFuture<Identifier> future = new CompletableFuture<>();
         Minecraft.getInstance().execute(() -> {
             DynamicTexture texture = null;
             try {
@@ -104,7 +104,7 @@ public final class TextureUtils {
         return future;
     }
 
-    public static void unregisterTexture(ResourceLocation identifier) {
+    public static void unregisterTexture(Identifier identifier) {
         Minecraft.getInstance().execute(() ->
                 Minecraft.getInstance().getTextureManager().release(identifier)
         );
@@ -113,11 +113,11 @@ public final class TextureUtils {
 
     public static void clearOverlayCacheFor(NameInfo info) {
         InfoTranslators translators = InfoTranslators.getInstance();
-        clearOverlayCacheFor(translators.toResourceLocation(SkinData.class, info));
-        clearOverlayCacheFor(translators.toResourceLocation(CapeData.class, info));
+        clearOverlayCacheFor(translators.toIdentifier(SkinData.class, info));
+        clearOverlayCacheFor(translators.toIdentifier(CapeData.class, info));
     }
 
-    public static void clearOverlayCacheFor(ResourceLocation source) {
+    public static void clearOverlayCacheFor(Identifier source) {
         OVERLAY_TEXTURE_CACHE.entrySet().removeIf(entry -> {
             if (!entry.getKey().source().equals(source)) {
                 return false;
@@ -138,7 +138,7 @@ public final class TextureUtils {
      * Returns a newly allocated image. The caller owns and must close it.
      */
     @Nullable
-    public static NativeImage copyNativeImage(ResourceLocation identifier) {
+    public static NativeImage copyNativeImage(Identifier identifier) {
         AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(identifier);
         if (texture instanceof DynamicTexture dynamicTexture) {
             NativeImage pixels = dynamicTexture.getPixels();
@@ -165,13 +165,13 @@ public final class TextureUtils {
         return null;
     }
 
-    public static ResourceLocation getOverlayedTexture(
+    public static Identifier getOverlayedTexture(
             NameInfo info,
             Class<? extends DataHolder> holderType
     ) {
         OverlayFeature feature = info.getFeature(OverlayFeature.class);
         OverlayTarget target = OverlayTarget.from(holderType);
-        ResourceLocation source = target.getSource(info);
+        Identifier source = target.getSource(info);
 
         if (feature == null || !feature.isEnabled()) {
             return source;
@@ -185,13 +185,13 @@ public final class TextureUtils {
         );
     }
 
-    private static ResourceLocation getOverlayTexture(
-            ResourceLocation source,
+    private static Identifier getOverlayTexture(
+            Identifier source,
             String overlay,
             int blendStrength,
             OverlayTarget target
     ) {
-        ResourceLocation material = Id.vanilla("textures/block/" + overlay + ".png");
+        Identifier material = Id.vanilla("textures/block/" + overlay + ".png");
         if (MISSING_OVERLAYS.contains(material)) {
             return source;
         }
@@ -209,7 +209,7 @@ public final class TextureUtils {
                 Math.max(0, Math.min(100, blendStrength)),
                 target
         );
-        CompletableFuture<ResourceLocation> result = OVERLAY_TEXTURE_CACHE.computeIfAbsent(
+        CompletableFuture<Identifier> result = OVERLAY_TEXTURE_CACHE.computeIfAbsent(
                 key,
                 ignored -> createOverlayTexture(key, materialResource.get())
         );
@@ -223,7 +223,7 @@ public final class TextureUtils {
         return result.getNow(source);
     }
 
-    private static CompletableFuture<ResourceLocation> createOverlayTexture(
+    private static CompletableFuture<Identifier> createOverlayTexture(
             OverlayKey key,
             Resource materialResource
     ) {
@@ -286,32 +286,32 @@ public final class TextureUtils {
         }
     }
 
-    private static ResourceLocation overlayLocation(OverlayKey key) {
+    private static Identifier overlayLocation(OverlayKey key) {
         String hash = EncodeUtils.encodeToSha256(
                 key.source() + "|" + key.material() + "|" + key.blendStrength() + "|" + key.target()
         );
         return Id.pas("generated/overlay/" + hash);
     }
 
-    private static void markOverlayMissing(String overlay, ResourceLocation material) {
+    private static void markOverlayMissing(String overlay, Identifier material) {
         if (MISSING_OVERLAYS.add(material)) {
             OverlayMessageManger.getInstance().showOverlayNotFoundMessage(overlay);
         }
     }
 
-    private static void releaseWhenReady(CompletableFuture<ResourceLocation> future) {
+    private static void releaseWhenReady(CompletableFuture<Identifier> future) {
         future.thenAccept(TextureUtils::releaseTexture);
     }
 
-    private static void releaseTexture(ResourceLocation identifier) {
+    private static void releaseTexture(Identifier identifier) {
         Minecraft.getInstance().execute(() ->
                 Minecraft.getInstance().getTextureManager().release(identifier)
         );
     }
 
     private record OverlayKey(
-            ResourceLocation source,
-            ResourceLocation material,
+            Identifier source,
+            Identifier material,
             int blendStrength,
             OverlayTarget target
     ) {}
@@ -319,18 +319,18 @@ public final class TextureUtils {
     private enum OverlayTarget {
         SKIN {
             @Override
-            ResourceLocation getSource(NameInfo info) {
+            Identifier getSource(NameInfo info) {
                 return PasManager.getInstance().getSkinTexture(info);
             }
         },
         CAPE {
             @Override
-            ResourceLocation getSource(NameInfo info) {
+            Identifier getSource(NameInfo info) {
                 return PasManager.getInstance().getCapeTexture(info);
             }
         };
 
-        abstract ResourceLocation getSource(NameInfo info);
+        abstract Identifier getSource(NameInfo info);
 
         static OverlayTarget from(Class<? extends DataHolder> holderType) {
             if (holderType == SkinData.class) {

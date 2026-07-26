@@ -11,11 +11,12 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.model.ArmorStandArmorModel;
+import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;
 //? if < 1.21.9 {
 //?}
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.core.Rotations;
+import net.minecraft.network.chat.Component;
 
 import java.util.Collection;
 import java.util.List;
@@ -168,7 +169,9 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
 
     @Override
     public void setupAnim(ArmorStandRenderState armorStand){
-        this.setupAnim(armorStand, NameInfo.parse(ModUtils.getCustomName(armorStand)), true);
+        Component customName = armorStand.nameTag;
+        if (armorStand instanceof PasEntityRenderState pasState) customName = pasState.customName;
+        this.setupAnim(armorStand, NameInfo.parse(customName), true);
     }
 
     public void setupAnim(ArmorStandRenderState armorStand, NameInfo info) {
@@ -179,7 +182,6 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
         super.setupAnim(armorStand);
         boolean showBase = armorStand.showBasePlate;
         boolean showArms = armorStand.showArms;
-//        Component customName = ModUtils.getCustomName(armorStand);
         Rotations bodyPose = armorStand.bodyPose;
 
         if (info.lolmeme() != null) {
@@ -298,6 +300,8 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
     public ModelPart basePlatePart() {
         return basePlate;
     }
+
+    public ModelPart getMemePart() { return lol; }
 
     public Collection<ModelPart> getPlayerHeadParts() {
         return List.of(this.hat, this.head);

@@ -1,12 +1,11 @@
 package com.danrus.pas.utils.mc;
 
+import com.danrus.pas.impl.holder.CapeData;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 //? if <1.21.9 {
 //?}
-import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 
@@ -36,51 +35,20 @@ public class ModUtils {
         *///?}
     }
 
-    public static Component getCustomName(ArmorStandRenderState armorStandState) {
-        //? <1.21.9 {
-        return armorStandState.customName;
-        //?} else {
-        /*return ((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandState).pas$getCustomName();
-        *///?}
-    }
-
-    public static void setCustomName(ArmorStandRenderState armorStandState, Component name) {
-        //? <1.21.9 {
-        armorStandState.customName = name;
-        //?} else {
-        /*((com.danrus.pas.extenders.ArmorStandRenderStateExtender) armorStandState).pas$setCustomName(name);
-         *///?}
-    }
-
     public static int getARGBwhite(float alpha) {
         return (int) Math.floor(alpha * 255.0F) << 24 | 16777215;
     }
 
-    public static ResourceLocation getPlayerSkinTexture(AbstractClientPlayer player){
-        //? >1.20.1 && <1.21.9 {
-        return player.getSkin().texture();
-        //?} else {
-        /*return player.getSkin().body().texturePath();
-        *///?}
-    }
-
-    public static ResourceLocation getPlayerCapeTexture(AbstractClientPlayer player){
-        //? >1.20.1 && <1.21.9 {
-        return player.getSkin().capeTexture();
-        //?} else {
-        /*try {
+    public static Identifier getPlayerCapeTextureSafe(AbstractClientPlayer player){
+        try {
             return player.getSkin().cape().texturePath();
         } catch (Exception e) {
             return CapeData.DEFAULT_TEXTURE;
         }
-        *///?}
     }
 
     public static void copyPartPose(ModelPart from, ModelPart to){
-        //? <1.21.9 {
-        to.copyFrom(from);
-        //?} else {
-        /*to.x = from.x;
+        to.x = from.x;
         to.y = from.y;
         to.z = from.z;
         to.xRot = from.xRot;
@@ -89,7 +57,6 @@ public class ModUtils {
         to.xScale = from.xScale;
         to.yScale = from.yScale;
         to.zScale = from.zScale;
-        *///?}
     }
 
 }

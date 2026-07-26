@@ -6,7 +6,7 @@ import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
 import com.danrus.pas.utils.texture.TextureUtils;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +19,7 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public class TextureDownloader {
-    public static CompletableFuture<ResourceLocation> downloadAndRegister(ResourceLocation id, Path path, String uri, boolean remap) {
+    public static CompletableFuture<Identifier> downloadAndRegister(Identifier id, Path path, String uri, boolean remap) {
     return CompletableFuture.supplyAsync(() -> {
         NativeImage nativeImage;
         try {

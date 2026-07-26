@@ -2,27 +2,27 @@ package com.danrus.pas.impl.holder;
 
 import com.danrus.pas.api.data.DataHolder;
 import com.danrus.pas.api.DownloadStatus;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public abstract class AbstractPasHolder implements DataHolder {
 
     private volatile DownloadStatus status = DownloadStatus.NOT_STARTED;
-    protected volatile ResourceLocation location;
+    protected volatile Identifier location;
 
     public AbstractPasHolder() {}
 
     @Override
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         if (location != null) return location;
         return getDefaultTexture();
     }
 
     @Override
-    public void setTexture(ResourceLocation location) {
+    public void setTexture(Identifier location) {
         this.location = location;
     }
 
-    protected abstract ResourceLocation getDefaultTexture();
+    protected abstract Identifier getDefaultTexture();
 
     @Override
     public DownloadStatus getStatus() {

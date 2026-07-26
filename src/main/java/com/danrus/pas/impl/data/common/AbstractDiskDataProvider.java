@@ -13,7 +13,7 @@ import com.danrus.pas.utils.files.FilesAges;
 import com.danrus.pas.utils.info.NameInfoMap;
 import com.danrus.pas.utils.mc.ModUtils;
 import com.danrus.pas.utils.texture.TextureUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -55,7 +55,7 @@ public abstract class AbstractDiskDataProvider<T extends DataHolder> implements 
             return Optional.empty();
         }
 
-        ResourceLocation texture = InfoTranslators.getInstance().toResourceLocation(getDataHolderClass(), info);
+        Identifier texture = InfoTranslators.getInstance().toIdentifier(getDataHolderClass(), info);
 
         TextureUtils.registerTexture(filePath, texture, shouldProcessSkin());
 

@@ -14,8 +14,17 @@ public record CapeFeature(boolean enabled, String provider, String id) implement
 
     @Override
     public @Nullable RenameFeature parseFrom(@NotNull String input) {
+        return parse(input, false);
+    }
+
+    @Override
+    public @Nullable RenameFeature parseToken(@NotNull String token) {
+        return parse(token, true);
+    }
+
+    private RenameFeature parse(String input, boolean entireInput) {
         Matcher matcher = PARSE_PATTERN.matcher(input);
-        if (matcher.find()) {
+        if (entireInput ? matcher.matches() : matcher.find()) {
             String prov = matcher.group(1);
             String capeId = matcher.group(2);
             String resolvedProv;

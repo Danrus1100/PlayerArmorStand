@@ -14,8 +14,17 @@ public record OverlayFeature(String texture, int blend) implements RenameFeature
 
     @Override
     public @Nullable RenameFeature parseFrom(@NotNull String input) {
+        return parse(input, false);
+    }
+
+    @Override
+    public @Nullable RenameFeature parseToken(@NotNull String token) {
+        return parse(token, true);
+    }
+
+    private RenameFeature parse(String input, boolean entireInput) {
         Matcher matcher = PARSE_PATTERN.matcher(input);
-        if (matcher.find()) {
+        if (entireInput ? matcher.matches() : matcher.find()) {
             String tex = matcher.group(1).trim();
             String blendStr = matcher.group(2);
             int resolvedBlend = blendStr.isEmpty() ? 100 : clamp(Integer.parseInt(blendStr), 0, 100);

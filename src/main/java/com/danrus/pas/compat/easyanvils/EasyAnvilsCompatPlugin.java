@@ -7,10 +7,10 @@ public class EasyAnvilsCompatPlugin extends PasCompatPlugin {
     @Override
     protected boolean shouldApply() {
         //? if easyanvils {
-        return ModUtils.isModLoaded("easyanvils");
-        //?} else {
-        /*return false;
-        *///?}
+        /*return ModUtils.isModLoaded("easyanvils");
+        *///?} else {
+        return false;
+        //?}
     }
 
     @Override

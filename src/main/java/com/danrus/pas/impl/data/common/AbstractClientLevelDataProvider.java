@@ -11,7 +11,7 @@ import com.danrus.pas.config.PasConfig;
 import com.danrus.pas.utils.info.NameInfoMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -89,7 +89,7 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
         NameInfoMap<T> result = new NameInfoMap<>();
         Minecraft.getInstance().level.players().forEach(player -> {
             T data = createDataHolder();
-            ResourceLocation texture = getTexture(player);
+            Identifier texture = getTexture(player);
             if (texture != null) {
                 data.setStatus(DownloadStatus.COMPLETED);
                 data.setTexture(texture);
@@ -113,7 +113,7 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
     }
 
     @Nullable
-    protected abstract ResourceLocation getTexture(AbstractClientPlayer player);
+    protected abstract Identifier getTexture(AbstractClientPlayer player);
     protected abstract T createDataHolder();
     protected abstract DataRepository<T> getDataManager();
 }

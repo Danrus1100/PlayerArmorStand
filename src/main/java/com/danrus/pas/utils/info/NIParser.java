@@ -1,54 +1,54 @@
 package com.danrus.pas.utils.info;
 
+import com.danrus.pas.PlayerArmorStandsClient;
 import com.danrus.pas.api.info.NameInfo;
+import com.danrus.pas.api.info.NameInfoParseException;
+import com.danrus.pas.api.info.NameInfoParser;
 import com.danrus.pas.api.info.RenameFeature;
 import com.danrus.pas.api.reg.FeatureRegistry;
+import com.danrus.pas.impl.info.LegacyNameInfoParser;
+import com.danrus.pas.impl.info.V2NameInfoParser;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class NIParser {
 
     private final Map<String, NameInfo> cached = new WeakHashMap<>();
-//    private final Map<NameInfo, String> cachedKeys = new WeakHashMap<>();
+    private final List<String> failed = new ArrayList<>();
+    private final List<NameInfoParser> parsers;
+
+    public NIParser() {
+        this.parsers = createParsers();
+    }
+
+    private List<NameInfoParser> createParsers() {
+        List<NameInfoParser> list = new LinkedList<>();
+
+        list.add(new LegacyNameInfoParser());
+        list.add(new V2NameInfoParser());
+
+        return list;
+    }
 
     public NameInfo parse(String input) {
+        if (failed.contains(input)) return NameInfo.EMPTY;
         if (cached.containsKey(input)) return cached.get(input);
         if (input == null || input.isEmpty()) return new NameInfo();
 
-        String[] divided = input.split("\\|", 2);
-        String name = divided[0].trim();
-
-        if (name.matches(".*[<>:\"/\\\\?*].*")) return new NameInfo();
-
-        // Build default feature map
-        Map<Class<? extends RenameFeature>, RenameFeature> featureMap = new LinkedHashMap<>();
-        for (RenameFeature def : FeatureRegistry.getInstance().getOrderedDefaults()) {
-            featureMap.put(def.getClass(), def);
-        }
-
-        String legacy = "";
-        if (divided.length > 1) {
-            String params = divided[1].trim();
-
-            for (RenameFeature def : FeatureRegistry.getInstance().getOrderedDefaults()) {
-                RenameFeature parsed = def.parseFrom(params);
-                if (parsed != null) {
-                    featureMap.put(parsed.getClass(), parsed);
-                    String compiled = parsed.compile();
-                    if (!compiled.isEmpty()) {
-                        params = params.replace(compiled, "").trim();
-                    }
+        for (NameInfoParser parser : parsers) {
+            if (parser.isCompatibleWith(input))  {
+                try {
+                    return parser.parse(input, this::cache);
+                } catch (NameInfoParseException parseException) {
+                    PlayerArmorStandsClient.LOGGER.error("Failed to parse name {}", input, parseException);
+                    failed.add(input);
                 }
+                return NameInfo.EMPTY;
             }
         }
 
-        NameInfo info = new NameInfo(name, featureMap, null);
-        cache(input, info);
-        return info;
-
+        return NameInfo.EMPTY;
     }
 
     private static final NIParser instance = new NIParser();
@@ -59,14 +59,5 @@ public class NIParser {
 
     private void cache(String key, NameInfo value) {
         cached.put(key, value);
-//        cachedKeys.put(value, key);
     }
-
-//    public boolean hasCached(NameInfo info) {
-//        return cached.containsValue(info);
-//    }
-//
-//    public String getCachedKey(NameInfo info) {
-//        return cachedKeys.get(info);
-//    }
 }

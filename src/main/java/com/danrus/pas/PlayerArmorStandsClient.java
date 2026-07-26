@@ -24,8 +24,6 @@ public class PlayerArmorStandsClient {
     public static final String MOD_ID = "pas";
     public static final String[] RPS = new String[]{"3d_items_with_head", "3d_items_player_like"};
     public static final String DEFAULT_RP = RPS[0];
-    //? >=1.21.9
-    //public static net.minecraft.client.model.geom.ModelPart capeDef = com.danrus.pas.render.armorstand.PasCapeModel.createCapeLayer().bakeRoot();
 
     public static void initialize() {
         PasManager.getInstance();

@@ -10,7 +10,7 @@ import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.impl.data.common.AbstractDiskDataProvider;
 import com.danrus.pas.managers.OverlayMessageManger;
 import com.danrus.pas.utils.net.TextureDownloader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
@@ -59,8 +59,8 @@ public abstract class AbstractNamemcProvider<T extends DataHolder> implements Te
         getDataManager().invalidateData(info);
     }
 
-    protected CompletableFuture<ResourceLocation> getDownloadTask(NameInfo info) {
-        ResourceLocation location = InfoTranslators.getInstance().toResourceLocation(getDataHolderClass(), info);
+    protected CompletableFuture<Identifier> getDownloadTask(NameInfo info) {
+        Identifier location = InfoTranslators.getInstance().toIdentifier(getDataHolderClass(), info);
         String fileName = InfoTranslators.getInstance().toFileName(getDataHolderClass(), info);
         Path filePath = AbstractDiskDataProvider.CACHE_PATH.resolve(fileName + ".png");
         return TextureDownloader.downloadAndRegister(location, filePath, "https://s.namemc.com/i/" + getNamemcId(info) + ".png", shouldRemap());

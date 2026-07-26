@@ -17,18 +17,18 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderData> {
 
@@ -40,16 +40,13 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
         this.state = state;
     }
     @Override
-    //? if <1.21.9 {
-    public void render(@Nullable ItemRenderData argument, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, boolean hasFoilType) {
-        PasRenderContext context = new PasRenderContext().putData(bufferSource, "bufferSource");
-    //?} else if >=1.21.9 <26.1 {
+    //? if <26.1 {
     /*public void submit(@Nullable ItemRenderData argument, ItemDisplayContext displayContext, PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector nodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor){
-        PasRenderContext context = new RenderContext().putData(nodeCollector, "collector").putData(outlineColor, "outlineColor");
+        PasRenderContext context = new PasRenderContext().putData(nodeCollector, "collector").putData(outlineColor, "outlineColor");
     *///?} else {
-    /*public void submit(@Nullable ItemRenderData argument, PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor) {
-        PasRenderContext context = new RenderContext().putData(submitNodeCollector, "collector").putData(outlineColor, "outlineColor");
-    *///?}
+    public void submit(@Nullable ItemRenderData argument, PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor) {
+        PasRenderContext context = new PasRenderContext().putData(submitNodeCollector, "collector").putData(outlineColor, "outlineColor");
+    //?}
         SkinData skin;
         CapeData cape;
         NameInfo info;
@@ -69,14 +66,8 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
         renderer.draw(skin, cape, info, context, new PasModelSettings(state, hasFoilType, false), poseStack, packedLight, packedOverlay);
     }
 
-    //? >= 1.21.8 {
     @Override
-    public void getExtents(
-            //? if <1.21.11
-            Set<Vector3f> output
-            //? if >=1.21.11
-            //Consumer<Vector3fc> output
-    ) {
+    public void getExtents(@NonNull Consumer<Vector3fc> output) {
         PoseStack poseStack = new PoseStack();
 
         preparePose(poseStack);
@@ -85,6 +76,7 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
         List<ModelPart> partsToMeasure = new ArrayList<>();
         partsToMeasure.addAll(renderer.getModel(false).getOriginalParts());
         partsToMeasure.addAll(renderer.getModel(false).getPlayerParts());
+        partsToMeasure.add(renderer.getModel(false).getMemePart());
 
         for (ModelPart part : partsToMeasure) {
             if (part.visible) {
@@ -92,7 +84,6 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
             }
         }
     }
-    //?}
 
     private static void preparePose(PoseStack poseStack) {
         poseStack.translate(0.5, 0.75, 0.5);
@@ -104,7 +95,7 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
         NameInfo info = infoCandidate != null ? infoCandidate : new NameInfo();
         var model = renderer.getModel(false);
         ArmorStandRenderState renderState = state.toRenderState(info);
-        ModUtils.setCustomName(renderState, Component.literal(info.compile()));
+        renderState.nameTag = Component.literal(info.compileFast());
         renderState.showBasePlate = state.baseplate;
         model.setupAnim(renderState, info, true);
         model.setupVisibilityForItem(state, info);
@@ -122,7 +113,7 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
 
     public static record Unbaked(PasModelPoseSettings state) implements SpecialModelRenderer.Unbaked
             //? >= 26.1
-            //<ItemRenderData>
+            <ItemRenderData>
     {
 
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec((instance) ->
@@ -137,26 +128,26 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
             return new PasSpecialModelRenderer(pasModel, state);
         }
 
-        //? if >=1.21.9 && <26.1 {
+        //? <26.1 {
         /*@Override
         public @Nullable SpecialModelRenderer<?> bake(BakingContext context) {
             return bake(context.entityModelSet());
         }
-        *///?} else if >=26.1 {
-        /*@Override
+        *///?} else {
+        @Override
         @SuppressWarnings("unchecked")
         public @Nullable SpecialModelRenderer<ItemRenderData> bake(BakingContext context) {
             return (SpecialModelRenderer<ItemRenderData>) bake(context.entityModelSet());
         }
-        *///?}
+        //?}
 
         @Override
         public MapCodec
-                //? <26.1 {
-                <? extends SpecialModelRenderer.Unbaked>
-            //?} else {
-            /*<Unbaked>
-             *///?}
+            //? <26.1 {
+            /*<? extends SpecialModelRenderer.Unbaked>
+            *///?} else {
+            <Unbaked>
+             //?}
         type() {
             return MAP_CODEC;
         }

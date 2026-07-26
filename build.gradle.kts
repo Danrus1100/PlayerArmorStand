@@ -21,13 +21,10 @@ val loader: String = name.split("-")[1]
 val loaderInitials: String = when (loader) {
     "fabric" -> "FBR"
     "neoforge" -> "NFG"
-    "forge" -> "FG"
-    "vanilla" -> "VNL"
     else -> throw IllegalArgumentException("Unknown loader: $loader")
 }
 
-var isPossessive: Boolean = loader == "fabric" && findProperty("deps.possessive") != null
-var isArmorposer: Boolean = stonecutter.eval(minecraft, ">=1.21.4") && findProperty("deps.armorposer") != null
+var isArmorposer: Boolean = findProperty("deps.armorposer") != null
 var isEasyAnvils: Boolean = findProperty("deps.easyanvils") != null
 var hasModMenu: Boolean = findProperty("deps.modmenu") != null
 var hasYacl: Boolean = findProperty("deps.yacl") != null
@@ -115,16 +112,8 @@ modstitch {
             configs.register("pas.armorposer") {side = CLIENT}
         }
 
-        if (isPossessive) {
-            configs.register("pas.possessive") {side = CLIENT}
-        }
-
         if (isEasyAnvils) {
             configs.register("pas.easyanvils") {side = CLIENT}
-        }
-
-        if (stonecutter.eval(minecraft, ">=1.21.9")) {
-            configs.register("pas.1219")
         }
         // Most of the time you won't ever need loader specific mixins.
         // If you do, simply make the mixin file and add it like so for the respective loader:
@@ -143,7 +132,6 @@ stonecutter {
         put("neoforge", constraint == "neoforge")
         put("forge", constraint == "forge")
         put("vanilla", constraint == "vanilla")
-        put("possessive", isPossessive)
         put("armorposer", isArmorposer)
         put("easyanvils", isEasyAnvils)
         put("modmenu", hasModMenu)
@@ -165,25 +153,9 @@ stonecutter {
             replace("GuiGraphics", "GuiGraphicsExtractor")
         }
         string {
-            direction = eval(current.version, ">=1.21.11")
-            replace("ResourceLocation", "Identifier")
-            replace("import net.minecraft.Util;", "import net.minecraft.util.Util;")
-            replace(
-                "import net.minecraft.client.model.ArmorStandArmorModel;",
-                "import net.minecraft.client.model.object.armorstand.ArmorStandArmorModel;"
-            )
-            replace(
-                "import net.minecraft.client.renderer.RenderType;",
-                "import net.minecraft.client.renderer.rendertype.RenderTypes;"
-            )
-            replace(
-                "RenderType.",
-                "RenderTypes."
-            )
-        }
-        string {
-            direction = eval(current.version, "=1.21.10")
-            replace("PlayerRenderer", "AvatarRenderer")
+            direction = eval(current.version, ">=26.2")
+            replace(".setScreen(", ".setScreenAndShow(")
+            replace("EntityType.", "EntityTypes.")
         }
     }
 }
@@ -197,9 +169,6 @@ dependencies {
         modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
         prop("deps.modmenu") {
             modstitchModApi("com.terraformersmc:modmenu:${it}")
-        }
-        prop("deps.possessive") {
-            modstitchModImplementation("maven.modrinth:possessive:${it}")
         }
 
     }
@@ -233,7 +202,7 @@ publishMods {
     file = modstitch.finalJarTask.flatMap { it.archiveFile }
 
     changelog = rootProject.file("CHANGELOG.md").readText()
-    type = BETA
+    type = STABLE
 
     val loaders = property("pub.target.platforms").toString().split(' ')
     loaders.forEach(modLoaders::add)
@@ -263,7 +232,7 @@ publishMods {
         optionalLibs.forEach{optional(it)}
     }
 
-    if (targets.contains("1.21.4") && loaders.contains("fabric")) {
+    if (targets.contains("26.1") && loaders.contains("fabric")) {
         discord ("DR freak mods anonuncement") {
             webhookUrl = discordWebhookDR.toString()
             dryRunWebhookUrl = discordWebhookDry.toString()

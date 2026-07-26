@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
 
@@ -18,15 +20,15 @@ public class FabricEntrypoint implements ModInitializer {
     public void onInitialize() {
         PlayerArmorStandsClient.initialize();
 
-        FabricLoader.getInstance().getModContainer("pas").ifPresent(container -> {
+        FabricLoader.getInstance().getModContainer(PlayerArmorStandsClient.MOD_ID).ifPresent(container -> {
             for (String packName : PlayerArmorStandsClient.RPS) {
-                ResourceManagerHelper.registerBuiltinResourcePack(
+                ResourceLoader.registerBuiltinPack(
                         Id.pas(packName),
                         container,
                         Component.translatable("pas.rp." + packName),
                         packName.equals(PlayerArmorStandsClient.DEFAULT_RP)
-                                ? ResourcePackActivationType.DEFAULT_ENABLED
-                                : ResourcePackActivationType.NORMAL
+                                ? PackActivationType.DEFAULT_ENABLED
+                                : PackActivationType.NORMAL
                 );
             }
         });

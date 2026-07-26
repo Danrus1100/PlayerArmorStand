@@ -99,9 +99,9 @@ public class YaclConfig extends PasConfig {
         SkinData.DEFAULT_TEXTURE = HANDLER.instance().showArmorStandWhileDownloading
             ? Id.vanilla(
                 //? <26.1
-                "textures/entity/armorstand/wood.png"
+                //"textures/entity/armorstand/wood.png"
                 //? >=26.1
-                //"textures/entity/armorstand/armorstand.png"
+                "textures/entity/armorstand/armorstand.png"
             )
             : Id.vanilla("textures/entity/player/wide/steve.png");
     }

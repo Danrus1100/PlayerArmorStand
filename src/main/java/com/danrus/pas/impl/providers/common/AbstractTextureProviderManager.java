@@ -5,7 +5,7 @@ import com.danrus.pas.api.data.*;
 import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.api.reg.InfoTranslators;
 import com.danrus.pas.managers.PasManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
     private PasManager pasManager;
 
     private final Map<String, List<PrioritizedProvider>> providers = new ConcurrentHashMap<>();
-    private final Map<ResourceLocation, CompletableFuture<T>> pendingDownloads = new ConcurrentHashMap<>();
+    private final Map<Identifier, CompletableFuture<T>> pendingDownloads = new ConcurrentHashMap<>();
 
     public void clearPending() { pendingDownloads.clear(); }
 
@@ -58,7 +58,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
             return;
         }
 
-        final ResourceLocation pendingKey = InfoTranslators.getInstance().toResourceLocation(getType(), info);
+        final Identifier pendingKey = InfoTranslators.getInstance().toIdentifier(getType(), info);
         CompletableFuture<T> created = new CompletableFuture<>();
         CompletableFuture<T> shared = pendingDownloads.putIfAbsent(pendingKey, created);
 
@@ -78,7 +78,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
 
     private void startDownload(
             NameInfo info,
-            ResourceLocation pendingKey,
+            Identifier pendingKey,
             CompletableFuture<T> result
     ) {
         CompletableFuture<Void> providerFuture = null;
@@ -145,7 +145,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
     private CompletableFuture<Void> tryLoadFromProviders(
             String literal,
             NameInfo info,
-            ResourceLocation pendingKey
+            Identifier pendingKey
     ) {
         return tryLoad(providers.get(literal), info, pendingKey);
     }
@@ -153,7 +153,7 @@ public abstract class AbstractTextureProviderManager<T extends DataHolder> imple
     private CompletableFuture<Void> tryLoad(
             List<PrioritizedProvider> providerList,
             NameInfo info,
-            ResourceLocation pendingKey
+            Identifier pendingKey
     ) {
         if (providerList == null || providerList.isEmpty()) return null;
 
