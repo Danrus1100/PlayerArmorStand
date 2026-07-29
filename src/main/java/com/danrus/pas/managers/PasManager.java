@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
 
 public class PasManager {
 
@@ -96,11 +97,13 @@ public class PasManager {
         Map<NameInfo, T> dataCollection = repository.findAll(infoLike);
         repository.deleteAllOf(infoLike);
         dataCollection.forEach((info, data) -> {
-            data.setStatus(DownloadStatus.IN_PROGRESS);
-            repository.store(info, data);
-            TextureUtils.unregisterTexture(data.getTexture());
-            TextureUtils.clearOverlayCacheFor(info);
-            provider.download(info);
+            if (!repository.cancelRedownload(info)) {
+                data.setStatus(DownloadStatus.IN_PROGRESS);
+                repository.store(info, data);
+                TextureUtils.unregisterTexture(data.getTexture());
+                TextureUtils.clearOverlayCacheFor(info);
+                provider.download(info);
+            }
         });
     }
 
@@ -111,10 +114,19 @@ public class PasManager {
         reloadFailed(capeDataRepository, capeProviderManager, "cape");
     }
 
+    public void reloadAll() {
+        reloadIf(skinDataRepository, skinProviderManager, "skin", data -> true);
+        reloadIf(capeDataRepository, capeProviderManager, "cape", data -> true);
+    }
+
     private <T extends DataHolder> void reloadFailed(DataRepository<T> repository, TextureProvidersManager provider, String type) {
+        reloadIf(repository, provider, type, data -> data.compareAndSetStatus(DownloadStatus.FAILED, DownloadStatus.NOT_STARTED));
+    }
+
+    private  <T extends DataHolder> void reloadIf(DataRepository<T> repository, TextureProvidersManager provider, String type, Predicate<T> condition) {
         repository.getSources().forEach((key, source) -> {
             source.getAll().forEach((info, data) -> {
-                if (data.compareAndSetStatus(DownloadStatus.FAILED, DownloadStatus.NOT_STARTED)) {
+                if (condition.test(data)) {
                     this.LOGGER.info("Reloading failed {} for {}", type, info);
                     provider.download(info);
                 }

@@ -7,6 +7,7 @@ import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.utils.mc.Id;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -33,62 +34,69 @@ public class PasRenderer {
     private final PlayerArmorStandModel model;
     @Nullable
     private final PlayerArmorStandModel smallModel;
+    private final boolean inGui;
 
     public PasRenderer(PlayerArmorStandModel model) {
-        this(model, null);
+        this(model, null, true);
     }
 
-    public PasRenderer(PlayerArmorStandModel model, @Nullable PlayerArmorStandModel smallModel) {
+    public PasRenderer(PlayerArmorStandModel model, @Nullable PlayerArmorStandModel smallModel, boolean inGui) {
         this.model = model;
         this.smallModel = smallModel;
+        this.inGui = inGui;
     }
 
-    public void draw(SkinData skinData, @Nullable CapeData capeData, NameInfo info, PasRenderContext context, PasModelSettings settings, PoseStack poseStack, int packedLight, int packedOverlay) {
+    public void submit(SkinData skinData, @Nullable CapeData capeData, NameInfo info, SubmitNodeCollector collector, PasModelSettings settings, PoseStack poseStack, int packedLight, int packedOverlay) {
         if (info.lolmeme() != null) {
             setupAnim(info, model, settings);
-            drawMeme(info.lolmeme(), context, poseStack, packedLight, packedOverlay);
+            drawMeme(info.lolmeme(), collector, poseStack, packedLight, packedOverlay);
             return;
         }
+        if (inGui && info.shouldUpsideDown()) rotatePoseToUpsideDown(poseStack);
         PlayerArmorStandModel modelToRender = (settings.isSmall() && smallModel != null) ? smallModel : model;
         setupAnim(info, modelToRender, settings);
         for (ModelPart part : modelToRender.getOriginalParts()) {
-            drawPart(poseStack, part, RenderTypes.entityCutout(WOOD), context, packedLight, packedOverlay);
+            drawPart(poseStack, part, RenderTypes.entityCutout(WOOD), collector, packedLight, packedOverlay);
         }
         boolean showDefaultSkin = info.isEmpty() || PlayerArmorStandModel.showArmorStandWhileDownload(Optional.of(skinData));
         Identifier location = showDefaultSkin ? STEVE : PasManager.getInstance().getSkinWithOverlayTexture(info);
         for (ModelPart part : modelToRender.getPlayerParts()) {
-            drawPart(poseStack, part, RenderTypes.entityTranslucent(location), context, packedLight, packedOverlay);
+            drawPart(poseStack, part, RenderTypes.entityTranslucent(location), collector, packedLight, packedOverlay);
         }
 
         if (settings.foil()) {
             for (ModelPart part : modelToRender.getOriginalParts()) {
-                drawPart(poseStack, part, RenderTypes.glint(), context, packedLight, packedOverlay);
+                drawPart(poseStack, part, RenderTypes.glint(), collector, packedLight, packedOverlay);
             }
 
             for (ModelPart part : modelToRender.getPlayerParts()) {
-                drawPart(poseStack, part, RenderTypes.glint(), context, packedLight, packedOverlay);
+                drawPart(poseStack, part, RenderTypes.glint(), collector, packedLight, packedOverlay);
             }
         }
 
         if (info.hasCape() && capeData != null && !capeData.getTexture().equals(CapeData.DEFAULT_TEXTURE)) {
-            drawPart(poseStack, modelToRender.getCape(), RenderTypes.entityTranslucent(capeData.getTexture()), context, packedLight, packedOverlay);
+            drawPart(poseStack, modelToRender.getCape(), RenderTypes.entityTranslucent(capeData.getTexture()), collector, packedLight, packedOverlay);
 
             if (settings.foil()) {
-                drawPart(poseStack, modelToRender.getCape(), RenderTypes.glint(), context, packedLight, packedOverlay);
+                drawPart(poseStack, modelToRender.getCape(), RenderTypes.glint(), collector, packedLight, packedOverlay);
             }
         }
     }
 
-    private void drawMeme(@NotNull Identifier texture, PasRenderContext context, PoseStack poseStack, int packedLight, int packedOverlay) {
-        drawPart(poseStack, model.getMemePart(), RenderTypes.entityCutout(texture), context, packedLight, packedOverlay);
+    private void rotatePoseToUpsideDown(PoseStack poseStack) {
+        poseStack.translate(0.0F, 0.975F, 0.0F);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+    }
+
+    private void drawMeme(@NotNull Identifier texture, SubmitNodeCollector collector, PoseStack poseStack, int packedLight, int packedOverlay) {
+        drawPart(poseStack, model.getMemePart(), RenderTypes.entitySolid(texture), collector, packedLight, packedOverlay);
     }
 
     private static void setupAnim(NameInfo info, PlayerArmorStandModel model, PasModelSettings settings) {
-        model.setupAnim(settings.poseSettings().toRenderState(info), info);
+        model.setupModel(settings.poseSettings(), info);
     }
 
-    private static void drawPart(PoseStack poseStack, ModelPart part, RenderType type, PasRenderContext context, int packedLight, int packedOverlay) {
-        SubmitNodeCollector nodeCollector = context.getData(net.minecraft.client.renderer.SubmitNodeCollector.class,"collector");
+    private static void drawPart(PoseStack poseStack, ModelPart part, RenderType type, SubmitNodeCollector nodeCollector, int packedLight, int packedOverlay) {
         ModelPartSnapshot snapshot = ModelPartSnapshot.capture(part);
         nodeCollector.submitCustomGeometry(poseStack, type, (pose, vertexConsumer) -> {
             ModelPartSnapshot currentState = ModelPartSnapshot.capture(part);
@@ -113,7 +121,7 @@ public class PasRenderer {
         private static ModelPartSnapshot capture(ModelPart root) {
             List<ModelPartState> states = new ArrayList<>();
             for (ModelPart part : root.getAllParts()) {
-                states.add(new ModelPartState(part, part.storePose(), part.visible, part.skipDraw));
+                states.add(ModelPartState.capture(part));
             }
             return new ModelPartSnapshot(states);
         }
@@ -125,12 +133,35 @@ public class PasRenderer {
         }
     }
 
-    private record ModelPartState(ModelPart part, PartPose pose, boolean visible, boolean skipDraw) {
+    private record ModelPartState(
+            ModelPart part,
+            PartPose pose,
+            float xScale,
+            float yScale,
+            float zScale,
+            boolean visible,
+            boolean skipDraw
+    ) {
 
         private void apply() {
             part.loadPose(pose);
+            part.xScale = xScale;
+            part.yScale = yScale;
+            part.zScale = zScale;
             part.visible = visible;
             part.skipDraw = skipDraw;
+        }
+
+        private static ModelPartState capture(ModelPart part) {
+            return new ModelPartState(
+                    part,
+                    part.storePose(),
+                    part.xScale,
+                    part.yScale,
+                    part.zScale,
+                    part.visible,
+                    part.skipDraw
+            );
         }
     }
 }

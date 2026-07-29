@@ -11,6 +11,7 @@
         "right_arm": {"mode": "dynamic"},
         "left_leg": {"mode": "dynamic"},
         "right_leg": {"mode": "dynamic"},
+        "cape": {"mode": "dynamic"},
         "baseplate": true
       }
     }

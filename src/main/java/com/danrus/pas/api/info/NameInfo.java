@@ -114,6 +114,11 @@ public record NameInfo(
 
     // --- API ---
 
+    public boolean shouldUpsideDown() {
+        return base.equalsIgnoreCase("Dinnerbone")
+                || base.equalsIgnoreCase("Grumm");
+    }
+
     public boolean isEmpty() { return base == null || base.isEmpty(); }
 
     @SuppressWarnings("unchecked")

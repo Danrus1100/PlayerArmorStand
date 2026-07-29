@@ -2,12 +2,16 @@ package com.danrus.pas.render.gui.tabs;
 
 import com.danrus.pas.render.gui.widgets.TabButton;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class TabManager {
     private final Screen screen;
@@ -45,9 +49,9 @@ public class TabManager {
         tabs.forEach((btn, t) -> btn.active = (t != activeTab));
     }
 
-    public void init() {
+    public void init(Consumer<AbstractWidget> widgetsCollector) {
         for (Tab tab : tabs.values()) {
-            tab.init(screen);
+            tab.init(screen, widgetsCollector);
         }
     }
 

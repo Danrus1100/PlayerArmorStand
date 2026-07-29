@@ -18,8 +18,14 @@ public class PasCommandsRegistrar<S> {
                                         //.gui.chatListener().handleSystemMessage(PasCommands.defaultCommand(), false);
                                 return 1;
                             })
-                            .then(literal("reload_failed").executes(PasCommands::reloadFailedCommand))
+//
                             .then(literal("reload")
+                                    .then(literal("all")
+                                            .executes(PasCommands::reloadAllCommand))
+
+                                    .then(literal("failed")
+                                            .executes(PasCommands::reloadFailedCommand))
+
                                     .then(literal("skin")
                                             .then(argument("name/skin", NameInfoPatternArgumentType.forSkin()).executes(PasCommands::reloadSingeSkinCommand)))
 

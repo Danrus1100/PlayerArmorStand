@@ -28,6 +28,14 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
 
     @Override
     public Optional<T> get(NameInfo info) {
+        Optional<T> holder = tryToFindHolder(info);
+        if (holder.isEmpty()) return holder;
+
+        getDataManager().store(info, holder.get());
+        return holder;
+    }
+
+    private Optional<T> tryToFindHolder(NameInfo info) {
         if (cache.containsKey(info)) {
             return Optional.of(cache.get(info));
         }
@@ -46,14 +54,17 @@ public abstract class AbstractFileTextureDataProvider<T extends DataHolder> impl
         if (filePath.toFile().exists()) {
             Minecraft.getInstance().execute(() -> {
                 TextureUtils.registerTexture(filePath, textureLocation, true);
-                getDataManager().store(info, createDataHolder(textureLocation));
             });
         }
 
         T data = createDataHolder(textureLocation);
         data.setStatus(DownloadStatus.COMPLETED);
-        getDataManager().store(info, data);
         return Optional.of(data);
+    }
+
+    @Override
+    public boolean cancelRedownload(NameInfo info) {
+        return tryToFindHolder(info).isPresent();
     }
 
     @Override

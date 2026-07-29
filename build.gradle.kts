@@ -184,7 +184,7 @@ dependencies {
     prop("deps.easyanvils") {
         modstitchModImplementation("maven.modrinth:easy-anvils:${it}")
         modstitchModImplementation("maven.modrinth:puzzles-lib:${property("deps.puzzles")}")
-        modstitchModImplementation("maven.modrinth:forge-config-api-port:${property("deps.fcapi")}")
+//        modstitchModImplementation("maven.modrinth:forge-config-api-port:${property("deps.fcapi")}")
         modstitchModImplementation("com.electronwill.night-config:core:3.8.3")
         modstitchModImplementation("com.electronwill.night-config:toml:3.8.3")
     }
@@ -223,14 +223,14 @@ publishMods {
 //        optionalLibsModrinth.forEach{optional(it)}
     }
 
-    curseforge {
-        projectId = property("publish.curseforge").toString()
-        accessToken = curseforgeToken.toString()
-        projectSlug = "player-armor-stands"
-        targets.forEach(minecraftVersions::add)
-        requiresLibs.forEach{requires(it)}
-        optionalLibs.forEach{optional(it)}
-    }
+//    curseforge {
+//        projectId = property("publish.curseforge").toString()
+//        accessToken = curseforgeToken.toString()
+//        projectSlug = "player-armor-stands"
+//        targets.forEach(minecraftVersions::add)
+//        requiresLibs.forEach{requires(it)}
+//        optionalLibs.forEach{optional(it)}
+//    }
 
     if (targets.contains("26.1") && loaders.contains("fabric")) {
         discord ("DR freak mods anonuncement") {

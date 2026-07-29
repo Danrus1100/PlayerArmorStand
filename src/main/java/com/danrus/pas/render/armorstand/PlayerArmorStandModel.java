@@ -55,9 +55,6 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
 
     private final ModelPart lol;
 
-    private boolean isSlim = false;
-    private boolean isOriginal = false;
-
     public PlayerArmorStandModel(ModelPart root) {
         super(root);
         this.cloak = root.getChild("cloak");
@@ -134,7 +131,7 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
         partdefinition.addOrReplaceChild("right_body_stick", CubeListBuilder.create().texOffs(16, 0).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 7.0F, 1.0F, deformation), PartPose.offset(-4.0F, 2.0F, 0.0F));
         partdefinition.addOrReplaceChild("left_body_stick", CubeListBuilder.create().texOffs(48, 0).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 7.0F, 1.0F, deformation), PartPose.offset(4.0F, 2.0F, 0.0F));
         partdefinition.addOrReplaceChild("shoulder_stick", CubeListBuilder.create().texOffs(0, 0).addBox(-6.5F, -0.5F, -0.5F, 13.0F, 1.0F, 1.0F, deformation), PartPose.offset(0.0F, 2.0F, 0.0F));
-        partdefinition.addOrReplaceChild("base_plate", CubeListBuilder.create().texOffs(0, 32).addBox(-6.0F, 0.0F, -6.0F, 12.0F, 1.0F, 12.0F, deformation), PartPose.offset(0.0F, 23.0F, 0.0F));
+        partdefinition.addOrReplaceChild("base_plate", CubeListBuilder.create().texOffs(0, 32).addBox(-6.0F, 0.0F, -6.0F, 12.0F, 1.0F, 12.0F, deformation), PartPose.offset(0.0F, 23.01F, 0.0F));
 
         // slim
         partdefinition.addOrReplaceChild("left_slim_arm", CubeListBuilder.create().texOffs(32, 48).addBox(-1.0F, -2.0F, -2.0F, 3.0F, 12.0F, 4.0F, armDeformation), PartPose.offset(5.0F, 2.5F, 0.0F));
@@ -194,30 +191,9 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
             this.lol.visible = false;
         }
 
-        cpp(leftLeg, this.leftPants);
-        cpp(rightLeg, this.rightPants);
+        copyPlayerPartsFromStand();
 
-        cpp(leftArm, this.leftSleeve);
-        cpp(rightArm, this.rightSleeve);
-
-        cpp(leftArm, this.leftSlimArm);
-        cpp(rightArm, this.rightSlimArm);
-        cpp(leftArm, this.leftSlimSleeve);
-        cpp(rightArm, this.rightSlimSleeve);
-
-        cpp(body, this.originalBody);
-        cpp(head, this.originalHead);
-        cpp(rightArm, this.originalRightArm);
-        cpp(leftArm, this.originalLeftArm);
-        cpp(rightLeg, this.originalRightLeg);
-        cpp(leftLeg, this.originalLeftLeg);
-
-        cpp(body, this.jacket);
-
-        this.cloak.xRot = (float) Math.toRadians(-10);
-        this.cloak.yRot = (float) Math.toRadians(180);
-        this.cloak.y += 0.02f;
-        this.cloak.z += 1.1f;
+        setupCape();
 
 
         this.basePlate.yRot = ((float)Math.PI / 180F) * -armorStand.yRot;
@@ -227,22 +203,17 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
             return;
         }
 
-
-//        String customNameString;
-//        if (!PasConfig.getInstance().getDefaultSkin().isEmpty() && customName == null) {
-//            customNameString = PasConfig.getInstance().getDefaultSkin();
-//        } else if (customName != null) {
-//            customNameString = customName.getString();
-//        } else {
-//            customNameString = "";
-//        }
-
         boolean isEarsVisible = "deadmau5".equalsIgnoreCase(info.base()) && PasConfig.getInstance().isShowEasterEggs();
         this.leftEar.visible = isEarsVisible;
         this.rightEar.visible = isEarsVisible;
 
         if (setupVisibility) {
-            this.setModelVisibility(!showArmorStandWhileDownload(PasManager.getInstance().findSkinData(info)), info.isSlim(), showBase, info.hasCape());
+            this.setModelVisibility(
+                    !showArmorStandWhileDownload(PasManager.getInstance().findSkinData(info)),
+                    info.isSlim(),
+                    showBase,
+                    info.hasCape()
+            );
         }
 
         if (info.isEmpty() && PasConfig.getInstance().getDefaultSkin().isEmpty()) {
@@ -277,6 +248,8 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
         this.rightBodyStick.visible = state.body.mode.showOriginalPart(info);
         this.leftBodyStick.visible = state.body.mode.showOriginalPart(info);
         this.shoulderStick.visible = state.body.mode.showOriginalPart(info);
+
+        this.cloak.visible = state.cloak.mode.showCapePart(info);
 
         this.basePlate.visible = state.baseplate;
     }
@@ -356,6 +329,42 @@ public class PlayerArmorStandModel extends ArmorStandArmorModel {
                 this.rightSlimSleeve,
                 this.head
         );
+    }
+
+    public void setupModel(PasModelPoseSettings settings, NameInfo info) {
+        setupVisibilityForItem(settings, info);
+        super.setupAnim(settings.toRenderState(info));
+        copyPlayerPartsFromStand();
+        setupCape();
+    }
+
+    public void setupCape() {
+        this.cloak.xRot = (float) Math.toRadians(-10);
+        this.cloak.yRot = (float) Math.toRadians(180);
+        this.cloak.y += 0.02f;
+        this.cloak.z += 1.1f;
+    }
+
+    private void copyPlayerPartsFromStand() {
+        cpp(leftLeg, this.leftPants);
+        cpp(rightLeg, this.rightPants);
+
+        cpp(leftArm, this.leftSleeve);
+        cpp(rightArm, this.rightSleeve);
+
+        cpp(leftArm, this.leftSlimArm);
+        cpp(rightArm, this.rightSlimArm);
+        cpp(leftArm, this.leftSlimSleeve);
+        cpp(rightArm, this.rightSlimSleeve);
+
+        cpp(body, this.originalBody);
+        cpp(head, this.originalHead);
+        cpp(rightArm, this.originalRightArm);
+        cpp(leftArm, this.originalLeftArm);
+        cpp(rightLeg, this.originalRightLeg);
+        cpp(leftLeg, this.originalLeftLeg);
+
+        cpp(body, this.jacket);
     }
 
     public void setModelVisibility(boolean player, boolean slim, boolean showBase, boolean showCape) {

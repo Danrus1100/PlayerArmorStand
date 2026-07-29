@@ -1,16 +1,19 @@
 ## Changes
 
-* Added support for Minecraft 26.2
-* Discontinued support for Minecraft 1.21.4–1.21.11
-* Major performance optimizations
-* Updated player stand rendering: capes are now displayed ||as well as Easter eggs||
-* Updated the nickname format: you must now use two `|` characters and separate all renaming features with `;`
-* Base plates are now displayed on player stands
+* Added Pirate Speak, Upside Down English, and LOLCAT translations
+* Dinnerbone and Grumm are now rendered upside down in the inventory when the built-in resource pack is enabled
+* When the built-in resource pack is enabled, the armor stand item now uses its vanilla appearance if the player's skin has not been downloaded yet
+* Replaced the `/pas reload_failed` command with `/pas reload failed`
+* Added the `/pas reload all` command
+
+## Technical Changes
+
+* Added the `pas:downloaded` property for `condition` item models. It selects `on_true` if the skin associated with the nickname specified in the item's name has already been downloaded
 
 ## Fixes
 
-* Fixed the configuration menu
-* ||Fixed incorrect rotation of meme images||
-* Fixed inconsistent behavior when a player tried to reload a skin or cape using a command
-* Fixed command autocompletion and target lookup for reload commands
-* Fixed console spam when the mod failed to parse a nickname
+* Fixed a crash that could occur when the game or another mod attempted to render an armor stand, including inside user interfaces
+* Fixed an issue where reloading a skin could accidentally remove an actual player's texture from the game's memory
+* Fixed Z-fighting in ||Easter egg images||
+* Fixed the geometry of the small armor stand model
+* Fixed an issue where the visible parts specified in `state` were not applied to the `pas:armor_stand` special item model

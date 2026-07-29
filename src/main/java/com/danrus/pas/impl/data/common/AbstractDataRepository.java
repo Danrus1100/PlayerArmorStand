@@ -94,6 +94,14 @@ public abstract class AbstractDataRepository<T extends DataHolder> implements Da
         return Optional.empty();
     }
 
+    @Override
+    public boolean cancelRedownload(NameInfo info) {
+        for (var source : sources) {
+            if (!source.cancelRedownload(info)) return true;
+        }
+        return false;
+    }
+
     private Optional<T> getFrom(Function<DataProvider<T>, Optional<T>> getter) {
         for (DataProvider<T> source : sources) {
             Optional<T> dataFromSource = getter.apply(source);

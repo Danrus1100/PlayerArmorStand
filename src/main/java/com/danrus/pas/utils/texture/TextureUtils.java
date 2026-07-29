@@ -105,6 +105,7 @@ public final class TextureUtils {
     }
 
     public static void unregisterTexture(Identifier identifier) {
+        if (!PlayerArmorStandsClient.MOD_ID.equals(identifier.getNamespace())) return;
         Minecraft.getInstance().execute(() ->
                 Minecraft.getInstance().getTextureManager().release(identifier)
         );
@@ -153,11 +154,7 @@ public final class TextureUtils {
 
         if (texture instanceof SimpleTexture resourceTexture) {
             try {
-                //? if <=1.21.1 {
-                /*return resourceTexture.getTextureImage(Minecraft.getInstance().getResourceManager()).getImage();
-                *///?} else {
                 return resourceTexture.loadContents(Minecraft.getInstance().getResourceManager()).image();
-                //?}
             } catch (Exception e) {
                 PlayerArmorStandsClient.LOGGER.warn("Failed to load texture image for: {}", identifier, e);
             }

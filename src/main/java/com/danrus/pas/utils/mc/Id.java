@@ -1,5 +1,6 @@
 package com.danrus.pas.utils.mc;
 
+import com.danrus.pas.PlayerArmorStandsClient;
 import net.minecraft.resources.Identifier;
 
 public class Id {
@@ -8,7 +9,7 @@ public class Id {
     }
 
     public static Identifier pas(String path) {
-        return Identifier.fromNamespaceAndPath("pas", path);
+        return Identifier.fromNamespaceAndPath(PlayerArmorStandsClient.MOD_ID, path);
     }
 
     public static Identifier vanilla(String path) {

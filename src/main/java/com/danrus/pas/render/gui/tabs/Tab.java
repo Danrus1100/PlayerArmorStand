@@ -1,13 +1,12 @@
 package com.danrus.pas.render.gui.tabs;
 
-import com.danrus.pas.mixin.accessors.ScreenAccessor;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.TabButton;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class Tab {
     private final List<AbstractWidget> widgets = new ArrayList<>();
@@ -34,9 +33,9 @@ public class Tab {
         }
     }
 
-    public void init(Screen screen) {
+    public void init(Screen screen, Consumer<AbstractWidget> widgetsCollector) {
         for (AbstractWidget widget : widgets) {
-            ((ScreenAccessor) screen).pas$addRenderableWidget(widget);
+            widgetsCollector.accept(widget);
         }
         reposition(screen.width, screen.height);
     }

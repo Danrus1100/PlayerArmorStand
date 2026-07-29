@@ -336,7 +336,7 @@ public class PasConfiguratorScreen extends Screen {
     @Override
     protected void init() {
 //        this.addRenderableWidget(rotateButton); // Removed =(
-        tabManager.init();
+        tabManager.init(this::addRenderableWidget);
         this.addRenderableWidget(acceptButton);
         this.addRenderableWidget(cancelButton);
         repositionElements(this.width, this.height);

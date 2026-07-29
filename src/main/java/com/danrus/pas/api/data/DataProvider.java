@@ -12,6 +12,7 @@ public interface DataProvider<T extends DataHolder> {
     Optional<T> findFirst(NameInfoLike infoLike);
     Collection<T> findAll(NameInfoLike infoLike);
     Optional<T> peek(NameInfo info);
+    default boolean cancelRedownload(NameInfo info) { return false; }
     boolean deleteAllOf(NameInfoLike info);
     NameInfoMap<T> getAll();
     void store(NameInfo info, T data);

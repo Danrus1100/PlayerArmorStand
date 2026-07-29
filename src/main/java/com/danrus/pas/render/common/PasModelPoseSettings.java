@@ -4,8 +4,6 @@ import com.danrus.pas.api.info.NameInfo;
 import com.danrus.pas.render.armorstand.PasEntityRenderState;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
-import net.minecraft.network.chat.Component;
 import org.joml.Vector3f;
 
 public class PasModelPoseSettings {
@@ -15,7 +13,8 @@ public class PasModelPoseSettings {
     public static PasModelPartSettings DEFAULT_RIGHT_LEG = new PasModelPartSettings(new Vector3f(1, 0, 1));
     public static PasModelPartSettings DEFAULT_LEFT_ARM = new PasModelPartSettings(new Vector3f(-10, 0, -10), PasModelPartSettings.Mode.INVISIBLE);
     public static PasModelPartSettings DEFAULT_RIGHT_ARM = new PasModelPartSettings(new Vector3f(-15, 0, 10), PasModelPartSettings.Mode.INVISIBLE);
-    public static PasModelPartSettings DEFAULT_CLOAK = new PasModelPartSettings(new Vector3f(0, 0, -15), PasModelPartSettings.Mode.DYNAMIC);
+    public static PasModelPartSettings DEFAULT_CLOAK_ITEM = new PasModelPartSettings(new Vector3f(0, 0, -15), PasModelPartSettings.Mode.INVISIBLE);
+    public static PasModelPartSettings DEFAULT_CLOAK_TO_RS = new PasModelPartSettings(new Vector3f(0, 0, -15), PasModelPartSettings.Mode.DYNAMIC);
 
     public static Codec<PasModelPoseSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             PasModelPartSettings.CODEC.optionalFieldOf("head", DEFAULT_HEAD).forGetter(state -> state.head),
@@ -24,7 +23,7 @@ public class PasModelPoseSettings {
             PasModelPartSettings.CODEC.optionalFieldOf("right_leg", DEFAULT_RIGHT_LEG).forGetter(state -> state.rightLeg),
             PasModelPartSettings.CODEC.optionalFieldOf("left_arm", DEFAULT_LEFT_ARM).forGetter(state -> state.leftArm),
             PasModelPartSettings.CODEC.optionalFieldOf("right_arm", DEFAULT_RIGHT_ARM).forGetter(state -> state.rightArm),
-            PasModelPartSettings.CODEC.optionalFieldOf("cape", DEFAULT_CLOAK).forGetter(state -> state.cloak),
+            PasModelPartSettings.CODEC.optionalFieldOf("cape", DEFAULT_CLOAK_ITEM).forGetter(state -> state.cloak),
             Codec.BOOL.optionalFieldOf("baseplate", true).forGetter(state -> state.baseplate)
     ).apply(instance, PasModelPoseSettings::new));
 
@@ -45,7 +44,7 @@ public class PasModelPoseSettings {
         this.rightLeg = DEFAULT_RIGHT_LEG;
         this.leftArm = DEFAULT_LEFT_ARM;
         this.rightArm = DEFAULT_RIGHT_ARM;
-        this.cloak = DEFAULT_CLOAK;
+        this.cloak = DEFAULT_CLOAK_ITEM;
         this.baseplate = true;
     }
 
@@ -76,7 +75,7 @@ public class PasModelPoseSettings {
         this.rightLeg = new PasModelPartSettings(original.rightLegPose);
         this.leftArm = new PasModelPartSettings(original.leftArmPose);
         this.rightArm = new PasModelPartSettings(original.rightArmPose);
-        this.cloak = DEFAULT_CLOAK;
+        this.cloak = DEFAULT_CLOAK_TO_RS;
         this.baseplate = original.showBasePlate;
     }
 

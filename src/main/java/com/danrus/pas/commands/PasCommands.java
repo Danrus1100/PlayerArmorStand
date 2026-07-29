@@ -30,6 +30,11 @@ public class PasCommands {
         return 1;
     }
 
+    public static int reloadAllCommand(CommandContext<?> context) {
+        PasManager.getInstance().reloadAll();
+        return 1;
+    }
+
     public static int dropCacheCommand(CommandContext<?> context) {
         PasManager.getInstance().dropCache();
         return 1;

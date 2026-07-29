@@ -27,11 +27,11 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
             return Optional.empty();
         }
 
-        T holder = findInClientLevel(info);
+        Optional<T> holder = findInClientLevel(info);
 
-        if (holder.getStatus() == DownloadStatus.COMPLETED) {
-            getDataManager().store(info, holder);
-            return Optional.of(holder);
+        if (holder.isPresent() && holder.get().getStatus() == DownloadStatus.COMPLETED) {
+            getDataManager().store(info, holder.get());
+            return holder;
         }
 
         return Optional.empty();
@@ -52,13 +52,16 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
 
     @Override
     public Optional<T> peek(NameInfo info) {
-        T holder = findInClientLevel(info);
-        return holder.getStatus() == DownloadStatus.COMPLETED
-                ? Optional.of(holder)
-                : Optional.empty();
+        return findInClientLevel(info);
+
     }
 
-    private T findInClientLevel(NameInfo info) {
+    @Override
+    public boolean cancelRedownload(NameInfo info) {
+        return findInClientLevel(info).isPresent();
+    }
+
+    private Optional<T> findInClientLevel(NameInfo info) {
         T holder = createDataHolder();
         if (Minecraft.getInstance().level != null) {
             Minecraft.getInstance().level.players().stream()
@@ -73,7 +76,9 @@ public abstract class AbstractClientLevelDataProvider<T extends DataHolder> impl
                             }
                     );
         }
-        return holder;
+        return holder.getStatus() == DownloadStatus.COMPLETED
+                ? Optional.of(holder)
+                : Optional.empty();
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.danrus.pas.impl.holder.SkinData;
 import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.common.PasModelPoseSettings;
 import com.danrus.pas.render.common.PasModelSettings;
-import com.danrus.pas.render.common.PasRenderContext;
 import com.danrus.pas.render.common.PasRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
@@ -22,6 +21,7 @@ import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.layers.WingsLayer;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -31,7 +31,7 @@ import org.joml.Quaternionf;
 
 import java.util.Optional;
 
-public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntityRenderState, ArmorStandArmorModel> {
+public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, ArmorStandRenderState, ArmorStandArmorModel> {
 
     private final ArmorStandRenderer armorStandRenderer;
     private final PasRenderer pasRenderer;
@@ -41,7 +41,8 @@ public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntit
         this.armorStandRenderer = new ArmorStandRenderer(context);
         this.pasRenderer = new PasRenderer(
                 new PlayerArmorStandModel(PlayerArmorStandModel.createBodyLayer(CubeDeformation.NONE).bakeRoot()),
-                new PlayerArmorStandModel(PlayerArmorStandModel.createBodyLayer(CubeDeformation.NONE).apply(HumanoidModel.BABY_TRANSFORMER).bakeRoot())
+                new PlayerArmorStandModel(PlayerArmorStandModel.createBodyLayer(CubeDeformation.NONE).apply(HumanoidModel.BABY_TRANSFORMER).bakeRoot()),
+                false
         );
 
         this.addLayer(new HumanoidArmorLayer(this, ArmorModelSet.bake(ModelLayers.ARMOR_STAND_ARMOR, context.getModelSet(), ArmorStandArmorModel::new), ArmorModelSet.bake(ModelLayers.ARMOR_STAND_SMALL_ARMOR, context.getModelSet(), ArmorStandArmorModel::new), context.getEquipmentRenderer()));
@@ -56,11 +57,14 @@ public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntit
     }
 
     @Override
-    public void submit(PasEntityRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+    public void submit(ArmorStandRenderState vanillaState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        if (!(vanillaState instanceof PasEntityRenderState state)) {
+            submitVanilla(vanillaState, poseStack, submitNodeCollector, cameraRenderState);
+            return;
+        }
         Optional<SkinData> data = PasManager.getInstance().getSkinDataManager().getData(state.info);
         if ((data.isEmpty() || data.get().getStatus() != DownloadStatus.COMPLETED && state.info.lolmeme() == null) || !PasConfig.getInstance().isEnableMod()) {
-            this.model = DummyEntityModel.INSTANTS;
-            armorStandRenderer.submit(state, poseStack, submitNodeCollector, cameraRenderState);
+            submitVanilla(vanillaState, poseStack, submitNodeCollector, cameraRenderState);
             return;
         }
         if (state.info.lolmeme() != null) {
@@ -75,13 +79,13 @@ public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntit
                 poseStack.mulPose(rotation);
                 poseStack.translate(0, -1, 0);
 
-                executeDraw(data.get(), state, PasRenderContext.create(submitNodeCollector), poseStack, state.lightCoords);
+                executeSubmit(data.get(), state, submitNodeCollector, poseStack, state.lightCoords);
 
                 poseStack.popPose();
             });
 
         } else {
-            swapVanillaDraw(() -> executeDraw(data.get(), state, PasRenderContext.create(submitNodeCollector), poseStack, state.lightCoords));
+            swapVanillaDraw(() -> executeSubmit(data.get(), state, submitNodeCollector, poseStack, state.lightCoords));
         }
 
         this.model = pasRenderer.getModel(state.isSmall);
@@ -89,7 +93,22 @@ public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntit
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(PasEntityRenderState renderState) {
+    public boolean isEntityUpsideDown(ArmorStand entity) {
+        NameInfo info = NameInfo.parse(entity.getCustomName());
+
+        if (info.shouldUpsideDown() && !PlayerArmorStandModel.showArmorStandWhileDownload(PasManager.getInstance().findSkinData(info))) {
+           return true;
+        }
+        return super.isEntityUpsideDown(entity);
+    }
+
+    private void submitVanilla(ArmorStandRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        this.model = DummyEntityModel.INSTANTS;
+        this.armorStandRenderer.submit(state, poseStack, submitNodeCollector, cameraRenderState);
+    }
+
+    @Override
+    public @NotNull Identifier getTextureLocation(ArmorStandRenderState renderState) {
         return armorStandRenderer.getTextureLocation(renderState);
     }
 
@@ -97,13 +116,13 @@ public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntit
         ((DrawSwapper) this).pas$swapDrawer(draw);
     }
 
-    private void executeDraw(SkinData data, PasEntityRenderState state, PasRenderContext context, PoseStack poseStack, int packedLight) {
+    private void executeSubmit(SkinData data, PasEntityRenderState state, SubmitNodeCollector collector, PoseStack poseStack, int packedLight) {
         if (!state.isInvisible && !state.isInvisibleToPlayer) {
-            pasRenderer.draw(
+            pasRenderer.submit(
                     data,
                     PasManager.getInstance().getCapeDataManager().getData(state.info).orElse(null),
                     state.info,
-                    context,
+                    collector,
                     new PasModelSettings(new PasModelPoseSettings(state), false, state.isBaby),
                     poseStack,
                     packedLight,
@@ -131,9 +150,11 @@ public class PasEntityRenderer extends LivingEntityRenderer<ArmorStand, PasEntit
     }
 
     @Override
-    public void extractRenderState(ArmorStand livingEntity, PasEntityRenderState state, float partialTick) {
-        armorStandRenderer.extractRenderState(livingEntity, state, partialTick);
-        state.info = NameInfo.parse(livingEntity.getCustomName());
-        state.customName = livingEntity.getCustomName();
+    public void extractRenderState(ArmorStand livingEntity, ArmorStandRenderState vanillaState, float partialTick) {
+        armorStandRenderer.extractRenderState(livingEntity, vanillaState, partialTick);
+        if (vanillaState instanceof PasEntityRenderState state) {
+            state.info = NameInfo.parse(livingEntity.getCustomName());
+            state.customName = livingEntity.getCustomName();
+        }
     }
 }

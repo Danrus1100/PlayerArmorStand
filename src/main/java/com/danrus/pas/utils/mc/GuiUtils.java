@@ -1,13 +1,14 @@
 package com.danrus.pas.utils.mc;
 
-import com.danrus.pas.mixin.accessors.ScreenAccessor;
 import com.danrus.pas.render.gui.PasConfiguratorScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class GuiUtils {
@@ -16,11 +17,7 @@ public class GuiUtils {
 
 
     public static Button.Builder getStandardButtonBuilder(Supplier<PasConfiguratorScreen> screenFactory) {
-        return getStandardButtonBuilder(
-                button -> {
-                    Minecraft.getInstance().setScreen(screenFactory.get());
-                }
-        );
+        return getStandardButtonBuilder(b -> Minecraft.getInstance().setScreen(screenFactory.get()));
     }
 
     public static Button.Builder getStandardButtonBuilder(Button.OnPress onPress) {
@@ -29,8 +26,8 @@ public class GuiUtils {
                 .bounds(10, 10, BUTTON_WIDTH, BUTTON_HEIGHT);
     }
 
-    public static void configureButtonOnAnvilScreen(Button button, Screen screen) {
-        ((ScreenAccessor) screen).pas$addRenderableWidget(button);
+    public static void configureButtonOnAnvilScreen(Button button, Screen screen, Consumer<AbstractWidget> widgetsCollector) {
+        widgetsCollector.accept(button);
         int i = (screen.width - BUTTON_WIDTH) / 2;
         int j = screen.height / 2 + 87;
         button.setPosition(i, j);

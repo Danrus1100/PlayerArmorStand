@@ -95,6 +95,13 @@ public interface DataRepository<T extends DataHolder> {
     Optional<T> peek(NameInfo info);
 
     /**
+     * checks is downloading of this name info needed in reload
+     * @param info NameInfo
+     * @return boolean
+     */
+    boolean cancelRedownload(NameInfo info);
+
+    /**
      * Deletes the data associated with the given string.
      *
      * @param info the NameInfo for the data to delete

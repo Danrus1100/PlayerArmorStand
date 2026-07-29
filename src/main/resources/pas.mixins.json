@@ -10,12 +10,9 @@
     "AnvilScreenMixin",
     "EntityRendererMixin",
     "EntityRenderersMixin",
-    "LayerDefinitionsMixin",
     "LivingEntityRendererMixin",
     "SpecialModelRenderersMixin",
-    "accessors.AbstractWidgetAccessor",
-    "accessors.AnvilScreenAccessor",
-    "accessors.LivingEntityRendererAccessor",
-    "accessors.ScreenAccessor"
+    "ConditionalItemModelPropertiesMixin",
+    "accessors.AnvilScreenAccessor"
   ]
 }

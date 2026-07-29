@@ -7,9 +7,7 @@ import com.danrus.pas.managers.PasManager;
 import com.danrus.pas.render.armorstand.PlayerArmorStandModel;
 import com.danrus.pas.render.common.PasModelPoseSettings;
 import com.danrus.pas.render.common.PasModelSettings;
-import com.danrus.pas.render.common.PasRenderContext;
 import com.danrus.pas.render.common.PasRenderer;
-import com.danrus.pas.utils.mc.ModUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
@@ -17,10 +15,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
@@ -41,11 +39,9 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
     }
     @Override
     //? if <26.1 {
-    /*public void submit(@Nullable ItemRenderData argument, ItemDisplayContext displayContext, PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector nodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor){
-        PasRenderContext context = new PasRenderContext().putData(nodeCollector, "collector").putData(outlineColor, "outlineColor");
+    /*public void submit(@Nullable ItemRenderData argument, ItemDisplayContext displayContext, PoseStack poseStack, SubmitNodeCollector nodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor){
     *///?} else {
-    public void submit(@Nullable ItemRenderData argument, PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor) {
-        PasRenderContext context = new PasRenderContext().putData(submitNodeCollector, "collector").putData(outlineColor, "outlineColor");
+    public void submit(@Nullable ItemRenderData argument, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor) {
     //?}
         SkinData skin;
         CapeData cape;
@@ -63,7 +59,7 @@ public class PasSpecialModelRenderer implements SpecialModelRenderer<ItemRenderD
 
         preparePose(poseStack);
         prepareModel(info);
-        renderer.draw(skin, cape, info, context, new PasModelSettings(state, hasFoilType, false), poseStack, packedLight, packedOverlay);
+        renderer.submit(skin, cape, info, submitNodeCollector, new PasModelSettings(state, hasFoilType, false), poseStack, packedLight, packedOverlay);
     }
 
     @Override

@@ -37,29 +37,6 @@ public class LivingEntityRendererMixin<T extends LivingEntityRenderState, M exte
         this.pas$drawer = drawer;
     }
 
-    @Inject(
-            method = "isEntityUpsideDown",
-            at = @At("HEAD"),
-            cancellable = true
-    )
-    private static void pas$isEntityUpsideDown(LivingEntity entity, CallbackInfoReturnable<Boolean> cir){
-        if ((!PasConfig.getInstance().isEnableMod() && !PasConfig.getInstance().isShowEasterEggs())
-                || !(entity instanceof ArmorStand)
-                || entity.getCustomName() == null
-        ) {
-            return;
-        }
-
-        String name = NameInfo.parse(entity.getCustomName()).base();
-
-        if ((name.equalsIgnoreCase("Dinnerbone")
-                || name.equalsIgnoreCase("Grumm")
-        ) && entity instanceof ArmorStand) {
-            cir.setReturnValue(true);
-            cir.cancel();
-        }
-    }
-
     @WrapOperation(
             method = "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V")
